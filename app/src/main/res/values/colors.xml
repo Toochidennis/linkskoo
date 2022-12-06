@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/blue</color>
+    <color name="colorPrimaryDark">@color/blue</color>
+    <color name="colorAccent">#FF7800</color>
+    <color name="gray_ligth">#F6F7F9</color>
+    <color name="blue">#033876</color>
+    <color name="ligth_blue">@color/blue</color>
+    <color name="gray">#808080</color>
+    <color name="light_gray">#D4D4D4</color>
+    <color name="white">#fff</color>
+    <color name="color1">#7719AA</color>
+    <color name="color2">#DC3C00</color>
+    <color name="color3">#00B0B9</color>
+    <color name="color4">#107C10</color>
+    <color name="color5">#8C8B8F</color>
+    <color name="amberD">#ffb300</color>
+    <color name="amberG">#e65100</color>
+    <color name="orange"> #FF9800</color>
+    <color name="black">#000</color>
+    <color name="grey">#e0e0e0</color>
+    <color name="greenA">#1b5e20</color>
+    <color name="greenC">#8bc34a</color>
+    <color name="redH">#e53935</color>
+    <color name="bg_color">#F6F7F9</color>
+    <color name="tab_color">#191F91</color>
+
+
+
+
+
+
+</resources>

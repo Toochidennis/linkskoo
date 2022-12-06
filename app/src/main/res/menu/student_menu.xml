@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/student_dashboard"
+        android:icon="@drawable/ic_home"
+        android:iconTint="@color/blue"
+        android:title="Home"/>
+    <item android:id="@+id/flashcard"
+        android:icon="@drawable/ic_flash"
+        android:iconTint="@color/blue"
+        android:title="FlashCard"/>
+    <item android:id="@+id/student_results"
+        android:icon="@drawable/ic_poll"
+        android:iconTint="@color/blue"
+        android:title="Results"/>
+
+    <item android:id="@+id/student_cbt"
+        android:title="CBT"
+        android:iconTint="@color/blue"
+        android:icon="@drawable/ic_cbt"/>
+    <item android:id="@+id/student_elearning"
+        android:title="E-learning"
+        android:iconTint="@color/blue"
+        android:icon="@drawable/ic_elearning"/>
+</menu>

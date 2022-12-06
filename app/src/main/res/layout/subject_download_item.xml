@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:contentPaddingBottom="20dp"
+    app:contentPaddingTop="20dp"
+    app:contentPaddingLeft="10dp"
+    app:contentPaddingRight="10dp"
+    android:layout_margin="8dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/course_name_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="English language"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:fontFamily="@font/la_to"/>
+    <ImageView
+        android:id="@+id/class_view_result"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_eye_view"
+        android:tint="@color/blue"
+        android:layout_alignParentEnd="true"/>
+    <ImageView
+        android:id="@+id/class_edit_result"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_edit"
+        android:tint="@color/blue"
+        android:layout_toLeftOf="@id/class_view_result"
+        android:layout_marginRight="15dp"
+        />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
