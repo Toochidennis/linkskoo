@@ -1,0 +1,2 @@
+# linkskool
+School Management application 
