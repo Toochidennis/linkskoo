@@ -327,12 +327,12 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
             dialog.dismiss();
             Toast.makeText(getContext(), "Something went wrong!",
                     Toast.LENGTH_SHORT).show();
-            newsRecylerView.setVisibility(View.GONE);
+//            newsRecylerView.setVisibility(View.GONE);
             emptyState.setVisibility(View.VISIBLE);
             errorMessage.setText("Failed to load News, please try again!");
         }){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String,String> params = new HashMap<>();
                 params.put("id",arr.toString());
                 params.put("_db",db);
