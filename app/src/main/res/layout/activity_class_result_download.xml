@@ -1,151 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activities.ClassResultDownload">
-    <include layout="@layout/toolbar"/>
+
+    <include layout="@layout/toolbar" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:background="@color/tab_color"
+            android:gravity="center"
             android:orientation="vertical"
-            android:padding="10dp"
-            android:background="@drawable/bg_drawable"
-            android:gravity="center">
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/class_name_class"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="JS1 A"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/roboto"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                />
+                android:fontFamily="@font/roboto"
+                android:text="JS1 A"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/session_class"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/la_to"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="30dp"/>
+                android:layout_marginBottom="25dp"
+                android:fontFamily="@font/la_to"
+                android:text=""
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="-30dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="-20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         app:contentPadding="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
-            >
+            android:orientation="horizontal">
+
             <RelativeLayout
                 android:id="@+id/class_edit"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                >
+                android:focusable="true">
 
                 <ImageButton
                     android:id="@+id/class_edit_icon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:clickable="false"
                     android:layout_centerHorizontal="true"
                     android:background="@android:color/white"
-                    android:tint="@color/blue"
-                    android:src="@drawable/ic_edit" />
+                    android:clickable="false"
+                    android:src="@drawable/ic_edit"
+                    android:tint="@android:color/holo_orange_dark" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/class_edit_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
                     android:clickable="false"
                     android:text="Edit"
-                    android:layout_marginTop="5dp"
-                    android:textSize="12sp"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/blue"
-                    android:layout_below="@id/class_edit_icon"/>
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="12sp" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/sms_teacher_profile"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                >
+                android:focusable="true">
 
                 <ImageButton
                     android:id="@+id/sms_student_profile"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:clickable="false"
-                    android:background="@android:color/white"
-                    android:tint="@color/blue"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/ic_timeline" />
+                    android:background="@android:color/white"
+                    android:clickable="false"
+                    android:src="@drawable/ic_timeline"
+                    android:tint="@android:color/holo_purple" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:text="Analysis"
+                    android:layout_below="@id/sms_student_profile"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/blue"
-                    android:layout_below="@id/sms_student_profile"/>
+                    android:clickable="false"
+                    android:text="Analysis"
+                    android:textColor="@android:color/holo_purple"
+                    android:textSize="12sp" />
             </RelativeLayout>
 
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/subject_download_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </androidx.recyclerview.widget.RecyclerView>
+
     <LinearLayout
         android:id="@+id/class_res_dwnd_empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
-        android:visibility="gone"
-        >
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_warning"
-            android:tint="@color/light_gray"
-            />
+            app:tint="@color/light_gray" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:text="No course result found for this class"
-            android:textColor="@android:color/black"
-            android:layout_margin="20dp"/>
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 

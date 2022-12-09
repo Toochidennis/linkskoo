@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.ddl.Models.ClassNameTable;
-import com.digitaldream.ddl.Models.CourseTable;
 import com.digitaldream.ddl.R;
 
 import java.util.List;

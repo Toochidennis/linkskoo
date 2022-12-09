@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.AttendanceDetails">
+    tools:context=".Activities.StaffCourseAttendance">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -15,31 +15,32 @@
         android:padding="5dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar"
-            android:id="@+id/bar_tool"/>
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/toolbar" />
 
         <TextView
-            android:id="@+id/details_title"
+            android:id="@+id/class_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
             android:layout_gravity="center_horizontal"
+            android:text=""
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/details_date"
+            android:id="@+id/course_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text=""
-            android:textSize="14sp"
-            android:layout_gravity="center_horizontal"/>
+            android:textSize="14sp" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/details_recycler"
+        android:id="@+id/students_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/appBar">
@@ -47,35 +48,47 @@
     </androidx.recyclerview.widget.RecyclerView>
 
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/submit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@android:color/holo_orange_dark"
+        android:contentDescription="SUBMIT"
+        android:src="@drawable/ic_send"
+        android:tint="@color/white"
+        android:visibility="gone" />
+
+
     <RelativeLayout
-        android:id="@+id/details_empty_state"
+        android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
+
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="110dp"
             android:layout_height="110dp"
-            android:contentDescription="TODO"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="300dp"
-            android:layout_marginStart="150dp"
+            android:layout_centerInParent="true"
             android:src="@drawable/ic_warning" />
 
         <TextView
             android:id="@+id/error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/image"
+            android:layout_below="@+id/image"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
             android:gravity="center_horizontal"
-            android:text="Nothing to show!"
+            android:text="No student records found!"
             android:textColor="@android:color/black" />
-
     </RelativeLayout>
 
 

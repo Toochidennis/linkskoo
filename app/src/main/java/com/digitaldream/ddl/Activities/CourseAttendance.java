@@ -41,7 +41,6 @@ import com.digitaldream.ddl.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import cc.cloudist.acplibrary.ACProgressConstant;
 import cc.cloudist.acplibrary.ACProgressFlower;
@@ -68,15 +68,12 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     private Dao<CourseTable, Long> mCourseDao;
     private List<CourseTable> mCourseList;
     private List<StudentTable> mStudentTableList;
-    private List<StudentTable> mStudentTable;
-    private Dao<GeneralSettingModel, Long> mSettingModelDao;
-    private List<GeneralSettingModel> mSettingModelList;
+    private StudentTable mList;
     DatabaseHelper mDatabaseHelper;
 
     private String mStudentLevelId;
     private String mStudentClassId;
     private String mCourseId;
-    private String from;
     private String db, term, year;
 
     private RelativeLayout mLayout;
@@ -105,12 +102,10 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         TextView name = findViewById(R.id.course_name);
         mLayout = findViewById(R.id.empty_state);
 
-
         Intent intent = getIntent();
         mStudentLevelId = intent.getStringExtra("levelId");
         mStudentClassId = intent.getStringExtra("classId");
         mCourseId = intent.getStringExtra("courseId");
-        from = intent.getStringExtra("from");
 
 
         mDatabaseHelper = new DatabaseHelper(this);
@@ -125,7 +120,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
             e.printStackTrace();
         }
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
@@ -134,7 +128,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         name.setText(mCourseList.get(0).getCourseName());
 
         mStudentTableList = new ArrayList<>();
-        mStudentTable = new ArrayList<>();
+        mList = new StudentTable();
 
         mRecyclerView = findViewById(R.id.course_details_recycler);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -145,7 +139,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         mRecyclerView.setAdapter(mAttendanceAdapter);
 
         fabButtonAction();
-        getPreviousAttendance();
+
 
     }
 
@@ -165,6 +159,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         super.onResume();
         mStudentTableList.clear();
         getAttendance(year, mStudentClassId, mCourseId, term, db);
+
+        getPreviousCourseRegistration();
     }
 
     public void fabButtonAction() {
@@ -187,19 +183,22 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
                 mTakeAttendance, mFilterAttendance));
 
         mTakeAttendance.setOnClickListener(v -> {
+
             Intent newIntent = new Intent(CourseAttendance.this,
-                    ClassAttendance.class);
+                    StaffCourseAttendance.class);
             newIntent.putExtra("levelId", mStudentLevelId);
             newIntent.putExtra("classId", mStudentClassId);
             newIntent.putExtra("courseId", mCourseId);
+            newIntent.putExtra("class_name",
+                    mCourseList.get(0).getClassName());
+            newIntent.putExtra("course_name",
+                    mCourseList.get(0).getCourseName());
+            newIntent.putExtra("responseId",
+                    Objects.requireNonNullElse(mList.getResponseId(), ""));
 
-            if (!mStudentTable.isEmpty()) {
-                newIntent.putExtra("responseId",
-                        mStudentTable.get(0).getStudentId());
-            }
-
-            newIntent.putExtra("from", "course");
             startActivity(newIntent);
+
+
         });
 
         mFilterAttendance.setOnClickListener(v -> {
@@ -208,7 +207,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
             FragmentManager manager = activity.getSupportFragmentManager();
             DateDialogFragment dialogFragment = new DateDialogFragment();
             dialogFragment.show(manager, "date picker");
-
 
         });
 
@@ -223,13 +221,19 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
                 mTakeAttendanceEmpty, mFilterAttendanceEmpty));
 
         mTakeAttendanceEmpty.setOnClickListener(v -> {
+
             Intent newIntent = new Intent(CourseAttendance.this,
-                    ClassAttendance.class);
+                    StaffCourseAttendance.class);
             newIntent.putExtra("levelId", mStudentLevelId);
             newIntent.putExtra("classId", mStudentClassId);
             newIntent.putExtra("courseId", mCourseId);
-            newIntent.putExtra("from", "course");
+            newIntent.putExtra("class_name",
+                    mCourseList.get(0).getClassName());
+            newIntent.putExtra("course_name",
+                    mCourseList.get(0).getCourseName());
+            newIntent.putExtra("responseId", "");
             startActivity(newIntent);
+
         });
 
 
@@ -304,7 +308,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
                 }
 
-            } catch (JSONException | ParseException sE) {
+            } catch (JSONException sE) {
                 sE.printStackTrace();
             }
 
@@ -336,30 +340,23 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     }
 
 
-    public void getPreviousAttendance() {
-        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(this)
-                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
-                .textMarginTop(10)
-                .fadeColor(Color.DKGRAY).build();
-        dialog1.setCancelable(false);
-        dialog1.setCanceledOnTouchOutside(false);
-        dialog1.show();
+    public void getPreviousCourseRegistration() {
 
-        String url = Login.urlBase + "/getAttendance.php";
+        String url = Login.urlBase + "/getCourseRegistration.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    Log.i("Response", response);
-                    dialog1.dismiss();
+                    Log.i("response", "response" + response);
                     try {
-                        JSONArray jsonArray = new JSONArray(response);
+                        JSONObject jsonObject = new JSONObject(response);
+                        String attendance = jsonObject.getString("attendance");
+                        JSONArray jsonArray = new JSONArray(attendance);
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String responseId = jsonObject.getString("id");
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            String responseId = object.getString("id");
+                            mList.setResponseId(responseId);
 
-                            StudentTable studentTable = new StudentTable();
-                            studentTable.setStudentId(responseId);
-                            mStudentTable.add(studentTable);
                         }
+
 
                     } catch (JSONException sE) {
                         sE.printStackTrace();
@@ -367,14 +364,16 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
                 }, error -> {
             error.printStackTrace();
-            dialog1.dismiss();
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+
         }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> stringMap = new HashMap<>();
                 stringMap.put("class", mStudentClassId);
-                stringMap.put("date", getDate());
                 stringMap.put("course", mCourseId);
+                stringMap.put("attendance", "1");
+                stringMap.put("date", getDate());
                 stringMap.put("_db", db);
                 return stringMap;
             }
@@ -382,11 +381,10 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-
     }
 
 
-    public String getDate() {
+    public static String getDate() {
         String date;
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -399,14 +397,19 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     }
 
 
-    public String dateConverter(String date) throws ParseException {
+    public static String dateConverter(String date) {
 
         String format = date.replace(" ", "T").concat(".000Z");
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd" +
                 "'T'HH" + ":mm:ss.SSS'Z'", Locale.US);
 
-        Date oldDate = simpleDateFormat.parse(format);
+        Date oldDate = null;
+        try {
+            oldDate = simpleDateFormat.parse(format);
+        } catch (ParseException sE) {
+            sE.printStackTrace();
+        }
 
         assert oldDate != null;
         return DateFormat.getDateInstance(DateFormat.FULL).format(oldDate);

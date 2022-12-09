@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.ClassAttendance">
+    tools:context=".Activities.AdminClassAttendance">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -62,7 +62,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="40dp"
-        android:backgroundTint="#191F91"
+        android:backgroundTint="@android:color/holo_orange_dark"
         android:contentDescription="SUBMIT"
         android:src="@drawable/ic_send"
         android:tint="@color/white"

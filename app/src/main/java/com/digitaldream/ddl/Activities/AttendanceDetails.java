@@ -45,7 +45,8 @@ public class AttendanceDetails extends AppCompatActivity {
     private AttendanceDetailsAdapter mAdapter;
     private List<StudentTable> mStudentTableList;
     private RecyclerView mRecyclerView;
-    RelativeLayout mLayout;
+    private RelativeLayout mLayout;
+    private TextView detailsDate;
 
     private String classId;
     private String courseId;
@@ -83,6 +84,9 @@ public class AttendanceDetails extends AppCompatActivity {
         Log.i("date", date);
 
         TextView name = findViewById(R.id.details_title);
+        detailsDate = findViewById(R.id.details_date);
+        String currentDate = CourseAttendance.dateConverter(date);
+        detailsDate.setText(currentDate);
 
         if (from.equals("class")) {
             name.setText(className);
@@ -202,4 +206,5 @@ public class AttendanceDetails extends AppCompatActivity {
         super.onResume();
         getAttendance(classId, courseId, date, db, from);
     }
+
 }

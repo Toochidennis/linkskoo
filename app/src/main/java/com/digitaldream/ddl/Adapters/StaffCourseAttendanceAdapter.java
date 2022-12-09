@@ -1,6 +1,7 @@
 package com.digitaldream.ddl.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +17,16 @@ import com.digitaldream.ddl.Models.StudentTable;
 import com.digitaldream.ddl.R;
 
 import java.util.List;
+import java.util.Random;
 
-public class ClassAttendanceAdapter extends RecyclerView.Adapter<ClassAttendanceAdapter.ViewHolder> {
+public class StaffCourseAttendanceAdapter extends RecyclerView.Adapter<StaffCourseAttendanceAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<StudentTable> mStudentTableList;
+    private List<StudentTable> mStudentTableList;
     private final OnStudentClickListener mStudentClickListener;
 
-    public ClassAttendanceAdapter(Context sContext, List<StudentTable> sStudentTableList, OnStudentClickListener sStudentClickListener) {
+    public StaffCourseAttendanceAdapter(Context sContext,
+                                        List<StudentTable> sStudentTableList, OnStudentClickListener sStudentClickListener) {
         mContext = sContext;
         mStudentTableList = sStudentTableList;
         mStudentClickListener = sStudentClickListener;
@@ -31,7 +34,8 @@ public class ClassAttendanceAdapter extends RecyclerView.Adapter<ClassAttendance
 
     @NonNull
     @Override
-    public ClassAttendanceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StaffCourseAttendanceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                      int viewType) {
 
         View view =
                 LayoutInflater.from(mContext).inflate(R.layout.class_attendance_item, parent, false);
@@ -43,59 +47,43 @@ public class ClassAttendanceAdapter extends RecyclerView.Adapter<ClassAttendance
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         StudentTable studentTable = mStudentTableList.get(position);
 
-        String surName = studentTable.getStudentSurname();
-        String middleName =  studentTable.getStudentMiddlename();
-        String firstName = studentTable.getStudentFirstname();
-
-        try{
-            if(surName!=null) {
-                surName = surName.substring(0, 1).toUpperCase() + "" + surName.substring(1).toLowerCase();
-            }else {
-                surName = "";
-            }
-            if(middleName!=null) {
-                middleName = middleName.substring(0, 1).toUpperCase() + "" + middleName.substring(1).toLowerCase();
-            }else {
-                middleName="";
-            }
-            if(firstName!=null) {
-                firstName = firstName.substring(0, 1).toUpperCase() + "" + firstName.substring(1).toLowerCase();
-            }else {
-                firstName = "";
+        String name = studentTable.getStudentFullName();
+        String[] strings = name.toLowerCase().split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (String letter: strings) {
+            try {
+                String caps =
+                        letter.substring(0,1).toUpperCase()+letter.substring(1).toLowerCase();
+                builder.append(caps).append(" ");
+            } catch (Exception sE) {
+                sE.printStackTrace();
             }
 
-        }catch (StringIndexOutOfBoundsException | NullPointerException e){
-            e.printStackTrace();
         }
 
-        String name = surName+ " " + middleName + " " + firstName;
+        holder.mName.setText(builder.toString());
 
-        holder.mName.setText(name);
-
-        if (studentTable.isSelected()){
+        if (studentTable.isSelected()) {
             holder.mCheckBtn.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             holder.mCheckBtn.setVisibility(View.GONE);
         }
 
-
-      /*  if(studentTable.isShowText()){
-            holder.mCheckBtn.setVisibility(View.GONE);
-
-        }*/
 
         try {
             holder.mNameInitial.setText(name.substring(0, 1).toUpperCase());
-        }catch (StringIndexOutOfBoundsException e){
+        } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
 
         GradientDrawable mutate =
                 (GradientDrawable) holder.mLinearLayout.getBackground().mutate();
-        mutate.setColor(studentTable.getColor());
+        Random random =  new Random();
+        int color = Color.argb(255, random.nextInt(256),random.nextInt(256),
+                random.nextInt(240));
+        mutate.setColor(color);
 
         holder.mLinearLayout.setBackground(mutate);
-
 
     }
 
@@ -104,7 +92,7 @@ public class ClassAttendanceAdapter extends RecyclerView.Adapter<ClassAttendance
         return mStudentTableList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         OnStudentClickListener mStudentClickListener;
         private final TextView mName;
@@ -115,9 +103,9 @@ public class ClassAttendanceAdapter extends RecyclerView.Adapter<ClassAttendance
         public ViewHolder(@NonNull View itemView, OnStudentClickListener sStudentClickListener) {
             super(itemView);
             this.mStudentClickListener = sStudentClickListener;
-            mName =  itemView.findViewById(R.id.student_name);
+            mName = itemView.findViewById(R.id.student_name);
             mNameInitial = itemView.findViewById(R.id.name_initial);
-            mCheckBtn =  itemView.findViewById(R.id.checkBtn);
+            mCheckBtn = itemView.findViewById(R.id.checkBtn);
             mLinearLayout = itemView.findViewById(R.id.checkBtn_layout);
             itemView.setOnClickListener(this);
         }
@@ -126,18 +114,12 @@ public class ClassAttendanceAdapter extends RecyclerView.Adapter<ClassAttendance
         public void onClick(View sView) {
             mStudentClickListener.onStudentClick(getAdapterPosition());
 
-
         }
 
-        @Override
-        public boolean onLongClick(View sView) {
-            mStudentClickListener.onStudentLongClick(getAdapterPosition());
-            return false;
-        }
     }
 
     public interface OnStudentClickListener {
         void onStudentClick(int position);
-        void onStudentLongClick(int position);
     }
+
 }

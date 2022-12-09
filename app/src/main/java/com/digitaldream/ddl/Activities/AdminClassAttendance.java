@@ -25,7 +25,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.ddl.Adapters.ClassAttendanceAdapter;
+import com.digitaldream.ddl.Adapters.AdminClassAttendanceAdapter;
 import com.digitaldream.ddl.DatabaseHelper;
 import com.digitaldream.ddl.Models.ClassNameTable;
 import com.digitaldream.ddl.Models.GeneralSettingModel;
@@ -52,11 +52,11 @@ import java.util.Random;
 import cc.cloudist.acplibrary.ACProgressConstant;
 import cc.cloudist.acplibrary.ACProgressFlower;
 
-public class ClassAttendance extends AppCompatActivity implements ClassAttendanceAdapter.OnStudentClickListener {
+public class AdminClassAttendance extends AppCompatActivity implements AdminClassAttendanceAdapter.OnStudentClickListener {
 
     private FloatingActionButton mActionButton;
     private RecyclerView mRecyclerView;
-    private ClassAttendanceAdapter mClassAttendanceAdapter;
+    private AdminClassAttendanceAdapter mAdminClassAttendanceAdapter;
     private List<StudentTable> mStudentTableList;
     private Dao<StudentTable, Long> mStudentTableDao;
     private Dao<GeneralSettingModel, Long> mSettingModelDao;
@@ -66,7 +66,6 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
     private List<TeachersTable> mTeachersTableList;
     private List<GeneralSettingModel> mSettingModelList;
     DatabaseHelper mDatabaseHelper;
-
     private String mStudentClassId;
     private boolean mSelectAll = false;
     private Menu mMenu;
@@ -80,16 +79,14 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.attendance_class);
+        setContentView(R.layout.admin_attendance_class);
 
         Intent intent = getIntent();
         String studentLevelId = intent.getStringExtra("levelId");
         mStudentClassId = intent.getStringExtra("classId");
         courseId = intent.getStringExtra("courseId");
         responseId = intent.getStringExtra("responseId");
-        from = intent.getStringExtra("from");
-
-        //Log.i("response", responseId);
+        from = intent.getStringExtra("class_name");
 
 
         Toolbar toolbar = findViewById(R.id.course_tool_bar);
@@ -97,17 +94,14 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
         //final ActionBar actionBar = getSupportActionBar();
         actionBar = getSupportActionBar();
         assert actionBar != null;
-        if (from.equals("class")) {
-            actionBar.setTitle("Class Attendance");
-        } else if (from.equals("course")) {
-            actionBar.setTitle("Course Attendance");
-        }
+
+        actionBar.setTitle("Class Attendance");
+
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
 
         mDatabaseHelper = new DatabaseHelper(this);
-
 
         try {
             mStudentTableDao = DaoManager.createDao(mDatabaseHelper.getConnectionSource(), StudentTable.class);
@@ -122,7 +116,6 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
                 int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
                 table.setColor(currentColor);
             }
-
 
         } catch (SQLiteException | SQLException e) {
             e.printStackTrace();
@@ -149,21 +142,21 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
                 break;
         }
         TextView classTerm = findViewById(R.id.class_term);
-/*        mName = findViewById(R.id.class_title);
+        mName = findViewById(R.id.class_title);
 
-        mName.setText(mClassNameList.get(0).getClassName());*/
+        mName.setText(from);
 
         classTerm.setText(String.format("%d/%s %s", previousYear, year,
                 termText));
 
         mRecyclerView = findViewById(R.id.students_recycler);
         mRecyclerView.setHasFixedSize(true);
-        mClassAttendanceAdapter = new ClassAttendanceAdapter(this, mStudentTableList,
+        mAdminClassAttendanceAdapter = new AdminClassAttendanceAdapter(this, mStudentTableList,
                 this);
         LinearLayoutManager manager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(mClassAttendanceAdapter);
+        mRecyclerView.setAdapter(mAdminClassAttendanceAdapter);
 
         RelativeLayout layout = findViewById(R.id.empty_state);
 
@@ -204,7 +197,8 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
 
         });
 
-        getPreviousAttendance(mStudentClassId, courseId, getDate(), db, from);
+        getPreviousAttendance(mStudentClassId, courseId, getDate(), db);
+
 
         //  Log.i("responseId", getResponseId());
 
@@ -246,7 +240,7 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
             st.setSelected(value);
             show = st.isSelected();
         }
-        mClassAttendanceAdapter.notifyDataSetChanged();
+        mAdminClassAttendanceAdapter.notifyDataSetChanged();
         if (show) {
             mActionButton.setVisibility(View.VISIBLE);
         } else {
@@ -258,7 +252,7 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.check_all, menu);
-        this.mMenu = menu;
+        mMenu = menu;
         return true;
     }
 
@@ -279,17 +273,15 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
                     mSelectAll = true;
                 }
 
+
                 if (getSelectedCount() == 0) {
 
-                    if (from.equals("class")) {
-                        actionBar.setTitle("Class Attendance");
-                    } else if (from.equals("course")) {
-                        actionBar.setTitle("Course Attendance");
-                    }
+                    actionBar.setTitle("Class Attendance");
+
                 } else {
                     actionBar.setTitle("" + getSelectedCount());
                 }
-                mClassAttendanceAdapter.notifyDataSetChanged();
+                mAdminClassAttendanceAdapter.notifyDataSetChanged();
 
                 return true;
             case android.R.id.home:
@@ -314,20 +306,15 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
             studentTable.setSelected(true);
         }
 
-
         if (getSelectedCount() == 0) {
 
-            if (from.equals("class")) {
-                actionBar.setTitle("Class Attendance");
+            actionBar.setTitle("Class Attendance");
 
-            } else if (from.equals("course")) {
-                actionBar.setTitle("Course Attendance");
-            }
         } else {
             actionBar.setTitle("" + getSelectedCount());
         }
 
-        mClassAttendanceAdapter.notifyDataSetChanged();
+        mAdminClassAttendanceAdapter.notifyDataSetChanged();
         invalidateOptionsMenu();
         mSelectAll = false;
         showHideFab();
@@ -361,11 +348,11 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
                         JSONObject jsonObject = new JSONObject(response);
                         String status = jsonObject.getString("status");
                         if (status.equals("success")) {
-                            Toast.makeText(ClassAttendance.this, "Operation was successful",
+                            Toast.makeText(AdminClassAttendance.this, "Operation was successful",
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(ClassAttendance.this, "Something " +
+                            Toast.makeText(AdminClassAttendance.this, "Something " +
                                             "went wrong!",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -386,15 +373,8 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
                 stringMap.put("staff", sStaffId);
                 stringMap.put("year", sYear);
                 stringMap.put("term", sTerm);
-
-                if (from.equals("class")) {
-
-                    stringMap.put("course", "0");
-
-                } else if (from.equals("course")) {
-
-                    stringMap.put("course", sCourseId);
-                }
+                stringMap.put("course", Objects.requireNonNullElse(sCourseId,
+                        "0"));
                 stringMap.put("register", sStudents);
                 stringMap.put("count", sCount);
                 stringMap.put("date", getDate());
@@ -411,34 +391,34 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
 
     public void getPreviousAttendance(String sClassId, String sCourseId,
                                       String sDate
-            , String sDb, String sFrom) {
-        String url = Login.urlBase + "/getAttendance.php";
+            , String sDb) {
 
+        String url = Login.urlBase + "/getAttendance.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    Log.i("Response", response);
+                    Log.i("response", response);
                     String json = "";
                     try {
                         JSONArray jsonArray = new JSONArray(response);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             json = jsonObject.getString("register");
-                            String responseId = jsonObject.getString("id");
 
                         }
 
-                        Log.i("json", json);
-                        JSONArray jsonArray1 = new JSONArray(json);
-                        for (int j = 0; j < jsonArray1.length(); j++) {
-                            JSONObject object = jsonArray1.getJSONObject(j);
-                            String studentId = object.getString("id");
+                        if (!json.isEmpty()) {
+                            JSONArray jsonArray1 = new JSONArray(json);
+                            for (int j = 0; j < jsonArray1.length(); j++) {
+                                JSONObject object = jsonArray1.getJSONObject(j);
+                                String studentId = object.getString("id");
 
-                            getStudentsList(mStudentTableList,
-                                    studentId);
+                                getStudentsList(mStudentTableList,
+                                        studentId);
+                            }
+                            mAdminClassAttendanceAdapter.notifyDataSetChanged();
+                            actionBar.setTitle("" + getSelectedCount());
+                            showHideFab();
                         }
-                        mClassAttendanceAdapter.notifyDataSetChanged();
-                        actionBar.setTitle("" + getSelectedCount());
-
 
                     } catch (JSONException sE) {
                         sE.printStackTrace();
@@ -453,12 +433,8 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
                 Map<String, String> stringMap = new HashMap<>();
                 stringMap.put("class", sClassId);
                 stringMap.put("date", sDate);
-
-                if (sFrom.equals("class")) {
-                    stringMap.put("course", "0");
-                } else if (sFrom.equals("course")) {
-                    stringMap.put("course", sCourseId);
-                }
+                stringMap.put("course", Objects.requireNonNullElse(sCourseId,
+                        "0"));
                 stringMap.put("_db", sDb);
                 return stringMap;
             }
@@ -494,11 +470,6 @@ public class ClassAttendance extends AppCompatActivity implements ClassAttendanc
 
     public String getStudentName(String sSurName, String sMiddleName,
                                  String sFirstName) {
-        // String name = "";
-
-          /*  String surName = surname.getStudentSurname();
-            String middleName = middle.getStudentMiddlename();
-            String firstName = first.getStudentFirstname();*/
 
         try {
             if (sSurName != null) {

@@ -101,6 +101,5 @@ public class StaffClassAttendanceFragment extends Fragment implements StaffClass
         startActivity(intent);
 
 
-
     }
 }

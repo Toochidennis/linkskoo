@@ -74,6 +74,7 @@ public class ClassResultDownload extends AppCompatActivity implements SubjectDow
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         getSupportActionBar().setTitle("Subject Results");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -88,14 +89,11 @@ public class ClassResultDownload extends AppCompatActivity implements SubjectDow
         recyclerView = findViewById(R.id.subject_download_recycler);
         emptyLayout = findViewById(R.id.class_res_dwnd_empty_state);
         editClassBtn = findViewById(R.id.class_edit);
-        editClassBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ClassResultDownload.this, AddClass.class);
-                i.putExtra("class_id",classID);
-                i.putExtra("from","classEdit");
-                startActivity(i);
-            }
+        editClassBtn.setOnClickListener(v -> {
+            Intent i1 = new Intent(ClassResultDownload.this, AddClass.class);
+            i1.putExtra("class_id",classID);
+            i1.putExtra("from","classEdit");
+            startActivity(i1);
         });
 
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);

@@ -284,7 +284,6 @@ public class StudentResultDownload extends AppCompatActivity implements StudentR
 
                             }
 
-
                     }
 
                     studentResultDownloadList = studentResultDao.queryForAll();
@@ -294,10 +293,6 @@ public class StudentResultDownload extends AppCompatActivity implements StudentR
                         StudentResultDownloadAdapter studentResultDownloadAdapter = new StudentResultDownloadAdapter(StudentResultDownload.this, studentResultDownloadList, StudentResultDownload.this);
                         recyclerView.setAdapter(studentResultDownloadAdapter);
                     }
-
-
-
-
 
 
                 } catch (JSONException e) {

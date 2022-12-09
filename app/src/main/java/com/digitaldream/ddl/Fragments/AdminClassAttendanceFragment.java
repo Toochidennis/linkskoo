@@ -4,12 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -31,22 +29,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.ddl.Activities.AttendanceDetails;
-import com.digitaldream.ddl.Activities.ClassAttendance;
+import com.digitaldream.ddl.Activities.AdminClassAttendance;
 import com.digitaldream.ddl.Activities.Login;
 import com.digitaldream.ddl.Adapters.AttendanceAdapter;
-import com.digitaldream.ddl.DatabaseHelper;
-import com.digitaldream.ddl.Models.GeneralSettingModel;
 import com.digitaldream.ddl.Models.StudentTable;
 import com.digitaldream.ddl.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,7 +56,7 @@ import cc.cloudist.acplibrary.ACProgressConstant;
 import cc.cloudist.acplibrary.ACProgressFlower;
 
 
-public class ClassAttendanceFragment extends Fragment implements AttendanceAdapter.OnDayClickListener {
+public class AdminClassAttendanceFragment extends Fragment implements AttendanceAdapter.OnDayClickListener {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -83,7 +76,7 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
     private List<StudentTable> mStudentTableList;
     private AttendanceAdapter mAttendanceAdapter;
     private DatePickerDialog mDatePickerDialog;
-    private List<StudentTable> mStudentTable;
+    private StudentTable mStudentTable;
 
     private String mStudentClassId;
     private String mStudentLevelId;
@@ -94,16 +87,16 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
     private boolean isOpen = false;
 
 
-    public ClassAttendanceFragment() {
+    public AdminClassAttendanceFragment() {
         // Required empty public constructor
     }
 
 
-    public static ClassAttendanceFragment newInstance(String param1,
-                                                      String param2,
-                                                      String param3,
-                                                      String param4) {
-        ClassAttendanceFragment fragment = new ClassAttendanceFragment();
+    public static AdminClassAttendanceFragment newInstance(String param1,
+                                                           String param2,
+                                                           String param3,
+                                                           String param4) {
+        AdminClassAttendanceFragment fragment = new AdminClassAttendanceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -132,7 +125,7 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
                 container, false);
 
 
-       Toolbar toolbar = view.findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle(
                 "Attendance Details");
@@ -141,9 +134,9 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
         toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         setHasOptionsMenu(true);
 
-        if (from.equals("staff")){
+        if (from.equals("staff")) {
             toolbar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbar.setVisibility(View.GONE);
         }
 
@@ -157,7 +150,7 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
 
 
         mStudentTableList = new ArrayList<>();
-        mStudentTable = new ArrayList<>();
+        mStudentTable = new StudentTable();
 
         mRecyclerView = view.findViewById(R.id.attendance_recycler);
         mEmptyLayout = view.findViewById(R.id.empty_state);
@@ -174,8 +167,6 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
 
         fabButtonAction(view);
 
-        getPreviousAttendance();
-
 
         return view;
     }
@@ -186,6 +177,8 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
         super.onResume();
         mStudentTableList.clear();
         getAttendance();
+
+        getPreviousAttendance();
     }
 
     public void fabButtonAction(View sView) {
@@ -211,15 +204,13 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
 
         mTakeAttendance.setOnClickListener(v -> {
             Intent newIntent = new Intent(getContext(),
-                    ClassAttendance.class);
+                    AdminClassAttendance.class);
             newIntent.putExtra("levelId", mStudentLevelId);
             newIntent.putExtra("classId", mStudentClassId);
-            newIntent.putExtra("from", "class");
-            if (!mStudentTable.isEmpty()) {
-                newIntent.putExtra("responseId",
-                        mStudentTable.get(0).getStudentId());
-                Log.i("responseId", mStudentTable.get(0).getStudentId());
-            }
+            newIntent.putExtra("class_name", mStudentClass);
+            newIntent.putExtra("responseId",
+                    Objects.requireNonNullElse(mStudentTable.getResponseId(), ""));
+            //Log.i("responseId", mStudentTable.getResponseId());
 
             startActivity(newIntent);
         });
@@ -269,13 +260,13 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
 
         mTakeAttendanceEmpty.setOnClickListener(v -> {
             Intent newIntent = new Intent(getContext(),
-                    ClassAttendance.class);
+                    AdminClassAttendance.class);
             newIntent.putExtra("levelId", mStudentLevelId);
             newIntent.putExtra("classId", mStudentClassId);
-            newIntent.putExtra("from", "class");
+            newIntent.putExtra("class_name", mStudentClass);
+            newIntent.putExtra("responseId", "");
             startActivity(newIntent);
         });
-
 
     }
 
@@ -400,17 +391,14 @@ public class ClassAttendanceFragment extends Fragment implements AttendanceAdapt
         String url = Login.urlBase + "/getAttendance.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    Log.i("Response", response);
+                    Log.i("previous_ATTENDA", response);
                     dialog1.dismiss();
                     try {
                         JSONArray jsonArray = new JSONArray(response);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String responseId = jsonObject.getString("id");
-
-                            StudentTable studentTable = new StudentTable();
-                            studentTable.setStudentId(responseId);
-                            mStudentTable.add(studentTable);
+                            mStudentTable.setResponseId(responseId);
                         }
 
                     } catch (JSONException sE) {

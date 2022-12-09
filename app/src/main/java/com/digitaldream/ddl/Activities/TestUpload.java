@@ -12,6 +12,7 @@ import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
@@ -82,18 +83,18 @@ import java.util.List;
 import java.util.Map;
 
 public class TestUpload extends AppCompatActivity implements TestSettingHeaderAdapter.OnTestSettingHeaderClickListener, QuestionAdapter.OnQuestionClickListener, QuestionAdapter2.StartDragListener {
-    public static RecyclerView recyclerView,questionRecycler;
+    public static RecyclerView recyclerView, questionRecycler;
     public static List<TestSettingModel> testHeaderList;
     public static TestSettingHeaderAdapter adapter;
     private Toolbar toolbar;
     public static List<QuestionsModel> questionsList;
-    private LinearLayout addQuestionBtn,submitBtn,previewBtn;
+    private LinearLayout addQuestionBtn, submitBtn, previewBtn;
     public static QuestionAdapter questionAdapter;
     public static QuestionAdapter2 questionAdapter2;
     public static JSONObject jsonObject1;
-    public static String levelId,courseId,db,user_name,term,teacherId,assessmentId,questionId="";
+    public static String levelId, courseId, db, user_name, term, teacherId, assessmentId, questionId = "";
     private DatabaseHelper databaseHelper;
-    private Dao<CourseOutlineTable,Long> courseOutlineDao;
+    private Dao<CourseOutlineTable, Long> courseOutlineDao;
     private CountDownTimer timer;
     private String from;
     public static Uri selecetedUri;
@@ -102,8 +103,6 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
     public static String levelName;
     ItemTouchHelper touchHelper;
     private JSONObject jsonObject2;
-
-
 
 
     @Override
@@ -124,7 +123,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         from = i.getStringExtra("from");
         assessmentId = i.getStringExtra("id");
 
-        Log.i("response Toochi","json "+json);
+        Log.i("response Toochi", "json " + json);
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -132,18 +131,18 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
         databaseHelper = new DatabaseHelper(this);
         try {
-            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(),CourseOutlineTable.class);
+            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseOutlineTable.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-        db = sharedPreferences.getString("db","");
-        user_name = sharedPreferences.getString("user","Admin");
-        term = sharedPreferences.getString("term","");
-        teacherId =sharedPreferences.getString("user_id",teacherId);
+        db = sharedPreferences.getString("db", "");
+        user_name = sharedPreferences.getString("user", "Admin");
+        term = sharedPreferences.getString("term", "");
+        teacherId = sharedPreferences.getString("user_id", teacherId);
 
-        recyclerView= findViewById(R.id.test_header_recycler);
+        recyclerView = findViewById(R.id.test_header_recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
@@ -156,9 +155,9 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         tsm.setTitle("");
         testHeaderList.add(tsm);
 
-        adapter = new TestSettingHeaderAdapter(this,testHeaderList,this);
+        adapter = new TestSettingHeaderAdapter(this, testHeaderList, this);
         recyclerView.setAdapter(adapter);
-        if(from.equalsIgnoreCase("upload")) {
+        if (from.equalsIgnoreCase("upload")) {
             getSupportActionBar().setTitle("Assignment");
             SetTestDialog dialog = new SetTestDialog(this);
             dialog.setCancelable(true);
@@ -168,7 +167,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        }else if(from.equalsIgnoreCase("flashcard")){
+        } else if (from.equalsIgnoreCase("flashcard")) {
             getSupportActionBar().setTitle("Flashcard");
 
             FlashCardDialog dialog = new FlashCardDialog(this);
@@ -178,7 +177,6 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         }
 
 
-
         questionRecycler = findViewById(R.id.question_recycler);
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
         questionRecycler.setLayoutManager(linearLayoutManager1);
@@ -186,34 +184,34 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         questionsList = new ArrayList<>();
         //questionAdapter = new QuestionAdapter(this,questionsList,this);
         //questionRecycler.setAdapter(questionAdapter);
-        questionAdapter2 = new QuestionAdapter2(this,questionsList,this);
+        questionAdapter2 = new QuestionAdapter2(this, questionsList, this);
         questionRecycler.setAdapter(questionAdapter2);
         ItemTouchHelper.Callback callback =
                 new ItemMoveCallBack(questionAdapter2);
-        touchHelper  = new ItemTouchHelper(callback);
+        touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(questionRecycler);
 
         addQuestionBtn = findViewById(R.id.add_question);
         addQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(from.equalsIgnoreCase("upload")||from.equalsIgnoreCase("edit")) {
-                   QuestionTypeDialog dialog = new QuestionTypeDialog(TestUpload.this);
-                   dialog.show();
-                   Window window = dialog.getWindow();
-                   window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                   addQuestionBtn.setEnabled(true);
-               }else if(from.equalsIgnoreCase("flashcard")){
-                   QuestionsModel qm = new QuestionsModel();
-                   qm.setQuestionType("flash_card");
-                   qm.setQuestion("");
-                   qm.setQuestionId("");
-                   TestUpload.questionsList.add(qm);
-                   TestUpload.questionAdapter2.notifyDataSetChanged();
-                   TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount()-1);
-                   new Handler().postDelayed(new Runnable() {
-                       @Override
-                       public void run() {
+                if (from.equalsIgnoreCase("upload") || from.equalsIgnoreCase("edit")) {
+                    QuestionTypeDialog dialog = new QuestionTypeDialog(TestUpload.this);
+                    dialog.show();
+                    Window window = dialog.getWindow();
+                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    addQuestionBtn.setEnabled(true);
+                } else if (from.equalsIgnoreCase("flashcard")) {
+                    QuestionsModel qm = new QuestionsModel();
+                    qm.setQuestionType("flash_card");
+                    qm.setQuestion("");
+                    qm.setQuestionId("");
+                    TestUpload.questionsList.add(qm);
+                    TestUpload.questionAdapter2.notifyDataSetChanged();
+                    TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount() - 1);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
                            /*QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
                            dialog2.show();
                            Window window = dialog2.getWindow();
@@ -222,57 +220,57 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
                                    WindowManager.LayoutParams.MATCH_PARENT);*/
 
-                           FragmentActivity activityF =
-                                   TestUpload.this;
-                           FragmentManager manager = activityF.getSupportFragmentManager();
-                           QuestionDialog2 dialog2 =
-                                   new QuestionDialog2(TestUpload.this
-                                   ,qm,
-                                   TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
-                           dialog2.setCancelable(false);
-                           dialog2.show(manager, "tag");
+                            FragmentActivity activityF =
+                                    TestUpload.this;
+                            FragmentManager manager = activityF.getSupportFragmentManager();
+                            QuestionDialog2 dialog2 =
+                                    new QuestionDialog2(TestUpload.this
+                                            , qm,
+                                            TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
+                            dialog2.setCancelable(false);
+                            dialog2.show(manager, "tag");
 
-                       }
-                   },500);
-               }else if(from.equals("flash_card")){
-                   QuestionsModel qm = new QuestionsModel();
-                   qm.setQuestionType("flash_card");
-                   qm.setQuestion("");
-                   qm.setQuestionId("");
-                   TestUpload.questionsList.add(qm);
-                   TestUpload.questionAdapter2.notifyDataSetChanged();
-                   TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount()-1);
-                   new Handler().postDelayed(new Runnable() {
-                       @Override
-                       public void run() {
+                        }
+                    }, 500);
+                } else if (from.equals("flash_card")) {
+                    QuestionsModel qm = new QuestionsModel();
+                    qm.setQuestionType("flash_card");
+                    qm.setQuestion("");
+                    qm.setQuestionId("");
+                    TestUpload.questionsList.add(qm);
+                    TestUpload.questionAdapter2.notifyDataSetChanged();
+                    TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount() - 1);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
                            /*QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
                            dialog2.show();
                            Window window = dialog2.getWindow();
                            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 */
 
-                           FragmentActivity activityF =
-                                   TestUpload.this;
-                           FragmentManager manager = activityF.getSupportFragmentManager();
-                           QuestionDialog2 dialog2 =
-                                   new QuestionDialog2(TestUpload.this
-                                           ,qm,
-                                           TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
-                           dialog2.setCancelable(false);
-                           dialog2.show(manager, "tag");
+                            FragmentActivity activityF =
+                                    TestUpload.this;
+                            FragmentManager manager = activityF.getSupportFragmentManager();
+                            QuestionDialog2 dialog2 =
+                                    new QuestionDialog2(TestUpload.this
+                                            , qm,
+                                            TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
+                            dialog2.setCancelable(false);
+                            dialog2.show(manager, "tag");
 
-                       }
-                   },500);
-               }
+                        }
+                    }, 500);
+                }
 
             }
         });
         submitBtn = findViewById(R.id.submit);
 
         submitBtn.setOnClickListener(v -> {
-                submitAssignment2();
+            submitAssignment2();
 
-               // preview();
+            // preview();
 
         });
 
@@ -281,12 +279,12 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         previewBtn.setOnClickListener(v -> {
             ExamActivity.ab = 0;
 
-            if (testHeaderList.size()>0 && !testHeaderList.get(0).getTitle().isEmpty() || !FlashCardSettingsDialog.title.isEmpty()) {
+            if (testHeaderList.size() > 0 && !testHeaderList.get(0).getTitle().isEmpty() || !FlashCardSettingsDialog.title.isEmpty()) {
                 JSONObject jsonObject = new JSONObject();
 
 
                 try {
-                    if( !from.equals("flash_card")) {
+                    if (!from.equals("flash_card")) {
                         jsonObject.put("id", assessmentId);
                         jsonObject.put("week", testHeaderList.get(0).getWeek());
                         jsonObject.put("title", testHeaderList.get(0).getTitle());
@@ -317,69 +315,68 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
 
                         //q.put("options", jsonArray);
-                        switch (qm.getQuestionType()){
+                        switch (qm.getQuestionType()) {
                             case "short_answer":
-                                q.put("content",qm.getQuestion());
+                                q.put("content", qm.getQuestion());
                                 q.put("type", "qs");
-                                q.put("correct",qm.getAnswer());
-                                if(qm.getQuestionImageUri()!=null) {
+                                q.put("correct", qm.getAnswer());
+                                if (qm.getQuestionImageUri() != null) {
                                     q.put("question_image", qm.getQuestionImageUri().toString());
-                                    q.put("tag","0");
-                                }else if(qm.getQuestionImage()!=null){
+                                    q.put("tag", "0");
+                                } else if (qm.getQuestionImage() != null) {
                                     q.put("question_image", qm.getQuestionImage());
-                                    q.put("tag","1");
+                                    q.put("tag", "1");
                                 }
                                 break;
                             case "long_answer":
                                 q.put("type", "qt");
-                                q.put("content",qm.getQuestion());
-                                q.put("correct",qm.getAnswer());
-                                if(qm.getQuestionImageUri()!=null) {
+                                q.put("content", qm.getQuestion());
+                                q.put("correct", qm.getAnswer());
+                                if (qm.getQuestionImageUri() != null) {
                                     q.put("question_image", qm.getQuestionImageUri().toString());
-                                    q.put("tag","0");
-                                }else if(qm.getQuestionImage()!=null){
+                                    q.put("tag", "0");
+                                } else if (qm.getQuestionImage() != null) {
                                     q.put("question_image", qm.getQuestionImage());
-                                    q.put("tag","1");
+                                    q.put("tag", "1");
                                 }
                                 break;
                             case "multiple_choice":
                                 q.put("type", "qo");
-                                q.put("content",qm.getQuestion());
+                                q.put("content", qm.getQuestion());
                                 String optionsOrder = "";
 
                                 for (int a = 0; a < QuestionAdapter2.list.get(i1).getOptions().size(); a++) {
                                     String option = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
 
 
-                                        if (QuestionAdapter2.list.get(i1).getOptions().get(a).isChecked()) {
+                                    if (QuestionAdapter2.list.get(i1).getOptions().get(a).isChecked()) {
 
-                                            List<Integer> order =
-                                                    new ArrayList<>();
-                                            order.add(0);
-                                            order.add(1);
-                                            order.add(2);
-                                            order.add(3);
-                                            order.add(4);
+                                        List<Integer> order =
+                                                new ArrayList<>();
+                                        order.add(0);
+                                        order.add(1);
+                                        order.add(2);
+                                        order.add(3);
+                                        order.add(4);
 
-                                            for (int j = 0; j <order.size(); j++) {
+                                        for (int j = 0; j < order.size(); j++) {
 
-                                                if (order.get(j)== a){
-                                                    answer = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
-                                                    optionsOrder =
-                                                            String.valueOf(order.get(j));
-                                                }
-
+                                            if (order.get(j) == a) {
+                                                answer = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
+                                                optionsOrder = String.valueOf(order.get(j));
                                             }
 
+                                        }
 
-                                            JSONObject answerJson =
-                                                    new JSONObject();
-                                            answerJson.put("order",
-                                                    optionsOrder);
 
-                                            answerJson.put("text", answer);
+                                        JSONObject answerJson =
+                                                new JSONObject();
+                                        answerJson.put("order",
+                                                optionsOrder);
 
-                                             q.put("correct", answerJson);
+                                        answerJson.put("text", answer);
+
+                                        q.put("correct", answerJson);
 
                                     }
 
@@ -390,19 +387,19 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
                                            // q.put("correct",answer);
                                         }*/
-                                        //opts+=option+"||";
+                                    //opts+=option+"||";
                                     JSONObject j = new JSONObject();
 
-                                    j.put("text",option);
-                                    if(qm.getOptions().get(a).getOptionsImage()!=null && !qm.getOptions().get(a).getOptionsImage().toString().isEmpty()) {
+                                    j.put("text", option);
+                                    if (qm.getOptions().get(a).getOptionsImage() != null && !qm.getOptions().get(a).getOptionsImage().toString().isEmpty()) {
                                         Uri imgUrl = qm.getOptions().get(a).getOptionsImage();
                                         j.put("filename", imgUrl);
-                                        j.put("tag","0");
+                                        j.put("tag", "0");
 
-                                    }else if(qm.getOptions().get(a).getOptionImageUrl()!=null){
+                                    } else if (qm.getOptions().get(a).getOptionImageUrl() != null) {
                                         String filename = qm.getOptions().get(a).getOptionImageUrl();
                                         j.put("filename", filename);
-                                        j.put("tag","1");
+                                        j.put("tag", "1");
 
                                     }
 
@@ -410,94 +407,94 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
                                 }
                                 //opts = opts.substring(0,opts.length()-2);
-                                q.put("answer",jsonArray);
-                                if(qm.getQuestionImageUri()!=null) {
+                                q.put("answer", jsonArray);
+                                if (qm.getQuestionImageUri() != null) {
                                     q.put("question_image", qm.getQuestionImageUri().toString());
-                                    q.put("tag","0");
-                                }else if(qm.getQuestionImage()!=null){
+                                    q.put("tag", "0");
+                                } else if (qm.getQuestionImage() != null) {
                                     q.put("question_image", qm.getQuestionImage());
-                                    q.put("tag","1");
+                                    q.put("tag", "1");
                                 }
                                 break;
                             case "email":
                                 q.put("type", "em");
-                                q.put("content",qm.getQuestion());
-                                q.put("correct",qm.getAnswer());
+                                q.put("content", qm.getQuestion());
+                                q.put("correct", qm.getAnswer());
 
                                 break;
                             case "number":
                                 q.put("type", "nb");
-                                q.put("content",qm.getQuestion());
-                                q.put("correct",qm.getAnswer());
+                                q.put("content", qm.getQuestion());
+                                q.put("correct", qm.getAnswer());
                                 break;
                             case "check_box":
                                 q.put("type", "qm");
-                                q.put("content",qm.getQuestion());
-                                String opts1="";
+                                q.put("content", qm.getQuestion());
+                                String opts1 = "";
                                 for (int a = 0; a < QuestionAdapter2.list.get(i1).getOptions().size(); a++) {
                                     String option = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
 
                                     if (QuestionAdapter2.list.get(i1).getOptions().get(a).isChecked()) {
 
-                                            String ans = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
-                                            answer = answer + "" + ans + "||";
+                                        String ans = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
+                                        answer = answer + "" + ans + "||";
 
                                     }
-                                    opts1+=option+"||";
+                                    opts1 += option + "||";
 
 
                                     //jsonArray.put(option);
 
                                 }
-                                opts1 = opts1.substring(0,opts1.length()-2);
-                                answer = answer.substring(0,answer.length()-2);
-                                q.put("correct",answer);
-                                q.put("answer",opts1);
+                                opts1 = opts1.substring(0, opts1.length() - 2);
+                                answer = answer.substring(0, answer.length() - 2);
+                                q.put("correct", answer);
+                                q.put("answer", opts1);
                                 //q.put("answer",answer);
                                 break;
                             case "drop_down":
                                 q.put("type", "sl");
-                                q.put("content",qm.getQuestion());
-                                String opts2="";
+                                q.put("content", qm.getQuestion());
+                                String opts2 = "";
                                 for (int a = 0; a < QuestionAdapter2.list.get(i1).getOptions().size(); a++) {
                                     String option = QuestionAdapter2.list.get(i1).getOptions().get(a).getOptionText();
 
-                                    opts2+=option+"||";
+                                    opts2 += option + "||";
 
 
                                     //jsonArray.put(option);
 
                                 }
-                                opts2 = opts2.substring(0,opts2.length()-2);
-                                q.put("answer",opts2);
-                                q.put("correct","");
+                                opts2 = opts2.substring(0, opts2.length() - 2);
+                                q.put("answer", opts2);
+                                q.put("correct", "");
                                 break;
                             case "date":
                                 q.put("type", "dt");
-                                q.put("content",qm.getQuestion());
-                                q.put("correct",qm.getAnswer());
+                                q.put("content", qm.getQuestion());
+                                q.put("correct", qm.getAnswer());
                                 break;
                             case "time":
                                 q.put("type", "tm");
-                                q.put("content",qm.getQuestion());
-                                q.put("correct",qm.getAnswer());
+                                q.put("content", qm.getQuestion());
+                                q.put("correct", qm.getAnswer());
                                 break;
                             case "section":
                                 q.put("type", "section");
                                 q.put("content", qm.getSectionTitle());
                                 q.put("correct", qm.getSectionDescription());
-                                if(qm.getQuestionImageUri()!=null) {
+                                if (qm.getQuestionImageUri() != null) {
                                     q.put("question_image", qm.getQuestionImageUri().toString());
-                                    q.put("tag","0");
-                                }else if(qm.getQuestionImage()!=null){
+                                    q.put("tag", "0");
+                                } else if (qm.getQuestionImage() != null) {
                                     q.put("question_image", qm.getQuestionImage());
-                                    q.put("tag","1");
+                                    q.put("tag", "1");
                                 }
                                 break;
                             case "flash_card":
                                 q.put("type", "flash_card");
-                                q.put("content",qm.getQuestion());
-                                q.put("correct",qm.getAnswer());
+                                q.put("content", qm.getQuestion());
+                                q.put("correct", qm.getAnswer());
                                 break;
 
 
@@ -512,7 +509,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                     JSONArray jsonArray = new JSONArray();
                     //jsonArray.put(0,questionArray);
                     //{"e":{"id":"102","title":"ggffff","description":"","course_id":"1","body":"ffgggg","url":"","course_name":"ENGLISH"},"q":[[{"id":"47","parent":"0","content":"how to","title":"","type":"qo","answer":"","correct":""}]]}
-                    jsonObject1.put("q", jsonArray.put(0,questionArray));
+                    jsonObject1.put("q", jsonArray.put(0, questionArray));
                     jsonObject1.put("e", jsonObject);
 
                     if (questionArray.length() == 0) {
@@ -520,16 +517,16 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         return;
                     }
 
-                    if(from.equals("upload") || from.equals("edit")) {
+                    if (from.equals("upload") || from.equals("edit")) {
                         Intent intent1 = new Intent(TestUpload.this, ExamActivity.class);
                         intent1.putExtra("course", "");
                         intent1.putExtra("Json", jsonObject1.toString());
                         intent1.putExtra("year", "");
                         intent1.putExtra("from", "preview");
-                        Log.i("json Me and U",jsonObject1.toString());
+                        Log.i("json Me and U", jsonObject1.toString());
                         startActivity(intent1);
 
-                    }else if(from.equals("flashcard") || from.equals("flash_card")){
+                    } else if (from.equals("flashcard") || from.equals("flash_card")) {
                         Intent intent1 = new Intent(TestUpload.this, FlashView.class);
                         intent1.putExtra("course", "");
                         intent1.putExtra("Json", jsonObject1.toString());
@@ -546,14 +543,14 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 //assessmentApiCall();
 
 
-            }else{
+            } else {
                 Toast.makeText(TestUpload.this, "Title is empty", Toast.LENGTH_SHORT).show();
 
             }
 
         });
 
-        if(from.equalsIgnoreCase("edit")){
+        if (from.equalsIgnoreCase("edit")) {
             testHeaderList.clear();
             try {
                 JSONObject jsonObject = new JSONObject(json);
@@ -564,34 +561,34 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 String startDate = settingObject.optString("start_date");
                 String endDate = settingObject.optString("end_date");
                 String access = settingObject.optString("category");
-                Log.i("response",json);
+                Log.i("response", json);
                 try {
                     String[] s = startDate.split(" ");
                     String[] e = endDate.split(" ");
 
-                TestSettingModel md = new TestSettingModel();
-                md.setTitle(title);
-                String[] wk = week.split(" ");
-                md.setWeek(wk[1]);
-                md.setDuration(duration);
-                md.setDescription(description);
-                md.setDuration(duration);
-                md.setAccess(access);
-                md.setEndDate(e[0]);
-                md.setStartDate(s[0]);
-                md.setStartTime(s[1]);
-                md.setEndTime(e[1]);
-                if(!s[0].isEmpty() || !s[1].isEmpty() || !e[0].isEmpty() || !e[1].isEmpty()){
-                    md.setChecked(true);
-                }
-                md.setType("assessment");
-                md.setCourse(courseName);
-                md.setLevel(levelName);
-                md.setCourseId(courseId);
-                md.setLevelId(levelId);
-                testHeaderList.add(md);
-                adapter.notifyDataSetChanged();
-                }catch (Exception e){
+                    TestSettingModel md = new TestSettingModel();
+                    md.setTitle(title);
+                    String[] wk = week.split(" ");
+                    md.setWeek(wk[1]);
+                    md.setDuration(duration);
+                    md.setDescription(description);
+                    md.setDuration(duration);
+                    md.setAccess(access);
+                    md.setEndDate(e[0]);
+                    md.setStartDate(s[0]);
+                    md.setStartTime(s[1]);
+                    md.setEndTime(e[1]);
+                    if (!s[0].isEmpty() || !s[1].isEmpty() || !e[0].isEmpty() || !e[1].isEmpty()) {
+                        md.setChecked(true);
+                    }
+                    md.setType("assessment");
+                    md.setCourse(courseName);
+                    md.setLevel(levelName);
+                    md.setCourseId(courseId);
+                    md.setLevelId(levelId);
+                    testHeaderList.add(md);
+                    adapter.notifyDataSetChanged();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -599,12 +596,12 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 try {
                     JSONArray jsonArray = jsonObject.getJSONArray("q");
                     render(jsonArray);
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                     try {
                         jsonObject2 = jsonObject.getJSONObject("q");
                         render(jsonObject2);
-                    }catch (Exception e1){
+                    } catch (Exception e1) {
                         e1.printStackTrace();
 
                     }
@@ -624,8 +621,8 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
         Toast.makeText(this, testHeaderList.get(0).getType(),
                 Toast.LENGTH_SHORT).show();
-     /*   if(testHeaderList.get(0).getType().equals("assessment")) {*/
-            if(true) {
+        /*   if(testHeaderList.get(0).getType().equals("assessment")) {*/
+        if (true) {
 
 
             SetTestDialog dialog = new SetTestDialog(this);
@@ -636,7 +633,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        }else{
+        } else {
             FlashCardDialog dialog = new FlashCardDialog(this);
             dialog.show();
             Window window = dialog.getWindow();
@@ -646,10 +643,9 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -675,15 +671,16 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         dialog2.show();
         Window window = dialog2.getWindow();
         window.setLayout(ViewGroup.LayoutParams.FILL_PARENT,
-                ViewGroup.LayoutParams.FILL_PARENT)*/;
+                ViewGroup.LayoutParams.FILL_PARENT)*/
+        ;
 
         FragmentActivity activityF =
                 TestUpload.this;
         FragmentManager manager = activityF.getSupportFragmentManager();
         QuestionDialog2 dialog2 =
                 new QuestionDialog2(TestUpload.this
-                        ,questionsList.get(position),
-                        questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
+                        , questionsList.get(position),
+                        questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
 
         dialog2.setCancelable(false);
         dialog2.show(manager, "tag");
@@ -691,73 +688,73 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
     }
 
-    public void submitAssignment(){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject1 = new JSONObject();
+    public void submitAssignment() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject1 = new JSONObject();
 
 
-            try {
-                jsonObject.put("id", assessmentId);
-                jsonObject.put("week", testHeaderList.get(0).getWeek());
-                jsonObject.put("title", testHeaderList.get(0).getTitle());
-                jsonObject.put("description", testHeaderList.get(0).getDescription());
-                jsonObject.put("start_date", testHeaderList.get(0).getStartDate());
-                jsonObject.put("end_date", testHeaderList.get(0).getEndDate());
-                jsonObject.put("duration", testHeaderList.get(0).getDuration());
-                jsonObject.put("level", levelId);
-                jsonObject.put("course", courseId);
-                jsonObject.put("term", term);
-                jsonObject.put("author_id", teacherId);
-                jsonObject.put("author_name", user_name);
+        try {
+            jsonObject.put("id", assessmentId);
+            jsonObject.put("week", testHeaderList.get(0).getWeek());
+            jsonObject.put("title", testHeaderList.get(0).getTitle());
+            jsonObject.put("description", testHeaderList.get(0).getDescription());
+            jsonObject.put("start_date", testHeaderList.get(0).getStartDate());
+            jsonObject.put("end_date", testHeaderList.get(0).getEndDate());
+            jsonObject.put("duration", testHeaderList.get(0).getDuration());
+            jsonObject.put("level", levelId);
+            jsonObject.put("course", courseId);
+            jsonObject.put("term", term);
+            jsonObject.put("author_id", teacherId);
+            jsonObject.put("author_name", user_name);
 
-                JSONArray questionArray = new JSONArray();
-                for (int i = 0; i < questionsList.size(); i++) {
-                    JSONArray jsonArray = new JSONArray();
-                    JSONObject q = new JSONObject();
-                    String answer = "";
-                    for (int a = 0; a < questionsList.get(i).getOptions().size(); a++) {
-                        String option = questionsList.get(i).getOptions().get(a).getOptionText();
+            JSONArray questionArray = new JSONArray();
+            for (int i = 0; i < questionsList.size(); i++) {
+                JSONArray jsonArray = new JSONArray();
+                JSONObject q = new JSONObject();
+                String answer = "";
+                for (int a = 0; a < questionsList.get(i).getOptions().size(); a++) {
+                    String option = questionsList.get(i).getOptions().get(a).getOptionText();
 
-                        if (questionsList.get(i).getOptions().get(a).isChecked()) {
-                            answer = questionsList.get(i).getOptions().get(a).getOptionText();
-                        }
-                        jsonArray.put(option);
-
+                    if (questionsList.get(i).getOptions().get(a).isChecked()) {
+                        answer = questionsList.get(i).getOptions().get(a).getOptionText();
                     }
-                    q.put("question_id", questionsList.get(i).getQuestionId());
-                    q.put("question", questionsList.get(i).getQuestion());
-                    q.put("correct", answer);
-                    q.put("options", jsonArray);
-                    q.put("type", "multiple_choice");
-                    q.put("parent", "");
-                    questionArray.put(q);
+                    jsonArray.put(option);
 
                 }
-                jsonObject1.put("questions", questionArray);
-                jsonObject1.put("settings", jsonObject);
-                if(questionArray.length()==0){
-                    Toast.makeText(TestUpload.this, "There is no questions", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                q.put("question_id", questionsList.get(i).getQuestionId());
+                q.put("question", questionsList.get(i).getQuestion());
+                q.put("correct", answer);
+                q.put("options", jsonArray);
+                q.put("type", "multiple_choice");
+                q.put("parent", "");
+                questionArray.put(q);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-            assessmentApiCall();
+            jsonObject1.put("questions", questionArray);
+            jsonObject1.put("settings", jsonObject);
+            if (questionArray.length() == 0) {
+                Toast.makeText(TestUpload.this, "There is no questions", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        assessmentApiCall();
 
     }
 
     public void submitAssignment2() {
 
-        if (testHeaderList.size()>0 && !testHeaderList.get(0).getTitle().isEmpty() || !FlashCardSettingsDialog.title.isEmpty()) {
+        if (testHeaderList.size() > 0 && !testHeaderList.get(0).getTitle().isEmpty() || !FlashCardSettingsDialog.title.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
 
 
             try {
 
-                if(!from.equals("flash_card")) {
-                    if(testHeaderList.get(0).getDuration()==null || testHeaderList.get(0).getDuration()!=null && testHeaderList.get(0).getDuration().trim().isEmpty()){
-                        Toast.makeText(TestUpload.this,"Duration can't be empty",Toast.LENGTH_SHORT).show();
+                if (!from.equals("flash_card")) {
+                    if (testHeaderList.get(0).getDuration() == null || testHeaderList.get(0).getDuration() != null && testHeaderList.get(0).getDuration().trim().isEmpty()) {
+                        Toast.makeText(TestUpload.this, "Duration can't be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     TestSettingModel tsm = testHeaderList.get(0);
@@ -770,14 +767,14 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                     jsonObject.put("duration", testHeaderList.get(0).getDuration());
                     jsonObject.put("start_time", testHeaderList.get(0).getStartTime());
                     jsonObject.put("end_time", testHeaderList.get(0).getEndTime());
-                    jsonObject.put("category",testHeaderList.get(0).getAccess());
+                    jsonObject.put("category", testHeaderList.get(0).getAccess());
                     jsonObject.put("level", tsm.getLevelId());
                     jsonObject.put("course", tsm.getCourseId());
                     jsonObject.put("term", term);
                     jsonObject.put("author_id", teacherId);
                     jsonObject.put("author_name", user_name);
-                    jsonObject.put("course_name",tsm.getCourse());
-                    jsonObject.put("level_name",tsm.getLevel());
+                    jsonObject.put("course_name", tsm.getCourse());
+                    jsonObject.put("level_name", tsm.getLevel());
 
                 }
 
@@ -792,7 +789,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         String option = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
                         JSONObject j = new JSONObject();
 
-                        String optionsOrder ="";
+                        String optionsOrder = "";
 
                         if (QuestionAdapter2.list.get(i).getOptions().get(a).isChecked()) {
                             if (qm.getQuestionType().equals("multiple_choice")) {
@@ -807,7 +804,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
                                 for (int c = 0; c < order.size(); c++) {
 
-                                    if (order.get(c)== a){
+                                    if (order.get(c) == a) {
                                         answer = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
                                         optionsOrder =
                                                 String.valueOf(order.get(c));
@@ -830,20 +827,20 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                             }
                         }
 
-                        j.put("text",option);
-                        if(qm.getOptions().get(a).getOptionsImage()!=null && !qm.getOptions().get(a).getOptionsImage().toString().isEmpty()) {
+                        j.put("text", option);
+                        if (qm.getOptions().get(a).getOptionsImage() != null && !qm.getOptions().get(a).getOptionsImage().toString().isEmpty()) {
                             Uri imgUrl = qm.getOptions().get(a).getOptionsImage();
                             File file = new File(FileUtils.getPath(TestUpload.this, imgUrl));
                             j.put("image", getStringFile(file));
-                            j.put("filename",file.getName());
-                            j.put("oldfilename","");
+                            j.put("filename", file.getName());
+                            j.put("oldfilename", "");
                             //Log.i("response","reaching "+file.getName());
 
-                        }else if(qm.getOptions().get(a).getOptionImageUrl()!=null){
+                        } else if (qm.getOptions().get(a).getOptionImageUrl() != null) {
                             String filename = qm.getOptions().get(a).getOptionImageUrl();
                             j.put("image", "");
-                            j.put("filename",filename);
-                            j.put("oldfilename",filename);
+                            j.put("filename", filename);
+                            j.put("oldfilename", filename);
                             // Log.i("response","reaching2 "+filename);
 
                         }
@@ -865,39 +862,36 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                     q.put("question_id", qm.getQuestionId());
 
 
-                    if(qm.getQuestionImageUri()!=null ) {
+                    if (qm.getQuestionImageUri() != null) {
                         Uri imgUrl = qm.getQuestionImageUri();
-                        File file = new File(FileUtils.getPath(TestUpload.this,imgUrl));
+                        File file = new File(FileUtils.getPath(TestUpload.this, imgUrl));
                         q.put("question_image", new Util().getStringFile(file));
-                        q.put("question_filename",file.getName());
-                        q.put("question_oldfile","");
+                        q.put("question_filename", file.getName());
+                        q.put("question_oldfile", "");
 
-                    }else if(qm.getQuestionImage()!=null){
+                    } else if (qm.getQuestionImage() != null) {
 
                         String filename = qm.getQuestionImage();
 
                         q.put("question_image", "");
-                        q.put("question_filename",filename);
-                        q.put("question_oldfile",filename);
+                        q.put("question_filename", filename);
+                        q.put("question_oldfile", filename);
 
                     }
-                    if(!qm.getQuestionType().equals("section")) {
+                    if (!qm.getQuestionType().equals("section")) {
                         q.put("question", qm.getQuestion());
-                        if(qm.getQuestionType().equals("email") || qm.getQuestionType().equals("number")|| qm.getQuestionType().equals("date")|| qm.getQuestionType().equals("time")){
+                        if (qm.getQuestionType().equals("email") || qm.getQuestionType().equals("number") || qm.getQuestionType().equals("date") || qm.getQuestionType().equals("time")) {
                             q.put("correct", qm.getQuestion());
 
-                        }else if(qm.getQuestionType().equals("flash_card")){
-                            q.put("correct",qm.getAnswer());
-                        }
-                        else if(qm.getQuestionType().equals("multiple_choice"))
-                        {
+                        } else if (qm.getQuestionType().equals("flash_card")) {
+                            q.put("correct", qm.getAnswer());
+                        } else if (qm.getQuestionType().equals("multiple_choice")) {
                             q.put("correct", answerJson);
-                        }else
-                        {
+                        } else {
                             q.put("correct", answer);
                         }
 
-                    }else if(qm.getQuestionType().equals("section")){
+                    } else if (qm.getQuestionType().equals("section")) {
                         q.put("question", qm.getSectionTitle());
                         q.put("correct", qm.getSectionDescription());
                     }
@@ -911,7 +905,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 jsonObject1.put("questions", questionArray);
                 jsonObject1.put("settings", jsonObject);
                 Log.i("response4", jsonObject1.toString());
-                if(!from.equals("flash_card")) {
+                if (!from.equals("flash_card")) {
                     if (questionArray.length() == 0) {
                         Toast.makeText(TestUpload.this, "There is no questions", Toast.LENGTH_SHORT).show();
                         return;
@@ -923,12 +917,12 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 e.printStackTrace();
             }
 
-            if(from.equalsIgnoreCase("upload") || from.equals("edit")){
-               assessmentApiCall();
+            if (from.equalsIgnoreCase("upload") || from.equals("edit")) {
+                assessmentApiCall();
 
-            }else if(from.equalsIgnoreCase("flashcard")){
+            } else if (from.equalsIgnoreCase("flashcard")) {
                 createFlashCardApi();
-            }else if(from.equals("flash_card")){
+            } else if (from.equals("flash_card")) {
                 try {
                     jsonObject.put("id", "");
                     jsonObject.put("week", "0");
@@ -937,8 +931,8 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                     jsonObject.put("start_date", "0");
                     jsonObject.put("end_date", "0");
                     jsonObject.put("duration", "0");
-                    jsonObject.put("start_time","0");
-                    jsonObject.put("end_time","0");
+                    jsonObject.put("start_time", "0");
+                    jsonObject.put("end_time", "0");
                     jsonObject.put("level", FlashCardTagsSettings.level);
                     jsonObject.put("course", FlashCardTagsSettings.course);
                     jsonObject.put("term", term);
@@ -952,31 +946,30 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 }
 
 
-
             }
 
 
-        }else{
+        } else {
             Toast.makeText(TestUpload.this, "Title is empty", Toast.LENGTH_SHORT).show();
         }
-        Log.i("json",jsonObject1.toString());
+        Log.i("json", jsonObject1.toString());
     }
 
 
-    private void createFlashCardApi(){
+    private void createFlashCardApi() {
         CustomDialog dialog = new CustomDialog(this);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
-        String url = Login.urlBase+"/addFlashCard.php";
+        String url = Login.urlBase + "/addFlashCard.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             dialog.dismiss();
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 String status = jsonObject.getString("status");
                 if (status.equalsIgnoreCase("success")) {
-                    if(from.equals("flashcard")) {
+                    if (from.equals("flashcard")) {
                         JSONObject detailObj = jsonObject.getJSONObject("details");
                         String id = detailObj.getString("id");
                         String title = detailObj.getString("title");
@@ -1025,19 +1018,19 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         }
 
                         onBackPressed();
-                    }else{
-                        if(StudentDashboardActivity.check!=null) {
-                            Intent intent = new Intent(TestUpload.this,StudentDashboardActivity.class);
-                            intent.putExtra("from","testupload");
+                    } else {
+                        if (StudentDashboardActivity.check != null) {
+                            Intent intent = new Intent(TestUpload.this, StudentDashboardActivity.class);
+                            intent.putExtra("from", "testupload");
                             startActivity(intent);
 
-                        }else if(Dashboard.check!=null){
-                            Intent intent = new Intent(TestUpload.this,Dashboard.class);
-                            intent.putExtra("from","testupload");
+                        } else if (Dashboard.check != null) {
+                            Intent intent = new Intent(TestUpload.this, Dashboard.class);
+                            intent.putExtra("from", "testupload");
                             startActivity(intent);
-                        }else if(StaffDashboardActivity.check!=null){
-                            Intent intent = new Intent(TestUpload.this,StaffDashboardActivity.class);
-                            intent.putExtra("from","testupload");
+                        } else if (StaffDashboardActivity.check != null) {
+                            Intent intent = new Intent(TestUpload.this, StaffDashboardActivity.class);
+                            intent.putExtra("from", "testupload");
                             startActivity(intent);
                         }
                     }
@@ -1058,12 +1051,12 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 dialog.dismiss();
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> param = new HashMap<>();
-                param.put("assessment",jsonObject1.toString());
-                param.put("_db",db);
+                Map<String, String> param = new HashMap<>();
+                param.put("assessment", jsonObject1.toString());
+                param.put("_db", db);
                 return param;
             }
         };
@@ -1072,13 +1065,13 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
     }
 
 
-    private void assessmentApiCall(){
+    private void assessmentApiCall() {
 
         CustomDialog dialog = new CustomDialog(this);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        String url=Login.urlBase+"/addQuiz.php";
+        String url = Login.urlBase + "/addQuiz.php";
 
         Log.i("URL", url);
 
@@ -1105,10 +1098,10 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         String startDate = detailObj.optString("start_date");
                         String endDate = detailObj.optString("end_date");
 
-                        QueryBuilder<CourseOutlineTable,Long> queryBuilder = courseOutlineDao.queryBuilder();
-                        queryBuilder.where().eq("id",id);
+                        QueryBuilder<CourseOutlineTable, Long> queryBuilder = courseOutlineDao.queryBuilder();
+                        queryBuilder.where().eq("id", id);
                         List<CourseOutlineTable> cot = queryBuilder.query();
-                        if(cot.isEmpty()) {
+                        if (cot.isEmpty()) {
                             CourseOutlineTable ct = new CourseOutlineTable();
                             ct.setId(id);
                             ct.setWeek("Week " + week);
@@ -1123,19 +1116,19 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                             ct.setEndDate(endDate);
 
                             courseOutlineDao.create(ct);
-                        }else{
-                            UpdateBuilder<CourseOutlineTable,Long> updateBuilder = courseOutlineDao.updateBuilder();
-                            updateBuilder.updateColumnValue("week","Week "+week);
-                            updateBuilder.updateColumnValue("objective",objective);
-                            updateBuilder.updateColumnValue("levelId",levelId);
-                            updateBuilder.updateColumnValue("courseId",courseId);
-                            updateBuilder.updateColumnValue("assessmentUrl",assessmentUrl);
-                            updateBuilder.updateColumnValue("title",title);
-                            updateBuilder.updateColumnValue("assessmentUrl",assessmentUrl);
-                            updateBuilder.updateColumnValue("duration",timeDuration);
-                            updateBuilder.updateColumnValue("startDate",startDate);
-                            updateBuilder.updateColumnValue("endDate",endDate);
-                            updateBuilder.where().eq("id",id);
+                        } else {
+                            UpdateBuilder<CourseOutlineTable, Long> updateBuilder = courseOutlineDao.updateBuilder();
+                            updateBuilder.updateColumnValue("week", "Week " + week);
+                            updateBuilder.updateColumnValue("objective", objective);
+                            updateBuilder.updateColumnValue("levelId", levelId);
+                            updateBuilder.updateColumnValue("courseId", courseId);
+                            updateBuilder.updateColumnValue("assessmentUrl", assessmentUrl);
+                            updateBuilder.updateColumnValue("title", title);
+                            updateBuilder.updateColumnValue("assessmentUrl", assessmentUrl);
+                            updateBuilder.updateColumnValue("duration", timeDuration);
+                            updateBuilder.updateColumnValue("startDate", startDate);
+                            updateBuilder.updateColumnValue("endDate", endDate);
+                            updateBuilder.where().eq("id", id);
                             updateBuilder.update();
                         }
 
@@ -1143,22 +1136,22 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
                         Log.i("Message", jsonObject1.toString());
 
-                        Toast.makeText(TestUpload.this,"Upload was successful",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestUpload.this, "Upload was successful", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException | SQLException e) {
                     e.printStackTrace();
                 }
                 dialog.dismiss();
             }
-            }, error -> {
-                dialog.dismiss();
-                Toast.makeText(TestUpload.this, "Error submitting questions", Toast.LENGTH_SHORT).show();
-            }){
+        }, error -> {
+            dialog.dismiss();
+            Toast.makeText(TestUpload.this, "Error submitting questions", Toast.LENGTH_SHORT).show();
+        }) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String,String> params = new HashMap<>();
-                params.put("assessment",jsonObject1.toString());
-                params.put("_db",db);
+                Map<String, String> params = new HashMap<>();
+                params.put("assessment", jsonObject1.toString());
+                params.put("_db", db);
                 return params;
             }
         };
@@ -1171,8 +1164,8 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode== Activity.RESULT_OK){
-            if(requestCode==QuestionDialog2.SELECT_IMAGE){
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == QuestionDialog2.SELECT_IMAGE) {
                 selecetedUri = data.getData();
                 //selectedFilePath = FilePath.getPath(this, selecetedUri);
 
@@ -1180,18 +1173,18 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 QuestionDialog2.pic.setVisibility(View.VISIBLE);
                 QuestionDialog2.imageContainer.setVisibility(View.VISIBLE);
                 QuestionDialog2.qm.setQuestionImageUri(selecetedUri);
-                if(QuestionDialog2.qNumberContainer!=null){
+                if (QuestionDialog2.qNumberContainer != null) {
                     QuestionDialog2.qNumberContainer.setVisibility(View.GONE);
                 }
-                if(QuestionDialog2.addImgContainer!=null){
+                if (QuestionDialog2.addImgContainer != null) {
                     QuestionDialog2.addImgContainer.setVisibility(View.GONE);
                 }
-            }else if(requestCode==QuestionDialog2.SELECT_OPTION_IMAGE){
+            } else if (requestCode == QuestionDialog2.SELECT_OPTION_IMAGE) {
                 selecetedUri = data.getData();
                 //selectedFilePath = FilePath.getPath(this, selecetedUri);
-                if(QuestionDialog2.optionsList!=null) {
+                if (QuestionDialog2.optionsList != null) {
                     QuestionDialog2.optionsList.get(OptionsAdapter2.optionPosition).setOptionsImage(selecetedUri);
-                }else if(QuestionDialog2.optionsList1!=null){
+                } else if (QuestionDialog2.optionsList1 != null) {
                     QuestionDialog2.optionsList1.get(OptionsAdapter2.optionPosition).setOptionsImage(selecetedUri);
 
                 }
@@ -1208,7 +1201,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         touchHelper.startDrag(viewHolder);
     }
 
-    public void preview(){
+    public void preview() {
         JSONObject jsonObject = new JSONObject();
         jsonObject1 = new JSONObject();
 
@@ -1216,7 +1209,6 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
             jsonObject.put("title", testHeaderList.get(0).getTitle());
             jsonObject.put("description", testHeaderList.get(0).getDuration());
-
 
 
             JSONArray questionArray = new JSONArray();
@@ -1228,44 +1220,44 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
 
                 q.put("id", qm.getQuestionId());
-                q.put("obj",qm);
+                q.put("obj", qm);
 
 
                 //q.put("options", jsonArray);
-                switch (qm.getQuestionType()){
+                switch (qm.getQuestionType()) {
                     case "short_answer":
-                        q.put("content",qm.getQuestion());
+                        q.put("content", qm.getQuestion());
                         q.put("type", "qs");
-                        q.put("correct",qm.getAnswer());
-                        if(qm.getQuestionImageUri()!=null) {
+                        q.put("correct", qm.getAnswer());
+                        if (qm.getQuestionImageUri() != null) {
                             q.put("question_image", qm.getQuestionImageUri().toString());
-                            q.put("tag","0");
-                        }else if(qm.getQuestionImage()!=null){
+                            q.put("tag", "0");
+                        } else if (qm.getQuestionImage() != null) {
                             q.put("question_image", qm.getQuestionImage());
-                            q.put("tag","1");
+                            q.put("tag", "1");
                         }
                         break;
                     case "long_answer":
                         q.put("type", "qt");
-                        q.put("content",qm.getQuestion());
-                        q.put("correct",qm.getAnswer());
-                        if(qm.getQuestionImageUri()!=null) {
+                        q.put("content", qm.getQuestion());
+                        q.put("correct", qm.getAnswer());
+                        if (qm.getQuestionImageUri() != null) {
                             q.put("question_image", qm.getQuestionImageUri().toString());
-                            q.put("tag","0");
-                        }else if(qm.getQuestionImage()!=null){
+                            q.put("tag", "0");
+                        } else if (qm.getQuestionImage() != null) {
                             q.put("question_image", qm.getQuestionImage());
-                            q.put("tag","1");
+                            q.put("tag", "1");
                         }
                         break;
                     case "multiple_choice":
                         q.put("type", "qo");
-                        q.put("content",qm.getQuestion());
+                        q.put("content", qm.getQuestion());
                         String opts = "";
 
                         for (int a = 0; a < QuestionAdapter2.list.get(i).getOptions().size(); a++) {
                             String option = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
 
-                           String optionsOrder = "";
+                            String optionsOrder = "";
 
                         /*    if (QuestionAdapter2.list.get(i).getOptions().get(a).isChecked()) {
                                 answer = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
@@ -1282,9 +1274,9 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                                 order.add(3);
                                 order.add(4);
 
-                                for (int j = 0; j <order.size(); j++) {
+                                for (int j = 0; j < order.size(); j++) {
 
-                                    if (order.get(j)== a){
+                                    if (order.get(j) == a) {
                                         answer =
                                                 QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
                                         optionsOrder =
@@ -1304,38 +1296,38 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                                 q.put("correct", answerJson);
 
                             }
-                            opts+=option+"||";
+                            opts += option + "||";
 
                         }
                         try {
                             opts = opts.substring(0, opts.length() - 2);
                             q.put("answer", opts);
-                        }catch (StringIndexOutOfBoundsException e){
+                        } catch (StringIndexOutOfBoundsException e) {
                             e.printStackTrace();
                         }
-                        if(qm.getQuestionImageUri()!=null) {
+                        if (qm.getQuestionImageUri() != null) {
                             q.put("question_image", qm.getQuestionImageUri().toString());
-                            q.put("tag","0");
-                        }else if(qm.getQuestionImage()!=null){
+                            q.put("tag", "0");
+                        } else if (qm.getQuestionImage() != null) {
                             q.put("question_image", qm.getQuestionImage());
-                            q.put("tag","1");
+                            q.put("tag", "1");
                         }
                         break;
                     case "email":
                         q.put("type", "em");
-                        q.put("content",qm.getQuestion());
-                        q.put("correct",qm.getAnswer());
+                        q.put("content", qm.getQuestion());
+                        q.put("correct", qm.getAnswer());
 
                         break;
                     case "number":
                         q.put("type", "nb");
-                        q.put("content",qm.getQuestion());
-                        q.put("correct",qm.getAnswer());
+                        q.put("content", qm.getQuestion());
+                        q.put("correct", qm.getAnswer());
                         break;
                     case "check_box":
                         q.put("type", "qm");
-                        q.put("content",qm.getQuestion());
-                        String opts1="";
+                        q.put("content", qm.getQuestion());
+                        String opts1 = "";
                         for (int a = 0; a < QuestionAdapter2.list.get(i).getOptions().size(); a++) {
                             String option = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
 
@@ -1344,61 +1336,61 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                                 String ans = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
                                 answer = answer + "" + ans + "||";
                             }
-                            opts1+=option+"||";
+                            opts1 += option + "||";
 
 
                             //jsonArray.put(option);
 
                         }
-                        opts1 = opts1.substring(0,opts1.length()-2);
-                        answer = answer.substring(0,answer.length()-2);
-                        q.put("correct",answer);
-                        q.put("answer",opts1);
+                        opts1 = opts1.substring(0, opts1.length() - 2);
+                        answer = answer.substring(0, answer.length() - 2);
+                        q.put("correct", answer);
+                        q.put("answer", opts1);
                         //q.put("answer",answer);
                         break;
                     case "drop_down":
                         q.put("type", "sl");
-                        q.put("content",qm.getQuestion());
-                        String opts2="";
+                        q.put("content", qm.getQuestion());
+                        String opts2 = "";
                         for (int a = 0; a < QuestionAdapter2.list.get(i).getOptions().size(); a++) {
                             String option = QuestionAdapter2.list.get(i).getOptions().get(a).getOptionText();
 
-                            opts2+=option+"||";
+                            opts2 += option + "||";
 
 
                             //jsonArray.put(option);
 
                         }
-                        opts2 = opts2.substring(0,opts2.length()-2);
-                        q.put("answer",opts2);
-                        q.put("correct","");
+                        opts2 = opts2.substring(0, opts2.length() - 2);
+                        q.put("answer", opts2);
+                        q.put("correct", "");
                         break;
                     case "date":
                         q.put("type", "dt");
-                        q.put("content",qm.getQuestion());
-                        q.put("correct",qm.getAnswer());
+                        q.put("content", qm.getQuestion());
+                        q.put("correct", qm.getAnswer());
                         break;
                     case "time":
                         q.put("type", "tm");
-                        q.put("content",qm.getQuestion());
-                        q.put("correct",qm.getAnswer());
+                        q.put("content", qm.getQuestion());
+                        q.put("correct", qm.getAnswer());
                         break;
                     case "section":
                         q.put("type", "section");
                         q.put("content", qm.getSectionTitle());
                         q.put("correct", qm.getSectionDescription());
-                        if(qm.getQuestionImageUri()!=null) {
+                        if (qm.getQuestionImageUri() != null) {
                             q.put("question_image", qm.getQuestionImageUri().toString());
-                            q.put("tag","0");
-                        }else if(qm.getQuestionImage()!=null){
+                            q.put("tag", "0");
+                        } else if (qm.getQuestionImage() != null) {
                             q.put("question_image", qm.getQuestionImage());
-                            q.put("tag","1");
+                            q.put("tag", "1");
                         }
                         break;
                     case "flash_card":
                         q.put("type", "flash_card");
-                        q.put("content",qm.getQuestion());
-                        q.put("correct",qm.getAnswer());
+                        q.put("content", qm.getQuestion());
+                        q.put("correct", qm.getAnswer());
                         break;
 
 
@@ -1411,10 +1403,10 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
             JSONArray jsonArray = new JSONArray();
             //jsonArray.put(0,questionArray);
             //{"e":{"id":"102","title":"ggffff","description":"","course_id":"1","body":"ffgggg","url":"","course_name":"ENGLISH"},"q":[[{"id":"47","parent":"0","content":"how to","title":"","type":"qo","answer":"","correct":""}]]}
-            jsonObject1.put("q", jsonArray.put(0,questionArray));
+            jsonObject1.put("q", jsonArray.put(0, questionArray));
             jsonObject1.put("e", jsonObject);
-            Log.i("response","f "+ jsonObject);
-            Log.i("response","b "+jsonObject1.toString());
+            Log.i("response", "f " + jsonObject);
+            Log.i("response", "b " + jsonObject1.toString());
 
 
             if (questionArray.length() == 0) {
@@ -1432,7 +1424,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
     }
 
 
-    private void renderQo(JSONArray jsonArray1,String correct,QuestionsModel qm){
+    private void renderQo(JSONArray jsonArray1, String correct, QuestionsModel qm) {
 
         List<OptionsModel> opt = new ArrayList<>();
         try {
@@ -1490,7 +1482,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         qm.setOptions(opt);
     }
 
-    private void renderQo(String[] a,String correct,QuestionsModel qm){
+    private void renderQo(String[] a, String correct, QuestionsModel qm) {
 
         List<OptionsModel> opt = new ArrayList<>();
         try {
@@ -1540,7 +1532,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         qm.setOptions(opt);
     }
 
-    private void renderQm(String answer1,String correct,QuestionsModel qm){
+    private void renderQm(String answer1, String correct, QuestionsModel qm) {
         String[] a1 = answer1.split("\\|\\|");
         String[] t = correct.split("\\|\\|");
         List<OptionsModel> opt1 = new ArrayList<>();
@@ -1563,10 +1555,10 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
     }
 
-    public void render(JSONArray jsonArray){
-        try{
+    public void render(JSONArray jsonArray) {
+        try {
             JSONArray questionArray = jsonArray.getJSONArray(0);
-            for(int b=0;b<questionArray.length();b++){
+            for (int b = 0; b < questionArray.length(); b++) {
                 JSONObject object = questionArray.getJSONObject(b);
                 String question = object.getString("content");
                 //String answers = object.getString("answer");
@@ -1577,11 +1569,11 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 qm.setQuestion(question);
                 qm.setQuestionId(id);
                 qm.setQuestionImage(imageUrl);
-                Log.i("type","t "+type);
+                Log.i("type", "t " + type);
 
                 String correct;
                 //String[] a = answers.split("\\|\\|");
-                switch (type){
+                switch (type) {
                     case "section":
                     case "qp":
                         correct = object.optString("correct");
@@ -1603,7 +1595,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
                         JSONObject correctObject = new JSONObject(correctValue);
 
-                       // String order = correctObject.optString("order");
+                        // String order = correctObject.optString("order");
                         correct = correctObject.optString("text");
 
                         Log.i("Correct Object ", correctObject.toString());
@@ -1611,12 +1603,12 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
                         String d = null;
                         //String[] a = answer.split("\\|\\|");
-                        if(answer.contains("||")){
+                        if (answer.contains("||")) {
                             String[] a = answer.split("\\|\\|");
-                            renderQo(a,correct,qm);
+                            renderQo(a, correct, qm);
 
-                        }else {
-                            if(!answer.isEmpty()) {
+                        } else {
+                            if (!answer.isEmpty()) {
                                 JSONArray jsonArray1 = new JSONArray(answer);
                                 renderQo(jsonArray1, correct, qm);
                             }
@@ -1656,7 +1648,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         List<OptionsModel> opt = new ArrayList<>();
                         String answer1 = object.optString("answer");
                         correct = object.optString("correct");
-                        if(answer1!=null && !answer1.isEmpty()&& answer1.contains("||")) {
+                        if (answer1 != null && !answer1.isEmpty() && answer1.contains("||")) {
                             String[] a1 = answer1.split("\\|\\|");
                             String[] t = correct.split("\\|\\|");
                             List<OptionsModel> opt1 = new ArrayList<>();
@@ -1677,7 +1669,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                             }
                             qm.setOptions(opt1);
                             qm.setQuestionType("check_box");
-                        }else{
+                        } else {
                             JSONArray jsonArray1 = new JSONArray(answer1);
                             for (int c = 0; c < jsonArray1.length(); c++) {
                                 JSONObject jsonObject = jsonArray1.getJSONObject(c);
@@ -1687,7 +1679,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                                 op.setOptionText(text);
                                 op.setOptionImageUrl(image);
                                 op.setCorrectAnswer(correct);
-                                if(text.trim().equals(correct.trim())){
+                                if (text.trim().equals(correct.trim())) {
                                     op.setChecked(true);
                                 }
                                 op.setType("checkbox");
@@ -1703,7 +1695,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         String[] a2 = answer2.split("\\|\\|");
                         List<OptionsModel> opt3 = new ArrayList<>();
 
-                        for(int c=0;c<a2.length;c++){
+                        for (int c = 0; c < a2.length; c++) {
                             OptionsModel op = new OptionsModel();
                             op.setOptionText(a2[c]);
                             op.setType("dropdown");
@@ -1728,7 +1720,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 questionsList.add(qm);
             }
             questionAdapter2.notifyDataSetChanged();
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -1769,7 +1761,7 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                             break;
                         case "qo":
                             String answer = object.optString("answer");
-                           // correct = object.optString("correct").trim();
+                            // correct = object.optString("correct").trim();
                             JSONObject correctObject = object.getJSONObject(
                                     "correct");
 
@@ -1779,23 +1771,23 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                             //  || order.contains("||") || correct.contains("||")
                             String d = null;
                             //String[] a = answer.split("\\|\\|");
-                            if(answer.contains("||")){
+                            if (answer.contains("||")) {
                                 String[] a = answer.split("\\|\\|");
 
-                                switch (order){
+                                switch (order) {
                                     case "0":
                                     case "1":
                                     case "2":
                                     case "3":
                                     case "4":
-                                        renderQo(a,correct,qm);
+                                        renderQo(a, correct, qm);
                                         break;
                                     default:
                                         Log.i("Error", correct);
                                 }
-                            }else {
+                            } else {
                                 JSONArray jsonArray = new JSONArray(answer);
-                                renderQo(jsonArray,correct,qm);
+                                renderQo(jsonArray, correct, qm);
                             }
                             qm.setQuestionType("multiple_choice");
                             break;
@@ -1884,14 +1876,14 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 questionAdapter2.notifyDataSetChanged();
             }
 
-        }catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public String getStringFile(File f) {
         InputStream inputStream = null;
-        String encodedFile= "", lastVal;
+        String encodedFile = "", lastVal;
         try {
             inputStream = new FileInputStream(f.getAbsolutePath());
 
@@ -1904,19 +1896,17 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                 output64.write(buffer, 0, bytesRead);
             }
             output64.close();
-            encodedFile =  output.toString();
-        }
-        catch (FileNotFoundException e1 ) {
+            encodedFile = output.toString();
+        } catch (FileNotFoundException e1) {
             e1.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         lastVal = encodedFile;
         return lastVal;
     }
 
-    private void showDialog(QuestionsModel qm,int position,int questionNo){
+    private void showDialog(QuestionsModel qm, int position, int questionNo) {
       /*  QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,position,0);
         dialog2.setCanceledOnTouchOutside(false);
         dialog2.show();
@@ -1926,11 +1916,11 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         FragmentActivity fragmentActivity = TestUpload.this;
         FragmentManager manager = fragmentActivity.getSupportFragmentManager();
         QuestionDialog2 dialog2 =
-                new QuestionDialog2(TestUpload.this,qm,
-                        TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
+                new QuestionDialog2(TestUpload.this, qm,
+                        TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
 
-            dialog2.setCancelable(false);
-            dialog2.show(manager, "tag");
+        dialog2.setCancelable(false);
+        dialog2.show(manager, "tag");
 
     }
 }

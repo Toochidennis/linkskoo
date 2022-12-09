@@ -5,10 +5,9 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.digitaldream.ddl.Fragments.ClassAttendanceFragment;
+import com.digitaldream.ddl.Fragments.AdminClassAttendanceFragment;
 import com.digitaldream.ddl.Fragments.ContactsStaff;
 import com.digitaldream.ddl.Fragments.ResultStaff;
-import com.digitaldream.ddl.Fragments.StaffClassAttendanceFragment;
 import com.digitaldream.ddl.R;
 
 public class StaffUtils extends AppCompatActivity {
@@ -30,7 +29,7 @@ public class StaffUtils extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ContactsStaff()).commit();
                 break;
              case "staff":
-                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ClassAttendanceFragment.newInstance(classId, levelId, className, "staff")).commit();
+                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AdminClassAttendanceFragment.newInstance(classId, levelId, className, "staff")).commit();
                  break;
         }
 

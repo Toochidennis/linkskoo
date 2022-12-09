@@ -7,23 +7,26 @@
     android:orientation="vertical"
     tools:context=".Activities.StudentProfile">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
-    </androidx.cardview.widget.CardView>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
@@ -93,7 +96,8 @@
                         android:id="@+id/call_student_profile"
                         android:layout_width="65dp"
                         android:layout_height="wrap_content"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageButton
                             android:id="@+id/call_icon"
@@ -153,7 +157,8 @@
                         android:id="@+id/email_student_profile"
                         android:layout_width="65dp"
                         android:layout_height="wrap_content"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageButton
                             android:id="@+id/email_icon"
@@ -183,7 +188,8 @@
                         android:id="@+id/whatsapp_student_profile"
                         android:layout_width="65dp"
                         android:layout_height="wrap_content"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageButton
                             android:id="@+id/whatsapp_icon"
@@ -214,7 +220,8 @@
                         android:id="@+id/view_result_student_profile"
                         android:layout_width="65dp"
                         android:layout_height="wrap_content"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageButton
                             android:id="@+id/v1"

@@ -6,7 +6,6 @@
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionOverflowMenuStyle">@style/ThreeDotsColor</item>
     </style>
 
     <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance">
@@ -63,7 +62,4 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="ThreeDotsColor" parent="Widget.AppCompat.Light.ActionButton.Overflow">
-        <item name="tint">@color/white</item>
-    </style>
 </resources>

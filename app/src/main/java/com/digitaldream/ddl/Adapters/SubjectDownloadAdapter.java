@@ -68,7 +68,7 @@ public class SubjectDownloadAdapter extends RecyclerView.Adapter<SubjectDownload
         return subjectDownloadList.size();
     }
 
-    class SubjectDownloadViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class SubjectDownloadViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView courseName;
         private ImageView viewResult,editResult;
         OnSubjectDownloadClickListener onSubjectDownloadClickListener;

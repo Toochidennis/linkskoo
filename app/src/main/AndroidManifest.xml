@@ -23,6 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity android:name="com.digitaldream.ddl.Activities.StaffCourseAttendance"/>
+
         <activity
             android:name="com.digitaldream.ddl.Activities.AttendanceDetails"
             android:exported="false">
@@ -39,7 +41,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.digitaldream.ddl.Activities.ClassAttendance"
+            android:name="com.digitaldream.ddl.Activities.AdminClassAttendance"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

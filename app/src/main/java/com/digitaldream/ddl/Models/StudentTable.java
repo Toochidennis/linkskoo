@@ -23,7 +23,7 @@ public class StudentTable implements Serializable {
     private String studentReg_no;
     @DatabaseField
     private String studentClass;
-    @DatabaseField(canBeNull = false, columnName =STUDENTLEVEL)
+    @DatabaseField(canBeNull = false, columnName = STUDENTLEVEL)
     private String studentLevel;
     @DatabaseField
     private String guardianName;
@@ -52,8 +52,9 @@ public class StudentTable implements Serializable {
     private String studentCount;
     private String date;
     private String studentFullName;
+    private String responseId;
 
-    private boolean showText=false;
+    private boolean showText = false;
     private boolean isSelected = false;
 
     private List<String> selectedPhoneNumbers;
@@ -259,6 +260,14 @@ public class StudentTable implements Serializable {
 
     public void setStudentFullName(String sStudentFullName) {
         studentFullName = sStudentFullName;
+    }
+
+    public String getResponseId() {
+        return responseId;
+    }
+
+    public void setResponseId(String sResponseId) {
+        responseId = sResponseId;
     }
 
     public int getColor() {

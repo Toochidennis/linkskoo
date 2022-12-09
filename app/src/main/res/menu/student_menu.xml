@@ -13,8 +13,8 @@
         android:iconTint="@color/blue"
         android:title="Results"/>
 
-    <item android:id="@+id/student_cbt"
-        android:title="CBT"
+    <item android:id="@+id/student_library"
+        android:title="E-library"
         android:iconTint="@color/blue"
         android:icon="@drawable/ic_cbt"/>
     <item android:id="@+id/student_elearning"

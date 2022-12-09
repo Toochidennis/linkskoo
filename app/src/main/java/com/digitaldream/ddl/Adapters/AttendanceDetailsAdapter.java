@@ -42,11 +42,25 @@ public class AttendanceDetailsAdapter extends RecyclerView.Adapter<AttendanceDet
     public void onBindViewHolder(@NonNull AttendanceDetailsAdapter.ViewHolder holder, int position) {
         StudentTable model = mStudentTableList.get(position);
 
-        holder.mName.setText(model.getStudentFullName());
+        String name = model.getStudentFullName();
+        String[] strings = name.toLowerCase().split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (String letter : strings) {
+            try {
+                String caps =
+                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
+                builder.append(caps).append(" ");
+            } catch (Exception sE) {
+                sE.printStackTrace();
+            }
+
+        }
+
+        holder.mName.setText(builder.toString());
 
         try {
-            holder.mInitial.setText(model.getStudentFullName().substring(0, 1).toUpperCase());
-        }catch (StringIndexOutOfBoundsException e){
+            holder.mInitial.setText(name.substring(0, 1).toUpperCase());
+        } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
 
@@ -54,7 +68,7 @@ public class AttendanceDetailsAdapter extends RecyclerView.Adapter<AttendanceDet
                 (GradientDrawable) holder.mLinearLayout.getBackground().mutate();
         Random rnd = new Random();
         int currentColor = Color.argb(255, rnd.nextInt(256),
-                rnd.nextInt(256), rnd.nextInt(256));
+                rnd.nextInt(256), rnd.nextInt(240));
         mutate.setColor(currentColor);
 
         holder.mLinearLayout.setBackground(mutate);

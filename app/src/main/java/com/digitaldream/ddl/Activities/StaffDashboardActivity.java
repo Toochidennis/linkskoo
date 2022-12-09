@@ -111,7 +111,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
                 case R.id.flashcard:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
                     return true;
-                case R.id.student_cbt:
+                case R.id.student_library:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExamFragment()).commit();
                     return true;
 

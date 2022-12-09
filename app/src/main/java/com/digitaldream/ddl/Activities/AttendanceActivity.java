@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.digitaldream.ddl.Adapters.SectionPagerAdapter;
-import com.digitaldream.ddl.Fragments.ClassAttendanceFragment;
+import com.digitaldream.ddl.Fragments.AdminClassAttendanceFragment;
 import com.digitaldream.ddl.Fragments.CourseAttendanceFragment;
 import com.digitaldream.ddl.Fragments.StaffClassAttendanceFragment;
 import com.digitaldream.ddl.Fragments.StaffCourseAttendanceFragment;
@@ -87,7 +87,7 @@ public class AttendanceActivity extends AppCompatActivity {
             mClassYear.setText(String.format("%d/%s %s", previousYear, year,
                     termText));
 
-            adapter.addFragment(ClassAttendanceFragment.newInstance(mStudentClassId, mStudentLevelId, mClassName, "admin"), "Class");
+            adapter.addFragment(AdminClassAttendanceFragment.newInstance(mStudentClassId, mStudentLevelId, mClassName, "admin"), "Class");
             adapter.addFragment(CourseAttendanceFragment.newInstance(mStudentClassId, mStudentLevelId), "Course");
 
         } else {

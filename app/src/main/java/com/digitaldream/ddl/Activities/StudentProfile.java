@@ -74,7 +74,7 @@ public class StudentProfile extends AppCompatActivity {
         whatsappIcon = findViewById(R.id.whatsapp_icon);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+       // toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

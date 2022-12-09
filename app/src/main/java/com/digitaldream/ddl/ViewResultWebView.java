@@ -54,8 +54,9 @@ public class ViewResultWebView extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         String db = sharedPreferences.getString("db","");
-        Log.i("student_class",""+classId);
-        mWebview.loadUrl(Login.urlBase+"/result.php?id="+studentId+"&class="+classId+"&term="+term+"&year="+year+"&_db="+db);
+        String staffId = sharedPreferences.getString("user_id", "");
+        Log.i("student_class",""+classId+" "+ staffId+ " "+studentId);
+        mWebview.loadUrl(Login.urlBase+"/result.php?id="+studentId+"&class="+classId+"&term="+term+"&year="+year+"&staffId="+staffId+"&_db="+db);
 
         mWebview.getSettings().setJavaScriptEnabled(true);
         mWebview.setWebViewClient(new WebViewClient());
