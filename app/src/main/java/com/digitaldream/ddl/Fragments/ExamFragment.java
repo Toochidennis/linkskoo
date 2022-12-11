@@ -126,8 +126,9 @@ public class ExamFragment extends Fragment {
             } else {
                 new examOptionsTask().execute();
             }
-        }catch(Exception e){}
+        }catch(Exception ignored){}
     }
+
     private class examOptionsTask extends AsyncTask<String,Void,String> {
         HttpURLConnection urlConnection = null;
         BufferedReader returnedLogin = null;
@@ -228,16 +229,16 @@ public class ExamFragment extends Fragment {
                 dao.create(examType);
                 inflateOptions();
             }
-        }catch(Exception e){
+        }catch(Exception ignored){
 
         }
     }
 
     public SharedPreferences getPref()
     {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return pref;
+        return PreferenceManager.getDefaultSharedPreferences(getContext());
     }
+
     public SharedPreferences.Editor getEditor()
     {
         SharedPreferences pref = getPref();

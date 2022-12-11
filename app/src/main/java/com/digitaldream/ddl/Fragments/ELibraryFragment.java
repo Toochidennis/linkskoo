@@ -1,5 +1,6 @@
 package com.digitaldream.ddl.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,14 +15,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+//the manipulated man
+//the anatomy of female
+//the west and the rest of us
+//after God is dibia
 
 public class ELibraryFragment extends Fragment {
 
@@ -29,6 +37,7 @@ public class ELibraryFragment extends Fragment {
     private List<SlideModel> mSlideModelList;
     private Toolbar mToolbar;
     private ActionBar mActionBar;
+    private RelativeLayout mCbt, mVideos, mGames, mBooks;
 
 
     public ELibraryFragment() {
@@ -44,6 +53,10 @@ public class ELibraryFragment extends Fragment {
 
         mToolbar = view.findViewById(R.id.toolbar);
         mImageSlider = view.findViewById(R.id.imageSlider);
+        mCbt = view.findViewById(R.id.cbt_btn);
+        mVideos = view.findViewById(R.id.videos_btn);
+        mGames = view.findViewById(R.id.games_btn);
+        mBooks = view.findViewById(R.id.books_btn);
 
         ((AppCompatActivity) (getActivity())).setSupportActionBar(mToolbar);
         mActionBar =
@@ -65,10 +78,15 @@ public class ELibraryFragment extends Fragment {
 
         mImageSlider.setImageList(mSlideModelList);
 
-        //the manipulated man
-        //the anatomy of female
-        //the west and the rest of us
-        //after God is dibia
+
+
+        mCbt.setOnClickListener(v-> {
+            Intent intent = new Intent(getContext(), StaffUtils.class);
+            intent.putExtra("from", "cbt_exam");
+            startActivity(intent);
+        });
+
+
 
 
         return view;

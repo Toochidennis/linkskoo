@@ -513,9 +513,12 @@
             app:cardElevation="2dp">
 
             <RelativeLayout
+                android:id="@+id/cbt_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_1">
+                android:background="@color/color_1"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -553,9 +556,12 @@
             app:cardElevation="2dp">
 
             <RelativeLayout
+                android:id="@+id/videos_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_3">
+                android:background="@color/color_3"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -600,9 +606,12 @@
             app:cardElevation="2dp">
 
             <RelativeLayout
+                android:id="@+id/games_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_2">
+                android:background="@color/color_2"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -640,9 +649,12 @@
             app:cardElevation="2dp">
 
             <RelativeLayout
+                android:id="@+id/books_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_4">
+                android:background="@color/color_4"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="35dp"

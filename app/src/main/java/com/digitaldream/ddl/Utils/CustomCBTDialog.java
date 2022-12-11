@@ -44,7 +44,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomCBTDialog extends Dialog  {
+public class CustomCBTDialog extends Dialog {
     public Activity c;
     public Dialog dialog;
     Button loadBtn;
@@ -52,12 +52,12 @@ public class CustomCBTDialog extends Dialog  {
     int exam_id;
     public String json;
     public String spinnerValue;
-    public  String spinnerValue1;
+    public String spinnerValue1;
     List<Exam> examList;
-    Dao<Exam,Long> dao;
+    Dao<Exam, Long> dao;
     DatabaseHelper dbService;
     List<ExamQuestions> examQuestionsList;
-    Dao<ExamQuestions,Long> dao1;
+    Dao<ExamQuestions, Long> dao1;
     public Spinner courseDropdown;
     public Spinner yearDropdown;
     public LinearLayout linearLayout1;
@@ -78,58 +78,53 @@ public class CustomCBTDialog extends Dialog  {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_custom_cbtdialog);
-        try{
-        loadBtn = findViewById(R.id.loadingButton);
-        json = "";
-        courseDropdown = findViewById(R.id.course_spinner);
-        yearDropdown = findViewById(R.id.year_spinner);
+        try {
+            loadBtn = findViewById(R.id.loadingButton);
+            json = "";
+            courseDropdown = findViewById(R.id.course_spinner);
+            yearDropdown = findViewById(R.id.year_spinner);
             SharedPreferences sharedPreferences = getContext().getSharedPreferences("exam", Context.MODE_PRIVATE);
             exam_type_id = Integer.toString(sharedPreferences.getInt("examTypeId", 1));
-        dbService = new DatabaseHelper(getContext());
-        dao = DaoManager.createDao(dbService.getConnectionSource(), Exam.class);
-        dao1 = DaoManager.createDao(dbService.getConnectionSource(), ExamQuestions.class);
-        linearLayout1 = findViewById(R.id.loadingPanel1);
-        progressBar = findViewById(R.id.progressbar3);
-        loadintText = findViewById(R.id.loadingText);
-        load = findViewById(R.id.load);
-        linearLayout2 = findViewById(R.id.loadingPanel2);
-        linearLayout3 = findViewById(R.id.loadingpanel3);
-        loadingButton = findViewById(R.id.loadingButton);
-        loadingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            dbService = new DatabaseHelper(getContext());
+            dao = DaoManager.createDao(dbService.getConnectionSource(), Exam.class);
+            dao1 = DaoManager.createDao(dbService.getConnectionSource(), ExamQuestions.class);
+            linearLayout1 = findViewById(R.id.loadingPanel1);
+            progressBar = findViewById(R.id.progressbar3);
+            loadintText = findViewById(R.id.loadingText);
+            load = findViewById(R.id.load);
+            linearLayout2 = findViewById(R.id.loadingPanel2);
+            linearLayout3 = findViewById(R.id.loadingpanel3);
+            loadingButton = findViewById(R.id.loadingButton);
+
+            loadingButton.setOnClickListener(view -> {
                 linearLayout1.setVisibility(View.GONE);
                 linearLayout2.setVisibility(View.VISIBLE);
                 queryDatabase();
-            }
-        });
-        load.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            });
+
+            load.setOnClickListener(view -> {
                 linearLayout2.setVisibility(View.GONE);
                 linearLayout3.setVisibility(View.VISIBLE);
-                if(!spinnerValue1.equals("-- Select Year --")) {
-                    Log.i("response","respo "+json);
+                if (!spinnerValue1.equals("-- Select Year --")) {
+                    Log.i("response", "respo " + json);
                     getContext().startActivity(new Intent(getContext(), ExamActivity.class).putExtra("Json", json)
                             .putExtra("course", spinnerValue)
-                            .putExtra("year", spinnerValue1).putExtra("from","cbt"));
-                }
-                else{
+                            .putExtra("year", spinnerValue1).putExtra("from", "cbt"));
+                } else {
                     Toast.makeText(getContext(), "Select Year", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-        //dialog.setContentView(contentView);
-        //dialog.setCancelable(false);
-        //dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        checkDatabase();
-    }catch( SQLException e){
+            });
+            //dialog.setContentView(contentView);
+            //dialog.setCancelable(false);
+            //dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+            checkDatabase();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void checkDatabase(){
+    public void checkDatabase() {
         try {
             QueryBuilder<Exam, Long> queryBuilder = dao.queryBuilder().distinct().selectColumns("course");
             queryBuilder.where().eq("examTypeId", exam_type_id);
@@ -138,10 +133,10 @@ public class CustomCBTDialog extends Dialog  {
             if (!examList.isEmpty()) {
                 ArrayList<String> courses = new ArrayList<String>();
                 courses.add("-- Select Course --");
-                for (Exam item:examList) {
+                for (Exam item : examList) {
                     courses.add(item.getCourse());
                 }
-                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(getContext(),courses);
+                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(getContext(), courses);
                 courseDropdown.setAdapter(customSpinnerAdapter);
                 courseDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -158,11 +153,14 @@ public class CustomCBTDialog extends Dialog  {
             } else {
                 new CustomCBTDialog.fetchExamTask().execute();
             }
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
-    private class fetchExamTask extends AsyncTask<String,Void,String> {
+
+    private class fetchExamTask extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection = null;
         BufferedReader returnedRegister = null;
+
         @Override
         protected String doInBackground(String... params) {
 
@@ -194,12 +192,10 @@ public class CustomCBTDialog extends Dialog  {
                     return null;
                 }
                 jsonString = buffer.toString();
-            }
-            catch (MalformedURLException e) {
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
-            }
-            catch (IOException e) {
-            }finally {
+            } catch (IOException e) {
+            } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();
 
@@ -213,20 +209,21 @@ public class CustomCBTDialog extends Dialog  {
             }
             return jsonString;
         }
+
         @Override
         protected void onPostExecute(String result) {
-            Log.i("response",result);
+            Log.i("response", result);
 
-            if(result!=null){
+            if (result != null) {
                 try {
                     JSONArray examListObject = new JSONArray(result);
-                    try{
-                        for (int i = 0; i<examListObject.length(); i++) {
+                    try {
+                        for (int i = 0; i < examListObject.length(); i++) {
                             JSONObject exam = examListObject.getJSONObject(i);
                             String subjectId = exam.getString("i");
                             String examYearArray = exam.getString("d");
                             JSONArray examYear = new JSONArray(examYearArray);
-                            if(subjectId.equals(exam_type_id)) {
+                            if (subjectId.equals(exam_type_id)) {
                                 for (int j = 0; j < examYear.length(); j++) {
                                     JSONObject exam1 = examYear.getJSONObject(j);
                                     String examSubject = exam1.getString("c");
@@ -242,16 +239,16 @@ public class CustomCBTDialog extends Dialog  {
                                 }
                             }
                         }
+                    } catch (Exception ignored) {
                     }
-                    catch(Exception e){
-                    }
-                }catch(JSONException e) {
+                } catch (JSONException ignored) {
 
                 }
             }
         }
     }
-    public void insertExam(String subject,String subjectId,String year,String yearId){
+
+    public void insertExam(String subject, String subjectId, String year, String yearId) {
         try {
             Exam exam = new Exam();
             exam.setCourse(subject);
@@ -261,30 +258,31 @@ public class CustomCBTDialog extends Dialog  {
             exam.setExamTypeId(Integer.parseInt(exam_type_id));
             dao.create(exam);
             checkDatabase();
-        }catch(Exception e){}
+        } catch (Exception ignored) {
+        }
     }
+
     public void dataWork(String subject) {
         try {
             QueryBuilder<Exam, Long> queryBuilder = dao.queryBuilder();
             queryBuilder.where().eq("course", subject);
             examList = queryBuilder.query();
-            if(!examList.isEmpty())
-            {
+            if (!examList.isEmpty()) {
                 ArrayList<String> courses = new ArrayList<String>();
                 courses.add("-- Select Year --");
-                for (Exam item:examList) {
+                for (Exam item : examList) {
                     courses.add(item.getYear());
                 }
-                CustomSpinnerAdapter customSpinnerAdapter=new CustomSpinnerAdapter(getContext(),courses);
+                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(getContext(), courses);
                 yearDropdown.setAdapter(customSpinnerAdapter);
                 yearDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         spinnerValue1 = adapterView.getItemAtPosition(i).toString();
-                        if(i!=0) {
+                        if (i != 0) {
                             loadBtn.setEnabled(true);
                             loadBtn.setBackground(getContext().getDrawable(R.drawable.button1));
-                        }else{
+                        } else {
                             loadBtn.setEnabled(false);
                             loadBtn.setBackgroundColor(getContext().getResources().getColor(R.color.grey));
                         }
@@ -296,17 +294,17 @@ public class CustomCBTDialog extends Dialog  {
                     }
                 });
             }
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
-    public void queryDatabase(){
+
+    public void queryDatabase() {
         try {
             QueryBuilder<Exam, Long> queryBuilder = dao.queryBuilder();
             queryBuilder.where().eq("course", spinnerValue).and().eq("year", spinnerValue1);
             examList = queryBuilder.query();
 
-
-
-            if (!examList.isEmpty()){
+            if (!examList.isEmpty()) {
                 Exam exam = examList.get(0);
                 exam_id = exam.getId();
 
@@ -327,19 +325,22 @@ public class CustomCBTDialog extends Dialog  {
                     new CustomCBTDialog.getCourse().execute(Integer.toString(exam.getYearId()));
                 }
             }
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
-    private class getCourse extends AsyncTask<String,Void,String> {
+
+    private class getCourse extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection = null;
         BufferedReader returnedLogin = null;
         URL receiveCourse = null;
+
         @Override
         protected String doInBackground(String... params) {
             final String LOGIN_BASE_URL =
                     "http://www.cbtportal.linkskool.com/api";
             final String JSON = "json";
             final String EXAM = "exam";
-            final String CODE="appCode";
+            final String CODE = "appCode";
             final String PATH = "exam_json.php";
             String jsonString = null;
 
@@ -371,13 +372,11 @@ public class CustomCBTDialog extends Dialog  {
                 }
                 jsonString = buffer.toString();
 
-            }
-            catch (MalformedURLException e) {
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
 
-            }finally {
+            } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();
 
@@ -392,6 +391,7 @@ public class CustomCBTDialog extends Dialog  {
 
             return jsonString;
         }
+
         @Override
         protected void onPostExecute(String result) {
             try {
@@ -401,9 +401,9 @@ public class CustomCBTDialog extends Dialog  {
                     loadintText.setText("Loading Completed!!");
                     load.setVisibility(View.VISIBLE);
                     JSONObject obj = new JSONObject(result);
-                    JSONObject object=obj.getJSONObject("e");
-                        String id = object.getString("id");
-                    ExamQuestions  examQuestions= new ExamQuestions();
+                    JSONObject object = obj.getJSONObject("e");
+                    String id = object.getString("id");
+                    ExamQuestions examQuestions = new ExamQuestions();
                     examQuestions.setExamId(Integer.parseInt(id));
                     examQuestions.setJson(result);
                     dao1.create(examQuestions);
@@ -411,10 +411,12 @@ public class CustomCBTDialog extends Dialog  {
                 } else {
                     queryDatabase();
                 }
-            }catch(Exception e){progressBar.setVisibility(View.GONE);
+            } catch (Exception e) {
+                progressBar.setVisibility(View.GONE);
                 loadintText.setText("Error Occurred!!!");
                 //util.load.setVisibility(View.VISIBLE);
             }
         }
     }
+
 }
