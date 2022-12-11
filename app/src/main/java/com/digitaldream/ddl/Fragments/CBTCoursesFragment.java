@@ -1,9 +1,11 @@
 package com.digitaldream.ddl.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.Adapters.CBTCoursesAdapter;
 import com.digitaldream.ddl.DatabaseHelper;
 import com.digitaldream.ddl.Models.Exam;
@@ -40,6 +43,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -103,6 +108,12 @@ public class CBTCoursesFragment extends Fragment implements CBTCoursesAdapter.On
 
     @Override
     public void onCourseClick(int position) {
+        Exam exam = mExamList.get(position);
+        Intent intent = new Intent(getContext(), StaffUtils.class);
+        intent.putExtra("course_name", exam.getCourse());
+        intent.putExtra("from", "cbt_course");
+        startActivity(intent);
+
 
     }
 
@@ -122,19 +133,31 @@ public class CBTCoursesFragment extends Fragment implements CBTCoursesAdapter.On
             QueryBuilder<Exam, Long> queryBuilder =
                     mDao.queryBuilder().distinct().selectColumns("course");
             queryBuilder.where().eq("examTypeId", mExamTypeId);
-
             mExamList = queryBuilder.query();
-            mAdapter = new CBTCoursesAdapter(getContext(), mExamList, this);
-            LinearLayoutManager manager =
-                    new LinearLayoutManager(getContext());
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(manager);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Collections.sort(mExamList, Comparator.comparing(Exam::getCourse));
+            }
+
+            if (!mExamList.isEmpty()) {
+
+                mAdapter = new CBTCoursesAdapter(getContext(), mExamList, this);
+                LinearLayoutManager manager =
+                        new LinearLayoutManager(getContext());
+                mRecyclerView.setHasFixedSize(true);
+                mRecyclerView.setLayoutManager(manager);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+
+            } else {
+                new fetchExamTask().execute();
+            }
+
 
         } catch (SQLException sE) {
             sE.printStackTrace();
         }
+
     }
 
     public void insertExam(String subject, String subjectId, String year, String yearId) {

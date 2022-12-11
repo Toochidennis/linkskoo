@@ -41,7 +41,19 @@ public class CBTCoursesAdapter extends RecyclerView.Adapter<CBTCoursesAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull CBTCoursesAdapter.ViewHolder holder, int position) {
         String name = mExamList.get(position).getCourse();
-        holder.mCourseName.setText(name);
+        String[] strings = name.toLowerCase().split(" ");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String letter : strings) {
+            try {
+                String words =
+                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
+                stringBuilder.append(words).append(" ");
+            } catch (Exception sE) {
+                sE.printStackTrace();
+            }
+
+        }
+        holder.mCourseName.setText(stringBuilder.toString());
 
         try {
             String initial = name.substring(0, 1).toUpperCase();

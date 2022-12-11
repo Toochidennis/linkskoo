@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.OnExamClickListener{
+public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.OnExamClickListener {
 
     private Toolbar mToolbar;
     private ActionBar mActionBar;
@@ -103,20 +103,17 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     @Override
     public void onExamClick(int position) {
 
-        if (!mExamTypeList.isEmpty()){
-            ExamType examType = mExamTypeList.get(position);
-            SharedPreferences sharedPreferences =
-                    Objects.requireNonNull(getContext()).getSharedPreferences("exam",
-                            Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("examTypeId", examType.getExamTypeId());
-            editor.putString("examName", examType.getExamName());
-            editor.apply();
+        ExamType examType = mExamTypeList.get(position);
+        SharedPreferences sharedPreferences =
+                Objects.requireNonNull(getContext()).getSharedPreferences("exam",
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("examTypeId", examType.getExamTypeId());
+        editor.putString("examName", examType.getExamName());
+        editor.apply();
 
-            startActivity(new Intent(getContext(), StaffUtils.class).putExtra("from", "cbt_exam_name"));
-        }else {
-            new ExamOptions().execute();
-        }
+        startActivity(new Intent(getContext(), StaffUtils.class).putExtra("from", "cbt_exam_name"));
+
 
     }
 
@@ -220,7 +217,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
                 examType.setCategory(category);
                 examType.setExamLogo(link);
                 mDao.create(examType);
-               // inflateExam();
+                // inflateExam();
             }
         } catch (SQLException | JSONException sE) {
             sE.printStackTrace();
@@ -230,12 +227,12 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     @Override
     public void onResume() {
         super.onResume();
-       // mExamTypeList.clear();
+        // mExamTypeList.clear();
         if (getActivity() != null) {
             try {
                 mExamTypeList = mDao.queryForAll();
 
-                if (!mExamTypeList.isEmpty()){
+                if (!mExamTypeList.isEmpty()) {
                     mAdapter = new CBTExamTypeAdapter(getContext(),
                             mExamTypeList, this);
                     GridLayoutManager manager =
@@ -244,6 +241,8 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
                     mRecyclerView.setLayoutManager(manager);
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
+                } else {
+                    new ExamOptions().execute();
                 }
             } catch (SQLException sE) {
                 sE.printStackTrace();
