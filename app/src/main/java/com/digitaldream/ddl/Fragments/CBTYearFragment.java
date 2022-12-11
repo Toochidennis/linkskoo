@@ -129,7 +129,8 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
                         mCourseName).query();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Collections.sort(mExamList, Comparator.comparing(Exam::getYear));
+                    Collections.sort(mExamList,
+                            Collections.reverseOrder(Comparator.comparing(Exam::getYear)));
                 }
 
                 if (!mExamList.isEmpty()) {

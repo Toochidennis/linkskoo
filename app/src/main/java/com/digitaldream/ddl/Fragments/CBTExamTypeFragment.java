@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.Adapters.CBTExamTypeAdapter;
@@ -103,17 +104,22 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     @Override
     public void onExamClick(int position) {
 
-        ExamType examType = mExamTypeList.get(position);
-        SharedPreferences sharedPreferences =
-                Objects.requireNonNull(getContext()).getSharedPreferences("exam",
-                        Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("examTypeId", examType.getExamTypeId());
-        editor.putString("examName", examType.getExamName());
-        editor.apply();
+        if (!mExamTypeList.isEmpty()) {
 
-        startActivity(new Intent(getContext(), StaffUtils.class).putExtra("from", "cbt_exam_name"));
+            ExamType examType = mExamTypeList.get(position);
+            SharedPreferences sharedPreferences =
+                    Objects.requireNonNull(getContext()).getSharedPreferences("exam",
+                            Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("examTypeId", examType.getExamTypeId());
+            editor.putString("examName", examType.getExamName());
+            editor.apply();
 
+            startActivity(new Intent(getContext(), StaffUtils.class).putExtra("from", "cbt_exam_name"));
+        } else {
+            Toast.makeText(getContext(), "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -168,23 +174,27 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
 
         @Override
         protected void onPostExecute(String result) {
+
             if (getActivity() != null) {
-                getActivity().finish();
-            }
-            if (result != null) {
-                Log.i("results", result);
-                try {
-                    JSONArray examArray = new JSONArray(result);
-                    for (int i = 0; i < examArray.length(); i++) {
-                        JSONObject examObject = examArray.getJSONObject(i);
-                        checkExam(examObject);
+                if (result != null) {
+                    Log.i("results", result);
+                    try {
+                        JSONArray examArray = new JSONArray(result);
+                        for (int i = 0; i < examArray.length(); i++) {
+                            JSONObject examObject = examArray.getJSONObject(i);
+                            checkExam(examObject);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } else {
+                    new ExamOptions().execute();
                 }
             } else {
-                new ExamOptions().execute();
+                Toast.makeText(getContext(), "Something went wrong!",
+                        Toast.LENGTH_SHORT).show();
             }
+
         }
 
         @Override
@@ -192,6 +202,9 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
             super.onPreExecute();
             if (getActivity() != null) {
                 startActivity(new Intent(getContext(), StaffUtils.class).putExtra("from", "cbt_exam_name"));
+            } else {
+                Toast.makeText(getContext(), "Something went wrong!",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -248,10 +261,12 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
                 sE.printStackTrace();
             }
 
+        } else {
+            Toast.makeText(getContext(), "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }
-
 
 
 
