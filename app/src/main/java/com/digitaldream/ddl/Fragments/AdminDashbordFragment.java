@@ -378,8 +378,8 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             }
         }, error -> {
             dialog.dismiss();
-            Toast.makeText(getContext(), "Something went wrong!",
-                    Toast.LENGTH_SHORT).show();
+           /* Toast.makeText(getContext(), "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();*/
             qaRecycler.setVisibility(View.GONE);
             emptyState.setVisibility(View.VISIBLE);
             errorMessage.setText("Failed to load News, please try again!");

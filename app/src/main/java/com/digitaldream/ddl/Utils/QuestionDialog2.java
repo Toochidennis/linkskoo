@@ -52,10 +52,10 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
     private EditText questionText, answerText, sectionTitle, sectionDesc;
     public static List<OptionsModel> optionsList1, optionsList;
     private static final int REQUEST_PERMISSIONS = 100;
-    public static final int SELECT_IMAGE=5,SELECT_OPTION_IMAGE=6;
+    public static final int SELECT_IMAGE = 5, SELECT_OPTION_IMAGE = 6;
     public static ImageView pic;
-    private LinearLayout backBtn,forwardBtn,applyBtn,addOptionBtn,previewBtn;
-    public static LinearLayout qNumberContainer,addImgContainer;
+    private LinearLayout backBtn, forwardBtn, applyBtn, addOptionBtn, previewBtn;
+    public static LinearLayout qNumberContainer, addImgContainer;
     public static RelativeLayout imageContainer;
     private ImageView deleteBtn;
     private boolean show = true;
@@ -63,9 +63,8 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
     public static int optionPosition;
 
 
-
     public QuestionDialog2(@NonNull Activity context, QuestionsModel qm, int position, int questionNumber) {
-       // super(context);
+        // super(context);
         this.activity = context;
         this.position = position;
         this.qm = qm;
@@ -91,102 +90,96 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
     }
 
 
-
     @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-           View view = inflater.inflate(R.layout.question_dialog2, container,
-                   false);
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.question_dialog2, container,
+                false);
 
 
+        LinearLayout layout = view.findViewById(R.id.root_view);
+        backBtn = view.findViewById(R.id.back);
+        forwardBtn = view.findViewById(R.id.forward);
+        hideShow(position);
+        setDailog(layout);
 
-            LinearLayout layout = view.findViewById(R.id.root_view);
-            backBtn = view.findViewById(R.id.back);
-            forwardBtn = view.findViewById(R.id.forward);
-            hideShow(position);
+        backBtn.setOnClickListener(v -> {
+            position = position - 1;
+            qm = QuestionAdapter2.list.get(position);
             setDailog(layout);
-
-            backBtn.setOnClickListener(v -> {
-                position =position-1;
+        });
+        forwardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                position = position + 1;
                 qm = QuestionAdapter2.list.get(position);
                 setDailog(layout);
-            });
-            forwardBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    position =position+1;
-                    qm = QuestionAdapter2.list.get(position);
-                    setDailog(layout);
-                }
-            });
-
-            applyBtn = view.findViewById(R.id.apply2);
-            applyBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    apply2();
-                    apply1();
-                }
-            });
-
-            addOptionBtn = view.findViewById(R.id.add_opt);
-            addOptionBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(qm.getQuestionType().equals("multiple_choice")){
-                        OptionsModel md = new OptionsModel();
-                        md.setOptionText("");
-                        md.setType("multichoice");
-                        md.setChecked(false);
-                        optionsList.add(md);
-                        adapter.notifyDataSetChanged();
-                    }else if(qm.getQuestionType().equals("check_box")){
-                        OptionsModel md = new OptionsModel();
-                        md.setOptionText("");
-                        md.setType("checkbox");
-                        md.setChecked(false);
-                        optionsList1.add(md);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
-
-            previewBtn = view.findViewById(R.id.previ);
-
-            previewBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ExamActivity.ab = position;
-                    apply1();
-                    new TestUpload().preview();
-                    Intent intent1 = new Intent(getContext(),
-                            ExamActivity.class);
-                    intent1.putExtra("course", "");
-                    intent1.putExtra("Json", TestUpload.jsonObject1.toString());
-                    intent1.putExtra("year", "");
-                    intent1.putExtra("from", "preview");
-                    getContext().startActivity(intent1);
-
-                }
-            });
-
-            if(qm.getQuestionType().equals("multiple_choice") || qm.getQuestionType().equals("check_box")){
-                addOptionBtn.setVisibility(View.VISIBLE);
             }
+        });
 
-            ImageView imageView = view.findViewById(R.id.backBtn);
+        applyBtn = view.findViewById(R.id.apply2);
+        applyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                apply2();
+                apply1();
+            }
+        });
 
-            imageView.setOnClickListener(v->{
-                dismiss();
-            });
+        addOptionBtn = view.findViewById(R.id.add_opt);
+        addOptionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (qm.getQuestionType().equals("multiple_choice")) {
+                    OptionsModel md = new OptionsModel();
+                    md.setOptionText("");
+                    md.setType("multichoice");
+                    md.setChecked(false);
+                    optionsList.add(md);
+                    adapter.notifyDataSetChanged();
+                } else if (qm.getQuestionType().equals("check_box")) {
+                    OptionsModel md = new OptionsModel();
+                    md.setOptionText("");
+                    md.setType("checkbox");
+                    md.setChecked(false);
+                    optionsList1.add(md);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
 
+        previewBtn = view.findViewById(R.id.previ);
 
+        previewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExamActivity.ab = position;
+                apply1();
+                new TestUpload().preview();
+                Intent intent1 = new Intent(getContext(),
+                        ExamActivity.class);
+                intent1.putExtra("course", "");
+                intent1.putExtra("Json", TestUpload.jsonObject1.toString());
+                intent1.putExtra("year", "");
+                intent1.putExtra("from", "preview");
+                getContext().startActivity(intent1);
 
+            }
+        });
 
-           return view;
+        if (qm.getQuestionType().equals("multiple_choice") || qm.getQuestionType().equals("check_box")) {
+            addOptionBtn.setVisibility(View.VISIBLE);
         }
 
+        ImageView imageView = view.findViewById(R.id.backBtn);
 
+        imageView.setOnClickListener(v -> {
+            dismiss();
+        });
+
+
+        return view;
+    }
 
 
     private void setDailog(LinearLayout a) {
@@ -213,24 +206,24 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 typeImage.setImageResource(R.drawable.ic_short_text);
                 questionText.requestFocus();
                 pic = view.findViewById(R.id.question_pic);
-                if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
                     pic.setImageURI(qm.getQuestionImageUri());
                     pic.setVisibility(View.VISIBLE);
 
-                }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
+                } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
                     pic.setVisibility(View.VISIBLE);
-                    Picasso.with(activity).load(Login.urlBase+"/"+qm.getQuestionImage()).into(pic);
+                    Picasso.get().load(Login.urlBase + "/" + qm.getQuestionImage()).into(pic);
 
                 }
                 pic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(), "preview","0");
+                        if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(), "preview", "0");
                             imgDialog.show();
                             imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImage(), "preview","1");
+                        } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
+                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImage(), "preview", "1");
                             imgDialog.show();
                             imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         }
@@ -260,25 +253,22 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 answerText = view.findViewById(R.id.answer_field);
                 answerText.setText(qm.getAnswer());
                 pic = view.findViewById(R.id.question_pic);
-                if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
                     pic.setImageURI(qm.getQuestionImageUri());
                     pic.setVisibility(View.VISIBLE);
-                }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
+                } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
                     pic.setVisibility(View.VISIBLE);
-                    Picasso.with(activity).load(Login.urlBase+"/"+qm.getQuestionImage()).into(pic);
+                    Picasso.get().load(Login.urlBase + "/" + qm.getQuestionImage()).into(pic);
                 }
-                pic.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(),"preview","0");
-                            imgDialog.show();
-                            imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImage(), "preview","1");
-                            imgDialog.show();
-                            imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        }
+                pic.setOnClickListener(v -> {
+                    if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                        ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(), "preview", "0");
+                        imgDialog.show();
+                        imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
+                        ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImage(), "preview", "1");
+                        imgDialog.show();
+                        imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     }
                 });
                 type = view.findViewById(R.id.question_type);
@@ -302,7 +292,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                     @Override
                     public void onClick(View v) {
                         selectImage();
-                        }
+                    }
                 });
 
                 return;
@@ -362,7 +352,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 optionsRecycler.setHasFixedSize(true);
                 questionText.requestFocus();
 
-                adapter = new OptionsAdapter2(getContext(), optionsList,this);
+                adapter = new OptionsAdapter2(getContext(), optionsList, this);
                 optionsRecycler.setAdapter(adapter);
                 Button addBtn = view.findViewById(R.id.add_option);
                 addBtn.setOnClickListener(v -> {
@@ -379,7 +369,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 deleteBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deleteImage(qm,imageContainer);
+                        deleteImage(qm, imageContainer);
                         qNumberContainer.setVisibility(View.VISIBLE);
                         addImgContainer.setVisibility(View.VISIBLE);
                     }
@@ -393,34 +383,34 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 });
                 pic = view.findViewById(R.id.question_pic);
 
-                if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
                     pic.setImageURI(qm.getQuestionImageUri());
                     pic.setVisibility(View.VISIBLE);
                     imageContainer.setVisibility(View.VISIBLE);
 
-                }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
+                } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
                     pic.setVisibility(View.VISIBLE);
                     imagePath = qm.getQuestionImage();
                     //imagePath = imagePath.substring(2);
                     imageContainer.setVisibility(View.VISIBLE);
-                    Picasso.with(activity).load(Login.urlBase+"/"+imagePath).into(pic);
+                    Picasso.get().load(Login.urlBase + "/" + imagePath).into(pic);
                 }
                 pic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(),"preview","0");
+                        if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(), "preview", "0");
                             imgDialog.show();
                             imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                        }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity,imagePath , "preview","1");
+                        } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
+                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, imagePath, "preview", "1");
                             imgDialog.show();
                             imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         }
                     }
                 });
-                if(show) {
+                if (show) {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -433,7 +423,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
 
                 questionNumberText = view.findViewById(R.id.question_number);
                 TextView questionNumber1 = view.findViewById(R.id.question_number1);
-                questionNumberText.setText("Question "+qm.getQuestionNumber());
+                questionNumberText.setText("Question " + qm.getQuestionNumber());
                 questionNumber1.setText(qm.getQuestionNumber());
                 qNumberContainer = view.findViewById(R.id.qN);
                 addImgContainer = view.findViewById(R.id.aM);
@@ -463,7 +453,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 }, 500);
 
 
-                adapter = new OptionsAdapter2(getContext(), optionsList1,this);
+                adapter = new OptionsAdapter2(getContext(), optionsList1, this);
                 optionsRecycler1.setAdapter(adapter);
                 Button addBtn1 = view.findViewById(R.id.add_option);
                 addBtn1.setOnClickListener(new View.OnClickListener() {
@@ -505,7 +495,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                     }
                 }, 500);
 
-                adapter = new OptionsAdapter2(getContext(), optionsList2,this);
+                adapter = new OptionsAdapter2(getContext(), optionsList2, this);
                 optionsRecycler2.setAdapter(adapter);
                 Button addBtn2 = view.findViewById(R.id.add_option);
                 addBtn2.setOnClickListener(new View.OnClickListener() {
@@ -584,24 +574,24 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                     }
                 });
                 pic = view.findViewById(R.id.question_pic);
-                if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
                     pic.setImageURI(qm.getQuestionImageUri());
                     pic.setVisibility(View.VISIBLE);
 
-                }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
+                } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
                     pic.setVisibility(View.VISIBLE);
-                    Picasso.with(activity).load(Login.urlBase+"/"+qm.getQuestionImage()).into(pic);
+                    Picasso.get().load(Login.urlBase + "/" + qm.getQuestionImage()).into(pic);
                 }
                 pic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(qm.getQuestionImageUri()!=null && !qm.getQuestionImageUri().toString().isEmpty()) {
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(),"preview","0");
+                        if (qm.getQuestionImageUri() != null && !qm.getQuestionImageUri().toString().isEmpty()) {
+                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImageUri().toString(), "preview", "0");
                             imgDialog.show();
                             imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                        }else if(qm.getQuestionImage()!=null && !qm.getQuestionImage().isEmpty()){
-                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImage(), "preview","1");
+                        } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
+                            ImagePreviewDialog imgDialog = new ImagePreviewDialog(activity, qm.getQuestionImage(), "preview", "1");
                             imgDialog.show();
                             imgDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         }
@@ -654,7 +644,6 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
     }
 
 
-
     private boolean validateDialog() {
         boolean validate = true;
         int count = 0;
@@ -665,7 +654,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 }
             }
         }
-        if (questionText!=null && questionText.getText().toString().isEmpty()) {
+        if (questionText != null && questionText.getText().toString().isEmpty()) {
             Toast.makeText(getContext(), "Question is empty", Toast.LENGTH_SHORT).show();
             validate = false;
 
@@ -676,20 +665,18 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
             Toast.makeText(getContext(), "Select a correct answer", Toast.LENGTH_SHORT).show();
             validate = false;
 
-        }else if(qm.getQuestionType().equals("short_answer") && answerText.getText().toString().isEmpty()){
+        } else if (qm.getQuestionType().equals("short_answer") && answerText.getText().toString().isEmpty()) {
             Toast.makeText(getContext(), "Answer is empty", Toast.LENGTH_SHORT).show();
             validate = false;
-        }
-
-        else if (qm.getQuestionType().equals("check_box") && count < 2) {
+        } else if (qm.getQuestionType().equals("check_box") && count < 2) {
             Toast.makeText(getContext(), "Select at least two correct answers" +
-                    " "+count, Toast.LENGTH_SHORT).show();
+                    " " + count, Toast.LENGTH_SHORT).show();
             validate = false;
 
-        }else if(qm.getQuestionType().equals("section")){
-            if(sectionTitle.getText().toString().isEmpty()){
-                Toast.makeText(getContext(),"Section title is empty",Toast.LENGTH_SHORT).show();
-                validate=false;
+        } else if (qm.getQuestionType().equals("section")) {
+            if (sectionTitle.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "Section title is empty", Toast.LENGTH_SHORT).show();
+                validate = false;
             }
         }
 
@@ -697,10 +684,10 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
 
     }
 
-    private void apply1(){
+    private void apply1() {
 
         boolean a = validateDialog();
-        if(a){
+        if (a) {
             String question = "";
             if (qm.getQuestionType().equals("section")) {
                 qm.setSectionTitle(sectionTitle.getText().toString());
@@ -720,10 +707,10 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
 
     }
 
-    private void apply2(){
+    private void apply2() {
 
-        boolean a =validateDialog();
-        if(a){
+        boolean a = validateDialog();
+        if (a) {
             String question = "";
             if (qm.getQuestionType().equals("section")) {
                 qm.setSectionTitle(sectionTitle.getText().toString());
@@ -742,7 +729,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
 
     }
 
-    private void selectImage(){
+    private void selectImage() {
         if ((ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -755,30 +742,30 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                         REQUEST_PERMISSIONS);
             }
-        }else{
+        } else {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(galleryIntent, SELECT_IMAGE);
             //activity.startActivityForResult(Intent.createChooser(intent,"Complete action using"), SELECT_IMAGE);
         }
     }
 
-    private void hideShow(int position){
-        if(position==0){
+    private void hideShow(int position) {
+        if (position == 0) {
             backBtn.setEnabled(false);
-        }else {
+        } else {
             backBtn.setVisibility(View.VISIBLE);
             backBtn.setEnabled(true);
         }
 
-        if(QuestionAdapter2.list.size()==position+1){
+        if (QuestionAdapter2.list.size() == position + 1) {
             forwardBtn.setEnabled(false);
-        }else {
+        } else {
             forwardBtn.setVisibility(View.VISIBLE);
             forwardBtn.setEnabled(true);
         }
     }
 
-    private void deleteImage(QuestionsModel qm,View v){
+    private void deleteImage(QuestionsModel qm, View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Delete ?");
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -816,7 +803,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
     }
 
 
-    private void selectOptionImage(){
+    private void selectOptionImage() {
         if ((ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -829,7 +816,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                         REQUEST_PERMISSIONS);
             }
-        }else{
+        } else {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(galleryIntent, SELECT_OPTION_IMAGE);
             //activity.startActivityForResult(Intent.createChooser(intent,"Complete action using"), SELECT_IMAGE);

@@ -24,6 +24,21 @@
     <color name="redH">#e53935</color>
     <color name="bg_color">#F6F7F9</color>
     <color name="tab_color">#191F91</color>
+    <color name="romance">#F7F3EB</color>
+    <color name="shades_blue">#0B071D</color>
+    <color name="nobel">#A19F9F</color>
+    <color name="green_cyan">#E7F6F1</color>
+    <color name="mono_blue">#6B73C4</color>
+    <color name="light_green">#F0F8E5</color>
+
+    <color name="color_1">#E87052</color>
+    <color name="color_2">#B85B8D</color>
+    <color name="color_3">#EE6A6B</color>
+    <color name="color_4">#EDBC36</color>
+
+    <color name="icons_color">#FFEEEEEE</color>
+    <color name="text_bg_color">#FF323848</color>
+
 
 
 

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.digitaldream.ddl.Fragments.AdminDashbordFragment;
 import com.digitaldream.ddl.Fragments.AdminELearning;
 import com.digitaldream.ddl.Fragments.AdminResultFragment;
+import com.digitaldream.ddl.Fragments.ELibraryFragment;
 import com.digitaldream.ddl.Fragments.ExamFragment;
 import com.digitaldream.ddl.Fragments.FlashCardList;
 import com.digitaldream.ddl.Models.CourseOutlineTable;
@@ -222,7 +223,7 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
                         return true;
                     case R.id.student_library:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExamFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ELibraryFragment()).commit();
                         return true;
 
                     case R.id.student_elearning:

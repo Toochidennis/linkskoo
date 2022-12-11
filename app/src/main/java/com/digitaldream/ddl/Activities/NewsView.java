@@ -137,7 +137,7 @@ public class NewsView extends AppCompatActivity implements RefreshListener, Answ
                     view = inflater.inflate(R.layout.image_layout,layout,false);
                     ImageView img = view.findViewById(R.id.image);
                     //img.setImageResource(R.drawable.splashscreen);
-                    Picasso.with(this).load(Login.fileBaseUrl+""+src).into(img);
+                    Picasso.get().load(Login.fileBaseUrl+""+src).into(img);
                 }
                 layout.addView(view);
             }

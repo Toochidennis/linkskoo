@@ -111,7 +111,7 @@ public class OptionsAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Log.i("response","img "+imgUrl);
                     try {
                         //imgUrl = imgUrl.substring(2);
-                        Picasso.with(context).load(Login.urlBase+"/"+imgUrl).into(multipleChoiceVH.optionPic);
+                        Picasso.get().load(Login.urlBase+"/"+imgUrl).into(multipleChoiceVH.optionPic);
                     }catch (StringIndexOutOfBoundsException e){
                         e.printStackTrace();
                     }
@@ -219,7 +219,7 @@ public class OptionsAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     String imgUrl = optionsModel.getOptionImageUrl();
                     try {
                         //imgUrl = imgUrl.substring(2);
-                        Picasso.with(context).load(Login.urlBase+"/"+imgUrl).into(checkBoxVH.optionPic);
+                        Picasso.get().load(Login.urlBase+"/"+imgUrl).into(checkBoxVH.optionPic);
                     }catch (StringIndexOutOfBoundsException e){
                         e.printStackTrace();
                     }

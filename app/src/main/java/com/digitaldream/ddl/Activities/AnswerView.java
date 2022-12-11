@@ -159,7 +159,7 @@ public class AnswerView extends AppCompatActivity implements AnswerAdapter.OnAns
                     view = inflater.inflate(R.layout.image_layout,linearLayout,false);
                     ImageView img = view.findViewById(R.id.image);
                     //img.setImageResource(R.drawable.splashscreen);
-                    Picasso.with(AnswerView.this).load(Login.fileBaseUrl+""+src).into(img);
+                    Picasso.get().load(Login.fileBaseUrl+""+src).into(img);
                 }
                 linearLayout.addView(view);
             }

@@ -82,7 +82,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
                     view = inflater.inflate(R.layout.image_layout,holder.linearLayout,false);
                     ImageView img = view.findViewById(R.id.image);
                     //img.setImageResource(R.drawable.splashscreen);
-                    Picasso.with(context).load(Login.fileBaseUrl+""+src).into(img);
+                    Picasso.get().load(Login.fileBaseUrl+""+src).into(img);
                 }
                 holder.linearLayout.removeAllViews();
 

@@ -372,12 +372,12 @@ public class ExamActivity extends AppCompatActivity {
             if(!qImage.isEmpty()) {
                 questionImage.setVisibility(View.VISIBLE);
                 if(from.equals("assessment")) {
-                    Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                    Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                 }else if(from.equals("preview")){
                     if(tag!=null && tag.equals("0")) {
                         questionImage.setImageURI(Uri.parse(qImage));
                     }else if(tag!=null && tag.equals("1")) {
-                        Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                        Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                     }
 
                 }
@@ -449,12 +449,12 @@ public class ExamActivity extends AppCompatActivity {
                 questionImage.setVisibility(View.VISIBLE);
                 if(from.equals("assessment")) {
 
-                    Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                    Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                 }else if(from.equals("preview")){
                     if(tag!=null && tag.equals("0")) {
                         questionImage.setImageURI(Uri.parse(qImage));
                     }else if(tag!=null && tag.equals("1")) {
-                        Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                        Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                     }
 
                     }
@@ -549,14 +549,14 @@ public class ExamActivity extends AppCompatActivity {
             if(!qImage.isEmpty()) {
                 questionImage.setVisibility(View.VISIBLE);
                 if(from.equals("assessment")) {
-                    Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                    Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                 }else if(from.equals("preview")){
                     Log.i("response","rea1"+qImage);
                     if(tag!=null && tag.equals("0")) {
                         questionImage.setImageURI(Uri.parse(qImage));
                         Log.i("response","rea2"+qImage);
                     }else if(tag!=null && tag.equals("1")) {
-                        Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                        Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                         Log.i("response","rea3"+qImage);
 
                     }
@@ -832,19 +832,19 @@ public class ExamActivity extends AppCompatActivity {
             if(!qImage.isEmpty()) {
                 questionImage.setVisibility(View.VISIBLE);
                 if(from.equals("assessment")) {
-                    Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                    Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                     Log.i("response","Img "+qImage);
                     Log.i("responseImg","Img "+Login.urlBase);
 
                 }else if(from.equals("cbt")){
-                    Picasso.with(ExamActivity.this).load(getResources().getString(R.string.file_url)+"/"+qImage).into(questionImage);
+                    Picasso.get().load(getResources().getString(R.string.file_url)+"/"+qImage).into(questionImage);
 
                 }
                 else if(from.equals("preview")){
                     if(tag!=null && tag.equals("0")) {
                         questionImage.setImageURI(Uri.parse(qImage));
                     }else if(tag!=null && tag.equals("1")) {
-                        Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+qImage).into(questionImage);
+                        Picasso.get().load(Login.urlBase+"/"+qImage).into(questionImage);
                     }
                 }
             }
@@ -1770,13 +1770,13 @@ public class ExamActivity extends AppCompatActivity {
                     if(from.equals("assessment")||from.equals("cbt")) {
                         image = image.substring(2);
                     String imagePath = getResources().getString(R.string.file_url)+""+image;
-                    Picasso.with(ExamActivity.this).load(imagePath).into(imageView);
+                    Picasso.get().load(imagePath).into(imageView);
                     }else if(from.equals("preview")){
                         if(tag!=null && tag.equals("0")) {
                             imageView.setImageURI(Uri.parse(image));
                         }else if(tag!=null && tag.equals("1")) {
                             image = image.substring(2);
-                            Picasso.with(ExamActivity.this).load(Login.urlBase+"/"+image).into(imageView);
+                            Picasso.get().load(Login.urlBase+"/"+image).into(imageView);
                         }
                     }
                 }

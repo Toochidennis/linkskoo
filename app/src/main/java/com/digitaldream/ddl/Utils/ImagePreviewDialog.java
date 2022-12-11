@@ -34,13 +34,13 @@ public class ImagePreviewDialog extends Dialog {
                 Uri uri = Uri.parse(imageUrl);
                 img.setImageURI(uri);
             }else if(tag.equals("1")) {
-                Picasso.with(activity).load(Login.urlBase + "/" + imageUrl).into(img);
+                Picasso.get().load(Login.urlBase + "/" + imageUrl).into(img);
             }
         }else if(from.equals("assessment")){
             String path=getContext().getResources().getString(R.string.file_url);
-            Picasso.with(activity).load(Login.urlBase+"/"+imageUrl).into(img);
+            Picasso.get().load(Login.urlBase+"/"+imageUrl).into(img);
         }else if(from.equals("cbt")){
-            Picasso.with(activity).load(getContext().getResources().getString(R.string.file_url)+"/"+imageUrl).into(img);
+            Picasso.get().load(getContext().getResources().getString(R.string.file_url)+"/"+imageUrl).into(img);
 
         }
 

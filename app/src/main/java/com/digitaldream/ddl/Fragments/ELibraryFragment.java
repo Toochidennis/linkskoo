@@ -2,65 +2,82 @@ package com.digitaldream.ddl.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.ddl.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ELibraryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class ELibraryFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private ImageSlider mImageSlider;
+    private List<SlideModel> mSlideModelList;
+    private Toolbar mToolbar;
+    private ActionBar mActionBar;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public ELibraryFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ELibraryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ELibraryFragment newInstance(String param1, String param2) {
-        ELibraryFragment fragment = new ELibraryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_e_library, container, false);
+        View view = inflater.inflate(R.layout.fragment_e_library, container,
+                false);
+
+        mToolbar = view.findViewById(R.id.toolbar);
+        mImageSlider = view.findViewById(R.id.imageSlider);
+
+        ((AppCompatActivity) (getActivity())).setSupportActionBar(mToolbar);
+        mActionBar =
+                ((AppCompatActivity) (getActivity())).getSupportActionBar();
+        mActionBar.setHomeButtonEnabled(true);
+        mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setTitle("E-library");
+        setHasOptionsMenu(true);
+        mToolbar.setNavigationOnClickListener(v->  getActivity().onBackPressed());
+
+        mSlideModelList = new ArrayList<>();
+
+        mSlideModelList.add(new SlideModel(R.drawable.ic_kids_lessons, ScaleTypes.FIT));
+        mSlideModelList.add(new SlideModel(R.drawable.ic_tutorials_slider,
+                ScaleTypes.FIT));
+        mSlideModelList.add(new SlideModel(R.drawable.ic_library_slider ,
+                ScaleTypes.FIT));
+
+        mImageSlider.setImageList(mSlideModelList);
+
+        //the manipulated man
+        //the anatomy of female
+        //the west and the rest of us
+        //after God is dibia
+
+
+        return view;
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
 }

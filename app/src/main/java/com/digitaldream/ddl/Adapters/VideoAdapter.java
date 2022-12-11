@@ -43,7 +43,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         videoViewHolder.videoTitle.setText(videoList.get(i).getVideoTitle());
         videoViewHolder.videoCategory.setText(videoList.get(i).getVideoSubject());
         //Picasso.get().load(videoList.get(i).getThumbnailUrl()).into(videoViewHolder.thumbnail);
-        Picasso.with(context).load(videoList.get(i).getThumbnail()).into(videoViewHolder.thumbnail, new Callback() {
+        Picasso.get().load(videoList.get(i).getThumbnail()).into(videoViewHolder.thumbnail, new Callback() {
             @Override
             public void onSuccess() {
                 videoViewHolder.progressBar.setVisibility(View.GONE);
@@ -51,7 +51,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             }
 
             @Override
-            public void onError() {
+            public void onError(Exception e) {
                 videoViewHolder.progressBar.setVisibility(View.GONE);
                 videoViewHolder.thumbnail.setImageResource(R.drawable.white_background);
             }
