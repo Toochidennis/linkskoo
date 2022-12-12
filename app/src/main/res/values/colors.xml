@@ -16,7 +16,7 @@
     <color name="color5">#8C8B8F</color>
     <color name="amberD">#ffb300</color>
     <color name="amberG">#e65100</color>
-    <color name="orange"> #FF9800</color>
+    <color name="orange">#FF9800</color>
     <color name="black">#000</color>
     <color name="grey">#e0e0e0</color>
     <color name="greenA">#1b5e20</color>
@@ -38,11 +38,6 @@
 
     <color name="icons_color">#FFEEEEEE</color>
     <color name="text_bg_color">#FF323848</color>
-
-
-
-
-
 
 
 </resources>

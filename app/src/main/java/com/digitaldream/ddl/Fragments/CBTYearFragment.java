@@ -1,5 +1,6 @@
 package com.digitaldream.ddl.Fragments;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,15 +13,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import com.digitaldream.ddl.Adapters.CBTYearAdapter;
 import com.digitaldream.ddl.DatabaseHelper;
 import com.digitaldream.ddl.Models.Exam;
 import com.digitaldream.ddl.Models.ExamQuestions;
 import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.Utils.CBTConfirmationDialog;
 import com.digitaldream.ddl.Utils.CustomCBTDialog;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -116,6 +120,18 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
 
     @Override
     public void onYearClick(int position) {
+        if (!mExamList.isEmpty()){
+            Exam exam = mExamList.get(position);
+            CBTConfirmationDialog confirmationDialog =
+                    new CBTConfirmationDialog(Objects.requireNonNull(getContext()), mCourseName,
+                            exam.getYear());
+            confirmationDialog.setCancelable(false);
+            confirmationDialog.show();
+            Window window = confirmationDialog.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.getAttributes().windowAnimations = R.style.DialogAnimation;
+            window.setGravity(Gravity.BOTTOM);
+        }
 
     }
 
