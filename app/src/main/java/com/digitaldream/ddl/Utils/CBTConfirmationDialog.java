@@ -2,11 +2,16 @@ package com.digitaldream.ddl.Utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -20,6 +25,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.digitaldream.ddl.DatabaseHelper;
+import com.digitaldream.ddl.ExamActivity;
 import com.digitaldream.ddl.Models.Exam;
 import com.digitaldream.ddl.Models.ExamQuestions;
 import com.digitaldream.ddl.R;
@@ -36,6 +42,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 public class CBTConfirmationDialog extends Dialog {
 
@@ -45,12 +52,11 @@ public class CBTConfirmationDialog extends Dialog {
     private Dao<ExamQuestions, Long> mExamQuestions;
     private String mJson;
     private String mCourseName;
-    private String mYear;
-    private TextView mSubject, mExamYear, mCancelText, mContinueText;
+    private String mYear, mExamTypeName;
+    private TextView mSubject, mExamYear, mExamName;
     private DatabaseHelper mDatabaseHelper;
     ProgressBar progressBar;
     CardView mCancelBtn, mContinueBtn;
-    ConstraintLayout mCancelLayout, mContinueLayout;
 
 
     public CBTConfirmationDialog(@NonNull Context context, String sCourseName
@@ -63,21 +69,24 @@ public class CBTConfirmationDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        getWindow().setGravity(Gravity.BOTTOM);
         setContentView(R.layout.dialog_cbt_confirmation);
 
         mSubject = findViewById(R.id.subject);
         mExamYear = findViewById(R.id.year);
-        mCancelText = findViewById(R.id.cancel_btn_text);
-        mContinueText = findViewById(R.id.comment_text);
+        mExamName = findViewById(R.id.exam_type);
         mCancelBtn = findViewById(R.id.cancel_btn);
         mContinueBtn = findViewById(R.id.continue_btn);
         progressBar = findViewById(R.id.progressBar);
-        mCancelLayout = findViewById(R.id.cancel_layout);
-        mContinueLayout = findViewById(R.id.continue_layout);
 
         mDatabaseHelper = new DatabaseHelper(getContext());
+
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences("exam", Context.MODE_PRIVATE);
+        mExamTypeName = sharedPreferences.getString("examName", "");
 
 
         try {
@@ -89,15 +98,44 @@ public class CBTConfirmationDialog extends Dialog {
             sE.printStackTrace();
         }
 
-        mSubject.setText("Subject: " + mCourseName);
-        mExamYear.setText("Year: " + mYear);
+        String[] courseString = mCourseName.toLowerCase().split(" ");
+        StringBuilder courseBuilder = new StringBuilder();
+        for (String letter : courseString) {
+            try {
+                String words =
+                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
+                courseBuilder.append(words).append(" ");
+            } catch (Exception sE) {
+                sE.printStackTrace();
+            }
 
-        /* mStart.setOnClickListener(sView -> {
+        }
+        String[] examStrings = mExamTypeName.toLowerCase().split(" ");
+        StringBuilder examBuilder = new StringBuilder();
+        for (String letter : examStrings) {
+            try {
+                String words =
+                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
+                examBuilder.append(words).append(" ");
+            } catch (Exception sE) {
+                sE.printStackTrace();
+            }
 
+        }
 
+        mExamName.setText(examBuilder.toString());
+        mSubject.setText(courseBuilder.toString());
+        mExamYear.setText(mYear);
 
+        loadQuestions();
 
-         *//*if (!mJson.isEmpty()) {
+        mCancelBtn.setOnClickListener(sView -> {
+            dismiss();
+        });
+
+        mContinueBtn.setOnClickListener(sView -> {
+
+            if (!mExamQuestionsList.isEmpty()) {
                 Log.i("jsonResponse", mJson);
                 getContext().startActivity(new Intent(getContext(),
                         ExamActivity.class)
@@ -105,43 +143,37 @@ public class CBTConfirmationDialog extends Dialog {
                         .putExtra("course", mCourseName)
                         .putExtra("year", mYear)
                         .putExtra("from", "cbt"));
-                dismiss();
             } else {
-                Toast.makeText(getContext(), "Something went wrong!",
+                Toast.makeText(getContext(), "Something went wrong",
                         Toast.LENGTH_SHORT).show();
             }
-*//*
-        });*/
 
-/*
-        mCardView.setOnClickListener(sView -> {
-            activated();
-            new Handler().postDelayed(this::stopped, 3000);
+            dismiss();
+
         });
-*/
 
-        loadQuestions();
 
     }
 
 
-    void activated() {
+/*    void activateAnimation() {
         Animation animation = AnimationUtils.loadAnimation(getContext(),
                 R.anim.fade_in);
         progressBar.setAnimation(animation);
         progressBar.setVisibility(View.VISIBLE);
-        mSubject.setAnimation(animation);
-        mSubject.setText("Please wait...");
+        mContinueText.setAnimation(animation);
+        mContinueText.setText("Please wait...");
 
     }
 
-    void stopped() {
-        //mLayout.setBackgroundColor(mCardView.getResources().getColor(R
-        // .color.green_cyan));
+    void cancelDialog() {
+        mCancelLayout.setBackgroundColor(mCancelBtn.getResources().getColor(R
+                .color.color_4));
+        mContinueLayout.setBackgroundColor(mContinueBtn.getResources().getColor(R.color.romance));
         progressBar.setVisibility(View.GONE);
-        mSubject.setText("Done");
-
-    }
+        mCancelText.setTextColor(mCancelBtn.getResources().getColor(R.color.white));
+        mContinueText.setTextColor(mContinueBtn.getResources().getColor(R.color.text_bg_color));
+    }*/
 
     public void loadQuestions() {
         try {
@@ -159,11 +191,13 @@ public class CBTConfirmationDialog extends Dialog {
                     mJson = examQuestions.getJson();
                 } else {
                     new getCourse().execute(Integer.toString(exam.getYearId()));
+                    Log.i("Status", "ran " + mJson + " execution");
                 }
             }
         } catch (SQLException sE) {
             sE.printStackTrace();
         }
+        Log.i("Status", "ran" + mJson);
     }
 
     private class getCourse extends AsyncTask<String, Void, String> {

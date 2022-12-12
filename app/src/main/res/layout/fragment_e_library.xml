@@ -99,6 +99,9 @@
                 android:layout_height="90dp"
                 android:layout_marginStart="15dp"
                 android:backgroundTint="@color/romance"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:contentPadding="10dp">
@@ -107,6 +110,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="5dp">
 
                     <Button
@@ -155,6 +161,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/maths_title"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
 
@@ -175,6 +182,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/maths_time"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_person"
                     app:tint="@color/gray" />
 
@@ -197,6 +205,9 @@
                 android:layout_height="90dp"
                 android:layout_marginStart="40dp"
                 android:backgroundTint="@color/green_cyan"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:contentPadding="10dp">
@@ -205,6 +216,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="5dp">
 
                     <Button
@@ -253,6 +267,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/english_title"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
 
@@ -273,6 +288,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/english_time"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_person"
                     app:tint="@color/gray" />
 
@@ -295,6 +311,9 @@
                 android:layout_height="90dp"
                 android:layout_marginStart="40dp"
                 android:backgroundTint="@color/light_green"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:contentPadding="10dp">
@@ -303,6 +322,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="5dp">
 
                     <Button
@@ -350,6 +372,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/physics_title"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
 
@@ -370,6 +393,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/physics_time"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_person"
                     app:tint="@color/gray" />
 
@@ -392,6 +416,9 @@
                 android:layout_height="90dp"
                 android:layout_marginStart="40dp"
                 android:backgroundTint="@color/romance"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:contentPadding="10dp">
@@ -400,6 +427,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="5dp">
 
                     <Button
@@ -447,6 +477,7 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/chemistry_title"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
 
@@ -509,6 +540,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="10dp"
             app:cardElevation="2dp">
 
@@ -518,7 +551,8 @@
                 android:layout_height="75dp"
                 android:background="@color/color_1"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -526,6 +560,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_cbt"
                     app:tint="@color/white" />
 
@@ -552,6 +587,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="10dp"
             app:cardElevation="2dp">
 
@@ -561,7 +598,8 @@
                 android:layout_height="75dp"
                 android:background="@color/color_3"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -569,6 +607,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_video"
                     app:tint="@color/white" />
 
@@ -602,6 +641,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="10dp"
             app:cardElevation="2dp">
 
@@ -611,7 +652,8 @@
                 android:layout_height="75dp"
                 android:background="@color/color_2"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -619,6 +661,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_game_pad"
                     app:tint="@color/white" />
 
@@ -645,6 +688,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="10dp"
             app:cardElevation="2dp">
 
@@ -653,8 +698,10 @@
                 android:layout_width="190dp"
                 android:layout_height="75dp"
                 android:background="@color/color_4"
+
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -662,6 +709,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/ic_library_books_black_24dp"
                     app:tint="@color/icons_color" />
 

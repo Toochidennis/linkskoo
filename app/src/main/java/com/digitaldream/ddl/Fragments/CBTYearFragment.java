@@ -129,8 +129,6 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
             confirmationDialog.show();
             Window window = confirmationDialog.getWindow();
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            window.getAttributes().windowAnimations = R.style.DialogAnimation;
-            window.setGravity(Gravity.BOTTOM);
         }
 
     }

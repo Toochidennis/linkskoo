@@ -25,9 +25,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <LinearLayout
-        android:id="@+id/subject_layout"
+        android:id="@+id/exam_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -41,7 +40,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:gravity="center"
+            android:text="Exam Type:"
+            android:textColor="@color/text_bg_color"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/exam_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/montserrat"
+            android:text=""
+            android:textColor="@color/text_bg_color"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:text="Subject:"
             android:textColor="@color/text_bg_color"
             android:textSize="15sp"
@@ -107,6 +136,9 @@
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="15dp"
             app:cardElevation=".5dp">
 
@@ -114,14 +146,14 @@
                 android:id="@+id/cancel_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/romance">
+                android:background="@android:color/holo_red_light">
 
                 <TextView
                     android:id="@+id/cancel_btn_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cancel"
-                    android:textColor="@color/text_bg_color"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -137,6 +169,9 @@
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_marginStart="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="15dp"
             app:cardElevation=".5dp">
 
@@ -144,7 +179,7 @@
                 android:id="@+id/continue_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/color_4">
+                android:background="@color/greenC">
 
                 <ProgressBar
                     android:id="@+id/progressBar"

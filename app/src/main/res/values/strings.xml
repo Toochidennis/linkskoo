@@ -12,6 +12,7 @@
 
 
     <string name="news_body">These days, people are engaged in their mobile phone in such a way that, people almost do everything from their phone. From small things to the complex, people do all these things from their mobile phone. People almost replaced more than hundreds of things with the use of the mobile phone. Simple examples are that people do with their mobile phones are calling people, watching time, use of calendar, use of alarm clock, use of camera and many more. Among all of them, reading news is also one of them. Yes, watching news via mobile is commonly in practice these days. Therefore, here we will be talking about the News App Screen UI Design Inspiration.</string>
+    <string name="todo">TODO</string>
     <string-array name="gender">
         <item>Select Gender</item>
         <item>Male</item>
