@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.ddl.Models.ExamType;
 import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.Utils.Methods;
 
 import java.util.List;
 
@@ -44,19 +45,7 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
     @Override
     public void onBindViewHolder(@NonNull CBTExamTypeAdapter.ViewHolder holder, int position) {
         String name = mExamTypeList.get(position).getExamName();
-        String[] strings = name.toLowerCase().split(" ");
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (String letter : strings) {
-            try {
-                String initial = letter.substring(0, 1).toUpperCase();
-                stringBuilder.append(initial);
-            } catch (Exception sE) {
-                sE.printStackTrace();
-            }
-        }
-
-        holder.mTextView.setText(stringBuilder.toString());
+        holder.mTextView.setText(Methods.abbreviate(name));
 
         holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mContext,
                 colors[position % 6]));

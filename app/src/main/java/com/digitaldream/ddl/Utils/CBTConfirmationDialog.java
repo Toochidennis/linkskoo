@@ -9,20 +9,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.digitaldream.ddl.DatabaseHelper;
 import com.digitaldream.ddl.ExamActivity;
@@ -49,8 +44,8 @@ public class CBTConfirmationDialog extends Dialog {
     private List<Exam> mExamList;
     private List<ExamQuestions> mExamQuestionsList;
     private Dao<Exam, Long> mExamDao;
-    private Dao<ExamQuestions, Long> mExamQuestions;
-    private String mJson;
+    private Dao<ExamQuestions, Long> mExamQuestionsDao;
+    private String mJson = "";
     private String mCourseName;
     private String mYear, mExamTypeName;
     private TextView mSubject, mExamYear, mExamName;
@@ -92,39 +87,15 @@ public class CBTConfirmationDialog extends Dialog {
         try {
             mExamDao =
                     DaoManager.createDao(mDatabaseHelper.getConnectionSource(), Exam.class);
-            mExamQuestions =
+            mExamQuestionsDao =
                     DaoManager.createDao(mDatabaseHelper.getConnectionSource(), ExamQuestions.class);
         } catch (SQLException sE) {
             sE.printStackTrace();
         }
 
-        String[] courseString = mCourseName.toLowerCase().split(" ");
-        StringBuilder courseBuilder = new StringBuilder();
-        for (String letter : courseString) {
-            try {
-                String words =
-                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
-                courseBuilder.append(words).append(" ");
-            } catch (Exception sE) {
-                sE.printStackTrace();
-            }
 
-        }
-        String[] examStrings = mExamTypeName.toLowerCase().split(" ");
-        StringBuilder examBuilder = new StringBuilder();
-        for (String letter : examStrings) {
-            try {
-                String words =
-                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
-                examBuilder.append(words).append(" ");
-            } catch (Exception sE) {
-                sE.printStackTrace();
-            }
-
-        }
-
-        mExamName.setText(examBuilder.toString());
-        mSubject.setText(courseBuilder.toString());
+        mExamName.setText(Methods.capitaliseFirstLetter(mExamTypeName));
+        mSubject.setText(Methods.capitaliseFirstLetter(mCourseName));
         mExamYear.setText(mYear);
 
         loadQuestions();
@@ -133,9 +104,15 @@ public class CBTConfirmationDialog extends Dialog {
             dismiss();
         });
 
+        if (mJson.isEmpty()) {
+            new getCourse().execute(Integer.toString(mExamList.get(0).getYearId()));
+            Log.i("status", "ran " + mJson + " execution");
+
+        }
+
         mContinueBtn.setOnClickListener(sView -> {
 
-            if (!mExamQuestionsList.isEmpty()) {
+            if (!mJson.isEmpty()) {
                 Log.i("jsonResponse", mJson);
                 getContext().startActivity(new Intent(getContext(),
                         ExamActivity.class)
@@ -147,11 +124,8 @@ public class CBTConfirmationDialog extends Dialog {
                 Toast.makeText(getContext(), "Something went wrong",
                         Toast.LENGTH_SHORT).show();
             }
-
             dismiss();
-
         });
-
 
     }
 
@@ -180,18 +154,17 @@ public class CBTConfirmationDialog extends Dialog {
             mExamList = mExamDao.queryBuilder().where().eq("course",
                     mCourseName).and().eq("year", mYear).query();
 
+
             if (!mExamList.isEmpty()) {
                 Exam exam = mExamList.get(0);
 
                 mExamQuestionsList =
-                        mExamQuestions.queryBuilder().where().eq("examId",
+                        mExamQuestionsDao.queryBuilder().where().eq("examId",
                                 exam.getExamId()).query();
+                Log.i("questionsList", String.valueOf(exam.getExamId()));
                 if (!mExamQuestionsList.isEmpty()) {
                     ExamQuestions examQuestions = mExamQuestionsList.get(0);
                     mJson = examQuestions.getJson();
-                } else {
-                    new getCourse().execute(Integer.toString(exam.getYearId()));
-                    Log.i("Status", "ran " + mJson + " execution");
                 }
             }
         } catch (SQLException sE) {
@@ -263,18 +236,22 @@ public class CBTConfirmationDialog extends Dialog {
 
         @Override
         protected void onPostExecute(String result) {
+
             try {
                 if (result != null) {
-                    mJson = result;
+                    Log.i("result", result);
+                    //mJson = result;
                     JSONObject obj = new JSONObject(result);
                     JSONObject object = obj.getJSONObject("e");
                     String id = object.getString("id");
+                    Log.i("id", id);
                     ExamQuestions examQuestions = new ExamQuestions();
-                    examQuestions.setExamId(Integer.parseInt(id));
+                    examQuestions.setExamId(mExamList.get(0).getExamId());
                     examQuestions.setJson(result);
-                    mExamQuestions.create(examQuestions);
-                } else {
+                    mExamQuestionsDao.create(examQuestions);
                     loadQuestions();
+                } else {
+                    new getCourse().execute(Integer.toString(mExamList.get(0).getYearId()));
                 }
             } catch (Exception e) {
                 Toast.makeText(getContext(), "Something went wrong!",

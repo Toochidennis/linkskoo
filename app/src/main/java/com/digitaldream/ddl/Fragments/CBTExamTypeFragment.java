@@ -1,36 +1,29 @@
 package com.digitaldream.ddl.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Toast;
 
 import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.Adapters.CBTExamTypeAdapter;
 import com.digitaldream.ddl.DatabaseHelper;
-import com.digitaldream.ddl.Models.Exam;
 import com.digitaldream.ddl.Models.ExamType;
 import com.digitaldream.ddl.R;
-import com.digitaldream.ddl.Utils.CustomDialog;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -44,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
@@ -90,9 +82,9 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
         assert mActionBar != null;
         mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_left_black);
+        mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle("CBT");
+        mActionBar.setTitle("Choose exam");
         setHasOptionsMenu(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 

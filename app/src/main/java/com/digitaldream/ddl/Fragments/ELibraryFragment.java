@@ -25,6 +25,7 @@ import com.digitaldream.ddl.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 //the manipulated man
 //the anatomy of female
@@ -58,35 +59,33 @@ public class ELibraryFragment extends Fragment {
         mGames = view.findViewById(R.id.games_btn);
         mBooks = view.findViewById(R.id.books_btn);
 
-        ((AppCompatActivity) (getActivity())).setSupportActionBar(mToolbar);
+        ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).setSupportActionBar(mToolbar);
         mActionBar =
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
+        assert mActionBar != null;
         mActionBar.setHomeButtonEnabled(true);
         mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setTitle("E-library");
         setHasOptionsMenu(true);
-        mToolbar.setNavigationOnClickListener(v->  getActivity().onBackPressed());
+        mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 
         mSlideModelList = new ArrayList<>();
 
         mSlideModelList.add(new SlideModel(R.drawable.ic_kids_lessons, ScaleTypes.FIT));
         mSlideModelList.add(new SlideModel(R.drawable.ic_tutorials_slider,
                 ScaleTypes.FIT));
-        mSlideModelList.add(new SlideModel(R.drawable.ic_library_slider ,
+        mSlideModelList.add(new SlideModel(R.drawable.ic_library_slider,
                 ScaleTypes.FIT));
 
         mImageSlider.setImageList(mSlideModelList);
 
 
-
-        mCbt.setOnClickListener(v-> {
+        mCbt.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), StaffUtils.class);
             intent.putExtra("from", "cbt_exam");
             startActivity(intent);
         });
-
-
 
 
         return view;

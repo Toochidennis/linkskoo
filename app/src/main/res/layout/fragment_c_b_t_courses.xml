@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/tab_color"
     tools:context=".Fragments.CBTCoursesFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:fitsSystemWindows="true"
+        android:background="@color/tab_color"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -19,18 +22,6 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:toolbarId="@id/toolbar">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/montserrat"
-                android:text="Choose a subject"
-                android:textAlignment="center"
-                android:textColor="@color/text_bg_color"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_collapseMode="parallax" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -45,6 +36,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cbt_courses_recycler"
         android:layout_width="match_parent"
+        android:background="@drawable/dialog_background"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

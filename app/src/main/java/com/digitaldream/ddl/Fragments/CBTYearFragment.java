@@ -109,9 +109,9 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
         assert mActionBar != null;
         mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_left_black);
+        mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle("Select year");
+        mActionBar.setTitle("Choose year");
         setHasOptionsMenu(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 

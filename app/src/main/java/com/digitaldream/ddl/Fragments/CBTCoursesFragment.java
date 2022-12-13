@@ -91,9 +91,9 @@ public class CBTCoursesFragment extends Fragment implements CBTCoursesAdapter.On
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
         assert mActionBar != null;
         mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_left_black);
+        mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle("Select a course");
+        mActionBar.setTitle("Choose a subject");
         setHasOptionsMenu(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 

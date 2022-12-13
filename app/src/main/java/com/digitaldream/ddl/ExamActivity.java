@@ -1175,7 +1175,8 @@ public class ExamActivity extends AppCompatActivity {
         } catch (Exception e) {
             finish();
             e.printStackTrace();
-            Toast.makeText(this, "Exam Cannot Be Loaded at this Time!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Exam Cannot Be Loaded at this Time!!",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
