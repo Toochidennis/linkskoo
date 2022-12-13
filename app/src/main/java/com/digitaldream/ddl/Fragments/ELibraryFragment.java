@@ -16,9 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.R;
@@ -79,6 +81,23 @@ public class ELibraryFragment extends Fragment {
                 ScaleTypes.FIT));
 
         mImageSlider.setImageList(mSlideModelList);
+
+        mImageSlider.setItemClickListener(sI -> {
+            switch (sI){
+                case 0:
+                case 1:
+                case 2:
+                    Toast.makeText(getContext(), "You clicked position "+sI,
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    try {
+                        throw new Exception("(:");
+                    } catch (Exception sE) {
+                        sE.printStackTrace();
+                    }
+            }
+        });
 
 
         mCbt.setOnClickListener(v -> {

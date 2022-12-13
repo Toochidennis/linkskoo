@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.ddl.Models.StudentTable;
 import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.Utils.Methods;
 
 import java.util.List;
 import java.util.Random;
@@ -43,20 +44,8 @@ public class AttendanceDetailsAdapter extends RecyclerView.Adapter<AttendanceDet
         StudentTable model = mStudentTableList.get(position);
 
         String name = model.getStudentFullName();
-        String[] strings = name.toLowerCase().split(" ");
-        StringBuilder builder = new StringBuilder();
-        for (String letter : strings) {
-            try {
-                String caps =
-                        letter.substring(0, 1).toUpperCase() + letter.substring(1).toLowerCase();
-                builder.append(caps).append(" ");
-            } catch (Exception sE) {
-                sE.printStackTrace();
-            }
 
-        }
-
-        holder.mName.setText(builder.toString());
+        holder.mName.setText(Methods.capitaliseFirstLetter(name));
 
         try {
             holder.mInitial.setText(name.substring(0, 1).toUpperCase());
