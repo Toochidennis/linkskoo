@@ -201,7 +201,7 @@
                             android:layout_height="120dp"
                             android:indeterminateOnly="false"
                             android:progress="0"
-                            android:progressDrawable="@drawable/progress_circle"
+                            android:progressDrawable="@drawable/score_circle"
                             android:textAlignment="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"

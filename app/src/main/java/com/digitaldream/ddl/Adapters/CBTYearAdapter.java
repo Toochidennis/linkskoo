@@ -23,13 +23,17 @@ public class CBTYearAdapter extends RecyclerView.Adapter<CBTYearAdapter.ViewHold
     private final List<Exam> mExamList;
     private final OnYearClickListener mOnYearClickListener;
 
+    private final int[] colors = {R.color.color_1, R.color.color_2,
+            R.color.color_3, R.color.color_4, R.color.color_5,
+            R.color.color_6, R.color.color_7, R.color.color_8,
+            R.color.color_2, R.color.color_5};
+
     public CBTYearAdapter(Context sContext, List<Exam> sExamList,
                           OnYearClickListener sOnYearClickListener) {
         mContext = sContext;
         mExamList = sExamList;
         mOnYearClickListener = sOnYearClickListener;
     }
-
 
 
     @NonNull
@@ -46,8 +50,7 @@ public class CBTYearAdapter extends RecyclerView.Adapter<CBTYearAdapter.ViewHold
         String year = mExamList.get(position).getYear();
         holder.mTextView.setText(year);
 
-        holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mContext,
-                Methods.setColor()));
+        holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mContext, colors[position % 10]));
 
     }
 
