@@ -118,7 +118,7 @@ public class VideoContent extends YouTubeBaseActivity {
         noteImage = findViewById(R.id.file_pics);
         cointainer = findViewById(R.id.material_container);
         replyToContainer = findViewById(R.id.replying_to_cont);
-        progressBar1 = findViewById(R.id.progressBar);
+        progressBar1 = findViewById(R.id.progress_bar);
         replyToContainer.setVisibility(View.GONE);
 
         //noteTopic.setText(topic);

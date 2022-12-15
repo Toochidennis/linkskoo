@@ -250,7 +250,7 @@ public class Comment {
     }
 
     public void fetchComments(String db,String contentId){
-         ProgressBar progressBar1 = context.findViewById(R.id.progressBar);
+         ProgressBar progressBar1 = context.findViewById(R.id.progress_bar);
 
         String url = Login.urlBase+"/getComment.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

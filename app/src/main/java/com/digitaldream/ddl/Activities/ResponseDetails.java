@@ -66,7 +66,7 @@ public class ResponseDetails extends AppCompatActivity {
         String date = i.getStringExtra("date");
         nameText = findViewById(R.id.name);
         dateText = findViewById(R.id.submition_date);
-        scoreText = findViewById(R.id.score);
+        scoreText = findViewById(R.id.progress_text);
         nameText.setText(name.toUpperCase());
         scoreText.setText(score);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

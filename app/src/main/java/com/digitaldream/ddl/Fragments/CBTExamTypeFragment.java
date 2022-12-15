@@ -6,10 +6,14 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -52,6 +56,9 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     private DatabaseHelper mDatabaseHelper;
     private List<ExamType> mExamTypeList;
     private Dao<ExamType, Long> mDao;
+    ProgressBar mProgressBar, mathsProgressBar;
+    private TextView averageScore, mathsScore;
+    private int counter = 0;
 
     public CBTExamTypeFragment() {
         // Required empty public constructor
@@ -66,6 +73,40 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
 
         mToolbar = view.findViewById(R.id.toolbar);
         mRecyclerView = view.findViewById(R.id.exam_recycler);
+        mProgressBar = view.findViewById(R.id.progress_bar);
+        averageScore = view.findViewById(R.id.progress_text);
+        mathsProgressBar = view.findViewById(R.id.maths_progress_bar);
+        mathsScore = view.findViewById(R.id.maths_progress_text);
+
+        final CountDownTimer timer = new CountDownTimer(5 * 1000, 1) {
+            @Override
+            public void onTick(long sL) {
+
+                counter = counter + 1;
+                if (counter < 50) {
+                    mProgressBar.setProgress(counter);
+                    averageScore.setText(counter + "%");
+                    mProgressBar.setMax(100);
+
+                    mathsProgressBar.setProgress(counter);
+                    mathsScore.setText(counter + "%");
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+
+   /*     public void setPieRotation(int rotation) {
+            mPieRotation = (rotation % 360 + 360) % 360;
+            mGraph.rotateTo(mPieRotation);
+
+            calcCurrentItem();
+        }
+*/
+        new Handler().postDelayed(timer::start, 200);
 
         mDatabaseHelper = new DatabaseHelper(getContext());
 
@@ -84,7 +125,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
         mActionBar.setHomeButtonEnabled(true);
         mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle("Choose exam");
+        mActionBar.setTitle("Computer Based Test");
         setHasOptionsMenu(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 
@@ -92,6 +133,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
 
         return view;
     }
+
 
     @Override
     public void onExamClick(int position) {

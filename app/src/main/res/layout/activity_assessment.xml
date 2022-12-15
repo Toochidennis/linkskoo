@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 android:text="Questions"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
@@ -104,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 android:text="Duration"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />

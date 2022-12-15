@@ -76,7 +76,7 @@ public class CBTConfirmationDialog extends Dialog {
         mExamName = findViewById(R.id.exam_type);
         mCancelBtn = findViewById(R.id.cancel_btn);
         mContinueBtn = findViewById(R.id.continue_btn);
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progress_bar);
 
         mDatabaseHelper = new DatabaseHelper(getContext());
 

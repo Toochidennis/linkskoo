@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.ddl.Models.Exam;
 import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.Utils.Methods;
 
 import java.util.List;
 
@@ -29,9 +30,6 @@ public class CBTYearAdapter extends RecyclerView.Adapter<CBTYearAdapter.ViewHold
         mOnYearClickListener = sOnYearClickListener;
     }
 
-    private final int[] colors = {R.color.color_1, R.color.color_2,
-            R.color.color_3, R.color.color_4, R.color.color_2, R.color.color_3
-            , R.color.color_4, R.color.color_1, R.color.color1};
 
 
     @NonNull
@@ -49,7 +47,7 @@ public class CBTYearAdapter extends RecyclerView.Adapter<CBTYearAdapter.ViewHold
         holder.mTextView.setText(year);
 
         holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mContext,
-                colors[position % 6]));
+                Methods.setColor()));
 
     }
 

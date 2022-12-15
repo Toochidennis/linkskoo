@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:fontFamily="@font/la_to"
+            android:fontFamily="@font/lato"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:padding="10dp"

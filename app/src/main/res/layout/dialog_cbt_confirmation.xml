@@ -182,7 +182,7 @@
                 android:background="@color/greenC">
 
                 <ProgressBar
-                    android:id="@+id/progressBar"
+                    android:id="@+id/progress_bar"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginStart="20dp"

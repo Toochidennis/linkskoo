@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
+            android:fontFamily="@font/montserrat_alternates"
             android:text="Top Videos"
             android:textColor="@color/text_bg_color"
             android:textSize="18sp"
@@ -96,8 +96,8 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="90dp"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
                 android:layout_marginStart="15dp"
                 android:backgroundTint="@color/romance"
                 android:clickable="true"
@@ -124,7 +124,7 @@
                         android:fontFamily="@font/montserrat"
                         android:text="PlAY"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -132,7 +132,7 @@
             </androidx.cardview.widget.CardView>
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp">
 
@@ -151,8 +151,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/maths"
                     android:layout_marginTop="2dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="Calculus"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:lines="2"
+                    android:text="Linear algebra and verbal reasoning and quantitative"
                     android:textColor="@color/text_bg_color"
                     android:textSize="14sp" />
 
@@ -161,7 +163,7 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_below="@id/maths_title"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
@@ -171,7 +173,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="65dp"
                     android:layout_toEndOf="@id/maths_time"
                     android:fontFamily="@font/montserrat"
                     android:text="30 minutes"
@@ -200,11 +202,10 @@
 
             </RelativeLayout>
 
-
             <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="90dp"
-                android:layout_marginStart="40dp"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="20dp"
                 android:backgroundTint="@color/green_cyan"
                 android:clickable="true"
                 android:focusable="true"
@@ -230,7 +231,7 @@
                         android:fontFamily="@font/montserrat"
                         android:text="PlAY"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -238,7 +239,7 @@
             </androidx.cardview.widget.CardView>
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp">
 
@@ -257,7 +258,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/english"
                     android:layout_marginTop="2dp"
-                    android:fontFamily="@font/montserrat"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:lines="2"
                     android:text="Noun"
                     android:textColor="@color/text_bg_color"
                     android:textSize="14sp" />
@@ -267,7 +270,7 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_below="@id/english_title"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
@@ -277,7 +280,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="65dp"
                     android:layout_toEndOf="@id/english_time"
                     android:fontFamily="@font/montserrat"
                     android:text="30 minutes"
@@ -293,7 +296,6 @@
                     android:src="@drawable/ic_person"
                     app:tint="@color/gray" />
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -308,9 +310,9 @@
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="90dp"
-                android:layout_marginStart="40dp"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="20dp"
                 android:backgroundTint="@color/light_green"
                 android:clickable="true"
                 android:focusable="true"
@@ -336,14 +338,14 @@
                         android:fontFamily="@font/montserrat"
                         android:text="PlAY"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
 
             </androidx.cardview.widget.CardView>
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp">
 
@@ -362,7 +364,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/physics"
                     android:layout_marginTop="2dp"
-                    android:fontFamily="@font/montserrat"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:lines="2"
                     android:text="Motion"
                     android:textColor="@color/text_bg_color"
                     android:textSize="14sp" />
@@ -372,7 +376,7 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_below="@id/physics_title"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
@@ -382,7 +386,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="65dp"
                     android:layout_toEndOf="@id/physics_time"
                     android:fontFamily="@font/montserrat"
                     android:text="30 minutes"
@@ -413,8 +417,8 @@
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="90dp"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
                 android:layout_marginStart="40dp"
                 android:backgroundTint="@color/romance"
                 android:clickable="true"
@@ -441,7 +445,7 @@
                         android:fontFamily="@font/montserrat"
                         android:text="PlAY"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -467,7 +471,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/chemistry"
                     android:layout_marginTop="2dp"
-                    android:fontFamily="@font/montserrat"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:lines="2"
                     android:text="Water"
                     android:textColor="@color/text_bg_color"
                     android:textSize="14sp" />
@@ -477,7 +483,7 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_below="@id/chemistry_title"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/ic_time"
                     app:tint="@color/gray" />
@@ -487,7 +493,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="65dp"
                     android:layout_toEndOf="@id/chemistry_time"
                     android:fontFamily="@font/montserrat"
                     android:text="30 minutes"
@@ -525,7 +531,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_alternates"
         android:text="Category"
         android:textColor="@color/text_bg_color"
         android:textSize="18sp"
@@ -544,13 +550,13 @@
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="10dp"
-            app:cardElevation="2dp">
+            app:cardElevation="5dp">
 
             <RelativeLayout
                 android:id="@+id/cbt_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_1"
+                android:background="@color/color_2"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground">
@@ -570,11 +576,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginStart="100dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="45dp"
                     android:layout_marginEnd="15dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="CBT"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Computer Based Test"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -591,13 +597,13 @@
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="10dp"
-            app:cardElevation="2dp">
+            app:cardElevation="5dp">
 
             <RelativeLayout
                 android:id="@+id/videos_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_3"
+                android:background="@color/color_1"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground">
@@ -620,7 +626,7 @@
                     android:layout_marginStart="80dp"
                     android:layout_marginTop="45dp"
                     android:layout_marginEnd="20dp"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="VIDEOS"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
@@ -645,13 +651,13 @@
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="10dp"
-            app:cardElevation="2dp">
+            app:cardElevation="5dp">
 
             <RelativeLayout
                 android:id="@+id/games_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_2"
+                android:background="@color/color_6"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground">
@@ -674,7 +680,7 @@
                     android:layout_marginStart="100dp"
                     android:layout_marginTop="45dp"
                     android:layout_marginEnd="15dp"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="GAMES"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
@@ -692,14 +698,13 @@
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="10dp"
-            app:cardElevation="2dp">
+            app:cardElevation="5dp">
 
             <RelativeLayout
                 android:id="@+id/books_btn"
                 android:layout_width="190dp"
                 android:layout_height="75dp"
-                android:background="@color/color_4"
-
+                android:background="@color/color_5"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground">
@@ -711,7 +716,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/todo"
-                    android:src="@drawable/ic_library_books_black_24dp"
+                    android:src="@drawable/ic_books"
                     app:tint="@color/icons_color" />
 
                 <TextView
@@ -722,7 +727,7 @@
                     android:layout_marginStart="80dp"
                     android:layout_marginTop="45dp"
                     android:layout_marginEnd="20dp"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="BOOKS"
                     android:textColor="@color/white"
                     android:textSize="14sp" />

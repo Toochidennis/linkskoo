@@ -16,7 +16,7 @@
     <item android:id="@+id/student_library"
         android:title="E-library"
         android:iconTint="@color/blue"
-        android:icon="@drawable/ic_cbt"/>
+        android:icon="@drawable/ic_books"/>
     <item android:id="@+id/student_elearning"
         android:title="E-learning"
         android:iconTint="@color/blue"

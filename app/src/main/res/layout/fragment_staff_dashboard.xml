@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="25dp"
-                    android:fontFamily="@font/la_to"
+                    android:fontFamily="@font/lato"
                     android:textSize="25sp"
                     android:text="Welcome,"
                     android:textColor="@android:color/white" />

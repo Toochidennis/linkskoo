@@ -36,7 +36,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:fontFamily="@font/la_to"
+            android:fontFamily="@font/lato"
             android:text="Topic"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -212,7 +212,7 @@
                 android:layout_margin="10dp"
                 />
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/progress_bar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

@@ -78,7 +78,7 @@
                 android:text="CheckBox"
                 android:textSize="10sp"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 />
             <LinearLayout
                 android:layout_alignParentEnd="true"

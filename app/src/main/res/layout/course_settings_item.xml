@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="Eng"
             android:textSize="14sp"
-            android:fontFamily="@font/la_to"
+            android:fontFamily="@font/lato"
             android:textColor="@android:color/black"
             />
     </LinearLayout>

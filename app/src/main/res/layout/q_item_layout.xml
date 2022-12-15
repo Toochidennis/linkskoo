@@ -62,7 +62,7 @@
                 android:text="Date"
                 android:textSize="11sp"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 />
             <Button
                 android:id="@+id/apply"

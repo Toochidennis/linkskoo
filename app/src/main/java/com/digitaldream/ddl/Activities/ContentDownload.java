@@ -132,7 +132,7 @@ public class ContentDownload extends AppCompatActivity {
         otherNoteContainer = findViewById(R.id.other_note);
         noteContainer = findViewById(R.id.note_container);
         replyToContainer = findViewById(R.id.replying_to_cont);
-        progressBar1 = findViewById(R.id.progressBar);
+        progressBar1 = findViewById(R.id.progress_bar);
         replyToContainer.setVisibility(View.GONE);
         scrollView = findViewById(R.id.scroll);
         body = findViewById(R.id.body);

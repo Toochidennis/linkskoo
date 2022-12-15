@@ -52,6 +52,11 @@ dependencies {
     //image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
+   //pie chart
+    implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
+    implementation 'com.nineoldandroids:library:2.4.0'
+
+
     implementation "androidx.recyclerview:recyclerview:$supportVersion"
     // ExoPlayer
     implementation 'com.google.android.exoplayer:exoplayer:2.8.4'

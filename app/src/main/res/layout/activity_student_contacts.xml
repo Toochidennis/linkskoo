@@ -42,7 +42,7 @@
                     android:id="@+id/studentText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/la_to"
+                    android:fontFamily="@font/lato"
                     android:text="Students"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"

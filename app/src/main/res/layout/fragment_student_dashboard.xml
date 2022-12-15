@@ -54,7 +54,7 @@
                 android:text="A"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 android:textColor="@android:color/white"
                 />
         </LinearLayout>

@@ -31,10 +31,14 @@
     <color name="mono_blue">#6B73C4</color>
     <color name="light_green">#F0F8E5</color>
 
-    <color name="color_1">#E87052</color>
-    <color name="color_2">#B85B8D</color>
-    <color name="color_3">#EE6A6B</color>
-    <color name="color_4">#EDBC36</color>
+    <color name="color_1">#cc33ff</color>
+    <color name="color_2">#3366ff</color>
+    <color name="color_3">#33cccc</color>
+    <color name="color_4">#0066ff</color>
+    <color name="color_5">#3333cc</color>
+    <color name="color_6">#0099cc</color>
+    <color name="color_7">#9999ff</color>
+    <color name="color_8">#006699</color>
 
     <color name="icons_color">#FFEEEEEE</color>
     <color name="text_bg_color">#FF323848</color>
