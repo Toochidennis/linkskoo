@@ -1,13 +1,15 @@
 package com.digitaldream.ddl.Utils;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Random;
 
 public class Methods {
+    static int counter = 0;
 
 
     public static String capitaliseFirstLetter(String sS) {
@@ -50,18 +52,19 @@ public class Methods {
         return Color.argb(255, random.nextInt(256), random.nextInt(256),
                 random.nextInt(256));
     }
-/*
-    public static void startCountDown(ProgressBar sProgressBar, int sI,
-                                      TextView sTextView){
 
-         CountDownTimer timer = new CountDownTimer(5 * 1000, 1) {
+/*    public static CountDownTimer startCountDown(ProgressBar sProgressBar,
+                                                int sI,
+                                      TextView sTextView) {
+
+        return new CountDownTimer(5 * 1000, 1) {
             @Override
             public void onTick(long sL) {
 
-                sI = sI + 1;
-                if (sI < 51) {
-                    sProgressBar.setProgress(sI);
-                    sTextView.setText(sI + "%");
+                counter += 1;
+                if (counter < sI + 1) {
+                    sProgressBar.setProgress(counter);
+                    sTextView.setText(counter + "%");
                     sProgressBar.setMax(100);
                 }
 
@@ -74,4 +77,17 @@ public class Methods {
         };
 
     }*/
+
+
+    public static void animateObject(ProgressBar sProgressBar, TextView sTextView,
+                              int sI) {
+        ObjectAnimator.ofInt(sProgressBar, "progress", sI)
+                .setDuration(1000)
+                .start();
+        ValueAnimator animator = ValueAnimator.ofInt(0, sI);
+        animator.setDuration(1000);
+        animator.addUpdateListener(animation -> sTextView.setText(animator.getAnimatedValue() + "%"));
+        animator.start();
+
+    }
 }

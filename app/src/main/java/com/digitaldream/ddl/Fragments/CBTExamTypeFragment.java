@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +26,7 @@ import com.digitaldream.ddl.Adapters.CBTExamTypeAdapter;
 import com.digitaldream.ddl.DatabaseHelper;
 import com.digitaldream.ddl.Models.ExamType;
 import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.Utils.Methods;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -56,9 +55,9 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     private DatabaseHelper mDatabaseHelper;
     private List<ExamType> mExamTypeList;
     private Dao<ExamType, Long> mDao;
-    ProgressBar mProgressBar, mathsProgressBar;
-    private TextView averageScore, mathsScore;
-    private int counter = 0;
+    ProgressBar mAverageProgressBar, mMathsProgressBar, mEnglishProgressBar,
+            mPhysicsProgressBar, mBiologyProgressBar, mChemistryProgressBar;
+    private TextView mAverageScore, mMathsScore, mEnglishScore, mPhysicsScore, mBiologyScore, mChemistryScore;
 
     public CBTExamTypeFragment() {
         // Required empty public constructor
@@ -73,40 +72,23 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
 
         mToolbar = view.findViewById(R.id.toolbar);
         mRecyclerView = view.findViewById(R.id.exam_recycler);
-        mProgressBar = view.findViewById(R.id.progress_bar);
-        averageScore = view.findViewById(R.id.progress_text);
-        mathsProgressBar = view.findViewById(R.id.maths_progress_bar);
-        mathsScore = view.findViewById(R.id.maths_progress_text);
 
-        final CountDownTimer timer = new CountDownTimer(5 * 1000, 1) {
-            @Override
-            public void onTick(long sL) {
+        // score progress bar
+        mAverageProgressBar = view.findViewById(R.id.progress_bar);
+        mMathsProgressBar = view.findViewById(R.id.maths_progress_bar);
+        mEnglishProgressBar = view.findViewById(R.id.english_progress_bar);
+        mPhysicsProgressBar = view.findViewById(R.id.physics_progress_bar);
+        mBiologyProgressBar = view.findViewById(R.id.biology_progress_bar);
+        mChemistryProgressBar = view.findViewById(R.id.chemistry_progress_bar);
 
-                counter = counter + 1;
-                if (counter < 50) {
-                    mProgressBar.setProgress(counter);
-                    averageScore.setText(counter + "%");
-                    mProgressBar.setMax(100);
+        //score text
+        mAverageScore = view.findViewById(R.id.progress_text);
+        mMathsScore = view.findViewById(R.id.maths_progress_text);
+        mEnglishScore = view.findViewById(R.id.english_progress_text);
+        mPhysicsScore = view.findViewById(R.id.physics_progress_text);
+        mBiologyScore = view.findViewById(R.id.biology_progress_text);
+        mChemistryScore = view.findViewById(R.id.chemistry_progress_text);
 
-                    mathsProgressBar.setProgress(counter);
-                    mathsScore.setText(counter + "%");
-                }
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
-
-   /*     public void setPieRotation(int rotation) {
-            mPieRotation = (rotation % 360 + 360) % 360;
-            mGraph.rotateTo(mPieRotation);
-
-            calcCurrentItem();
-        }
-*/
-        new Handler().postDelayed(timer::start, 200);
 
         mDatabaseHelper = new DatabaseHelper(getContext());
 
@@ -116,7 +98,6 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
         } catch (SQLException sE) {
             sE.printStackTrace();
         }
-
 
         ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).setSupportActionBar(mToolbar);
         mActionBar =
@@ -129,7 +110,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
         setHasOptionsMenu(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 
-        //inflateExam();
+        displayProgress();
 
         return view;
     }
@@ -157,6 +138,73 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
 
     }
 
+    public void displayProgress() {
+        Methods.animateObject(mAverageProgressBar, mAverageScore, 0);
+        Methods.animateObject(mMathsProgressBar, mMathsScore, 0);
+        Methods.animateObject(mEnglishProgressBar, mEnglishScore, 0);
+        Methods.animateObject(mPhysicsProgressBar, mPhysicsScore, 0);
+        Methods.animateObject(mBiologyProgressBar, mBiologyScore, 0);
+        Methods.animateObject(mChemistryProgressBar, mChemistryScore, 0);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // mExamTypeList.clear();
+        if (getActivity() != null) {
+            try {
+                mExamTypeList = mDao.queryForAll();
+
+                if (!mExamTypeList.isEmpty()) {
+                    mAdapter = new CBTExamTypeAdapter(getContext(),
+                            mExamTypeList, this);
+                    GridLayoutManager manager =
+                            new GridLayoutManager(getContext(), 2);
+                    mRecyclerView.setHasFixedSize(true);
+                    mRecyclerView.setLayoutManager(manager);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    new ExamOptions().execute();
+                }
+            } catch (SQLException sE) {
+                sE.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(getContext(), "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void checkExam(JSONObject sJSONObject) {
+
+        try {
+            String title = sJSONObject.getString("t");
+            String link = sJSONObject.getString("p");
+            String status = sJSONObject.getString("s");
+            String category = sJSONObject.getString("t");
+            String id = sJSONObject.getString("i");
+            QueryBuilder<ExamType, Long> queryBuilder = mDao.queryBuilder();
+            queryBuilder.where().eq("examName", title);
+            mExamTypeList = queryBuilder.query();
+
+            if (mExamTypeList.isEmpty()) {
+                ExamType examType = new ExamType();
+                examType.setExamName(title);
+                examType.setStatus(status);
+                examType.setExamTypeId(Integer.parseInt(id));
+                examType.setCategory(category);
+                examType.setExamLogo(link);
+                mDao.create(examType);
+                // inflateExam();
+            }
+        } catch (SQLException | JSONException sE) {
+            sE.printStackTrace();
+        }
+    }
 
     private class ExamOptions extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection = null;
@@ -240,64 +288,6 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
                 Toast.makeText(getContext(), "Something went wrong!",
                         Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-
-    public void checkExam(JSONObject sJSONObject) {
-
-        try {
-            String title = sJSONObject.getString("t");
-            String link = sJSONObject.getString("p");
-            String status = sJSONObject.getString("s");
-            String category = sJSONObject.getString("t");
-            String id = sJSONObject.getString("i");
-            QueryBuilder<ExamType, Long> queryBuilder = mDao.queryBuilder();
-            queryBuilder.where().eq("examName", title);
-            mExamTypeList = queryBuilder.query();
-
-            if (mExamTypeList.isEmpty()) {
-                ExamType examType = new ExamType();
-                examType.setExamName(title);
-                examType.setStatus(status);
-                examType.setExamTypeId(Integer.parseInt(id));
-                examType.setCategory(category);
-                examType.setExamLogo(link);
-                mDao.create(examType);
-                // inflateExam();
-            }
-        } catch (SQLException | JSONException sE) {
-            sE.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // mExamTypeList.clear();
-        if (getActivity() != null) {
-            try {
-                mExamTypeList = mDao.queryForAll();
-
-                if (!mExamTypeList.isEmpty()) {
-                    mAdapter = new CBTExamTypeAdapter(getContext(),
-                            mExamTypeList, this);
-                    GridLayoutManager manager =
-                            new GridLayoutManager(getContext(), 2);
-                    mRecyclerView.setHasFixedSize(true);
-                    mRecyclerView.setLayoutManager(manager);
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    new ExamOptions().execute();
-                }
-            } catch (SQLException sE) {
-                sE.printStackTrace();
-            }
-
-        } else {
-            Toast.makeText(getContext(), "Something went wrong!",
-                    Toast.LENGTH_SHORT).show();
         }
     }
 }

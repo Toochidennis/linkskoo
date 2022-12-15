@@ -93,7 +93,7 @@ public class CBTCoursesFragment extends Fragment implements CBTCoursesAdapter.On
         mActionBar.setHomeButtonEnabled(true);
         mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle("Choose a subject");
+        mActionBar.setTitle("Choose subject");
         setHasOptionsMenu(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 
