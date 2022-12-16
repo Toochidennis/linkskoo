@@ -88,8 +88,6 @@ public class VideoContent extends YouTubeBaseActivity {
         contentId = getIntent().getStringExtra("content_id");
         Log.i("response","filepath: "+filePath);
 
-
-
         progressDialog = new CustomDialog(this);
 
         mYoutubePlayerView = findViewById(R.id.youtube_player);

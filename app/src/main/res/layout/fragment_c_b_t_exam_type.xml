@@ -112,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_alternates"
                         android:gravity="center"
-                        android:text="0% "
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="11sp"
                         app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
@@ -285,8 +285,6 @@
                             android:layout_below="@id/maths_year"
                             android:layout_gravity="bottom"
                             android:layout_marginTop="5dp"
-                            android:clickable="true"
-                            android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground"
                             app:cardCornerRadius="5dp">
 
@@ -296,7 +294,7 @@
                                 android:background="@color/color_3"
                                 android:fontFamily="@font/montserrat"
                                 android:text="RETAKE"
-                                android:textColor="@color/white"
+                                android:textColor="@color/button_text_color"
                                 android:textSize="11sp" />
 
                         </androidx.cardview.widget.CardView>
@@ -409,7 +407,7 @@
                                 android:background="@color/color_3"
                                 android:fontFamily="@font/montserrat"
                                 android:text="RETAKE"
-                                android:textColor="@color/white"
+                                android:textColor="@color/button_text_color"
                                 android:textSize="11sp" />
 
                         </androidx.cardview.widget.CardView>
@@ -522,7 +520,7 @@
                                 android:background="@color/color_3"
                                 android:fontFamily="@font/montserrat"
                                 android:text="RETAKE"
-                                android:textColor="@color/white"
+                                android:textColor="@color/button_text_color"
                                 android:textSize="11sp" />
 
                         </androidx.cardview.widget.CardView>
@@ -635,7 +633,7 @@
                                 android:background="@color/color_3"
                                 android:fontFamily="@font/montserrat"
                                 android:text="RETAKE"
-                                android:textColor="@color/white"
+                                android:textColor="@color/button_text_color"
                                 android:textSize="11sp" />
 
                         </androidx.cardview.widget.CardView>
@@ -748,7 +746,7 @@
                                 android:background="@color/color_3"
                                 android:fontFamily="@font/montserrat"
                                 android:text="RETAKE"
-                                android:textColor="@color/white"
+                                android:textColor="@color/button_text_color"
                                 android:textSize="11sp" />
 
                         </androidx.cardview.widget.CardView>

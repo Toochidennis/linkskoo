@@ -2,6 +2,13 @@ package com.digitaldream.ddl.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -9,19 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
-import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.digitaldream.ddl.Activities.BooksActivity;
 import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.R;
 
@@ -83,11 +81,11 @@ public class ELibraryFragment extends Fragment {
         mImageSlider.setImageList(mSlideModelList);
 
         mImageSlider.setItemClickListener(sI -> {
-            switch (sI){
+            switch (sI) {
                 case 0:
                 case 1:
                 case 2:
-                    Toast.makeText(getContext(), "You clicked position "+sI,
+                    Toast.makeText(getContext(), "You clicked position " + sI,
                             Toast.LENGTH_SHORT).show();
                     break;
                 default:
@@ -102,7 +100,18 @@ public class ELibraryFragment extends Fragment {
 
         mCbt.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), StaffUtils.class);
-            intent.putExtra("from", "cbt_exam");
+            intent.putExtra("from", "cbt");
+            startActivity(intent);
+        });
+
+        mBooks.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), BooksActivity.class);
+            startActivity(intent);
+        });
+
+        mVideos.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), StaffUtils.class);
+            intent.putExtra("from", "videos");
             startActivity(intent);
         });
 

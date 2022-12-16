@@ -49,6 +49,7 @@ dependencies {
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
     implementation "com.google.android.material:material:1.2.0-alpha06"
     implementation 'com.google.code.gson:gson:2.8.6'
+
     //image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 

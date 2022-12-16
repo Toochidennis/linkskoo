@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -29,7 +28,6 @@ public class AttendanceActivity extends AppCompatActivity {
     String mStudentLevelId, mStudentClassId, mClassName, from;
 
     private String year, term;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,16 +106,6 @@ public class AttendanceActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
     }
 
 

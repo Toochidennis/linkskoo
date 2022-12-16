@@ -139,7 +139,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     }
 
     public void displayProgress() {
-        Methods.animateObject(mAverageProgressBar, mAverageScore, 0);
+        Methods.animateObject(mAverageProgressBar, mAverageScore, 10);
         Methods.animateObject(mMathsProgressBar, mMathsScore, 0);
         Methods.animateObject(mEnglishProgressBar, mEnglishScore, 0);
         Methods.animateObject(mPhysicsProgressBar, mPhysicsScore, 0);

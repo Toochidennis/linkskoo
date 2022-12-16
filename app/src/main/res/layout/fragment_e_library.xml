@@ -454,7 +454,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="15dp">
 
                 <TextView
                     android:id="@+id/chemistry"
@@ -532,7 +533,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="40dp"
         android:fontFamily="@font/montserrat_alternates"
-        android:text="Category"
+        android:text="Categories"
         android:textColor="@color/text_bg_color"
         android:textSize="18sp"
         android:textStyle="bold" />

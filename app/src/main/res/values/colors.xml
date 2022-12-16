@@ -30,6 +30,7 @@
     <color name="green_cyan">#E7F6F1</color>
     <color name="mono_blue">#6B73C4</color>
     <color name="light_green">#F0F8E5</color>
+    <color name="button_text_color">#5D4037</color>
 
     <color name="color_1">#cc33ff</color>
     <color name="color_2">#3366ff</color>
@@ -40,7 +41,7 @@
     <color name="color_7">#9999ff</color>
     <color name="color_8">#006699</color>
 
-    <color name="icons_color">#FFEEEEEE</color>
+    <color name="icons_color">#EEEEEE</color>
     <color name="text_bg_color">#FF323848</color>
 
 

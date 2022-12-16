@@ -10,6 +10,7 @@ import com.digitaldream.ddl.Fragments.CBTCoursesFragment;
 import com.digitaldream.ddl.Fragments.CBTExamTypeFragment;
 import com.digitaldream.ddl.Fragments.CBTYearFragment;
 import com.digitaldream.ddl.Fragments.ContactsStaff;
+import com.digitaldream.ddl.Fragments.LibraryVideosFragment;
 import com.digitaldream.ddl.Fragments.ResultStaff;
 import com.digitaldream.ddl.R;
 
@@ -36,7 +37,7 @@ public class StaffUtils extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         AdminClassAttendanceFragment.newInstance(classId, levelId, className, "staff")).commit();
                 break;
-            case "cbt_exam":
+            case "cbt":
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CBTExamTypeFragment()).commit();
                 break;
             case "cbt_exam_name":
@@ -45,6 +46,10 @@ public class StaffUtils extends AppCompatActivity {
             case "cbt_course":
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, CBTYearFragment.newInstance(courseName, "")).commit();
                 break;
+            case "videos":
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LibraryVideosFragment()).commit();
+                break;
+
 
         }
 

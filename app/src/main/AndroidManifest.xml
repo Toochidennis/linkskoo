@@ -16,6 +16,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_win_school"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/security_config"
@@ -23,7 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.digitaldream.ddl.Activities.StaffCourseAttendance"/>
+        <activity android:name="com.digitaldream.ddl.Activities.BooksActivity" />
+
+        <activity android:name="com.digitaldream.ddl.Activities.StaffCourseAttendance" />
 
         <activity
             android:name="com.digitaldream.ddl.Activities.AttendanceDetails"
