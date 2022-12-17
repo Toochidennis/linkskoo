@@ -395,7 +395,7 @@
                                         android:layout_toEndOf="@id/words_count_icon_1"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
                                     <ImageView
                                         android:id="@+id/eye_view_icon_1"
@@ -417,7 +417,7 @@
                                         android:layout_toEndOf="@id/eye_view_icon_1"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
 
                                 </RelativeLayout>
@@ -551,7 +551,7 @@
                                         android:layout_toEndOf="@id/words_count_icon_2"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
                                     <ImageView
                                         android:id="@+id/eye_view_icon_2"
@@ -573,7 +573,7 @@
                                         android:layout_toEndOf="@id/eye_view_icon_2"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
 
                                 </RelativeLayout>
@@ -707,7 +707,7 @@
                                         android:layout_toEndOf="@id/words_count_icon_3"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
                                     <ImageView
                                         android:id="@+id/eye_view_icon_3"
@@ -729,7 +729,7 @@
                                         android:layout_toEndOf="@id/eye_view_icon_3"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
 
                                 </RelativeLayout>
@@ -864,7 +864,7 @@
                                         android:layout_toEndOf="@id/words_count_icon_4"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
                                     <ImageView
                                         android:id="@+id/eye_view_icon_4"
@@ -886,7 +886,7 @@
                                         android:layout_toEndOf="@id/eye_view_icon_4"
                                         android:fontFamily="@font/montserrat"
                                         android:text="100k"
-                                        android:textSize="11sp" />
+                                        android:textSize="10sp" />
 
 
                                 </RelativeLayout>
