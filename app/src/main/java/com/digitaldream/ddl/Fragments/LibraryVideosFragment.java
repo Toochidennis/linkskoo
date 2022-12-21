@@ -5,9 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.digitaldream.ddl.R;
+
+import java.util.Objects;
 
 
 public class LibraryVideosFragment extends Fragment {
@@ -18,6 +23,9 @@ public class LibraryVideosFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
+
+    private Toolbar mToolbar;
+    private ActionBar mActionBar;
 
     public LibraryVideosFragment() {
         // Required empty public constructor
@@ -46,6 +54,22 @@ public class LibraryVideosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_library_videos, container, false);
+        View view = inflater.inflate(R.layout.fragment_library_videos,
+                container, false);
+
+        mToolbar = view.findViewById(R.id.toolbar);
+
+        ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).setSupportActionBar(mToolbar);
+        mActionBar =
+                ((AppCompatActivity) (getActivity())).getSupportActionBar();
+        assert mActionBar != null;
+        mActionBar.setHomeButtonEnabled(true);
+        mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setTitle("Videos");
+        setHasOptionsMenu(true);
+        mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+
+        return view;
     }
 }

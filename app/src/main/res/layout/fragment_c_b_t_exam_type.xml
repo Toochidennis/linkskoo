@@ -23,7 +23,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -314,7 +315,7 @@
                             android:layout_height="120dp"
                             android:indeterminateOnly="false"
                             android:progress="0"
-                            android:progressDrawable="@drawable/score_circle"
+                            android:progressDrawable="@drawable/progress_circle_1"
                             android:textAlignment="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -427,7 +428,7 @@
                             android:layout_height="120dp"
                             android:indeterminateOnly="false"
                             android:progress="0"
-                            android:progressDrawable="@drawable/score_circle"
+                            android:progressDrawable="@drawable/progress_circle_2"
                             android:textAlignment="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -540,7 +541,7 @@
                             android:layout_height="120dp"
                             android:indeterminateOnly="false"
                             android:progress="0"
-                            android:progressDrawable="@drawable/score_circle"
+                            android:progressDrawable="@drawable/progress_circle_3"
                             android:textAlignment="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"

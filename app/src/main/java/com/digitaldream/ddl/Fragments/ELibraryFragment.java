@@ -115,6 +115,11 @@ public class ELibraryFragment extends Fragment {
             startActivity(intent);
         });
 
+        mGames.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), StaffUtils.class);
+            intent.putExtra("from", "games");
+            startActivity(intent);
+        });
 
         return view;
     }

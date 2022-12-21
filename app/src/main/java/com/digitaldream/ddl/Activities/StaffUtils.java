@@ -10,6 +10,7 @@ import com.digitaldream.ddl.Fragments.CBTCoursesFragment;
 import com.digitaldream.ddl.Fragments.CBTExamTypeFragment;
 import com.digitaldream.ddl.Fragments.CBTYearFragment;
 import com.digitaldream.ddl.Fragments.ContactsStaff;
+import com.digitaldream.ddl.Fragments.LibraryGamesFragment;
 import com.digitaldream.ddl.Fragments.LibraryVideosFragment;
 import com.digitaldream.ddl.Fragments.ResultStaff;
 import com.digitaldream.ddl.R;
@@ -48,6 +49,9 @@ public class StaffUtils extends AppCompatActivity {
                 break;
             case "videos":
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LibraryVideosFragment()).commit();
+                break;
+            case "games":
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LibraryGamesFragment()).commit();
                 break;
 
 
