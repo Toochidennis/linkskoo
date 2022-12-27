@@ -194,6 +194,8 @@
         <service
             android:name="com.digitaldream.ddl.Utils.FileTransferService"
             android:enabled="true" />
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1466742493773084~7296399493"/>
     </application>
 
 </manifest>

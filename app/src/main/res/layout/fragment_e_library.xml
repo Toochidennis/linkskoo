@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,6 +22,7 @@
             layout="@layout/toolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -57,8 +59,7 @@
             android:fontFamily="@font/montserrat_alternates"
             android:text="Top Videos"
             android:textColor="@color/text_bg_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
 
         <androidx.cardview.widget.CardView
@@ -420,6 +421,7 @@
                 android:layout_width="150dp"
                 android:layout_height="110dp"
                 android:layout_marginStart="40dp"
+                android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/romance"
                 android:clickable="true"
                 android:focusable="true"
@@ -535,8 +537,7 @@
         android:fontFamily="@font/montserrat_alternates"
         android:text="Categories"
         android:textColor="@color/text_bg_color"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -544,95 +545,81 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
+
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/cbt_btn"
+            android:layout_width="185dp"
+            android:layout_height="80dp"
             android:layout_marginStart="15dp"
+            android:backgroundTint="@color/color_4"
             android:clickable="true"
             android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp">
 
-            <RelativeLayout
-                android:id="@+id/cbt_btn"
-                android:layout_width="190dp"
-                android:layout_height="75dp"
-                android:background="@color/color_2"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_cbt"
+                app:tint="@color/icons_color" />
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/ic_cbt"
-                    app:tint="@color/white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/montserrat"
+                android:lines="1"
+                android:text="COMPUTER BASED TEST"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                     android:layout_alignParentEnd="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="45dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="COMPUTER BASED TEST"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
-
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/videos_btn"
+            android:layout_width="185dp"
+            android:layout_height="80dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp"
+            android:backgroundTint="@color/color_1"
             android:clickable="true"
             android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp">
 
-            <RelativeLayout
-                android:id="@+id/videos_btn"
-                android:layout_width="190dp"
-                android:layout_height="75dp"
-                android:background="@color/color_1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_video"
+                app:tint="@color/icons_color" />
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/ic_video"
-                    app:tint="@color/white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/montserrat"
+                android:lines="1"
+                android:text="VIDEOS"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="80dp"
-                    android:layout_marginTop="45dp"
-                    android:layout_marginEnd="20dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="VIDEOS"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -646,99 +633,93 @@
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/games_btn"
+            android:layout_width="185dp"
+            android:layout_height="80dp"
             android:layout_marginStart="15dp"
+            android:backgroundTint="@color/color_3"
             android:clickable="true"
             android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp">
 
-            <RelativeLayout
-                android:id="@+id/games_btn"
-                android:layout_width="190dp"
-                android:layout_height="75dp"
-                android:background="@color/color_6"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_game_pad"
+                app:tint="@color/icons_color" />
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/ic_game_pad"
-                    app:tint="@color/white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/montserrat"
+                android:lines="1"
+                android:text="GAMES"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="100dp"
-                    android:layout_marginTop="45dp"
-                    android:layout_marginEnd="15dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="GAMES"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/books_btn"
+            android:layout_width="185dp"
+            android:layout_height="80dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp"
+            android:backgroundTint="@color/color_5"
             android:clickable="true"
             android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp">
 
-            <RelativeLayout
-                android:id="@+id/books_btn"
-                android:layout_width="190dp"
-                android:layout_height="75dp"
-                android:background="@color/color_5"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/ic_books"
-                    app:tint="@color/icons_color" />
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_books"
+                app:tint="@color/icons_color" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="80dp"
-                    android:layout_marginTop="45dp"
-                    android:layout_marginEnd="20dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="BOOKS"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/montserrat"
+                android:lines="1"
+                android:text="BOOKS"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
-            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
 
     </LinearLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-1466742493773084/2293987270" />
 
 
 </LinearLayout>

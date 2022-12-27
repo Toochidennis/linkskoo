@@ -42,6 +42,7 @@ dependencies {
     implementation 'cc.cloudist.acplibrary:library:1.2.1'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-ads:21.4.0'
 
     implementation 'org.jsoup:jsoup:1.8.3'
     api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
@@ -52,11 +53,6 @@ dependencies {
 
     //image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
-
-   //pie chart
-    implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
-    implementation 'com.nineoldandroids:library:2.4.0'
-
 
     implementation "androidx.recyclerview:recyclerview:$supportVersion"
     // ExoPlayer

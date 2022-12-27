@@ -30,8 +30,7 @@
                     android:fontFamily="@font/montserrat_alternates"
                     android:text="Categories"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
 
                 <androidx.cardview.widget.CardView
@@ -236,8 +235,7 @@
                     android:fontFamily="@font/montserrat_alternates"
                     android:text="Trending Books"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
 
                 <androidx.cardview.widget.CardView
@@ -918,8 +916,7 @@
                     android:fontFamily="@font/montserrat_alternates"
                     android:text="Must-read Book Series"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
 
                 <androidx.cardview.widget.CardView
@@ -1600,8 +1597,7 @@
                     android:fontFamily="@font/montserrat_alternates"
                     android:text="An Early Christmas Present"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
 
                 <androidx.cardview.widget.CardView

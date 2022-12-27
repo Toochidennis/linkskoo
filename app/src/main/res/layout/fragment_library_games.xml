@@ -1714,12 +1714,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/action_image_1"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -1843,12 +1843,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/action_image_2"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -1972,12 +1972,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/action_image_3"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2101,12 +2101,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/action_image_4"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2231,12 +2231,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/action_image_5"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2414,12 +2414,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/word_puzzle_image_1"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2543,12 +2543,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/word_puzzle_image_2"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2672,12 +2672,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/word_puzzle_image_3"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2801,12 +2801,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/word_puzzle_image_4"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -2931,12 +2931,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/word_puzzle_image_5"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -3114,12 +3114,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/multi_player_image_1"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -3243,12 +3243,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/multi_player_image_2"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -3372,12 +3372,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/multi_player_image_3"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -3501,12 +3501,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/multi_player_image_4"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
@@ -3631,12 +3631,12 @@
                         app:cardElevation="0dp">
 
                         <RelativeLayout
-                            android:layout_width="380dp"
+                            android:layout_width="360dp"
                             android:layout_height="wrap_content">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/multi_player_image_5"
-                                android:layout_width="380dp"
+                                android:layout_width="360dp"
                                 android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"

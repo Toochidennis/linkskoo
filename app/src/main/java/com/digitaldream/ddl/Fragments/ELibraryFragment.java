@@ -2,18 +2,19 @@ package com.digitaldream.ddl.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.denzcoskun.imageslider.ImageSlider;
@@ -22,6 +23,9 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.ddl.Activities.BooksActivity;
 import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,8 @@ public class ELibraryFragment extends Fragment {
     private List<SlideModel> mSlideModelList;
     private Toolbar mToolbar;
     private ActionBar mActionBar;
-    private RelativeLayout mCbt, mVideos, mGames, mBooks;
+    private CardView mCbt, mVideos, mGames, mBooks;
+    private AdView mAdView;
 
 
     public ELibraryFragment() {
@@ -52,12 +57,17 @@ public class ELibraryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_e_library, container,
                 false);
 
+        MobileAds.initialize(Objects.requireNonNull(getContext()), sInitializationStatus -> {
+            Log.d("AdMob", "Initialisation completed");
+        });
+
         mToolbar = view.findViewById(R.id.toolbar);
         mImageSlider = view.findViewById(R.id.imageSlider);
         mCbt = view.findViewById(R.id.cbt_btn);
         mVideos = view.findViewById(R.id.videos_btn);
         mGames = view.findViewById(R.id.games_btn);
         mBooks = view.findViewById(R.id.books_btn);
+        mAdView = view.findViewById(R.id.adView);
 
         ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).setSupportActionBar(mToolbar);
         mActionBar =
@@ -120,6 +130,12 @@ public class ELibraryFragment extends Fragment {
             intent.putExtra("from", "games");
             startActivity(intent);
         });
+
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        Log.d("AdMob",""+ mAdView.isShown());
+
 
         return view;
     }
