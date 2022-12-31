@@ -59,14 +59,14 @@
             android:fontFamily="@font/montserrat_alternates"
             android:text="Top Videos"
             android:textColor="@color/text_bg_color"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="200dp"
+            android:layout_marginStart="182dp"
             app:cardCornerRadius="5dp">
 
             <TextView
@@ -76,7 +76,7 @@
                 android:fontFamily="@font/montserrat"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="SEE ALL"
+                android:text="@string/see_all"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
@@ -537,7 +537,7 @@
         android:fontFamily="@font/montserrat_alternates"
         android:text="Categories"
         android:textColor="@color/text_bg_color"
-        android:textSize="18sp" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -718,6 +718,7 @@
         android:id="@+id/adView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-1466742493773084/2293987270" />
 

@@ -23,7 +23,6 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.ddl.Activities.BooksActivity;
 import com.digitaldream.ddl.Activities.StaffUtils;
 import com.digitaldream.ddl.R;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
@@ -132,9 +131,9 @@ public class ELibraryFragment extends Fragment {
         });
 
 
-        AdRequest adRequest = new AdRequest.Builder().build();
+       /* AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-        Log.d("AdMob",""+ mAdView.isShown());
+        Log.d("AdMob",""+ mAdView.isShown());*/
 
 
         return view;
