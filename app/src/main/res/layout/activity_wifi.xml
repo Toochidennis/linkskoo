@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#EEE"
-    tools:context=".Activities.WifiActivity">
+    tools:context=".activities.WifiActivity">
     <include layout="@layout/toolbar"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/peers_recycleview"

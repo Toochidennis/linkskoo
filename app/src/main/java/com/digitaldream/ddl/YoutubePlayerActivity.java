@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
-import com.digitaldream.ddl.Models.VideoTable;
+import com.digitaldream.ddl.models.VideoTable;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;

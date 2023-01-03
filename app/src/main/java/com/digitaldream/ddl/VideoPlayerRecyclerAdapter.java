@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
-import com.digitaldream.ddl.Models.MediaObject;
+import com.digitaldream.ddl.models.MediaObject;
 
 import java.util.ArrayList;
 

@@ -73,6 +73,11 @@
         <item name="android:windowExitAnimation">@anim/slide_out_dialog</item>
     </style>
 
+    <style name="Widget.AppTheme.MyView" parent="">
+        <item name="android:background">@color/gray_400</item>
+        <item name="exampleColor">@color/light_blue_400</item>
+    </style>
+
     <!--<style name="TextAppearance.AppCompat.Widget.ActionBar.Title"
         parent="@android:style/TextAppearance">
         <item name="android:textSize">11sp</item>

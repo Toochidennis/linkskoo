@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.digitaldream.ddl.Adapters.ViewPagerAdapter;
+import com.digitaldream.ddl.adapters.ViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

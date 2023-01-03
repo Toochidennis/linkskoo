@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.digitaldream.ddl.Models.ClassNameTable;
+import com.digitaldream.ddl.models.ClassNameTable;
 
 import java.util.List;
 import java.util.Random;

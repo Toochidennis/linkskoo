@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.digitaldream.ddl.Adapters.VideoAdapter;
-import com.digitaldream.ddl.Models.VideoTable;
+import com.digitaldream.ddl.adapters.VideoAdapter;
+import com.digitaldream.ddl.models.VideoTable;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;

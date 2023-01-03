@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".Activities.AttendanceActivity">
+    tools:context=".activities.AttendanceActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"

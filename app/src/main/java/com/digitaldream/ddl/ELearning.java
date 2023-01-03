@@ -10,10 +10,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.digitaldream.ddl.Activities.ElearningCourses;
-import com.digitaldream.ddl.Adapters.ElearningLevelAdapter;
-import com.digitaldream.ddl.Models.CourseTable;
-import com.digitaldream.ddl.Models.LevelTable;
+import com.digitaldream.ddl.activities.ElearningCourses;
+import com.digitaldream.ddl.adapters.ElearningLevelAdapter;
+import com.digitaldream.ddl.models.CourseTable;
+import com.digitaldream.ddl.models.LevelTable;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 

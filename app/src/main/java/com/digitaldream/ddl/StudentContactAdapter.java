@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.digitaldream.ddl.Models.StudentTable;
+import com.digitaldream.ddl.models.StudentTable;
 
 import java.util.ArrayList;
 import java.util.List;

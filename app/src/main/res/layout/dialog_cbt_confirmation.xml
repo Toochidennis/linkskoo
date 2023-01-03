@@ -8,7 +8,7 @@
     android:clipToPadding="false"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".Utils.CBTConfirmationDialog">
+    tools:context=".utils.CBTConfirmationDialog">
 
     <TextView
         android:id="@+id/textView"

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white"
-    tools:context=".Activities.GeneralSettings">
+    tools:context=".activities.GeneralSettings">
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar"/>
 

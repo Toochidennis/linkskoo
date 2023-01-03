@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
-import com.digitaldream.ddl.Models.MediaObject;
+import com.digitaldream.ddl.models.MediaObject;
 
 public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
     FrameLayout media_container;

@@ -33,6 +33,7 @@
         android:layout_marginBottom="10dp"
         android:fontFamily="@font/montserrat"
         android:lines="2"
+        android:gravity="end"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="11sp" />

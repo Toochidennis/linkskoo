@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white"
-    tools:context=".Activities.ContentDownload">
+    tools:context=".activities.ContentDownload">
     <androidx.cardview.widget.CardView
         android:id="@+id/toolbar_cont"
         android:layout_width="match_parent"

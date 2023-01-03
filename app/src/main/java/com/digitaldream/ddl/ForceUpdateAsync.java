@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.digitaldream.ddl.Activities.Dashboard;
-import com.digitaldream.ddl.Activities.StaffDashboardActivity;
-import com.digitaldream.ddl.Activities.StudentDashboardActivity;
-import com.digitaldream.ddl.Utils.CustomUpdateDialog;
+import com.digitaldream.ddl.activities.Dashboard;
+import com.digitaldream.ddl.activities.StaffDashboardActivity;
+import com.digitaldream.ddl.activities.StudentDashboardActivity;
+import com.digitaldream.ddl.utils.CustomUpdateDialog;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;

@@ -34,7 +34,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digitaldream.ddl.Adapters.QAdapter;
+import com.digitaldream.ddl.adapters.QAdapter;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;

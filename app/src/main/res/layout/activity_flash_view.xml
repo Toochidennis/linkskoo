@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.FlashView">
+    tools:context=".activities.FlashView">
     <include layout="@layout/toolbar"/>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"

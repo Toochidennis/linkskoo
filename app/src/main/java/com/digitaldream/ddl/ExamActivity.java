@@ -51,10 +51,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.ddl.Activities.Login;
-import com.digitaldream.ddl.Adapters.QAdapter;
-import com.digitaldream.ddl.Utils.CustomDialog;
-import com.digitaldream.ddl.Utils.ImagePreviewDialog;
+import com.digitaldream.ddl.activities.Login;
+import com.digitaldream.ddl.adapters.QAdapter;
+import com.digitaldream.ddl.utils.CustomDialog;
+import com.digitaldream.ddl.utils.ImagePreviewDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
 

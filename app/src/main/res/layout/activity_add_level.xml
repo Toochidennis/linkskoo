@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context=".Activities.AddLevel">
+    tools:context=".activities.AddLevel">
     <include layout="@layout/toolbar"/>
    <TextView
         android:layout_width="wrap_content"

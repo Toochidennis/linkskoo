@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.LibraryVideosFragment">
+    tools:context=".fragments.LibraryVideosFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_alternates"
-                    android:text="Top Videos"
+                    android:text="@string/top_videos"
                     android:textColor="@color/text_bg_color"
                     android:textSize="20sp" />
 
@@ -59,7 +59,7 @@
                         android:fontFamily="@font/montserrat"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="SEE ALL"
+                        android:text="@string/see_all"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -75,442 +75,590 @@
                 android:scrollbars="none">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <androidx.cardview.widget.CardView
-                        android:layout_width="150dp"
-                        android:layout_height="110dp"
-                        android:layout_marginStart="15dp"
-                        android:backgroundTint="@color/romance"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
-                        app:contentPadding="10dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="5dp">
-
-                            <Button
-                                android:layout_width="70dp"
-                                android:layout_height="23dp"
-                                android:background="@color/color_3"
-                                android:drawableStart="@drawable/ic_play_arrow_white_24dp"
-                                android:fontFamily="@font/montserrat"
-                                android:text="PlAY"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
-
-                        </androidx.cardview.widget.CardView>
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp">
-
-                        <TextView
-                            android:id="@+id/maths"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Maths"
-                            android:textColor="@color/color_3"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/maths_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/maths"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_alternates"
-                            android:lines="2"
-                            android:text="Linear algebra and verbal reasoning and quantitative"
-                            android:textColor="@color/text_bg_color"
-                            android:textSize="14sp" />
-
-                        <ImageView
-                            android:id="@+id/maths_time"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_below="@id/maths_title"
-                            android:layout_marginTop="7dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/time_content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="65dp"
-                            android:layout_toEndOf="@id/maths_time"
-                            android:fontFamily="@font/montserrat"
-                            android:text="30 minutes"
-                            android:textSize="12sp" />
-
-                        <ImageView
-                            android:id="@+id/profile"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_below="@id/maths_time"
-                            android:layout_marginTop="10dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_person"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/time_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="6dp"
-                            android:layout_toEndOf="@id/profile"
-                            android:fontFamily="@font/montserrat"
-                            android:text="30 minutes"
-                            android:textSize="12sp" />
-
-                    </RelativeLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="150dp"
-                        android:layout_height="110dp"
-                        android:layout_marginStart="20dp"
-                        android:backgroundTint="@color/green_cyan"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
-                        app:contentPadding="10dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="5dp">
-
-                            <Button
-                                android:layout_width="70dp"
-                                android:layout_height="23dp"
-                                android:background="@color/color_2"
-                                android:drawableStart="@drawable/ic_play_arrow_white_24dp"
-                                android:fontFamily="@font/montserrat"
-                                android:text="PlAY"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
-
-                        </androidx.cardview.widget.CardView>
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp">
-
-                        <TextView
-                            android:id="@+id/english"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat"
-                            android:text="English"
-                            android:textColor="@color/color_2"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/english_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/english"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_alternates"
-                            android:lines="2"
-                            android:text="Noun"
-                            android:textColor="@color/text_bg_color"
-                            android:textSize="14sp" />
-
-                        <ImageView
-                            android:id="@+id/english_time"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_below="@id/english_title"
-                            android:layout_marginTop="7dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/english_time_content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="65dp"
-                            android:layout_toEndOf="@id/english_time"
-                            android:fontFamily="@font/montserrat"
-                            android:text="30 minutes"
-                            android:textSize="12sp" />
-
-                        <ImageView
-                            android:id="@+id/english_profile"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_below="@id/english_time"
-                            android:layout_marginTop="10dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_person"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/english_time_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="7dp"
-                            android:layout_toEndOf="@id/english_profile"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Toochi Dennis"
-                            android:textSize="12sp" />
-
-                    </RelativeLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="150dp"
-                        android:layout_height="110dp"
-                        android:layout_marginStart="20dp"
-                        android:backgroundTint="@color/light_green"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
-                        app:contentPadding="10dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="5dp">
-
-                            <Button
-                                android:layout_width="70dp"
-                                android:layout_height="23dp"
-                                android:background="@color/color_4"
-                                android:drawableStart="@drawable/ic_play_arrow_white_24dp"
-                                android:fontFamily="@font/montserrat"
-                                android:text="PlAY"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
-
-                        </androidx.cardview.widget.CardView>
-
-                    </androidx.cardview.widget.CardView>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp">
-
-                        <TextView
-                            android:id="@+id/physics"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Physics"
-                            android:textColor="@color/color_4"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/physics_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/physics"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_alternates"
-                            android:lines="2"
-                            android:text="Motion"
-                            android:textColor="@color/text_bg_color"
-                            android:textSize="14sp" />
-
-                        <ImageView
-                            android:id="@+id/physics_time"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_below="@id/physics_title"
-                            android:layout_marginTop="7dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/physics_time_content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="65dp"
-                            android:layout_toEndOf="@id/physics_time"
-                            android:fontFamily="@font/montserrat"
-                            android:text="30 minutes"
-                            android:textSize="12sp" />
-
-                        <ImageView
-                            android:id="@+id/physics_profile"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_below="@id/physics_time"
-                            android:layout_marginTop="10dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_person"
-                            app:tint="@color/gray" />
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/physics_time_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="7dp"
-                            android:layout_toEndOf="@id/physics_profile"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Toochi"
-                            android:textSize="12sp" />
-
-                    </RelativeLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="150dp"
-                        android:layout_height="110dp"
-                        android:layout_marginStart="40dp"
-                        android:backgroundTint="@color/romance"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
-                        app:contentPadding="10dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="5dp">
-
-                            <Button
-                                android:layout_width="70dp"
-                                android:layout_height="23dp"
-                                android:background="@color/color_1"
-                                android:drawableStart="@drawable/ic_play_arrow_white_24dp"
-                                android:fontFamily="@font/montserrat"
-                                android:text="PlAY"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
-
-                        </androidx.cardview.widget.CardView>
-
-                    </androidx.cardview.widget.CardView>
-
-                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="15dp">
+                        android:layout_marginStart="15dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="150dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="start"
+                            android:backgroundTint="@color/color_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:contentPadding="10dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="5dp">
+
+                                <Button
+                                    android:layout_width="70dp"
+                                    android:layout_height="23dp"
+                                    android:background="@color/color_3"
+                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:text="@string/play"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </androidx.cardview.widget.CardView>
 
                         <TextView
-                            android:id="@+id/chemistry"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
                             android:fontFamily="@font/montserrat"
-                            android:text="Chemistry"
-                            android:textColor="@color/color_3"
-                            android:textSize="10sp" />
+                            android:text="@string/mathematics"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
 
                         <TextView
-                            android:id="@+id/chemistry_title"
-                            android:layout_width="wrap_content"
+                            android:layout_width="170dp"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/chemistry"
-                            android:layout_marginTop="2dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="20dp"
                             android:ellipsize="end"
                             android:fontFamily="@font/montserrat_alternates"
                             android:lines="2"
-                            android:text="Water"
+                            android:text="@string/subject_description"
                             android:textColor="@color/text_bg_color"
                             android:textSize="14sp" />
 
                         <ImageView
-                            android:id="@+id/chemistry_time"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
-                            android:layout_below="@id/chemistry_title"
-                            android:layout_marginTop="7dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="70dp"
                             android:contentDescription="@string/todo"
                             android:src="@drawable/ic_time"
                             app:tint="@color/gray" />
 
                         <TextView
-                            android:id="@+id/chemistry_time_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="65dp"
-                            android:layout_toEndOf="@id/chemistry_time"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="69dp"
                             android:fontFamily="@font/montserrat"
-                            android:text="30 minutes"
-                            android:textSize="12sp" />
+                            android:text="@string/time"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
 
                         <ImageView
-                            android:id="@+id/chemistry_profile"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
-                            android:layout_below="@id/chemistry_time"
-                            android:layout_marginTop="10dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="95dp"
+                            android:contentDescription="@string/todo"
                             android:src="@drawable/ic_person"
                             app:tint="@color/gray" />
-
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/chemistry_time_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="6dp"
-                            android:layout_toEndOf="@id/chemistry_profile"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="94dp"
                             android:fontFamily="@font/montserrat"
-                            android:text="30 minutes"
-                            android:textSize="12sp" />
+                            android:text="@string/developer"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
 
-                    </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="150dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="start"
+                            android:backgroundTint="@color/color_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:contentPadding="10dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="5dp">
+
+                                <Button
+                                    android:layout_width="70dp"
+                                    android:layout_height="23dp"
+                                    android:background="@color/color_3"
+                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:text="@string/play"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/mathematics"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="20dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_alternates"
+                            android:lines="2"
+                            android:text="@string/subject_description"
+                            android:textColor="@color/text_bg_color"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="70dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_time"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="69dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/time"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="95dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="94dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/developer"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="150dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="start"
+                            android:backgroundTint="@color/color_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:contentPadding="10dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="5dp">
+
+                                <Button
+                                    android:layout_width="70dp"
+                                    android:layout_height="23dp"
+                                    android:background="@color/color_3"
+                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:text="@string/play"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/mathematics"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="20dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_alternates"
+                            android:lines="2"
+                            android:text="@string/subject_description"
+                            android:textColor="@color/text_bg_color"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="70dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_time"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="69dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/time"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="95dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="94dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/developer"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="150dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="start"
+                            android:backgroundTint="@color/color_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:contentPadding="10dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="5dp">
+
+                                <Button
+                                    android:layout_width="70dp"
+                                    android:layout_height="23dp"
+                                    android:background="@color/color_3"
+                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:text="@string/play"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/mathematics"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="20dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_alternates"
+                            android:lines="2"
+                            android:text="@string/subject_description"
+                            android:textColor="@color/text_bg_color"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="70dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_time"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="69dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/time"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="95dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="94dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/developer"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="150dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="start"
+                            android:backgroundTint="@color/color_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:contentPadding="10dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="5dp">
+
+                                <Button
+                                    android:layout_width="70dp"
+                                    android:layout_height="23dp"
+                                    android:background="@color/color_3"
+                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:fontFamily="@font/montserrat"
+                                    android:text="@string/play"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/mathematics"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="20dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_alternates"
+                            android:lines="2"
+                            android:text="@string/subject_description"
+                            android:textColor="@color/text_bg_color"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="70dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_time"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="69dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/time"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="95dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="94dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/developer"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+
+                    </androidx.cardview.widget.CardView>
+
 
                 </LinearLayout>
 
             </HorizontalScrollView>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -523,12 +671,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_alternates"
-                    android:text="Categories"
+                    android:text="@string/categories"
                     android:textColor="@color/text_bg_color"
                     android:textSize="20sp" />
 
-
-                <androidx.cardview.widget.CardView
+              <!--  <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -542,11 +689,11 @@
                         android:fontFamily="@font/montserrat"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="SEE ALL"
+                        android:text="@string/see_all"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
-                </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>-->
 
 
             </LinearLayout>
@@ -565,7 +712,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
                     <ImageView
@@ -575,7 +722,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
+                        android:src="@drawable/ic_maths_function"
                         app:tint="@color/icons_color" />
 
                     <TextView
@@ -587,7 +734,8 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat"
                         android:lines="1"
-                        android:text="MATHEMATICS"
+                        android:text="@string/mathematics"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -602,7 +750,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
                     <ImageView
@@ -612,7 +760,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
+                        android:src="@drawable/english_speaking_icon"
                         app:tint="@color/icons_color" />
 
                     <TextView
@@ -624,7 +772,8 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat"
                         android:lines="1"
-                        android:text="ENGLISH LANGUAGE"
+                        android:text="@string/english_language"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -646,7 +795,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
                     <ImageView
@@ -656,7 +805,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
+                        android:src="@drawable/ic_skeleton"
                         app:tint="@color/icons_color" />
 
                     <TextView
@@ -668,7 +817,8 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat"
                         android:lines="1"
-                        android:text="BIOLOGY"
+                        android:text="@string/biology"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -683,7 +833,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
                     <ImageView
@@ -693,7 +843,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
+                        android:src="@drawable/ic_computer"
                         app:tint="@color/icons_color" />
 
                     <TextView
@@ -705,7 +855,8 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat"
                         android:lines="1"
-                        android:text="COMPUTER SCIENCE"
+                        android:text="@string/computer_science"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -727,7 +878,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
                     <ImageView
@@ -737,7 +888,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
+                        android:src="@drawable/ic_chemistry"
                         app:tint="@color/icons_color" />
 
                     <TextView
@@ -749,7 +900,8 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat"
                         android:lines="1"
-                        android:text="BUSINESS STUDIES"
+                        android:text="@string/chemistry"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -760,55 +912,11 @@
                     android:layout_height="80dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="15dp"
-                    android:backgroundTint="@color/color_1"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp">
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="top|start"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
-                        app:tint="@color/icons_color" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|end"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/montserrat"
-                        android:lines="1"
-                        android:text="ECONOMICS"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="15dp"
                     android:backgroundTint="@color/color_3"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
                     <ImageView
@@ -818,7 +926,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
+                        android:src="@drawable/ic_maths"
                         app:tint="@color/icons_color" />
 
                     <TextView
@@ -830,44 +938,8 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat"
                         android:lines="1"
-                        android:text="COMMERCE"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:backgroundTint="@color/color_2"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp">
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="top|start"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_eye_view"
-                        app:tint="@color/icons_color" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|end"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/montserrat"
-                        android:lines="1"
-                        android:text="GOVERNMENT"
+                        android:text="@string/business_studies"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -905,7 +977,7 @@
                         android:fontFamily="@font/montserrat"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="VIEW ALL"
+                        android:text="@string/view_all"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -923,18 +995,18 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    android:backgroundTint="@android:color/transparent">
+                    app:cardElevation="0dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="120dp"
                         android:layout_height="85dp"
-                        android:layout_marginEnd="15dp"
                         android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
                         android:backgroundTint="@color/color_4"
                         android:clickable="true"
                         android:focusable="true"
@@ -968,24 +1040,24 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mathematics"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"
-                        android:fontFamily="@font/montserrat"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="15dp"/>
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/mathematics"
+                        android:textColor="@color/gray"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:layout_width="190dp"
                         android:layout_height="wrap_content"
-                        android:text="Linear algebra in the, and calculus"
-                        android:ellipsize="end"
-                        android:lines="2"
-                        android:textColor="@color/text_bg_color"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/montserrat_alternates"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="30dp"/>
+                        android:layout_marginTop="30dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_alternates"
+                        android:lines="2"
+                        android:text="@string/subject_description"
+                        android:textColor="@color/text_bg_color"
+                        android:textSize="15sp" />
 
 
                 </androidx.cardview.widget.CardView>
@@ -1002,18 +1074,18 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    android:backgroundTint="@android:color/transparent">
+                    app:cardElevation="0dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="120dp"
                         android:layout_height="85dp"
-                        android:layout_marginEnd="15dp"
                         android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
                         android:backgroundTint="@color/color_4"
                         android:clickable="true"
                         android:focusable="true"
@@ -1047,24 +1119,24 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mathematics"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"
-                        android:fontFamily="@font/montserrat"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="15dp"/>
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/mathematics"
+                        android:textColor="@color/gray"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:layout_width="190dp"
                         android:layout_height="wrap_content"
-                        android:text="Linear algebra in the, and calculus"
-                        android:ellipsize="end"
-                        android:lines="2"
-                        android:textColor="@color/text_bg_color"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/montserrat_alternates"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="30dp"/>
+                        android:layout_marginTop="30dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_alternates"
+                        android:lines="2"
+                        android:text="@string/subject_description"
+                        android:textColor="@color/text_bg_color"
+                        android:textSize="15sp" />
 
 
                 </androidx.cardview.widget.CardView>
@@ -1081,18 +1153,18 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    android:backgroundTint="@android:color/transparent">
+                    app:cardElevation="0dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="120dp"
                         android:layout_height="85dp"
-                        android:layout_marginEnd="15dp"
                         android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
                         android:backgroundTint="@color/color_4"
                         android:clickable="true"
                         android:focusable="true"
@@ -1126,103 +1198,24 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mathematics"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"
-                        android:fontFamily="@font/montserrat"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="15dp"/>
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/mathematics"
+                        android:textColor="@color/gray"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:layout_width="190dp"
                         android:layout_height="wrap_content"
-                        android:text="Linear algebra in the, and calculus"
+                        android:layout_marginStart="160dp"
+                        android:layout_marginTop="30dp"
                         android:ellipsize="end"
-                        android:lines="2"
-                        android:textColor="@color/text_bg_color"
-                        android:textSize="15sp"
                         android:fontFamily="@font/montserrat_alternates"
-                        android:layout_marginStart="160dp"
-                        android:layout_marginTop="30dp"/>
-
-
-                </androidx.cardview.widget.CardView>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardElevation="0dp"
-                    app:cardCornerRadius="12dp"
-                    android:backgroundTint="@android:color/transparent">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="120dp"
-                        android:layout_height="85dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_marginStart="15dp"
-                        android:backgroundTint="@color/color_4"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
-                        app:contentPadding="12dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="12dp">
-
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="@string/todo"
-                                android:src="@drawable/ic_play_arrow_white_24dp"
-                                app:tint="@color/color_4" />
-
-                        </androidx.cardview.widget.CardView>
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mathematics"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"
-                        android:fontFamily="@font/montserrat"
-                        android:layout_marginStart="160dp"
-                        android:layout_marginTop="15dp"/>
-
-                    <TextView
-                        android:layout_width="190dp"
-                        android:layout_height="wrap_content"
-                        android:text="Linear algebra in the, and calculus"
-                        android:ellipsize="end"
                         android:lines="2"
+                        android:text="@string/subject_description"
                         android:textColor="@color/text_bg_color"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/montserrat_alternates"
-                        android:layout_marginStart="160dp"
-                        android:layout_marginTop="30dp"/>
+                        android:textSize="15sp" />
 
 
                 </androidx.cardview.widget.CardView>
@@ -1240,18 +1233,18 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    android:backgroundTint="@android:color/transparent">
+                    app:cardElevation="0dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="120dp"
                         android:layout_height="85dp"
-                        android:layout_marginEnd="15dp"
                         android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
                         android:backgroundTint="@color/color_4"
                         android:clickable="true"
                         android:focusable="true"
@@ -1285,24 +1278,24 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mathematics"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"
-                        android:fontFamily="@font/montserrat"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="15dp"/>
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/mathematics"
+                        android:textColor="@color/gray"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:layout_width="190dp"
                         android:layout_height="wrap_content"
-                        android:text="Linear algebra in the, and calculus"
-                        android:ellipsize="end"
-                        android:lines="2"
-                        android:textColor="@color/text_bg_color"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/montserrat_alternates"
                         android:layout_marginStart="160dp"
-                        android:layout_marginTop="30dp"/>
+                        android:layout_marginTop="30dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_alternates"
+                        android:lines="2"
+                        android:text="@string/subject_description"
+                        android:textColor="@color/text_bg_color"
+                        android:textSize="15sp" />
 
 
                 </androidx.cardview.widget.CardView>

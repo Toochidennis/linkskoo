@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.StaffEnterResult">
+    tools:context=".activities.StaffEnterResult">
     <include layout="@layout/toolbar"/>
     <WebView
         android:id="@+id/webview_staff_result"

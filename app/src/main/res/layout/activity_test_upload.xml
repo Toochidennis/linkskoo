@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:elevation="0dp"
     android:background="@color/bg_color"
-    tools:context=".Activities.TestUpload">
+    tools:context=".activities.TestUpload">
     <include
         layout="@layout/toolbar"
         android:id="@+id/toolbar"

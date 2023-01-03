@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.digitaldream.ddl.Models.NewsTable;
+import com.digitaldream.ddl.models.NewsTable;
 
 import java.text.DateFormat;
 import java.text.ParseException;
