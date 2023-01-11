@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.tcking:viewquery:1.6@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/68f537a67dd2ddba2b705105b6b8b889/transformed/jetified-viewquery-1.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/68f537a67dd2ddba2b705105b6b8b889/transformed/jetified-viewquery-1.6/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tcking/viewquery/1.6/1f182f437ce40ed36bd361ec122659c4fa2658f5/viewquery-1.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tcking/viewquery/1.6/bfbed4accc999ef4d80efa16bc210565050df760/viewquery-1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
