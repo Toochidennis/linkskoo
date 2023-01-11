@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher_win_school"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/security_config"
+        android:roundIcon="@mipmap/ic_launcher_win_school_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name="com.digitaldream.ddl.activities.BooksActivity" />
+
+        <activity android:name="com.digitaldream.ddl.activities.StaffCourseAttendance" />
+
+        <activity
+            android:name="com.digitaldream.ddl.activities.AttendanceDetails"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity
+            android:name="com.digitaldream.ddl.activities.CourseAttendance"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.digitaldream.ddl.activities.AdminClassAttendance"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.digitaldream.ddl.activities.AttendanceActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity android:name="com.digitaldream.ddl.activities.StudentRegistrationDetails" />
+        <activity android:name="com.digitaldream.ddl.activities.CourseRegistrationDetails" />
+        <activity android:name="com.digitaldream.ddl.activities.RegYearList" />
+        <activity android:name="com.digitaldream.ddl.activities.Courses" />
+        <activity android:name="com.digitaldream.ddl.activities.CourseRegistration" />
+        <activity android:name="com.digitaldream.ddl.activities.NewsView" />
+        <activity android:name="com.digitaldream.ddl.activities.AddNews" />
+        <activity android:name="com.digitaldream.ddl.activities.Flashcard" />
+        <activity android:name="com.digitaldream.ddl.activities.AnswerView" />
+        <activity android:name="com.digitaldream.ddl.activities.QuestionView" />
+        <activity android:name="com.digitaldream.ddl.activities.ResponseDetails" />
+        <activity android:name="com.digitaldream.ddl.activities.ViewResponses" />
+        <activity android:name="com.digitaldream.ddl.activities.FlashView" />
+        <activity android:name="com.digitaldream.ddl.ExamActivity2" />
+        <activity android:name="com.digitaldream.ddl.activities.WifiActivity" />
+        <activity android:name="com.digitaldream.ddl.activities.AdminElearningCourses" />
+        <activity android:name="com.digitaldream.ddl.activities.CreateVideoLink" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.VideoContent"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="VideoContent" />
+        <activity android:name="com.digitaldream.ddl.activities.RenderAssessment" />
+        <activity android:name="com.digitaldream.ddl.activities.ReferSchool" />
+        <activity android:name="com.digitaldream.ddl.activities.VideoCourses" />
+        <activity android:name="com.digitaldream.ddl.activities.Assessment" />
+        <activity android:name="com.digitaldream.ddl.activities.ContactUs" />
+        <activity android:name="com.digitaldream.ddl.activities.TestUpload" />
+        <activity android:name="com.digitaldream.ddl.activities.StudentElearningCourses" />
+        <activity android:name="com.digitaldream.ddl.activities.ContentDownload" />
+        <activity android:name="com.digitaldream.ddl.activities.ContentUpload" />
+        <activity android:name="com.digitaldream.ddl.activities.CourseOutlines" />
+        <activity android:name="com.digitaldream.ddl.activities.ElearningCourses" />
+        <activity android:name="com.digitaldream.ddl.ELearning" />
+        <activity android:name="com.digitaldream.ddl.utils.AssignCourseDialog" />
+        <activity android:name="com.digitaldream.ddl.activities.CoursesAssigned" />
+        <activity android:name="com.digitaldream.ddl.activities.FormClass" />
+        <activity android:name="com.digitaldream.ddl.utils.CustomCBTDialog" />
+        <activity android:name="com.digitaldream.ddl.ExamActivity" />
+        <activity android:name="com.digitaldream.ddl.utils.CustomUpdateDialog" />
+        <activity android:name="com.digitaldream.ddl.VideoUtils" />
+        <activity android:name="com.digitaldream.ddl.activities.StaffCourses" />
+        <activity android:name="com.digitaldream.ddl.activities.StaffUtils" />
+        <activity android:name="com.digitaldream.ddl.activities.AddCourse" />
+        <activity android:name="com.digitaldream.ddl.activities.AllTeachers" />
+        <activity android:name="com.digitaldream.ddl.activities.AddLevel" />
+        <activity android:name="com.digitaldream.ddl.activities.GeneralSettings" />
+        <activity android:name="com.digitaldream.ddl.activities.AssessmentSetting" />
+        <activity android:name="com.digitaldream.ddl.activities.AddClass" />
+        <activity android:name="com.digitaldream.ddl.activities.GradeSettings" />
+        <activity android:name="com.digitaldream.ddl.activities.LevelSettings" />
+        <activity android:name="com.digitaldream.ddl.activities.CourseSettings" />
+        <activity android:name="com.digitaldream.ddl.activities.Settings" />
+        <activity android:name="com.digitaldream.ddl.activities.ClassListUtil" />
+        <activity android:name="com.digitaldream.ddl.activities.ViewClassResultWebview" />
+        <activity android:name="com.digitaldream.ddl.activities.ClassResultDetails" />
+        <activity android:name="com.digitaldream.ddl.activities.SubjectResultUtil" />
+        <activity
+            android:name="com.digitaldream.ddl.YoutubePlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="YoutubePlayerActivity" />
+        <activity android:name="com.digitaldream.ddl.activities.StudentDashboardActivity" />
+        <activity android:name="com.digitaldream.ddl.activities.AddResult" />
+        <activity android:name="com.digitaldream.ddl.activities.StaffDashboardActivity" />
+        <activity android:name="com.digitaldream.ddl.ViewResultWebView" />
+        <activity android:name="com.digitaldream.ddl.activities.TeacherProfileEdit" />
+        <activity android:name="com.digitaldream.ddl.activities.AddTeacher" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.SudentDetailsEdit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.AddStudent"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.StudentResultDownload"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.ClassResultDownload"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.NewsPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.TeacherProfile"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.TeacherContacts"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.StudentProfile"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.StudentContacts"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.StaffEnterResult"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.ViewResult"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.Contacts"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.Dashboard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.Login"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.digitaldream.ddl.activities.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <service
+            android:name="com.digitaldream.ddl.utils.FileTransferService"
+            android:enabled="true" />
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1466742493773084~7296399493"/>
+    </application>
+
+</manifest>
