@@ -29,8 +29,10 @@
     <string name="view_all">VIEW ALL</string>
     <string name="categories">Categories</string>
     <string name="top_videos">Top Videos</string>
-    <string name="loading_please_wait">Loading, please wait...</string>
+    <string name="loading_please_wait">Loading, please wait…</string>
     <string name="business_studies">Business Studies</string>
+    <string name="nothing_to_show">Go to settings to set the current
+        term!</string>
     <string-array name="gender">
         <item>Select Gender</item>
         <item>Male</item>

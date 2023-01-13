@@ -67,7 +67,6 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
     private FloatingActionButton mAttendanceBtn, mTakeAttendance, mFilterAttendance,
             mAttendanceBtnEmpty, mTakeAttendanceEmpty, mFilterAttendanceEmpty;
     private Animation mFabOpen, mFabClose, mRotateForward, mRotateBackward;
-    private SwipeRefreshLayout mRefresh, mRefreshEmpty;
 
     private RelativeLayout mEmptyLayout;
     private RecyclerView mRecyclerView;
