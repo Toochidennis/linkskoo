@@ -26,6 +26,8 @@ import java.util.Locale;
 
 public class AttendanceActivity extends AppCompatActivity {
 
+    private static String TAG = "AttendanceActivity";
+
     String mStudentLevelId, mStudentClassId, mClassName, from;
 
     @Override
@@ -49,6 +51,8 @@ public class AttendanceActivity extends AppCompatActivity {
         mStudentClassId = intent.getStringExtra("classId");
         mClassName = intent.getStringExtra("className");
         from = intent.getStringExtra("from");
+
+        Log.d(TAG, mStudentClassId +" "+ mStudentLevelId +" "+ mClassName);
 
         TextView name = findViewById(R.id.class_name);
         TextView classYear = findViewById(R.id.class_term);

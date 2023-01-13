@@ -31,12 +31,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.adapters.CourseAttendanceAdapter;
 import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.adapters.CourseAttendanceAdapter;
 import com.digitaldream.winskool.fragments.DateDialogFragment;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.StudentTable;
-import com.digitaldream.winskool.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -77,7 +77,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
     private RelativeLayout mLayout;
     private RecyclerView mRecyclerView;
-    private FloatingActionButton mAttendanceBtn, mTakeAttendance, mFilterAttendance,
+    private FloatingActionButton mAttendanceBtn, mTakeAttendance,
+            mFilterAttendance,
             mAttendanceBtnEmpty, mTakeAttendanceEmpty, mFilterAttendanceEmpty;
     private Animation mFabOpen, mFabClose, mRotateForward, mRotateBackward;
 
@@ -119,7 +120,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
             e.printStackTrace();
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
         year = sharedPreferences.getString("school_year", "");
@@ -216,8 +218,9 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         mFilterAttendanceEmpty = findViewById(R.id.filter_attendance_empty);
 
 
-        mAttendanceBtnEmpty.setOnClickListener(v -> onFabAnimation(mAttendanceBtnEmpty,
-                mTakeAttendanceEmpty, mFilterAttendanceEmpty));
+        mAttendanceBtnEmpty.setOnClickListener(
+                v -> onFabAnimation(mAttendanceBtnEmpty,
+                        mTakeAttendanceEmpty, mFilterAttendanceEmpty));
 
         mTakeAttendanceEmpty.setOnClickListener(v -> {
 
@@ -320,7 +323,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
             ImageView imageView = findViewById(R.id.image);
             TextView textView = findViewById(R.id.error_message);
             imageView.setImageResource(R.drawable.no_internet);
-            textView.setText("Seems like you're not connected to the internet!");
+            textView.setText(
+                    "Seems like you're not connected to the internet!");
         }) {
 
             @Override
@@ -342,7 +346,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     public void getPreviousCourseRegistration() {
 
         String url = Login.urlBase + "/getCourseRegistration.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("response", "response" + response);
                     try {
@@ -363,7 +368,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
                 }, error -> {
             error.printStackTrace();
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
 
         }) {
             @Override
@@ -423,7 +429,8 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         newIntent.putExtra("from", "course");
         newIntent.putExtra("courseId", mCourseId);
         newIntent.putExtra("classId", mStudentClassId);
-        newIntent.putExtra("date", mStudentTableList.get(position).getCourseCount());
+        newIntent.putExtra("date",
+                mStudentTableList.get(position).getCourseCount());
         newIntent.putExtra("course_name", mCourseList.get(0).getCourseName());
         newIntent.putExtra("db", db);
         startActivity(newIntent);
