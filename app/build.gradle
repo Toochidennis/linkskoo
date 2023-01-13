@@ -7,7 +7,7 @@ android {
         applicationId "com.digitaldream.ddl"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 31
+        versionCode 32
         versionName "27.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

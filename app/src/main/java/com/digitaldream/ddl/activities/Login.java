@@ -143,7 +143,7 @@ public class Login extends AppCompatActivity {
     private boolean validateLoginForm() {
         usernameText = username.getText().toString().trim();
         passwordText = password.getText().toString().trim();
-        pinText = "5416";// pin.getText().toString().trim();"7755" 5416 2271
+        pinText = "2271";// pin.getText().toString().trim();"7755" 5416 2271
         // 9814
 
         if (usernameText.isEmpty() || passwordText.isEmpty()) {

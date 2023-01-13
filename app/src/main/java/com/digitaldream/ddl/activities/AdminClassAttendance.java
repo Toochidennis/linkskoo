@@ -25,13 +25,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.ddl.adapters.AdminClassAttendanceAdapter;
 import com.digitaldream.ddl.DatabaseHelper;
+import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.adapters.AdminClassAttendanceAdapter;
 import com.digitaldream.ddl.models.ClassNameTable;
 import com.digitaldream.ddl.models.GeneralSettingModel;
 import com.digitaldream.ddl.models.StudentTable;
 import com.digitaldream.ddl.models.TeachersTable;
-import com.digitaldream.ddl.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -104,8 +105,10 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         mDatabaseHelper = new DatabaseHelper(this);
 
         try {
-            mStudentTableDao = DaoManager.createDao(mDatabaseHelper.getConnectionSource(), StudentTable.class);
-            QueryBuilder<StudentTable, Long> queryBuilder = mStudentTableDao.queryBuilder();
+            mStudentTableDao = DaoManager.createDao(
+                    mDatabaseHelper.getConnectionSource(), StudentTable.class);
+            QueryBuilder<StudentTable, Long> queryBuilder =
+                    mStudentTableDao.queryBuilder();
 
             queryBuilder.where().eq("studentLevel", studentLevelId).and().eq(
                     "studentClass", mStudentClassId);
@@ -113,7 +116,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             Log.i("date", mStudentTableList.toString());
             Random rnd = new Random();
             for (StudentTable table : mStudentTableList) {
-                int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                int currentColor = Color.argb(255, rnd.nextInt(256),
+                        rnd.nextInt(256), rnd.nextInt(256));
                 table.setColor(currentColor);
             }
 
@@ -122,7 +126,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         }
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
         staffId = sharedPreferences.getString("user_id", "");
@@ -146,12 +151,13 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
         mName.setText(from);
 
-        classTerm.setText(String.format("%d/%s %s", previousYear, year,
-                termText));
+        classTerm.setText(String.format(Locale.getDefault(),"%d/%s %s",
+                previousYear, year, termText));
 
         mRecyclerView = findViewById(R.id.students_recycler);
         mRecyclerView.setHasFixedSize(true);
-        mAdminClassAttendanceAdapter = new AdminClassAttendanceAdapter(this, mStudentTableList,
+        mAdminClassAttendanceAdapter = new AdminClassAttendanceAdapter(this,
+                mStudentTableList,
                 this);
         LinearLayoutManager manager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
@@ -179,7 +185,9 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                         JSONObject studentObject = new JSONObject();
                         studentObject.put("id", studentTable.getStudentId());
                         studentObject.put("name",
-                                getStudentName(studentTable.getStudentSurname(), studentTable.getStudentMiddlename(), studentTable.getStudentFirstname()));
+                                getStudentName(studentTable.getStudentSurname(),
+                                        studentTable.getStudentMiddlename(),
+                                        studentTable.getStudentFirstname()));
 
                         jsonArray.put(studentObject);
 
@@ -340,7 +348,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         dialog1.show();
         String url = Login.urlBase + "/setAttendance.php";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("Response", response);
                     dialog1.dismiss();
@@ -348,11 +357,13 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                         JSONObject jsonObject = new JSONObject(response);
                         String status = jsonObject.getString("status");
                         if (status.equals("success")) {
-                            Toast.makeText(AdminClassAttendance.this, "Operation was successful",
+                            Toast.makeText(AdminClassAttendance.this,
+                                    "Operation was successful",
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(AdminClassAttendance.this, "Something " +
+                            Toast.makeText(AdminClassAttendance.this,
+                                    "Something " +
                                             "went wrong!",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -368,7 +379,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> stringMap = new HashMap<>();
-                stringMap.put("id", Objects.requireNonNullElse(responseId, "0"));
+                stringMap.put("id",
+                        Objects.requireNonNullElse(responseId, "0"));
                 stringMap.put("class", sClassId);
                 stringMap.put("staff", sStaffId);
                 stringMap.put("year", sYear);
@@ -394,7 +406,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             , String sDb) {
 
         String url = Login.urlBase + "/getAttendance.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("response", response);
                     String json = "";
@@ -426,7 +439,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
                 }, error -> {
             error.printStackTrace();
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
         }) {
             @Override
             protected Map<String, String> getParams() {
@@ -446,7 +460,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
     }
 
 
-    public void getStudentsList(List<StudentTable> sStudentTableList, String sId) {
+    public void getStudentsList(List<StudentTable> sStudentTableList,
+                                String sId) {
         for (StudentTable item : sStudentTableList) {
             if (sId.equals(item.getStudentId())) {
                 item.setSelected(true);
@@ -473,17 +488,23 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
         try {
             if (sSurName != null) {
-                sSurName = sSurName.substring(0, 1).toUpperCase() + "" + sSurName.substring(1).toLowerCase();
+                sSurName = sSurName.substring(0,
+                        1).toUpperCase() + "" + sSurName.substring(
+                        1).toLowerCase();
             } else {
                 sSurName = "";
             }
             if (sMiddleName != null) {
-                sMiddleName = sMiddleName.substring(0, 1).toUpperCase() + "" + sMiddleName.substring(1).toLowerCase();
+                sMiddleName = sMiddleName.substring(0,
+                        1).toUpperCase() + "" + sMiddleName.substring(
+                        1).toLowerCase();
             } else {
                 sMiddleName = "";
             }
             if (sFirstName != null) {
-                sFirstName = sFirstName.substring(0, 1).toUpperCase() + "" + sFirstName.substring(1).toLowerCase();
+                sFirstName = sFirstName.substring(0,
+                        1).toUpperCase() + "" + sFirstName.substring(
+                        1).toLowerCase();
             } else {
                 sFirstName = "";
             }

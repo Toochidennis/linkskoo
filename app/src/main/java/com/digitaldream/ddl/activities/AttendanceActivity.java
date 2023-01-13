@@ -13,13 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import com.digitaldream.ddl.R;
 import com.digitaldream.ddl.adapters.SectionPagerAdapter;
 import com.digitaldream.ddl.fragments.AdminClassAttendanceFragment;
 import com.digitaldream.ddl.fragments.CourseAttendanceFragment;
 import com.digitaldream.ddl.fragments.StaffClassAttendanceFragment;
 import com.digitaldream.ddl.fragments.StaffCourseAttendanceFragment;
-import com.digitaldream.ddl.R;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.Locale;
 
 
 public class AttendanceActivity extends AppCompatActivity {
@@ -57,48 +59,64 @@ public class AttendanceActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.container);
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
         term = sharedPreferences.getString("term", "");
         // year = mSettingModelList.get(0).getSchoolYear();
         year = sharedPreferences.getString("school_year", "");
         Log.i("term", year);
 
-        int previousYear = Integer.parseInt(year) - 1;
-        String termText = "";
-        switch (term) {
-            case "1":
-                termText = "First Term";
-                break;
-            case "2":
-                termText = "Second Term";
-                break;
-            case "3":
-                termText = "Third Term";
-                break;
+        try {
+            int previousYear = Integer.parseInt(year) - 1;
+            String termText = "";
+            switch (term) {
+                case "1":
+                    termText = "First Term";
+                    break;
+                case "2":
+                    termText = "Second Term";
+                    break;
+                case "3":
+                    termText = "Third Term";
+                    break;
+            }
+
+            SectionPagerAdapter adapter =
+                    new SectionPagerAdapter(getSupportFragmentManager());
+
+            if (from.equals("result")) {
+                mName.setText(mClassName);
+                mClassYear.setText(
+                        String.format(Locale.getDefault(), "%d/%s %s",
+                                previousYear, year, termText));
+
+                adapter.addFragment(
+                        AdminClassAttendanceFragment.newInstance(
+                                mStudentClassId,
+                                mStudentLevelId, mClassName, "admin"), "Class");
+                adapter.addFragment(
+                        CourseAttendanceFragment.newInstance(mStudentClassId,
+                                mStudentLevelId), "Course");
+
+            } else {
+                mName.setText(termText);
+                mClassYear.setText(String.format(Locale.getDefault(), "%d/%s",
+                        previousYear, year));
+
+                adapter.addFragment(new StaffClassAttendanceFragment(),
+                        "Class");
+                adapter.addFragment(new StaffCourseAttendanceFragment(),
+                        "Course");
+            }
+
+            viewPager.setAdapter(adapter);
+
+            tabLayout.setupWithViewPager(viewPager, true);
+
+        } catch (Exception sE) {
+            sE.printStackTrace();
         }
 
-        SectionPagerAdapter adapter =
-                new SectionPagerAdapter(getSupportFragmentManager());
-
-        if (from.equals("result")) {
-            mName.setText(mClassName);
-            mClassYear.setText(String.format("%d/%s %s", previousYear, year,
-                    termText));
-
-            adapter.addFragment(AdminClassAttendanceFragment.newInstance(mStudentClassId, mStudentLevelId, mClassName, "admin"), "Class");
-            adapter.addFragment(CourseAttendanceFragment.newInstance(mStudentClassId, mStudentLevelId), "Course");
-
-        } else {
-            mName.setText(termText);
-            mClassYear.setText(String.format("%d/%s", previousYear, year));
-
-            adapter.addFragment(new StaffClassAttendanceFragment(), "Class");
-            adapter.addFragment(new StaffCourseAttendanceFragment(), "Course");
-        }
-
-        viewPager.setAdapter(adapter);
-
-        tabLayout.setupWithViewPager(viewPager, true);
 
     }
 
