@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+  -dontwarn okhttp3.internal.platform.*
+  -printconfiguration app/build/tmp/full-r8-config.txt
+
+  ## Conscrypt
+  # -keep class org.conscrypt.** { *; }
