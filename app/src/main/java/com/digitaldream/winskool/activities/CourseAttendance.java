@@ -78,8 +78,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     private RelativeLayout mLayout;
     private RecyclerView mRecyclerView;
     private FloatingActionButton mAttendanceBtn, mTakeAttendance,
-            mFilterAttendance,
-            mAttendanceBtnEmpty, mTakeAttendanceEmpty, mFilterAttendanceEmpty;
+            mFilterAttendance;
     private Animation mFabOpen, mFabClose, mRotateForward, mRotateBackward;
 
     private boolean isOpen = false;
@@ -208,33 +207,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
             FragmentManager manager = activity.getSupportFragmentManager();
             DateDialogFragment dialogFragment = new DateDialogFragment();
             dialogFragment.show(manager, "date picker");
-
-        });
-
-
-        //empty state
-        mAttendanceBtnEmpty = findViewById(R.id.attendance_empty);
-        mTakeAttendanceEmpty = findViewById(R.id.take_attendance_empty);
-        mFilterAttendanceEmpty = findViewById(R.id.filter_attendance_empty);
-
-
-        mAttendanceBtnEmpty.setOnClickListener(
-                v -> onFabAnimation(mAttendanceBtnEmpty,
-                        mTakeAttendanceEmpty, mFilterAttendanceEmpty));
-
-        mTakeAttendanceEmpty.setOnClickListener(v -> {
-
-            Intent newIntent = new Intent(CourseAttendance.this,
-                    StaffCourseAttendance.class);
-            newIntent.putExtra("levelId", mStudentLevelId);
-            newIntent.putExtra("classId", mStudentClassId);
-            newIntent.putExtra("courseId", mCourseId);
-            newIntent.putExtra("class_name",
-                    mCourseList.get(0).getClassName());
-            newIntent.putExtra("course_name",
-                    mCourseList.get(0).getCourseName());
-            newIntent.putExtra("responseId", "");
-            startActivity(newIntent);
 
         });
 

@@ -63,10 +63,12 @@ public class StaffCourseAttendanceAdapter extends RecyclerView.Adapter<StaffCour
 
         holder.mName.setText(builder.toString());
 
-        if (studentTable.isSelected()) {
+        if (studentTable.isSelected()){
             holder.mCheckBtn.setVisibility(View.VISIBLE);
-        } else {
+            holder.mNameInitial.setVisibility(View.GONE);
+        }else{
             holder.mCheckBtn.setVisibility(View.GONE);
+            holder.mNameInitial.setVisibility(View.VISIBLE);
         }
 
 

@@ -22,18 +22,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.activities.AttendanceDetails;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.AdminClassAttendance;
+import com.digitaldream.winskool.activities.AttendanceDetails;
 import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.adapters.AttendanceAdapter;
 import com.digitaldream.winskool.models.StudentTable;
-import com.digitaldream.winskool.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -64,8 +63,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
     private static final String ARG_PARAM3 = "param3";
     private static final String ARG_PARAM4 = "param4";
 
-    private FloatingActionButton mAttendanceBtn, mTakeAttendance, mFilterAttendance,
-            mAttendanceBtnEmpty, mTakeAttendanceEmpty, mFilterAttendanceEmpty;
+    private FloatingActionButton mAttendanceBtn, mTakeAttendance,
+            mFilterAttendance;
     private Animation mFabOpen, mFabClose, mRotateForward, mRotateBackward;
 
     private RelativeLayout mEmptyLayout;
@@ -95,7 +94,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
                                                            String param2,
                                                            String param3,
                                                            String param4) {
-        AdminClassAttendanceFragment fragment = new AdminClassAttendanceFragment();
+        AdminClassAttendanceFragment fragment =
+                new AdminClassAttendanceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -120,17 +120,20 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_class_attendance,
+        View view = inflater.inflate(R.layout.fragment_admin_class_attendance,
                 container, false);
 
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
-        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle(
+        ((AppCompatActivity) Objects.requireNonNull(
+                getActivity())).setSupportActionBar(toolbar);
+        Objects.requireNonNull(
+                ((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle(
                 "Attendance Details");
         toolbar.setNavigationIcon(R.drawable.arrow_left);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        toolbar.setNavigationOnClickListener(
+                v -> getActivity().onBackPressed());
         setHasOptionsMenu(true);
 
         if (from.equals("staff")) {
@@ -140,7 +143,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         }
 
 
-        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext())
+        SharedPreferences sharedPreferences = Objects.requireNonNull(
+                        getContext())
                 .getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
@@ -162,7 +166,9 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(manager);
+
         mRecyclerView.setAdapter(mAttendanceAdapter);
+
 
         fabButtonAction(view);
 
@@ -182,7 +188,6 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
 
     public void fabButtonAction(View sView) {
 
-
         //Un empty state
         mAttendanceBtn = sView.findViewById(R.id.attendance);
         mTakeAttendance = sView.findViewById(R.id.take_attendance);
@@ -190,7 +195,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
 
 
         mFabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
-        mFabClose = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
+        mFabClose = AnimationUtils.loadAnimation(getContext(),
+                R.anim.fab_close);
 
         mRotateForward = AnimationUtils.loadAnimation(getContext(),
                 R.anim.rotate_forward);
@@ -208,7 +214,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
             newIntent.putExtra("classId", mStudentClassId);
             newIntent.putExtra("class_name", mStudentClass);
             newIntent.putExtra("responseId",
-                    Objects.requireNonNullElse(mStudentTable.getResponseId(), ""));
+                    Objects.requireNonNullElse(mStudentTable.getResponseId(),
+                            ""));
             //Log.i("responseId", mStudentTable.getResponseId());
 
             startActivity(newIntent);
@@ -221,51 +228,32 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
 
-            mDatePickerDialog = new DatePickerDialog(getContext(), (sDatePicker, sYear, sMonth, sDayOfMonth) -> {
+            mDatePickerDialog = new DatePickerDialog(getContext(),
+                    (sDatePicker, sYear, sMonth, sDayOfMonth) -> {
 
-                int mont = sMonth + 1;
-                String currentDate = sYear + "-" + mont + "-" + sDayOfMonth;
-                currentDate = currentDate.concat(" 00:00:00");
+                        int mont = sMonth + 1;
+                        String currentDate =
+                                sYear + "-" + mont + "-" + sDayOfMonth;
+                        currentDate = currentDate.concat(" 00:00:00");
 
-                Intent newIntent = new Intent(getContext(),
-                        AttendanceDetails.class);
-                newIntent.putExtra("from", "class");
-                newIntent.putExtra("class_name", mStudentClass);
-                newIntent.putExtra("courseId", "0");
-                newIntent.putExtra("classId", mStudentClassId);
-                newIntent.putExtra("date", currentDate);
-                newIntent.putExtra("db", db);
-                startActivity(newIntent);
+                        Intent newIntent = new Intent(getContext(),
+                                AttendanceDetails.class);
+                        newIntent.putExtra("from", "class");
+                        newIntent.putExtra("class_name", mStudentClass);
+                        newIntent.putExtra("courseId", "0");
+                        newIntent.putExtra("classId", mStudentClassId);
+                        newIntent.putExtra("date", currentDate);
+                        newIntent.putExtra("db", db);
+                        startActivity(newIntent);
 
+                        //mAttendanceAdapter.getFilter().filter(currentDate);
 
-                //mAttendanceAdapter.getFilter().filter(currentDate);
-
-            }, year, month, day);
+                    }, year, month, day);
             mDatePickerDialog.show();
 
 
         });
 
-
-        //empty state
-        mAttendanceBtnEmpty = sView.findViewById(R.id.attendance_empty);
-        mTakeAttendanceEmpty = sView.findViewById(R.id.take_attendance_empty);
-        mFilterAttendanceEmpty =
-                sView.findViewById(R.id.filter_attendance_empty);
-
-
-        mAttendanceBtnEmpty.setOnClickListener(v -> onFabAnimation(mAttendanceBtnEmpty,
-                mTakeAttendanceEmpty, mFilterAttendanceEmpty));
-
-        mTakeAttendanceEmpty.setOnClickListener(v -> {
-            Intent newIntent = new Intent(getContext(),
-                    AdminClassAttendance.class);
-            newIntent.putExtra("levelId", mStudentLevelId);
-            newIntent.putExtra("classId", mStudentClassId);
-            newIntent.putExtra("class_name", mStudentClass);
-            newIntent.putExtra("responseId", "");
-            startActivity(newIntent);
-        });
 
     }
 
@@ -295,7 +283,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
 
     public void getAttendance() {
 
-        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(getContext())
+        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(
+                getContext())
                 .direction(ACProgressConstant.DIRECT_CLOCKWISE)
                 .textMarginTop(10)
                 .fadeColor(Color.DKGRAY).build();
@@ -326,13 +315,9 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
                 }
                 mAttendanceAdapter.notifyDataSetChanged();
 
-                if (!mStudentTableList.isEmpty()) {
-                    mEmptyLayout.setVisibility(View.GONE);
-                } else {
+                if (mStudentTableList.isEmpty()) {
                     mEmptyLayout.setVisibility(View.VISIBLE);
-
                 }
-
             } catch (JSONException | ParseException sE) {
                 sE.printStackTrace();
             }
@@ -344,7 +329,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
             mRecyclerView.setVisibility(View.GONE);
             mEmptyLayout.setVisibility(View.VISIBLE);
             errorImage.setImageResource(R.drawable.no_internet);
-            errorMessage.setText("Seems like you're not connected to the internet!");
+            errorMessage.setText(R.string.no_internet);
 
         }) {
             @Override
@@ -358,7 +343,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
                 return stringMap;
             }
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        RequestQueue requestQueue = Volley.newRequestQueue(
+                Objects.requireNonNull(getContext()));
         requestQueue.add(stringRequest);
     }
 
@@ -379,7 +365,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
 
 
     public void getPreviousAttendance() {
-        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(getContext())
+        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(
+                getContext())
                 .direction(ACProgressConstant.DIRECT_CLOCKWISE)
                 .textMarginTop(10)
                 .fadeColor(Color.DKGRAY).build();
@@ -388,7 +375,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         dialog1.show();
 
         String url = Login.urlBase + "/getAttendance.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("previous_ATTENDA", response);
                     dialog1.dismiss();
@@ -419,7 +407,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        RequestQueue requestQueue = Volley.newRequestQueue(
+                Objects.requireNonNull(getContext()));
         requestQueue.add(stringRequest);
 
     }
@@ -447,7 +436,8 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         newIntent.putExtra("class_name", mStudentClass);
         newIntent.putExtra("courseId", "0");
         newIntent.putExtra("classId", mStudentClassId);
-        newIntent.putExtra("date", mStudentTableList.get(position).getCourseCount());
+        newIntent.putExtra("date",
+                mStudentTableList.get(position).getCourseCount());
         newIntent.putExtra("db", db);
         startActivity(newIntent);
 

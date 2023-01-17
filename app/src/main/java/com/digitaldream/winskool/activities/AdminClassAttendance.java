@@ -25,13 +25,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.adapters.AdminClassAttendanceAdapter;
 import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.models.ClassNameTable;
-import com.digitaldream.winskool.models.GeneralSettingModel;
-import com.digitaldream.winskool.models.StudentTable;
-import com.digitaldream.winskool.models.TeachersTable;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.adapters.AdminClassAttendanceAdapter;
+import com.digitaldream.winskool.models.StudentTable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -45,6 +42,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -55,21 +53,18 @@ import cc.cloudist.acplibrary.ACProgressFlower;
 public class AdminClassAttendance extends AppCompatActivity implements AdminClassAttendanceAdapter.OnStudentClickListener {
 
     private FloatingActionButton mActionButton;
-    private RecyclerView mRecyclerView;
     private AdminClassAttendanceAdapter mAdminClassAttendanceAdapter;
     private List<StudentTable> mStudentTableList;
-    private Dao<StudentTable, Long> mStudentTableDao;
-    private Dao<GeneralSettingModel, Long> mSettingModelDao;
-    private Dao<ClassNameTable, Long> mClassNameDao;
-    private List<ClassNameTable> mClassNameList;
-    private Dao<TeachersTable, Long> mTeacherDao;
-    private List<TeachersTable> mTeachersTableList;
-    private List<GeneralSettingModel> mSettingModelList;
     DatabaseHelper mDatabaseHelper;
     private String mStudentClassId;
     private boolean mSelectAll = false;
     private Menu mMenu;
-    private static String db, year, term, from, courseId, responseId, staffId;
+    private static String db;
+    private static String year;
+    private static String term;
+    private static String courseId;
+    private static String responseId;
+    private static String staffId;
 
     private ActionBar actionBar;
 
@@ -86,7 +81,7 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         mStudentClassId = intent.getStringExtra("classId");
         courseId = intent.getStringExtra("courseId");
         responseId = intent.getStringExtra("responseId");
-        from = intent.getStringExtra("class_name");
+        String from = intent.getStringExtra("class_name");
 
 
         Toolbar toolbar = findViewById(R.id.course_tool_bar);
@@ -104,8 +99,10 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         mDatabaseHelper = new DatabaseHelper(this);
 
         try {
-            mStudentTableDao = DaoManager.createDao(mDatabaseHelper.getConnectionSource(), StudentTable.class);
-            QueryBuilder<StudentTable, Long> queryBuilder = mStudentTableDao.queryBuilder();
+            Dao<StudentTable, Long> studentTableDao = DaoManager.createDao(
+                    mDatabaseHelper.getConnectionSource(), StudentTable.class);
+            QueryBuilder<StudentTable, Long> queryBuilder =
+                    studentTableDao.queryBuilder();
 
             queryBuilder.where().eq("studentLevel", studentLevelId).and().eq(
                     "studentClass", mStudentClassId);
@@ -113,7 +110,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             Log.i("date", mStudentTableList.toString());
             Random rnd = new Random();
             for (StudentTable table : mStudentTableList) {
-                int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                int currentColor = Color.argb(255, rnd.nextInt(256),
+                        rnd.nextInt(256), rnd.nextInt(256));
                 table.setColor(currentColor);
             }
 
@@ -122,14 +120,19 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         }
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
+
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
         staffId = sharedPreferences.getString("user_id", "");
         year = sharedPreferences.getString("school_year", "");
+
         Log.i("term", year);
+
         int previousYear = Integer.parseInt(year) - 1;
         String termText = "";
+
         switch (term) {
             case "1":
                 termText = "First Term";
@@ -146,26 +149,27 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
         mName.setText(from);
 
-        classTerm.setText(String.format("%d/%s %s", previousYear, year,
-                termText));
+        classTerm.setText(String.format(Locale.getDefault(), "%d/%s %s",
+                previousYear, year, termText));
 
-        mRecyclerView = findViewById(R.id.students_recycler);
-        mRecyclerView.setHasFixedSize(true);
-        mAdminClassAttendanceAdapter = new AdminClassAttendanceAdapter(this, mStudentTableList,
+        RecyclerView recyclerView = findViewById(R.id.students_recycler);
+        recyclerView.setHasFixedSize(true);
+        mAdminClassAttendanceAdapter = new AdminClassAttendanceAdapter(this,
+                mStudentTableList,
                 this);
         LinearLayoutManager manager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(mAdminClassAttendanceAdapter);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(mAdminClassAttendanceAdapter);
 
         RelativeLayout layout = findViewById(R.id.empty_state);
 
         if (!mStudentTableList.isEmpty()) {
             layout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
         } else {
             layout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         }
 
         mActionButton = findViewById(R.id.submit_btn);
@@ -179,7 +183,9 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                         JSONObject studentObject = new JSONObject();
                         studentObject.put("id", studentTable.getStudentId());
                         studentObject.put("name",
-                                getStudentName(studentTable.getStudentSurname(), studentTable.getStudentMiddlename(), studentTable.getStudentFirstname()));
+                                getStudentName(studentTable.getStudentSurname(),
+                                        studentTable.getStudentMiddlename(),
+                                        studentTable.getStudentFirstname()));
 
                         jsonArray.put(studentObject);
 
@@ -340,7 +346,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         dialog1.show();
         String url = Login.urlBase + "/setAttendance.php";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("Response", response);
                     dialog1.dismiss();
@@ -348,11 +355,13 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                         JSONObject jsonObject = new JSONObject(response);
                         String status = jsonObject.getString("status");
                         if (status.equals("success")) {
-                            Toast.makeText(AdminClassAttendance.this, "Operation was successful",
+                            Toast.makeText(AdminClassAttendance.this,
+                                    "Operation was successful",
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(AdminClassAttendance.this, "Something " +
+                            Toast.makeText(AdminClassAttendance.this,
+                                    "Something " +
                                             "went wrong!",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -368,7 +377,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> stringMap = new HashMap<>();
-                stringMap.put("id", Objects.requireNonNullElse(responseId, "0"));
+                stringMap.put("id",
+                        Objects.requireNonNullElse(responseId, "0"));
                 stringMap.put("class", sClassId);
                 stringMap.put("staff", sStaffId);
                 stringMap.put("year", sYear);
@@ -394,7 +404,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             , String sDb) {
 
         String url = Login.urlBase + "/getAttendance.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("response", response);
                     String json = "";
@@ -426,7 +437,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
                 }, error -> {
             error.printStackTrace();
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
         }) {
             @Override
             protected Map<String, String> getParams() {
@@ -446,7 +458,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
     }
 
 
-    public void getStudentsList(List<StudentTable> sStudentTableList, String sId) {
+    public void getStudentsList(List<StudentTable> sStudentTableList,
+                                String sId) {
         for (StudentTable item : sStudentTableList) {
             if (sId.equals(item.getStudentId())) {
                 item.setSelected(true);
@@ -473,17 +486,23 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
         try {
             if (sSurName != null) {
-                sSurName = sSurName.substring(0, 1).toUpperCase() + "" + sSurName.substring(1).toLowerCase();
+                sSurName = sSurName.substring(0,
+                        1).toUpperCase() + "" + sSurName.substring(
+                        1).toLowerCase();
             } else {
                 sSurName = "";
             }
             if (sMiddleName != null) {
-                sMiddleName = sMiddleName.substring(0, 1).toUpperCase() + "" + sMiddleName.substring(1).toLowerCase();
+                sMiddleName = sMiddleName.substring(0,
+                        1).toUpperCase() + "" + sMiddleName.substring(
+                        1).toLowerCase();
             } else {
                 sMiddleName = "";
             }
             if (sFirstName != null) {
-                sFirstName = sFirstName.substring(0, 1).toUpperCase() + "" + sFirstName.substring(1).toLowerCase();
+                sFirstName = sFirstName.substring(0,
+                        1).toUpperCase() + "" + sFirstName.substring(
+                        1).toLowerCase();
             } else {
                 sFirstName = "";
             }

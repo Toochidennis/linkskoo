@@ -12,12 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.CourseAttendance;
 import com.digitaldream.winskool.adapters.CourseAttendanceFragmentAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseTable;
-import com.digitaldream.winskool.models.GeneralSettingModel;
-import com.digitaldream.winskool.R;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -34,10 +33,8 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
 
 
     private CourseAttendanceFragmentAdapter mCourseAttendanceFragmentAdapter;
-    private Dao<GeneralSettingModel, Long> mSettingModelDao;
     private Dao<CourseTable, Long> mCourseDao;
     private List<CourseTable> mCourseList;
-    private List<GeneralSettingModel> mSettingModelList;
     DatabaseHelper mDatabaseHelper;
     private RecyclerView mRecyclerView;
     private RelativeLayout empty;
@@ -52,7 +49,8 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
     }
 
 
-    public static CourseAttendanceFragment newInstance(String param1, String param2) {
+    public static CourseAttendanceFragment newInstance(String param1,
+                                                       String param2) {
         CourseAttendanceFragment fragment = new CourseAttendanceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -86,12 +84,14 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
         try {
             // query courses from database
             mCourseDao =
-                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(), CourseTable.class);
+                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(),
+                            CourseTable.class);
             mCourseList = mCourseDao.queryForAll();
 
             Random rnd = new Random();
             for (CourseTable ct : mCourseList) {
-                int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                int currentColor = Color.argb(255, rnd.nextInt(256),
+                        rnd.nextInt(256), rnd.nextInt(256));
                 ct.setColor(currentColor);
             }
 
@@ -100,7 +100,8 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
         }
 
 
-        mCourseAttendanceFragmentAdapter = new CourseAttendanceFragmentAdapter(getContext(),
+        mCourseAttendanceFragmentAdapter = new CourseAttendanceFragmentAdapter(
+                getContext(),
                 mCourseList, this);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setHasFixedSize(true);
@@ -134,10 +135,6 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
         startActivity(newIntent);
     }
 
-    @Override
-    public void onCourseLongClick(int position) {
-
-    }
 
     @Override
     public void onResume() {
@@ -148,12 +145,14 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
         try {
             // query courses from database
             mCourseDao =
-                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(), CourseTable.class);
+                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(),
+                            CourseTable.class);
             mCourseList = mCourseDao.queryForAll();
 
             Random rnd = new Random();
             for (CourseTable ct : mCourseList) {
-                int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                int currentColor = Color.argb(255, rnd.nextInt(256),
+                        rnd.nextInt(256), rnd.nextInt(256));
                 ct.setColor(currentColor);
             }
 
@@ -162,7 +161,8 @@ public class CourseAttendanceFragment extends Fragment implements CourseAttendan
         }
 
 
-        mCourseAttendanceFragmentAdapter = new CourseAttendanceFragmentAdapter(getContext(),
+        mCourseAttendanceFragmentAdapter = new CourseAttendanceFragmentAdapter(
+                getContext(),
                 mCourseList, this);
         mRecyclerView.setAdapter(mCourseAttendanceFragmentAdapter);
 

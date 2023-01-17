@@ -74,15 +74,12 @@ public class AdminClassAttendanceAdapter extends RecyclerView.Adapter<AdminClass
 
         if (studentTable.isSelected()){
             holder.mCheckBtn.setVisibility(View.VISIBLE);
+            holder.mNameInitial.setVisibility(View.GONE);
         }else{
             holder.mCheckBtn.setVisibility(View.GONE);
+            holder.mNameInitial.setVisibility(View.VISIBLE);
         }
 
-
-      /*  if(studentTable.isShowText()){
-            holder.mCheckBtn.setVisibility(View.GONE);
-
-        }*/
 
         try {
             holder.mNameInitial.setText(name.substring(0, 1).toUpperCase());

@@ -18,10 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.activities.CourseAttendance;
 import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.activities.CourseAttendance;
+import com.digitaldream.winskool.models.CourseTable;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -82,31 +82,35 @@ public class StaffCourseAttendanceFragment extends Fragment {
 
         try {
             mCourseTableDao =
-                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(), CourseTable.class);
+                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(),
+                            CourseTable.class);
             mCourseTableList = mCourseTableDao.queryForAll();
 
             Log.i("data", mCourseTableList.toString());
 
 
-        List<String> stringList = new ArrayList<>();
+            List<String> stringList = new ArrayList<>();
 
-        Collections.sort(mCourseTableList, (s1, s2) ->
-                s1.getCourseName().substring(0, 1)
-                        .compareToIgnoreCase(s2.getCourseName().substring(0, 1)));
+            Collections.sort(mCourseTableList, (s1, s2) ->
+                    s1.getCourseName().substring(0, 1)
+                            .compareToIgnoreCase(
+                                    s2.getCourseName().substring(0, 1)));
 
-        for (int i = 0; i < mCourseTableList.size(); i++) {
-            List<CourseTable> courseTable =
-                    getCourseTableList(mCourseTableList.get(i).getCourseName());
-            Log.i("ddddd", mCourseTableList.get(i).getCourseName());
-            if(!stringList.contains(mCourseTableList.get(i).getCourseName())){
-                mAdapter.addSection(new SectionAdapter(getContext(),
-                        courseTable,
-                        mCourseTableList.get(i).getCourseName()));
-                stringList.add(mCourseTableList.get(i).getCourseName());
+            for (int i = 0; i < mCourseTableList.size(); i++) {
+                List<CourseTable> courseTable =
+                        getCourseTableList(
+                                mCourseTableList.get(i).getCourseName());
+                //Log.i("dddd", mCourseTableList.get(i).getCourseName());
+                if (!stringList.contains(
+                        mCourseTableList.get(i).getCourseName())) {
+                    mAdapter.addSection(new SectionAdapter(getContext(),
+                            courseTable,
+                            mCourseTableList.get(i).getCourseName()));
+                    stringList.add(mCourseTableList.get(i).getCourseName());
+                }
+
+
             }
-
-
-        }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -136,10 +140,12 @@ public class StaffCourseAttendanceFragment extends Fragment {
         private final List<CourseTable> mCourseTableList;
         private final String headerTitle;
 
-        public SectionAdapter(Context sContext, List<CourseTable> sCourseTableList,
+        public SectionAdapter(Context sContext,
+                              List<CourseTable> sCourseTableList,
                               String sHeaderTitle) {
             super(SectionParameters.builder()
-                    .itemResourceId(R.layout.fragment_staff_course_attendance_item)
+                    .itemResourceId(
+                            R.layout.fragment_staff_course_attendance_item)
                     .headerResourceId(R.layout.head)
                     .build());
             mContext = sContext;
@@ -163,7 +169,8 @@ public class StaffCourseAttendanceFragment extends Fragment {
         }
 
         @Override
-        public void onBindItemViewHolder(RecyclerView.ViewHolder sViewHolder, int sI) {
+        public void onBindItemViewHolder(RecyclerView.ViewHolder sViewHolder,
+                                         int sI) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) sViewHolder;
             CourseTable courseTable = mCourseTableList.get(sI);
 
@@ -172,7 +179,8 @@ public class StaffCourseAttendanceFragment extends Fragment {
             GradientDrawable mutate =
                     (GradientDrawable) itemViewHolder.mLayout.getBackground().mutate();
             Random rnd = new Random();
-            int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            int currentColor = Color.argb(255, rnd.nextInt(256),
+                    rnd.nextInt(256), rnd.nextInt(256));
             mutate.setColor(currentColor);
 
             itemViewHolder.mLayout.setBackground(mutate);
@@ -198,7 +206,8 @@ public class StaffCourseAttendanceFragment extends Fragment {
         public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             String title =
-                    headerTitle.substring(0, 1).toUpperCase() + "" + headerTitle.substring(1).toLowerCase();
+                    headerTitle.substring(0, 1).toUpperCase() + ""
+                            + headerTitle.substring(1).toLowerCase();
             headerViewHolder.mHeader.setText(title);
         }
 
@@ -220,6 +229,7 @@ public class StaffCourseAttendanceFragment extends Fragment {
 
         public static class HeaderViewHolder extends RecyclerView.ViewHolder {
             private final TextView mHeader;
+
             public HeaderViewHolder(@NonNull View itemView) {
                 super(itemView);
                 mHeader = itemView.findViewById(R.id.course_name);

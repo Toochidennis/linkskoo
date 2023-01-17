@@ -6,29 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
-import androidx.annotation.NonNull;
-
-import com.digitaldream.winskool.fragments.AdminDashbordFragment;
-import com.digitaldream.winskool.fragments.AdminELearning;
-import com.digitaldream.winskool.fragments.AdminResultFragment;
-import com.digitaldream.winskool.fragments.ELibraryFragment;
-import com.digitaldream.winskool.fragments.FlashCardList;
-import com.digitaldream.winskool.models.CourseOutlineTable;
-import com.digitaldream.winskool.models.ExamType;
-import com.digitaldream.winskool.models.VideoTable;
-import com.digitaldream.winskool.models.VideoUtilTable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,23 +15,40 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.digitaldream.winskool.models.CourseTable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.ForceUpdateAsync;
-import com.digitaldream.winskool.models.LevelTable;
+import com.digitaldream.winskool.NewsAdapter;
+import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.fragments.AdminDashbordFragment;
+import com.digitaldream.winskool.fragments.AdminELearning;
+import com.digitaldream.winskool.fragments.AdminPaymentFragment;
+import com.digitaldream.winskool.fragments.AdminResultFragment;
+import com.digitaldream.winskool.fragments.ELibraryFragment;
+import com.digitaldream.winskool.fragments.FlashCardList;
 import com.digitaldream.winskool.models.AssessmentModel;
 import com.digitaldream.winskool.models.ClassNameTable;
+import com.digitaldream.winskool.models.CourseOutlineTable;
+import com.digitaldream.winskool.models.CourseTable;
+import com.digitaldream.winskool.models.ExamType;
 import com.digitaldream.winskool.models.FormClassModel;
 import com.digitaldream.winskool.models.GeneralSettingModel;
 import com.digitaldream.winskool.models.GradeModel;
+import com.digitaldream.winskool.models.LevelTable;
+import com.digitaldream.winskool.models.NewsTable;
+import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.models.TeacherCourseModel;
 import com.digitaldream.winskool.models.TeacherCourseModelCopy;
-import com.digitaldream.winskool.NewsAdapter;
-import com.digitaldream.winskool.models.NewsTable;
-import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.models.TeachersTable;
+import com.digitaldream.winskool.models.VideoTable;
+import com.digitaldream.winskool.models.VideoUtilTable;
 import com.digitaldream.winskool.utils.ContactUsDialog;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.table.TableUtils;
@@ -91,7 +86,9 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         String from = i.getStringExtra("from");
         databaseHelper = new DatabaseHelper(this);
         try {
-            generalSettingDao = DaoManager.createDao(databaseHelper.getConnectionSource(), GeneralSettingModel.class);
+            generalSettingDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(),
+                    GeneralSettingModel.class);
             generalSettingsList = generalSettingDao.queryForAll();
 
 
@@ -104,14 +101,17 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);*/
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
-        drawerLayout.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        drawerLayout.setDescendantFocusability(
+                ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
         View headerView = navigationView.getHeaderView(0);
         user = headerView.findViewById(R.id.user);
         schoolName = headerView.findViewById(R.id.school_name);
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
         try {
-            school_name = generalSettingsList.get(0).getSchoolName().toLowerCase();
+            school_name = generalSettingsList.get(
+                    0).getSchoolName().toLowerCase();
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -130,7 +130,8 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         }
         try {
             int previousYear = Integer.parseInt(session) - 1;
-            schoolSession.setText(String.valueOf(previousYear) + "/" + session + " " + term);
+            schoolSession.setText(String.valueOf(previousYear) + "/" +
+            session + " " + term);
         }catch (Exception e){
             e.printStackTrace();
         }*/
@@ -138,8 +139,10 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
 
         if (!user_name.equals("null")) {
             try {
-                user_name = user_name.substring(0, 1).toUpperCase() + user_name.substring(1);
-                school_name = school_name.substring(0, 1).toUpperCase() + school_name.substring(1);
+                user_name = user_name.substring(0,
+                        1).toUpperCase() + user_name.substring(1);
+                school_name = school_name.substring(0,
+                        1).toUpperCase() + school_name.substring(1);
                 user.setText(user_name);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -160,12 +163,17 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         bottomNavigationView = findViewById(R.id.bottom_navigation_student);
         if (from != null && from.equals("testupload")) {
             FlashCardList.refresh = true;
-            bottomNavigationView.getMenu().findItem(R.id.flashcard).setChecked(true);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
+            bottomNavigationView.getMenu().findItem(R.id.flashcard).setChecked(
+                    true);
+            getSupportFragmentManager().beginTransaction().replace(
+                    R.id.fragment_container, new FlashCardList()).commit();
 
         } else {
-            bottomNavigationView.getMenu().findItem(R.id.student_dashboard).setChecked(true);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdminDashbordFragment()).commit();
+            bottomNavigationView.getMenu().findItem(
+                    R.id.student_dashboard).setChecked(true);
+            getSupportFragmentManager().beginTransaction().replace(
+                    R.id.fragment_container,
+                    new AdminDashbordFragment()).commit();
         }
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
@@ -177,19 +185,22 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                 case R.id.student_contacts:
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
-                    Intent intent = new Intent(Dashboard.this, StudentContacts.class);
+                    Intent intent = new Intent(Dashboard.this,
+                            StudentContacts.class);
                     startActivity(intent);
                     return true;
                 case R.id.view_result:
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
-                    Intent intent2 = new Intent(Dashboard.this, ViewResult.class);
+                    Intent intent2 = new Intent(Dashboard.this,
+                            ViewResult.class);
                     startActivity(intent2);
                     return true;
                 case R.id.teachers_contacts:
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
-                    Intent intent3 = new Intent(Dashboard.this, TeacherContacts.class);
+                    Intent intent3 = new Intent(Dashboard.this,
+                            TeacherContacts.class);
                     startActivity(intent3);
                     return true;
 
@@ -207,30 +218,37 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         navigationView.getMenu().getItem(0).setChecked(true);
 
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.student_dashboard:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdminDashbordFragment()).commit();
-                        return true;
-                    case R.id.student_results:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdminResultFragment()).commit();
-                        return true;
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.student_dashboard:
+                    getSupportFragmentManager().beginTransaction().replace(
+                            R.id.fragment_container,
+                            new AdminDashbordFragment()).commit();
+                    return true;
+                case R.id.student_results:
+                    getSupportFragmentManager().beginTransaction().replace(
+                            R.id.fragment_container,
+                            new AdminResultFragment()).commit();
+                    return true;
 
-                    case R.id.flashcard:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
-                        return true;
-                    case R.id.student_library:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ELibraryFragment()).commit();
-                        return true;
+                case R.id.flashcard:
+                    getSupportFragmentManager().beginTransaction().replace(
+                            R.id.fragment_container,
+                            new AdminPaymentFragment()).commit();
+                    return true;
+                case R.id.student_library:
+                    getSupportFragmentManager().beginTransaction().replace(
+                            R.id.fragment_container,
+                            new ELibraryFragment()).commit();
+                    return true;
 
-                    case R.id.student_elearning:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdminELearning()).commit();
-                        return true;
-                }
-                return false;
+                case R.id.student_elearning:
+                    getSupportFragmentManager().beginTransaction().replace(
+                            R.id.fragment_container,
+                            new AdminELearning()).commit();
+                    return true;
             }
+            return false;
         });
 
 
@@ -256,7 +274,8 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                 ContactUsDialog dialog = new ContactUsDialog(this);
                 dialog.show();
                 Window window = dialog.getWindow();
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
                 break;
         }
         return true;
@@ -272,29 +291,46 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
     }
 
     private void logout() {
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("loginStatus", false);
         editor.putString("user", "");
         editor.putString("school_name", "");
         editor.apply();
         try {
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), StudentTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), TeachersTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), ClassNameTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), LevelTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), NewsTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), CourseTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), GradeModel.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), GeneralSettingModel.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), AssessmentModel.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), TeacherCourseModelCopy.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), TeacherCourseModel.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), FormClassModel.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), CourseOutlineTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), VideoTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), VideoUtilTable.class);
-            TableUtils.clearTable(databaseHelper.getConnectionSource(), ExamType.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    StudentTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    TeachersTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    ClassNameTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    LevelTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    NewsTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    CourseTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    GradeModel.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    GeneralSettingModel.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    AssessmentModel.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    TeacherCourseModelCopy.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    TeacherCourseModel.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    FormClassModel.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    CourseOutlineTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    VideoTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    VideoUtilTable.class);
+            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                    ExamType.class);
 
 
         } catch (SQLException e) {
@@ -313,7 +349,8 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
             dialog = new ContactUsDialog(this);
             dialog.show();
             Window window = dialog.getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
             isFirstTime = false;
         } else {
             forceUpdate();
@@ -326,21 +363,27 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         /*int seletedItemId = bottomNavigationView.getSelectedItemId();
         switch (seletedItemId){
                 case R.id.student_dashboard:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new AdminDashbordFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new AdminDashbordFragment())
+                    .commit();
                     break;
                 case R.id.student_results:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new AdminResultFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new AdminResultFragment()).commit();
                     break;
 
                 case R.id.flashcard:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FlashCardList()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new FlashCardList()).commit();
                     break;
                 case R.id.student_cbt:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new ExamFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new ExamFragment()).commit();
                     break;
 
                 case R.id.student_elearning:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new AdminElearning()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new AdminElearning()).commit();
                     break;
 
         }*/
@@ -380,7 +423,8 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
     }
 
     public static void setHomeItem(Activity activity) {
-        BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottom_navigation_student);
+        BottomNavigationView bottomNavigationView = activity.findViewById(
+                R.id.bottom_navigation_student);
         bottomNavigationView.setSelectedItemId(R.id.student_dashboard);
     }
 

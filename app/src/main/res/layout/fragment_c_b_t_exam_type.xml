@@ -138,7 +138,6 @@
 
             </RelativeLayout>
 
-
             <LinearLayout
                 android:id="@+id/top_videos_layout"
                 android:layout_width="match_parent"
@@ -154,7 +153,6 @@
                     android:text="Recently taken test"
                     android:textColor="@color/text_bg_color"
                     android:textSize="20sp" />
-
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -768,11 +766,43 @@
                 android:textColor="@color/text_bg_color"
                 android:textSize="20sp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/exam_recycler"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp" />
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/exam_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp" />
+
+                <RelativeLayout
+                    android:id="@+id/empty_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/error_image"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/ic_warning" />
+
+                    <TextView
+                        android:id="@+id/error_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/error_image"
+                        android:layout_centerHorizontal="true"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/no_data" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
 
         </LinearLayout>

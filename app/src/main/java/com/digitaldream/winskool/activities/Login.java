@@ -6,19 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.AssessmentModel;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.CourseOutlineTable;
@@ -36,12 +34,11 @@ import com.digitaldream.winskool.models.GradeModel;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.models.NewsTable;
 import com.digitaldream.winskool.models.StaffTableUtil;
-import com.digitaldream.winskool.models.TeacherCourseModel;
 import com.digitaldream.winskool.models.StudentCourses;
 import com.digitaldream.winskool.models.StudentResultDownloadTable;
 import com.digitaldream.winskool.models.StudentTable;
+import com.digitaldream.winskool.models.TeacherCourseModel;
 import com.digitaldream.winskool.models.TeachersTable;
-import com.digitaldream.winskool.R;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -89,7 +86,8 @@ public class Login extends AppCompatActivity {
     private Dao<AssessmentModel, Long> assessmentDao;
     private List<AssessmentModel> assessmentList;
     public static String urlBase = "http://linkskool.com/developmentportal/api";
-    public static String fileBaseUrl = "https://linkskool.com/developmentportal";
+    public static String fileBaseUrl = "https://linkskool" +
+            ".com/developmentportal";
     private Dao<StaffTableUtil, Long> staffUtilDao;
     private Dao<TeacherCourseModel, Long> teacherCourseDao;
     private Dao<FormClassModel, Long> formClassDao;
@@ -110,21 +108,41 @@ public class Login extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
         try {
-            studentDao = DaoManager.createDao(databaseHelper.getConnectionSource(), StudentTable.class);
-            teacherDao = DaoManager.createDao(databaseHelper.getConnectionSource(), TeachersTable.class);
-            classDao = DaoManager.createDao(databaseHelper.getConnectionSource(), ClassNameTable.class);
-            levelDao = DaoManager.createDao(databaseHelper.getConnectionSource(), LevelTable.class);
-            newsDao = DaoManager.createDao(databaseHelper.getConnectionSource(), NewsTable.class);
-            courseDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseTable.class);
-            studentResultDao = DaoManager.createDao(databaseHelper.getConnectionSource(), StudentResultDownloadTable.class);
-            studentCourseDao = DaoManager.createDao(databaseHelper.getConnectionSource(), StudentCourses.class);
-            gradeDao = DaoManager.createDao(databaseHelper.getConnectionSource(), GradeModel.class);
-            generalSettingDao = DaoManager.createDao(databaseHelper.getConnectionSource(), GeneralSettingModel.class);
-            assessmentDao = DaoManager.createDao(databaseHelper.getConnectionSource(), AssessmentModel.class);
-            staffUtilDao = DaoManager.createDao(databaseHelper.getConnectionSource(), StaffTableUtil.class);
-            teacherCourseDao = DaoManager.createDao(databaseHelper.getConnectionSource(), TeacherCourseModel.class);
-            formClassDao = DaoManager.createDao(databaseHelper.getConnectionSource(), FormClassModel.class);
-            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseOutlineTable.class);
+            studentDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), StudentTable.class);
+            teacherDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), TeachersTable.class);
+            classDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), ClassNameTable.class);
+            levelDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), LevelTable.class);
+            newsDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    NewsTable.class);
+            courseDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), CourseTable.class);
+            studentResultDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(),
+                    StudentResultDownloadTable.class);
+            studentCourseDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), StudentCourses.class);
+            gradeDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), GradeModel.class);
+            generalSettingDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(),
+                    GeneralSettingModel.class);
+            assessmentDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(),
+                    AssessmentModel.class);
+            staffUtilDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), StaffTableUtil.class);
+            teacherCourseDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(),
+                    TeacherCourseModel.class);
+            formClassDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), FormClassModel.class);
+            courseOutlineDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(),
+                    CourseOutlineTable.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -134,7 +152,8 @@ public class Login extends AppCompatActivity {
             if (validateLoginForm()) {
                 loginApiCall();
             }
-           /*Intent intent = new Intent(Login.this,StudentDashboardActivity.class);
+           /*Intent intent = new Intent(Login.this,StudentDashboardActivity
+           .class);
             startActivity(intent);
             finish();*/
         });
@@ -143,7 +162,7 @@ public class Login extends AppCompatActivity {
     private boolean validateLoginForm() {
         usernameText = username.getText().toString().trim();
         passwordText = password.getText().toString().trim();
-        pinText = "5416";// pin.getText().toString().trim();"7755" 5416 2271
+        pinText = "7755";// pin.getText().toString().trim();"7755" 5416 2271
         // 9814
 
         if (usernameText.isEmpty() || passwordText.isEmpty()) {
@@ -161,22 +180,24 @@ public class Login extends AppCompatActivity {
     }
 
     private void loginApiCall() {
-        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(Login.this)
+        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(
+                Login.this)
                 .direction(ACProgressConstant.DIRECT_CLOCKWISE)
                 .textMarginTop(10)
                 .fadeColor(Color.DKGRAY).build();
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
         String login_url = urlBase + "/login.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, login_url, response -> {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                login_url, response -> {
             Log.i("response", "response " + response);
             parseJSON(response, dialog1);
         }, error -> {
-                    dialog1.dismiss();
-                    //Log.i("error_login",error.printStackTrace().);
-                    error.printStackTrace();
-                    Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
-                }) {
+            dialog1.dismiss();
+            //Log.i("error_login",error.printStackTrace().);
+            error.printStackTrace();
+            Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -186,7 +207,9 @@ public class Login extends AppCompatActivity {
                 return params;
             }
         };
-        //stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES,DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        // DefaultRetryPolicy.DEFAULT_MAX_RETRIES,DefaultRetryPolicy
+        // .DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
@@ -214,50 +237,77 @@ public class Login extends AppCompatActivity {
 
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getString("status").equals("failed") || jsonObject.getString("status").equals("error")) {
+                if (jsonObject.getString("status").equals(
+                        "failed") || jsonObject.getString("status").equals(
+                        "error")) {
                     dialog1.dismiss();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            Login.this);
                     builder.setMessage("Invalid Login details");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
+                    builder.setPositiveButton("OK", (dialogInterface, i) -> {
                     });
                     builder.show();
                 } else if (jsonObject.getString("status").equals("success")) {
-                    if (jsonObject.getJSONObject("profile").getString("access_level").equals("2")) {
+                    if (jsonObject.getJSONObject("profile").getString(
+                            "access_level").equals("2")) {
 
                         if (jsonObject.has("allStudentRecords")) {
 
-                            JSONObject object = jsonObject.getJSONObject("allStudentRecords");
+                            JSONObject object = jsonObject.getJSONObject(
+                                    "allStudentRecords");
                             JSONArray jsonArray = object.getJSONArray("rows");
-                            JSONArray columnArr1 = object.getJSONArray("columns");
+                            JSONArray columnArr1 = object.getJSONArray(
+                                    "columns");
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                                JSONArray jsonArray1 = jsonArray.getJSONArray(
+                                        i);
 
-                                String id = jsonArray1.getString(getIndex(columnArr1, "id"));
-                                String studentSurname = jsonArray1.getString(getIndex(columnArr1, "surname"));
-                                String studentFirstname = jsonArray1.getString(getIndex(columnArr1, "first_name"));
-                                String studentMiddlename = jsonArray1.getString(getIndex(columnArr1, "middle"));
+                                String id = jsonArray1.getString(
+                                        getIndex(columnArr1, "id"));
+                                String studentSurname = jsonArray1.getString(
+                                        getIndex(columnArr1, "surname"));
+                                String studentFirstname = jsonArray1.getString(
+                                        getIndex(columnArr1, "first_name"));
+                                String studentMiddlename = jsonArray1.getString(
+                                        getIndex(columnArr1, "middle"));
                                 String studentGender = null;
-                                if (jsonArray1.getString(getIndex(columnArr1, "sex")).equals("m")) {
+                                if (jsonArray1.getString(
+                                        getIndex(columnArr1, "sex")).equals(
+                                        "m")) {
                                     studentGender = "Male";
-                                } else if (jsonArray1.getString(getIndex(columnArr1, "sex")).equals("f")) {
+                                } else if (jsonArray1.getString(
+                                        getIndex(columnArr1, "sex")).equals(
+                                        "f")) {
                                     studentGender = "Female";
 
                                 }
-                                String studentReg_no = jsonArray1.getString(getIndex(columnArr1, "registration_no"));
-                                String studentClass = jsonArray1.getString(getIndex(columnArr1, "student_class"));
-                                String studentLevel = jsonArray1.getString(getIndex(columnArr1, "student_level"));
-                                String studentDOB = jsonArray1.getString(getIndex(columnArr1, "birthdate"));
-                                String guardianName = jsonArray1.getString(getIndex(columnArr1, "guardian_name"));
-                                String guardianAddress = jsonArray1.getString(getIndex(columnArr1, "address"));
-                                String guardianEmail = jsonArray1.getString(getIndex(columnArr1, "guardian_email"));
-                                String guardianPhoneNo = jsonArray1.getString(getIndex(columnArr1, "guardian_phone_no"));
-                                String lga = jsonArray1.getString(getIndex(columnArr1, "local_government_origin"));
-                                String state_of_origin = jsonArray1.getString(getIndex(columnArr1, "state_origin"));
-                                String nationality = jsonArray1.getString(getIndex(columnArr1, "nationality"));
-                                String date_admitted = jsonArray1.getString(getIndex(columnArr1, "date_admitted"));
+                                String studentReg_no = jsonArray1.getString(
+                                        getIndex(columnArr1,
+                                                "registration_no"));
+                                String studentClass = jsonArray1.getString(
+                                        getIndex(columnArr1, "student_class"));
+                                String studentLevel = jsonArray1.getString(
+                                        getIndex(columnArr1, "student_level"));
+                                String studentDOB = jsonArray1.getString(
+                                        getIndex(columnArr1, "birthdate"));
+                                String guardianName = jsonArray1.getString(
+                                        getIndex(columnArr1, "guardian_name"));
+                                String guardianAddress = jsonArray1.getString(
+                                        getIndex(columnArr1, "address"));
+                                String guardianEmail = jsonArray1.getString(
+                                        getIndex(columnArr1, "guardian_email"));
+                                String guardianPhoneNo = jsonArray1.getString(
+                                        getIndex(columnArr1,
+                                                "guardian_phone_no"));
+                                String lga = jsonArray1.getString(
+                                        getIndex(columnArr1,
+                                                "local_government_origin"));
+                                String state_of_origin = jsonArray1.getString(
+                                        getIndex(columnArr1, "state_origin"));
+                                String nationality = jsonArray1.getString(
+                                        getIndex(columnArr1, "nationality"));
+                                String date_admitted = jsonArray1.getString(
+                                        getIndex(columnArr1, "date_admitted"));
                                 //String class_name = jsonArray1.getString(28);
                                 QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
                                 queryBuilder.where().eq("studentId", id);
@@ -285,9 +335,11 @@ public class Login extends AppCompatActivity {
                                     studentDao.create(st);
                                 }
                             }
-                            JSONObject object1 = jsonObject.getJSONObject("allStaffRecords");
+                            JSONObject object1 = jsonObject.getJSONObject(
+                                    "allStaffRecords");
                             JSONArray jsonArray2 = object1.getJSONArray("rows");
-                            JSONArray columnArr = object1.getJSONArray("columns");
+                            JSONArray columnArr = object1.getJSONArray(
+                                    "columns");
                             List<String> columnList = new ArrayList<>();
                             for (int a = 0; a < columnArr.length(); a++) {
                                 columnList.add(columnArr.getString(a));
@@ -296,22 +348,39 @@ public class Login extends AppCompatActivity {
 
                             int teacherCounter = 0;
                             for (int i = 0; i < jsonArray2.length(); i++) {
-                                JSONArray jsonArray3 = jsonArray2.getJSONArray(i);
-                                String id = jsonArray3.getString(columnList.indexOf("id"));
-                                String staffFirstName = jsonArray3.getString(columnList.indexOf("first_name"));
-                                String staffSurname = jsonArray3.getString(columnList.indexOf("surname"));
-                                String staffMiddlename = jsonArray3.getString(columnList.indexOf("middle"));
-                                String staffGender = jsonArray3.getString(columnList.indexOf("sex"));
-                                String staffAddress = jsonArray3.getString(columnList.indexOf("address"));
-                                String nationality = jsonArray3.getString(columnList.indexOf("nationality"));
-                                String phone = jsonArray3.getString(getIndex(columnArr, "phone"));
-                                String staffEmail = jsonArray3.getString(getIndex(columnArr, "email"));
-                                String birthdate = jsonArray3.getString(getIndex(columnArr, "birthdate"));
-                                String staffNo = jsonArray3.getString(getIndex(columnArr, "staff_no"));
-                                String staffLga = jsonArray3.getString(getIndex(columnArr, "local_government_origin"));
-                                String staffStateOrigin = jsonArray3.getString(getIndex(columnArr, "state_origin"));
-                                String staffAccessLevel = jsonArray3.getString(getIndex(columnArr, "access_level"));
-                                String password = jsonArray3.getString(columnList.indexOf("password"));
+                                JSONArray jsonArray3 = jsonArray2.getJSONArray(
+                                        i);
+                                String id = jsonArray3.getString(
+                                        columnList.indexOf("id"));
+                                String staffFirstName = jsonArray3.getString(
+                                        columnList.indexOf("first_name"));
+                                String staffSurname = jsonArray3.getString(
+                                        columnList.indexOf("surname"));
+                                String staffMiddlename = jsonArray3.getString(
+                                        columnList.indexOf("middle"));
+                                String staffGender = jsonArray3.getString(
+                                        columnList.indexOf("sex"));
+                                String staffAddress = jsonArray3.getString(
+                                        columnList.indexOf("address"));
+                                String nationality = jsonArray3.getString(
+                                        columnList.indexOf("nationality"));
+                                String phone = jsonArray3.getString(
+                                        getIndex(columnArr, "phone"));
+                                String staffEmail = jsonArray3.getString(
+                                        getIndex(columnArr, "email"));
+                                String birthdate = jsonArray3.getString(
+                                        getIndex(columnArr, "birthdate"));
+                                String staffNo = jsonArray3.getString(
+                                        getIndex(columnArr, "staff_no"));
+                                String staffLga = jsonArray3.getString(
+                                        getIndex(columnArr,
+                                                "local_government_origin"));
+                                String staffStateOrigin = jsonArray3.getString(
+                                        getIndex(columnArr, "state_origin"));
+                                String staffAccessLevel = jsonArray3.getString(
+                                        getIndex(columnArr, "access_level"));
+                                String password = jsonArray3.getString(
+                                        columnList.indexOf("password"));
                                 QueryBuilder<TeachersTable, Long> queryBuilder = teacherDao.queryBuilder();
                                 queryBuilder.where().eq("staffId", id);
 
@@ -339,14 +408,21 @@ public class Login extends AppCompatActivity {
                                 }
                             }
 
-                            JSONObject jsonObject3 = jsonObject.getJSONObject("className");
-                            JSONArray jsonArray4 = jsonObject3.getJSONArray("rows");
-                            JSONArray columnArr2 = jsonObject3.getJSONArray("columns");
+                            JSONObject jsonObject3 = jsonObject.getJSONObject(
+                                    "className");
+                            JSONArray jsonArray4 = jsonObject3.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr2 = jsonObject3.getJSONArray(
+                                    "columns");
                             for (int i = 0; i < jsonArray4.length(); i++) {
-                                JSONArray jsonArray5 = jsonArray4.getJSONArray(i);
-                                String classId = jsonArray5.getString(getIndex(columnArr2, "id"));
-                                String className = jsonArray5.getString(getIndex(columnArr2, "class_name"));
-                                String level = jsonArray5.getString(getIndex(columnArr2, "level"));
+                                JSONArray jsonArray5 = jsonArray4.getJSONArray(
+                                        i);
+                                String classId = jsonArray5.getString(
+                                        getIndex(columnArr2, "id"));
+                                String className = jsonArray5.getString(
+                                        getIndex(columnArr2, "class_name"));
+                                String level = jsonArray5.getString(
+                                        getIndex(columnArr2, "level"));
                                 QueryBuilder<ClassNameTable, Long> queryBuilder = classDao.queryBuilder();
                                 queryBuilder.where().eq("classId", classId);
                                 classnames = queryBuilder.query();
@@ -355,22 +431,31 @@ public class Login extends AppCompatActivity {
                                     cn.setClassId(classId);
                                     cn.setClassName(className);
                                     cn.setLevel(level);
-                                    classDao.create(cn);//TWS000605  Anad86218
+                                    classDao.create(cn);
                                 }
 
                             }
 
-                            JSONObject jsonObject6 = jsonObject.getJSONObject("levelName");
-                            JSONArray jsonArray7 = jsonObject6.getJSONArray("rows");
-                            JSONArray columnArr3 = jsonObject6.getJSONArray("columns");
+                            JSONObject jsonObject6 = jsonObject.getJSONObject(
+                                    "levelName");
+                            JSONArray jsonArray7 = jsonObject6.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr3 = jsonObject6.getJSONArray(
+                                    "columns");
 
                             for (int i = 0; i < jsonArray7.length(); i++) {
-                                JSONArray jsonArray8 = jsonArray7.getJSONArray(i);
-                                String levelId = jsonArray8.getString(getIndex(columnArr3, "id"));
-                                String levelName = jsonArray8.getString(getIndex(columnArr3, "level_name"));
-                                String schoolType = jsonArray8.getString(getIndex(columnArr3, "school_type"));
-                                String rank = jsonArray8.getString(getIndex(columnArr3, "rank"));
-                                QueryBuilder<LevelTable, Long> queryBuilder = levelDao.queryBuilder();
+                                JSONArray jsonArray8 = jsonArray7.getJSONArray(
+                                        i);
+                                String levelId = jsonArray8.getString(
+                                        getIndex(columnArr3, "id"));
+                                String levelName = jsonArray8.getString(
+                                        getIndex(columnArr3, "level_name"));
+                                String schoolType = jsonArray8.getString(
+                                        getIndex(columnArr3, "school_type"));
+                                String rank = jsonArray8.getString(
+                                        getIndex(columnArr3, "rank"));
+                                QueryBuilder<LevelTable, Long> queryBuilder =
+                                        levelDao.queryBuilder();
                                 queryBuilder.where().eq("levelId", levelId);
                                 levelNames = queryBuilder.query();
                                 if (levelNames.isEmpty()) {
@@ -384,17 +469,27 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONObject jsonObject8 = jsonObject.getJSONObject("news");
-                            JSONArray jsonArray9 = jsonObject8.getJSONArray("rows");
-                            JSONArray columnArr4 = jsonObject8.getJSONArray("columns");
+                            JSONObject jsonObject8 = jsonObject.getJSONObject(
+                                    "news");
+                            JSONArray jsonArray9 = jsonObject8.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr4 = jsonObject8.getJSONArray(
+                                    "columns");
                             for (int i = 0; i < jsonArray9.length(); i++) {
-                                JSONArray jsonArray10 = jsonArray9.getJSONArray(i);
-                                String newsId = jsonArray10.getString(getIndex(columnArr4, "id"));
-                                String newsSubject = jsonArray10.getString(getIndex(columnArr4, "subject"));
-                                String newsContent = jsonArray10.getString(getIndex(columnArr4, "content"));
-                                String datePosted = jsonArray10.getString(getIndex(columnArr4, "date_posted"));
-                                String newsImageUrl = jsonArray10.getString(getIndex(columnArr4, "pic_ref"));
-                                QueryBuilder<NewsTable, Long> queryBuilder = newsDao.queryBuilder();
+                                JSONArray jsonArray10 = jsonArray9.getJSONArray(
+                                        i);
+                                String newsId = jsonArray10.getString(
+                                        getIndex(columnArr4, "id"));
+                                String newsSubject = jsonArray10.getString(
+                                        getIndex(columnArr4, "subject"));
+                                String newsContent = jsonArray10.getString(
+                                        getIndex(columnArr4, "content"));
+                                String datePosted = jsonArray10.getString(
+                                        getIndex(columnArr4, "date_posted"));
+                                String newsImageUrl = jsonArray10.getString(
+                                        getIndex(columnArr4, "pic_ref"));
+                                QueryBuilder<NewsTable, Long> queryBuilder =
+                                        newsDao.queryBuilder();
                                 queryBuilder.where().eq("newsId", newsId);
                                 newsList = queryBuilder.query();
                                 if (newsList.isEmpty()) {
@@ -410,20 +505,37 @@ public class Login extends AppCompatActivity {
                             if (jsonObject.has("courses")) {
                                 JSONObject jsonObject11 = null;
                                 try {
-                                    jsonObject11 = jsonObject.getJSONObject("courses");
+                                    jsonObject11 = jsonObject.getJSONObject(
+                                            "courses");
                                     Log.i("response", jsonObject11.toString());
-                                    JSONArray jsonArray11 = jsonObject11.getJSONArray("rows");
-                                    JSONArray columnArr5 = jsonObject11.getJSONArray("columns");
+                                    JSONArray jsonArray11 =
+                                            jsonObject11.getJSONArray(
+                                            "rows");
+                                    JSONArray columnArr5 =
+                                            jsonObject11.getJSONArray(
+                                            "columns");
 
                                     for (int b = 0; b < jsonArray11.length(); b++) {
-                                        JSONArray coursesArray = jsonArray11.getJSONArray(b);
-                                        String courseId = coursesArray.getString(getIndex(columnArr5, "id"));
-                                        String courseName = coursesArray.getString(getIndex(columnArr5, "course_name"));
-                                        String courseCode = coursesArray.getString(getIndex(columnArr5, "course_code"));
+                                        JSONArray coursesArray =
+                                                jsonArray11.getJSONArray(
+                                                b);
+                                        String courseId =
+                                                coursesArray.getString(
+                                                getIndex(columnArr5, "id"));
+                                        String courseName =
+                                                coursesArray.getString(
+                                                getIndex(columnArr5,
+                                                        "course_name"));
+                                        String courseCode =
+                                                coursesArray.getString(
+                                                getIndex(columnArr5,
+                                                        "course_code"));
 
-                                        //String levelId = coursesArray.getString(3);
+                                        //String levelId = coursesArray
+                                        // .getString(3);
                                         QueryBuilder<CourseTable, Long> queryBuilder = courseDao.queryBuilder();
-                                        queryBuilder.where().eq("courseId", courseId);
+                                        queryBuilder.where().eq("courseId",
+                                                courseId);
                                         courseList = queryBuilder.query();
                                         if (courseList.isEmpty()) {
                                             CourseTable ct = new CourseTable();
@@ -440,16 +552,26 @@ public class Login extends AppCompatActivity {
                             }
 
 
-                            JSONObject jsonObject12 = jsonObject.getJSONObject("gradeSettings");
-                            JSONArray jsonArray12 = jsonObject12.getJSONArray("rows");
-                            JSONArray columnArr6 = jsonObject12.getJSONArray("columns");
+                            JSONObject jsonObject12 = jsonObject.getJSONObject(
+                                    "gradeSettings");
+                            JSONArray jsonArray12 = jsonObject12.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr6 = jsonObject12.getJSONArray(
+                                    "columns");
                             for (int a = 0; a < jsonArray12.length(); a++) {
-                                JSONArray jsonArray13 = jsonArray12.getJSONArray(a);
-                                String gradeId = jsonArray13.getString(getIndex(columnArr6, "id"));
-                                String gradeName = jsonArray13.getString(getIndex(columnArr6, "grade_symbol"));
-                                String gradeMinimum = jsonArray13.getString(getIndex(columnArr6, "start"));
-                                String gradeRemark = jsonArray13.getString(getIndex(columnArr6, "remark"));
-                                QueryBuilder<GradeModel, Long> queryBuilder = gradeDao.queryBuilder();
+                                JSONArray jsonArray13 =
+                                        jsonArray12.getJSONArray(
+                                        a);
+                                String gradeId = jsonArray13.getString(
+                                        getIndex(columnArr6, "id"));
+                                String gradeName = jsonArray13.getString(
+                                        getIndex(columnArr6, "grade_symbol"));
+                                String gradeMinimum = jsonArray13.getString(
+                                        getIndex(columnArr6, "start"));
+                                String gradeRemark = jsonArray13.getString(
+                                        getIndex(columnArr6, "remark"));
+                                QueryBuilder<GradeModel, Long> queryBuilder =
+                                        gradeDao.queryBuilder();
                                 queryBuilder.where().eq("gradeId", gradeId);
                                 gradeList = queryBuilder.query();
                                 if (gradeList.isEmpty()) {
@@ -464,17 +586,27 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONObject jsonObject15 = jsonObject.getJSONObject("assessment");
-                            JSONArray jsonArray15 = jsonObject15.getJSONArray("rows");
-                            JSONArray columnArr7 = jsonObject15.getJSONArray("columns");
+                            JSONObject jsonObject15 = jsonObject.getJSONObject(
+                                    "assessment");
+                            JSONArray jsonArray15 = jsonObject15.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr7 = jsonObject15.getJSONArray(
+                                    "columns");
                             for (int c = 0; c < jsonArray15.length(); c++) {
-                                JSONArray jsonArray16 = jsonArray15.getJSONArray(c);
-                                String assessmentId = jsonArray16.getString(getIndex(columnArr7, "id"));
-                                String assessmentName = jsonArray16.getString(getIndex(columnArr7, "assesment_name"));
-                                String maxScore = jsonArray16.getString(getIndex(columnArr7, "max_score"));
-                                String levelId = jsonArray16.getString(getIndex(columnArr7, "level"));
+                                JSONArray jsonArray16 =
+                                        jsonArray15.getJSONArray(
+                                        c);
+                                String assessmentId = jsonArray16.getString(
+                                        getIndex(columnArr7, "id"));
+                                String assessmentName = jsonArray16.getString(
+                                        getIndex(columnArr7, "assesment_name"));
+                                String maxScore = jsonArray16.getString(
+                                        getIndex(columnArr7, "max_score"));
+                                String levelId = jsonArray16.getString(
+                                        getIndex(columnArr7, "level"));
                                 QueryBuilder<AssessmentModel, Long> queryBuilder = assessmentDao.queryBuilder();
-                                queryBuilder.where().eq("assessmentId", assessmentId);
+                                queryBuilder.where().eq("assessmentId",
+                                        assessmentId);
                                 assessmentList = queryBuilder.query();
                                 if (assessmentList.isEmpty()) {
                                     AssessmentModel as = new AssessmentModel();
@@ -487,26 +619,39 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONArray contentArray = jsonObject.getJSONArray("content");
+                            JSONArray contentArray = jsonObject.getJSONArray(
+                                    "content");
 
                             for (int a = 0; a < contentArray.length(); a++) {
-                                JSONObject contentObj = contentArray.getJSONObject(a);
+                                JSONObject contentObj =
+                                        contentArray.getJSONObject(
+                                        a);
                                 String id = contentObj.getString("id");
                                 String week = contentObj.getString("rank");
                                 String title = contentObj.getString("title");
-                                String objective = contentObj.getString("description");
-                                String noteMaterialPath = contentObj.getString("url");
-                                String otherMatherialPath = contentObj.getString("picref");
+                                String objective = contentObj.getString(
+                                        "description");
+                                String noteMaterialPath = contentObj.getString(
+                                        "url");
+                                String otherMatherialPath =
+                                        contentObj.getString(
+                                        "picref");
                                 String levelID = contentObj.getString("level");
-                                String courseID = contentObj.getString("course_id");
-                                String courseName = contentObj.getString("course_name");
-                                String levelName = contentObj.getString("level_name");
+                                String courseID = contentObj.getString(
+                                        "course_id");
+                                String courseName = contentObj.getString(
+                                        "course_name");
+                                String levelName = contentObj.getString(
+                                        "level_name");
                                 String type = contentObj.getString("type");
                                 String body = contentObj.getString("body");
-                                String startDate = contentObj.optString("start_date");
-                                String endDate = contentObj.optString("end_date");
+                                String startDate = contentObj.optString(
+                                        "start_date");
+                                String endDate = contentObj.optString(
+                                        "end_date");
 
-                                CourseOutlineTable cot = new CourseOutlineTable();
+                                CourseOutlineTable cot =
+                                        new CourseOutlineTable();
                                 cot.setLevelId(levelID);
                                 cot.setCourseId(courseID);
                                 cot.setTitle(title);
@@ -529,19 +674,31 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONObject jsonObject30 = jsonObject.getJSONObject("teachersCourseClass");
-                            JSONArray jsonArray30 = jsonObject30.getJSONArray("rows");
-                            JSONArray columnArr8 = jsonObject30.getJSONArray("columns");
+                            JSONObject jsonObject30 = jsonObject.getJSONObject(
+                                    "teachersCourseClass");
+                            JSONArray jsonArray30 = jsonObject30.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr8 = jsonObject30.getJSONArray(
+                                    "columns");
                             for (int s = 0; s < jsonArray30.length(); s++) {
-                                JSONArray jsonArray31 = jsonArray30.getJSONArray(s);
-                                String id = jsonArray31.getString(getIndex(columnArr8, "id"));
-                                String courseId = jsonArray31.getString(getIndex(columnArr8, "course"));
-                                String classId = jsonArray31.getString(getIndex(columnArr8, "class"));
-                                String staffId = jsonArray31.getString(getIndex(columnArr8, "ref_no"));
-                                String className = jsonArray31.getString(getIndex(columnArr8, "class_name"));
-                                String courseName = jsonArray31.getString(getIndex(columnArr8, "course_name"));
+                                JSONArray jsonArray31 =
+                                        jsonArray30.getJSONArray(
+                                        s);
+                                String id = jsonArray31.getString(
+                                        getIndex(columnArr8, "id"));
+                                String courseId = jsonArray31.getString(
+                                        getIndex(columnArr8, "course"));
+                                String classId = jsonArray31.getString(
+                                        getIndex(columnArr8, "class"));
+                                String staffId = jsonArray31.getString(
+                                        getIndex(columnArr8, "ref_no"));
+                                String className = jsonArray31.getString(
+                                        getIndex(columnArr8, "class_name"));
+                                String courseName = jsonArray31.getString(
+                                        getIndex(columnArr8, "course_name"));
 
-                                TeacherCourseModel tcm = new TeacherCourseModel();
+                                TeacherCourseModel tcm =
+                                        new TeacherCourseModel();
                                 tcm.setClassId(classId);
                                 tcm.setCourseId(courseId);
                                 tcm.setStaffId(staffId);
@@ -551,13 +708,20 @@ public class Login extends AppCompatActivity {
                                 teacherCourseDao.create(tcm);
                             }
 
-                            JSONObject jsonObject130 = jsonObject.getJSONObject("formClasses");
-                            JSONArray jsonArray130 = jsonObject130.getJSONArray("rows");
-                            JSONArray columnArr9 = jsonObject130.getJSONArray("columns");
+                            JSONObject jsonObject130 = jsonObject.getJSONObject(
+                                    "formClasses");
+                            JSONArray jsonArray130 = jsonObject130.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr9 = jsonObject130.getJSONArray(
+                                    "columns");
                             for (int a = 0; a < jsonArray130.length(); a++) {
-                                JSONArray jsonArray1 = jsonArray130.getJSONArray(a);
-                                String className = jsonArray1.getString(getIndex(columnArr9, "class_name"));
-                                String staffId = jsonArray1.getString(getIndex(columnArr9, "form_teacher"));
+                                JSONArray jsonArray1 =
+                                        jsonArray130.getJSONArray(
+                                        a);
+                                String className = jsonArray1.getString(
+                                        getIndex(columnArr9, "class_name"));
+                                String staffId = jsonArray1.getString(
+                                        getIndex(columnArr9, "form_teacher"));
                                 FormClassModel fcm = new FormClassModel();
                                 fcm.setClassName(className);
                                 fcm.setStaffId(staffId);
@@ -565,25 +729,46 @@ public class Login extends AppCompatActivity {
                             }
 
 
-                            JSONObject jsonObject20 = jsonObject.getJSONObject("schoolProfile");
-                            JSONArray jsonArray20 = jsonObject20.getJSONArray("rows");
+                            JSONObject jsonObject20 = jsonObject.getJSONObject(
+                                    "schoolProfile");
+                            JSONArray jsonArray20 = jsonObject20.getJSONArray(
+                                    "rows");
                             Log.i("assessment", jsonObject20.toString());
-                            JSONArray columnArr10 = jsonObject20.getJSONArray("columns");
-                            JSONArray schlProfileObject = jsonArray20.getJSONArray(getIndex(columnArr10, "id"));
-                            String school_Name = schlProfileObject.getString(getIndex(columnArr10, "name"));
-                            String schoolYear = schlProfileObject.getString(getIndex(columnArr10, "year"));
-                            String term = schlProfileObject.getString(getIndex(columnArr10, "term"));
-                            String website = schlProfileObject.getString(getIndex(columnArr10, "website"));
-                            String schoolShortName = schlProfileObject.getString(getIndex(columnArr10, "short_name"));
-                            String schoolAddress = schlProfileObject.getString(getIndex(columnArr10, "address"));
-                            String city = schlProfileObject.getString(getIndex(columnArr10, "city"));
-                            String state = schlProfileObject.getString(getIndex(columnArr10, "state"));
-                            String country = schlProfileObject.getString(getIndex(columnArr10, "country"));
-                            String schoolEmail = schlProfileObject.getString(getIndex(columnArr10, "email"));
-                            String schoolPhoneNumber = schlProfileObject.getString(getIndex(columnArr10, "phone"));
-                            String studentPrefix = schlProfileObject.getString(getIndex(columnArr10, "student_prefix"));
-                            String staffPrefix = schlProfileObject.getString(getIndex(columnArr10, "staff_prefix"));
-                            String alumniPrefix = schlProfileObject.getString(getIndex(columnArr10, "alumni_prefix"));
+                            JSONArray columnArr10 = jsonObject20.getJSONArray(
+                                    "columns");
+                            JSONArray schlProfileObject =
+                                    jsonArray20.getJSONArray(
+                                    getIndex(columnArr10, "id"));
+                            String school_Name = schlProfileObject.getString(
+                                    getIndex(columnArr10, "name"));
+                            String schoolYear = schlProfileObject.getString(
+                                    getIndex(columnArr10, "year"));
+                            String term = schlProfileObject.getString(
+                                    getIndex(columnArr10, "term"));
+                            String website = schlProfileObject.getString(
+                                    getIndex(columnArr10, "website"));
+                            String schoolShortName =
+                                    schlProfileObject.getString(
+                                    getIndex(columnArr10, "short_name"));
+                            String schoolAddress = schlProfileObject.getString(
+                                    getIndex(columnArr10, "address"));
+                            String city = schlProfileObject.getString(
+                                    getIndex(columnArr10, "city"));
+                            String state = schlProfileObject.getString(
+                                    getIndex(columnArr10, "state"));
+                            String country = schlProfileObject.getString(
+                                    getIndex(columnArr10, "country"));
+                            String schoolEmail = schlProfileObject.getString(
+                                    getIndex(columnArr10, "email"));
+                            String schoolPhoneNumber =
+                                    schlProfileObject.getString(
+                                    getIndex(columnArr10, "phone"));
+                            String studentPrefix = schlProfileObject.getString(
+                                    getIndex(columnArr10, "student_prefix"));
+                            String staffPrefix = schlProfileObject.getString(
+                                    getIndex(columnArr10, "staff_prefix"));
+                            String alumniPrefix = schlProfileObject.getString(
+                                    getIndex(columnArr10, "alumni_prefix"));
                             GeneralSettingModel gm = new GeneralSettingModel();
                             gm.setSchoolName(school_Name);
                             gm.setSchoolYear(schoolYear);
@@ -602,14 +787,22 @@ public class Login extends AppCompatActivity {
                             generalSettingDao.create(gm);
 
 
-                            JSONObject jsonObject10 = jsonObject.getJSONObject("profile");
+                            JSONObject jsonObject10 = jsonObject.getJSONObject(
+                                    "profile");
+
+
                             String user = jsonObject10.getString("name");
-                            String schoolName = jsonObject10.getString("school_name");
+                            String schoolName = jsonObject10.getString(
+                                    "school_name");
                             String userId = jsonObject10.getString("id");
-                            String accessLevel = jsonObject10.getString("access_level");
+                            String accessLevel = jsonObject10.getString(
+                                    "access_level");
                             String db = jsonObject10.getString("_db");
-                            SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences =
+                                    getSharedPreferences(
+                                    "loginDetail", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor =
+                                    sharedPreferences.edit();
                             editor.putBoolean("loginStatus", true);
                             editor.putString("user", user);
                             editor.putString("school_name", schoolName);
@@ -617,6 +810,7 @@ public class Login extends AppCompatActivity {
                             editor.putString("username", usernameText);
                             editor.putString("userpassword", passwordText);
                             editor.putString("schoolcode", pinText);
+                            editor.putString("school_year", schoolYear);
                             editor.putString("access_level", accessLevel);
                             editor.putString("who", "admin");
                             editor.putString("term", term);
@@ -624,57 +818,94 @@ public class Login extends AppCompatActivity {
                             Log.i("responsedb", db);
                             editor.apply();
                             dialog1.dismiss();
-                            Intent intent = new Intent(Login.this, Dashboard.class);
+                            Intent intent = new Intent(Login.this,
+                                    Dashboard.class);
                             intent.putExtra("isFromLogin", true);
                             startActivity(intent);
                             finish();
 
                         } else {
                             dialog1.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(
+                                    Login.this);
                             builder.setMessage("Invalid Login details");
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                            builder.setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                                }
-                            });
+                                        }
+                                    });
                             builder.show();
                         }
-                    } else if (jsonObject.getJSONObject("profile").getString("access_level").equals("3") || jsonObject.getJSONObject("profile").getString("access_level").equals("1")) {
+                    } else if (jsonObject.getJSONObject("profile").getString(
+                            "access_level").equals(
+                            "3") || jsonObject.getJSONObject(
+                            "profile").getString("access_level").equals("1")) {
                         if (jsonObject.has("teacherStudents")) {
 
-                            JSONObject object = jsonObject.getJSONObject("teacherStudents");
+                            JSONObject object = jsonObject.getJSONObject(
+                                    "teacherStudents");
                             JSONArray jsonArray = object.getJSONArray("rows");
-                            JSONArray columnArr11 = object.getJSONArray("columns");
+                            JSONArray columnArr11 = object.getJSONArray(
+                                    "columns");
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONArray jsonArray1 = jsonArray.getJSONArray(i);
-                                String id = jsonArray1.getString(getIndex(columnArr11, "id"));
-                                String studentSurname = jsonArray1.getString(getIndex(columnArr11, "surname"));
+                                JSONArray jsonArray1 = jsonArray.getJSONArray(
+                                        i);
+                                String id = jsonArray1.getString(
+                                        getIndex(columnArr11, "id"));
+                                String studentSurname = jsonArray1.getString(
+                                        getIndex(columnArr11, "surname"));
                                 String studentFirstname =
-                                        jsonArray1.getString(getIndex(columnArr11, "first_name"));
-                                String studentMiddlename = jsonArray1.getString(getIndex(columnArr11, "middle"));
+                                        jsonArray1.getString(
+                                                getIndex(columnArr11,
+                                                        "first_name"));
+                                String studentMiddlename = jsonArray1.getString(
+                                        getIndex(columnArr11, "middle"));
                                 String studentGender = null;
-                                if (jsonArray1.getString(getIndex(columnArr11, "sex")).equals("m")) {
+                                if (jsonArray1.getString(
+                                        getIndex(columnArr11, "sex")).equals(
+                                        "m")) {
                                     studentGender = "Male";
-                                } else if (jsonArray1.getString(getIndex(columnArr11, "sex")).equals("f")) {
+                                } else if (jsonArray1.getString(
+                                        getIndex(columnArr11, "sex")).equals(
+                                        "f")) {
                                     studentGender = "Female";
 
                                 } else {
-                                    studentGender = jsonArray1.getString(getIndex(columnArr11, "sex"));
+                                    studentGender = jsonArray1.getString(
+                                            getIndex(columnArr11, "sex"));
                                 }
-                                String studentReg_no = jsonArray1.getString(getIndex(columnArr11, "registration_no"));
-                                String studentClass = jsonArray1.getString(getIndex(columnArr11, "student_class"));
-                                String studentLevel = jsonArray1.getString(getIndex(columnArr11, "student_level"));
-                                String studentDOB = jsonArray1.getString(getIndex(columnArr11, "birthdate"));
-                                String guardianName = jsonArray1.getString(getIndex(columnArr11, "guardian_name"));
-                                String guardianAddress = jsonArray1.getString(getIndex(columnArr11, "guardian_address"));
-                                String guardianEmail = jsonArray1.getString(getIndex(columnArr11, "guardian_email"));
-                                String guardianPhoneNo = jsonArray1.getString(getIndex(columnArr11, "guardian_phone_no"));
-                                String lga = jsonArray1.getString(getIndex(columnArr11, "local_government_origin"));
-                                String state_of_origin = jsonArray1.getString(getIndex(columnArr11, "state_origin"));
-                                String nationality = jsonArray1.getString(getIndex(columnArr11, "nationality"));
-                                String date_admitted = jsonArray1.getString(getIndex(columnArr11, "date_admitted"));
+                                String studentReg_no = jsonArray1.getString(
+                                        getIndex(columnArr11,
+                                                "registration_no"));
+                                String studentClass = jsonArray1.getString(
+                                        getIndex(columnArr11, "student_class"));
+                                String studentLevel = jsonArray1.getString(
+                                        getIndex(columnArr11, "student_level"));
+                                String studentDOB = jsonArray1.getString(
+                                        getIndex(columnArr11, "birthdate"));
+                                String guardianName = jsonArray1.getString(
+                                        getIndex(columnArr11, "guardian_name"));
+                                String guardianAddress = jsonArray1.getString(
+                                        getIndex(columnArr11,
+                                                "guardian_address"));
+                                String guardianEmail = jsonArray1.getString(
+                                        getIndex(columnArr11,
+                                                "guardian_email"));
+                                String guardianPhoneNo = jsonArray1.getString(
+                                        getIndex(columnArr11,
+                                                "guardian_phone_no"));
+                                String lga = jsonArray1.getString(
+                                        getIndex(columnArr11,
+                                                "local_government_origin"));
+                                String state_of_origin = jsonArray1.getString(
+                                        getIndex(columnArr11, "state_origin"));
+                                String nationality = jsonArray1.getString(
+                                        getIndex(columnArr11, "nationality"));
+                                String date_admitted = jsonArray1.getString(
+                                        getIndex(columnArr11, "date_admitted"));
                                 //String class_name = jsonArray1.getString(28);
                                 QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
                                 queryBuilder.where().eq("studentId", id);
@@ -705,15 +936,22 @@ public class Login extends AppCompatActivity {
                             }
 
 
-                            JSONObject jsonObject3 = jsonObject.getJSONObject("className");
-                            JSONArray jsonArray4 = jsonObject3.getJSONArray("rows");
-                            JSONArray columnArr12 = jsonObject3.getJSONArray("columns");
+                            JSONObject jsonObject3 = jsonObject.getJSONObject(
+                                    "className");
+                            JSONArray jsonArray4 = jsonObject3.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr12 = jsonObject3.getJSONArray(
+                                    "columns");
 
                             for (int i = 0; i < jsonArray4.length(); i++) {
-                                JSONArray jsonArray5 = jsonArray4.getJSONArray(i);
-                                String classId = jsonArray5.getString(getIndex(columnArr12, "id"));
-                                String className = jsonArray5.getString(getIndex(columnArr12, "class_name"));
-                                String level = jsonArray5.getString(getIndex(columnArr12, "level"));
+                                JSONArray jsonArray5 = jsonArray4.getJSONArray(
+                                        i);
+                                String classId = jsonArray5.getString(
+                                        getIndex(columnArr12, "id"));
+                                String className = jsonArray5.getString(
+                                        getIndex(columnArr12, "class_name"));
+                                String level = jsonArray5.getString(
+                                        getIndex(columnArr12, "level"));
                                 QueryBuilder<ClassNameTable, Long> queryBuilder = classDao.queryBuilder();
                                 queryBuilder.where().eq("classId", classId);
                                 classnames = queryBuilder.query();
@@ -727,16 +965,24 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONObject jsonObject6 = jsonObject.getJSONObject("levelName");
-                            JSONArray jsonArray7 = jsonObject6.getJSONArray("rows");
-                            JSONArray columnArr13 = jsonObject6.getJSONArray("columns");
+                            JSONObject jsonObject6 = jsonObject.getJSONObject(
+                                    "levelName");
+                            JSONArray jsonArray7 = jsonObject6.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr13 = jsonObject6.getJSONArray(
+                                    "columns");
 
                             for (int i = 0; i < jsonArray7.length(); i++) {
-                                JSONArray jsonArray8 = jsonArray7.getJSONArray(i);
-                                String levelId = jsonArray8.getString(getIndex(columnArr13, "id"));
-                                String levelName = jsonArray8.getString(getIndex(columnArr13, "level_name"));
-                                String schoolType = jsonArray8.getString(getIndex(columnArr13, "school_type"));
-                                QueryBuilder<LevelTable, Long> queryBuilder = levelDao.queryBuilder();
+                                JSONArray jsonArray8 = jsonArray7.getJSONArray(
+                                        i);
+                                String levelId = jsonArray8.getString(
+                                        getIndex(columnArr13, "id"));
+                                String levelName = jsonArray8.getString(
+                                        getIndex(columnArr13, "level_name"));
+                                String schoolType = jsonArray8.getString(
+                                        getIndex(columnArr13, "school_type"));
+                                QueryBuilder<LevelTable, Long> queryBuilder =
+                                        levelDao.queryBuilder();
                                 queryBuilder.where().eq("levelId", levelId);
                                 levelNames = queryBuilder.query();
                                 if (levelNames.isEmpty()) {
@@ -749,18 +995,28 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONObject jsonObject8 = jsonObject.getJSONObject("news");
-                            JSONArray jsonArray9 = jsonObject8.getJSONArray("rows");
-                            JSONArray columnArr14 = jsonObject8.getJSONArray("columns");
+                            JSONObject jsonObject8 = jsonObject.getJSONObject(
+                                    "news");
+                            JSONArray jsonArray9 = jsonObject8.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr14 = jsonObject8.getJSONArray(
+                                    "columns");
 
                             for (int i = 0; i < jsonArray9.length(); i++) {
-                                JSONArray jsonArray10 = jsonArray9.getJSONArray(i);
-                                String newsId = jsonArray10.getString(getIndex(columnArr14, "id"));
-                                String newsSubject = jsonArray10.getString(getIndex(columnArr14, "subject"));
-                                String newsContent = jsonArray10.getString(getIndex(columnArr14, "content"));
-                                String datePosted = jsonArray10.getString(getIndex(columnArr14, "date_posted"));
-                                String newsImageUrl = jsonArray10.getString(getIndex(columnArr14, "pic_ref"));
-                                QueryBuilder<NewsTable, Long> queryBuilder = newsDao.queryBuilder();
+                                JSONArray jsonArray10 = jsonArray9.getJSONArray(
+                                        i);
+                                String newsId = jsonArray10.getString(
+                                        getIndex(columnArr14, "id"));
+                                String newsSubject = jsonArray10.getString(
+                                        getIndex(columnArr14, "subject"));
+                                String newsContent = jsonArray10.getString(
+                                        getIndex(columnArr14, "content"));
+                                String datePosted = jsonArray10.getString(
+                                        getIndex(columnArr14, "date_posted"));
+                                String newsImageUrl = jsonArray10.getString(
+                                        getIndex(columnArr14, "pic_ref"));
+                                QueryBuilder<NewsTable, Long> queryBuilder =
+                                        newsDao.queryBuilder();
                                 queryBuilder.where().eq("newsId", newsId);
                                 newsList = queryBuilder.query();
                                 if (newsList.isEmpty()) {
@@ -775,13 +1031,18 @@ public class Login extends AppCompatActivity {
                             }
 
 
-                            JSONObject jsonObject10 = jsonObject.getJSONObject("profile");
+                            JSONObject jsonObject10 = jsonObject.getJSONObject(
+                                    "profile");
                             String user = jsonObject10.getString("name");
                             String userId = jsonObject10.getString("id");
-                            String accessLevel = jsonObject10.getString("access_level");
+                            String accessLevel = jsonObject10.getString(
+                                    "access_level");
                             String db = jsonObject10.getString("_db");
-                            SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences =
+                                    getSharedPreferences(
+                                    "loginDetail", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor =
+                                    sharedPreferences.edit();
                             editor.putBoolean("loginStatus", true);
                             editor.putString("user", user);
                             editor.putString("user_id", userId);
@@ -793,29 +1054,42 @@ public class Login extends AppCompatActivity {
                             editor.putString("db", db);
 
 
-                            JSONObject jsonObject11 = jsonObject.getJSONObject("schoolProfile");
-                            JSONArray jsonArray11 = jsonObject11.getJSONArray("rows");
-                            JSONArray columnArr15 = jsonObject11.getJSONArray("columns");
-                            String schoolYear = jsonArray11.getJSONArray(0).getString(getIndex(columnArr15, "year"));
-                            String currentTerm = jsonArray11.getJSONArray(0).getString(getIndex(columnArr15, "term"));
-                            String schoolName = jsonArray11.getJSONArray(0).getString(getIndex(columnArr15, "name"));
+                            JSONObject jsonObject11 = jsonObject.getJSONObject(
+                                    "schoolProfile");
+                            JSONArray jsonArray11 = jsonObject11.getJSONArray(
+                                    "rows");
+                            JSONArray columnArr15 = jsonObject11.getJSONArray(
+                                    "columns");
+                            String schoolYear = jsonArray11.getJSONArray(
+                                    0).getString(getIndex(columnArr15, "year"));
+                            String currentTerm = jsonArray11.getJSONArray(
+                                    0).getString(getIndex(columnArr15, "term"));
+                            String schoolName = jsonArray11.getJSONArray(
+                                    0).getString(getIndex(columnArr15, "name"));
                             editor.putString("school_year", schoolYear);
                             editor.putString("school_name", schoolName);
                             editor.putString("term", currentTerm);
                             editor.apply();
 
-                            JSONArray jsonArray1 = jsonObject.getJSONArray("staffCourse");
+                            JSONArray jsonArray1 = jsonObject.getJSONArray(
+                                    "staffCourse");
                             for (int i = 0; i < jsonArray1.length(); i++) {
-                                JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
+                                JSONObject jsonObject1 =
+                                        jsonArray1.getJSONObject(
+                                        i);
                                 String courseId = jsonObject1.getString("id");
-                                String staffNo = jsonObject1.getString("ref_no");
+                                String staffNo = jsonObject1.getString(
+                                        "ref_no");
                                 String classId = jsonObject1.getString("class");
                                 String year = jsonObject1.getString("year");
                                 String term = jsonObject1.getString("term");
                                 String levelId = jsonObject1.getString("level");
-                                String courseName = jsonObject1.getString("course_name");
-                                String className = jsonObject1.getString("class_name");
-                                String levelName = jsonObject1.getString("level_name");
+                                String courseName = jsonObject1.getString(
+                                        "course_name");
+                                String className = jsonObject1.getString(
+                                        "class_name");
+                                String levelName = jsonObject1.getString(
+                                        "level_name");
                                 CourseTable ct = new CourseTable();
                                 ct.setClassId(classId);
                                 ct.setCourseId(courseId);
@@ -830,22 +1104,34 @@ public class Login extends AppCompatActivity {
 
                             }
 
-                            JSONArray staffContentArray = jsonObject.getJSONArray("staffContent");
+                            JSONArray staffContentArray =
+                                    jsonObject.getJSONArray(
+                                    "staffContent");
                             for (int a = 0; a < staffContentArray.length(); a++) {
-                                JSONObject contentObj = staffContentArray.getJSONObject(a);
+                                JSONObject contentObj =
+                                        staffContentArray.getJSONObject(
+                                        a);
                                 String id = contentObj.getString("id");
                                 String week = contentObj.getString("rank");
                                 String title = contentObj.getString("title");
-                                String objective = contentObj.getString("description");
-                                String noteMaterialPath = contentObj.getString("url");
-                                String otherMatherialPath = contentObj.getString("picref");
+                                String objective = contentObj.getString(
+                                        "description");
+                                String noteMaterialPath = contentObj.getString(
+                                        "url");
+                                String otherMatherialPath =
+                                        contentObj.getString(
+                                        "picref");
                                 String levelID = contentObj.getString("level");
-                                String courseID = contentObj.getString("course_id");
+                                String courseID = contentObj.getString(
+                                        "course_id");
                                 String type = contentObj.getString("type");
-                                String startDate = contentObj.optString("start_date");
-                                String endDate = contentObj.optString("end_date");
+                                String startDate = contentObj.optString(
+                                        "start_date");
+                                String endDate = contentObj.optString(
+                                        "end_date");
 
-                                CourseOutlineTable cot = new CourseOutlineTable();
+                                CourseOutlineTable cot =
+                                        new CourseOutlineTable();
                                 cot.setLevelId(levelID);
                                 cot.setCourseId(courseID);
                                 cot.setTitle(title);
@@ -862,36 +1148,46 @@ public class Login extends AppCompatActivity {
 
                             }
                             dialog1.dismiss();
-                            Intent intent = new Intent(Login.this, StaffDashboardActivity.class);
+                            Intent intent = new Intent(Login.this,
+                                    StaffDashboardActivity.class);
                             intent.putExtra("isFromLogin", true);
                             startActivity(intent);
                             finish();
 
                         } else {
                             dialog1.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(
+                                    Login.this);
                             builder.setMessage("Invalid Login details");
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                            builder.setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                                }
-                            });
+                                        }
+                                    });
                             builder.show();
                         }
-                    } else if (jsonObject.getJSONObject("profile").getString("access_level").equals("-1")) {
+                    } else if (jsonObject.getJSONObject("profile").getString(
+                            "access_level").equals("-1")) {
                         dialog1.dismiss();
-                        JSONObject jsonObject1 = jsonObject.getJSONObject("profile");
+                        JSONObject jsonObject1 = jsonObject.getJSONObject(
+                                "profile");
                         String user = jsonObject1.getString("name");
-                        String schoolName = jsonObject1.getString("school_name");
+                        String schoolName = jsonObject1.getString(
+                                "school_name");
                         String userId = jsonObject1.getString("id");
-                        String accessLevel = jsonObject1.getString("access_level");
+                        String accessLevel = jsonObject1.getString(
+                                "access_level");
                         String db = jsonObject1.getString("_db");
-                        String studentClass = jsonObject1.getString("class_name");
+                        String studentClass = jsonObject1.getString(
+                                "class_name");
                         String level = jsonObject1.getString("level");
                         Log.i("responsedb", db);
 
-                        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences(
+                                "loginDetail", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putBoolean("loginStatus", true);
                         editor.putString("user", user);
@@ -909,17 +1205,22 @@ public class Login extends AppCompatActivity {
 
                         Object object = jsonObject.get("result");
                         if (object instanceof JSONObject) {
-                            JSONObject jsonObject2 = jsonObject.getJSONObject("result");
+                            JSONObject jsonObject2 = jsonObject.getJSONObject(
+                                    "result");
                             Iterator<String> keys = jsonObject2.keys();
                             while (keys.hasNext()) {
                                 String key = keys.next();
                                 String schoolYear = key;
-                                if (jsonObject2.get(key) instanceof JSONObject) {
+                                if (jsonObject2.get(
+                                        key) instanceof JSONObject) {
                                     // do something with jsonObject here
-                                    JSONObject object1 = jsonObject2.getJSONObject(key);
-                                    String className = object1.getString("class_name");
+                                    JSONObject object1 = jsonObject2.getJSONObject(
+                                            key);
+                                    String className = object1.getString(
+                                            "class_name");
                                     String levelID = object1.getString("level");
-                                    JSONObject termObject = object1.getJSONObject("terms");
+                                    JSONObject termObject = object1.getJSONObject(
+                                            "terms");
                                     String first_term = "";
                                     String second_term = "";
                                     String third_term = "";
@@ -958,16 +1259,23 @@ public class Login extends AppCompatActivity {
                         }
 
 
-                        JSONObject jsonObject21 = jsonObject.getJSONObject("news");
+                        JSONObject jsonObject21 = jsonObject.getJSONObject(
+                                "news");
                         JSONArray newsArray = jsonObject21.getJSONArray("rows");
-                        JSONArray columnArr15 = jsonObject21.getJSONArray("columns");
+                        JSONArray columnArr15 = jsonObject21.getJSONArray(
+                                "columns");
                         for (int e = 0; e < newsArray.length(); e++) {
                             JSONArray jsonArray21 = newsArray.getJSONArray(e);
-                            String newsId = jsonArray21.getString(getIndex(columnArr15, "id"));
-                            String newsSubject = jsonArray21.getString(getIndex(columnArr15, "subject"));
-                            String newsContent = jsonArray21.getString(getIndex(columnArr15, "content"));
-                            String datePosted = jsonArray21.getString(getIndex(columnArr15, "date_posted"));
-                            String newsImageUrl = jsonArray21.getString(getIndex(columnArr15, "pic_ref"));
+                            String newsId = jsonArray21.getString(
+                                    getIndex(columnArr15, "id"));
+                            String newsSubject = jsonArray21.getString(
+                                    getIndex(columnArr15, "subject"));
+                            String newsContent = jsonArray21.getString(
+                                    getIndex(columnArr15, "content"));
+                            String datePosted = jsonArray21.getString(
+                                    getIndex(columnArr15, "date_posted"));
+                            String newsImageUrl = jsonArray21.getString(
+                                    getIndex(columnArr15, "pic_ref"));
                             QueryBuilder<NewsTable, Long> queryBuilder = newsDao.queryBuilder();
                             queryBuilder.where().eq("newsId", newsId);
                             newsList = queryBuilder.query();
@@ -984,12 +1292,15 @@ public class Login extends AppCompatActivity {
                         }
 
 
-                        JSONArray jsonArray1 = jsonObject.getJSONArray("courses");
+                        JSONArray jsonArray1 = jsonObject.getJSONArray(
+                                "courses");
                         for (int a = 0; a < jsonArray1.length(); a++) {
-                            JSONObject jsonObject3 = jsonArray1.getJSONObject(a);
+                            JSONObject jsonObject3 = jsonArray1.getJSONObject(
+                                    a);
                             String courseId = jsonObject3.getString("course");
                             String classId = jsonObject3.getString("class");
-                            String courseName = jsonObject3.getString("course_name");
+                            String courseName = jsonObject3.getString(
+                                    "course_name");
                             StudentCourses sc = new StudentCourses();
                             sc.setClassId(classId);
                             sc.setCourseId(courseId);
@@ -997,21 +1308,29 @@ public class Login extends AppCompatActivity {
                             studentCourseDao.create(sc);
                         }
 
-                        JSONArray contentArray = jsonObject.getJSONArray("content");
+                        JSONArray contentArray = jsonObject.getJSONArray(
+                                "content");
                         for (int a = 0; a < contentArray.length(); a++) {
-                            JSONObject contentObj = contentArray.getJSONObject(a);
+                            JSONObject contentObj = contentArray.getJSONObject(
+                                    a);
                             String id = contentObj.getString("id");
                             String week = contentObj.getString("rank");
                             String title = contentObj.getString("title");
-                            String objective = contentObj.getString("description");
-                            String noteMaterialPath = contentObj.getString("url");
-                            String otherMatherialPath = contentObj.getString("picref");
+                            String objective = contentObj.getString(
+                                    "description");
+                            String noteMaterialPath = contentObj.getString(
+                                    "url");
+                            String otherMatherialPath = contentObj.getString(
+                                    "picref");
                             String levelID = contentObj.getString("level");
                             String courseID = contentObj.getString("course_id");
-                            String courseName = contentObj.getString("course_name");
-                            String levelName = contentObj.getString("level_name");
+                            String courseName = contentObj.getString(
+                                    "course_name");
+                            String levelName = contentObj.getString(
+                                    "level_name");
                             String type = contentObj.getString("type");
-                            String startDate = contentObj.optString("start_date");
+                            String startDate = contentObj.optString(
+                                    "start_date");
                             String endDate = contentObj.optString("end_date");
 
                             CourseOutlineTable cot = new CourseOutlineTable();
@@ -1034,7 +1353,8 @@ public class Login extends AppCompatActivity {
                         }
 
 
-                        Intent intent = new Intent(Login.this, StudentDashboardActivity.class);
+                        Intent intent = new Intent(Login.this,
+                                StudentDashboardActivity.class);
                         intent.putExtra("isFromLogin", true);
                         startActivity(intent);
                         finish();
@@ -1044,16 +1364,19 @@ public class Login extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
                 dialog1.dismiss();
-                Toast.makeText(Login.this, "Error fetching data from server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "Error fetching data from server",
+                        Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
                 dialog1.dismiss();
-                Toast.makeText(Login.this, "Error fetching data from server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "Error fetching data from server",
+                        Toast.LENGTH_SHORT).show();
             }
 
         } else {
             dialog1.dismiss();
-            Toast.makeText(Login.this, "Error fetching data from server", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Login.this, "Error fetching data from server",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -12,8 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.models.ClassNameTable;
 
 import java.util.List;
 import java.util.Random;
@@ -35,19 +35,23 @@ public class StaffClassAttendanceAdapter extends RecyclerView.Adapter<StaffClass
     @NonNull
     @Override
     public StaffClassAttendanceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_staff_attendance_class_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(
+                R.layout.fragment_staff_attendance_class_item, parent, false);
         return new ViewHolder(view, mOnLevelClickListener);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull StaffClassAttendanceAdapter.ViewHolder holder, int position) {
-        holder.mLevelName.setText(mClassNameTableList.get(position).getClassName());
+        holder.mLevelName.setText(
+                mClassNameTableList.get(position).getClassName());
         //holder.mInitial.setText(position + 1);
 
-        GradientDrawable gd = (GradientDrawable) holder.mLayout.getBackground().mutate();
+        GradientDrawable gd =
+                (GradientDrawable) holder.mLayout.getBackground().mutate();
         Random random = new Random();
-        int currentColor = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        int currentColor = Color.argb(255, random.nextInt(256),
+                random.nextInt(256), random.nextInt(256));
         gd.setColor(currentColor);
         holder.mLayout.setBackground(gd);
 
@@ -67,7 +71,8 @@ public class StaffClassAttendanceAdapter extends RecyclerView.Adapter<StaffClass
         private final LinearLayout mLayout;
 
 
-        public ViewHolder(@NonNull View itemView, OnLevelClickListener sOnLevelClickListener) {
+        public ViewHolder(@NonNull View itemView,
+                          OnLevelClickListener sOnLevelClickListener) {
             super(itemView);
             mOnLevelClickListener = sOnLevelClickListener;
             mLevelName = itemView.findViewById(R.id.level_name);

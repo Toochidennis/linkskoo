@@ -269,7 +269,7 @@ public class ClassResultDetails extends AppCompatActivity {
             ImageView imageView = findViewById(R.id.image);
             TextView  textView = findViewById(R.id.error_message);
             imageView.setImageResource(R.drawable.no_internet);
-            textView.setText("Seems like you're not connected to the internet!");
+            textView.setText(R.string.no_internet);
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);

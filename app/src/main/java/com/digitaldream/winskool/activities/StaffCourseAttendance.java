@@ -27,9 +27,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.StaffCourseAttendanceAdapter;
 import com.digitaldream.winskool.models.StudentTable;
-import com.digitaldream.winskool.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -47,17 +47,20 @@ import cc.cloudist.acplibrary.ACProgressFlower;
 
 public class StaffCourseAttendance extends AppCompatActivity implements StaffCourseAttendanceAdapter.OnStudentClickListener {
 
-    private String mStudentClassId, courseId, year, term, db, staffId,
-            responseId, className, courseName;
+    private String mStudentClassId;
+    private String courseId;
+    private String year;
+    private String term;
+    private String db;
+    private String staffId;
+    private String responseId;
     private List<StudentTable> mStudentTableList;
     private StaffCourseAttendanceAdapter mStaffCourseAttendanceAdapter;
-    private TextView mClassName, mCourseName, errorMessage;
+    private TextView errorMessage;
     private ImageView errorImage;
-    private RecyclerView mRecyclerView;
     private RelativeLayout mEmptyLayout;
     private FloatingActionButton mSendBtn;
     private ActionBar mActionBar;
-    private Toolbar mToolbar;
     private Menu mMenu;
     private boolean isSelectAll = false;
 
@@ -66,11 +69,11 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendance_course_staff);
 
-        mClassName = findViewById(R.id.class_title);
-        mCourseName = findViewById(R.id.course_name);
-        mRecyclerView = findViewById(R.id.students_recycler);
+        TextView className1 = findViewById(R.id.class_title);
+        TextView courseName1 = findViewById(R.id.course_name);
+        RecyclerView recyclerView = findViewById(R.id.students_recycler);
         mSendBtn = findViewById(R.id.submit_btn);
-        mToolbar = findViewById(R.id.tool_bar);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
         mEmptyLayout = findViewById(R.id.empty_state);
         errorMessage = findViewById(R.id.error_message);
         errorImage = findViewById(R.id.image);
@@ -79,17 +82,18 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         mStudentClassId = intent.getStringExtra("classId");
         courseId = intent.getStringExtra("courseId");
         responseId = intent.getStringExtra("responseId");
-        className = intent.getStringExtra("class_name");
-        courseName = intent.getStringExtra("course_name");
-        Log.i("responseIdId", responseId);
+        String className = intent.getStringExtra("class_name");
+        String courseName = intent.getStringExtra("course_name");
+        // Log.i("responseIdId", responseId);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
         staffId = sharedPreferences.getString("user_id", "");
         year = sharedPreferences.getString("school_year", "");
 
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
         assert mActionBar != null;
         mActionBar.setTitle("Course Attendance");
@@ -97,16 +101,17 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         mActionBar.setHomeButtonEnabled(true);
         mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
 
-        mClassName.setText(className);
-        mCourseName.setText(courseName);
+        className1.setText(className);
+        courseName1.setText(courseName);
 
         mStudentTableList = new ArrayList<>();
-        mStaffCourseAttendanceAdapter = new StaffCourseAttendanceAdapter(this, mStudentTableList,
+        mStaffCourseAttendanceAdapter = new StaffCourseAttendanceAdapter(this,
+                mStudentTableList,
                 this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(mStaffCourseAttendanceAdapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(mStaffCourseAttendanceAdapter);
 
         mSendBtn.setOnClickListener(sView -> {
             try {
@@ -253,7 +258,8 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         dialog1.show();
         String url = Login.urlBase + "/setAttendance.php";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("response", response);
                     dialog1.dismiss();
@@ -281,7 +287,8 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> stringMap = new HashMap<>();
-                stringMap.put("id", Objects.requireNonNullElse(responseId, "0"));
+                stringMap.put("id",
+                        Objects.requireNonNullElse(responseId, "0"));
                 stringMap.put("class", sClassId);
                 stringMap.put("staff", sStaffId);
                 stringMap.put("year", sYear);
@@ -312,7 +319,8 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
         String url = Login.urlBase + "/getCourseRegistration.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url,
                 response -> {
                     Log.i("Response", "response" + response);
                     dialog1.dismiss();
@@ -335,12 +343,15 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
 
                         JSONArray attendanceArray = new JSONArray(attendance);
                         for (int i = 0; i < attendanceArray.length(); i++) {
-                            JSONObject object = attendanceArray.getJSONObject(i);
+                            JSONObject object = attendanceArray.getJSONObject(
+                                    i);
                             String register = object.getString("register");
 
                             JSONArray registerArray = new JSONArray(register);
                             for (int j = 0; j < registerArray.length(); j++) {
-                                JSONObject object1 = registerArray.getJSONObject(j);
+                                JSONObject object1 =
+                                        registerArray.getJSONObject(
+                                                j);
                                 String studentId = object1.getString("id");
                                 Log.i("studentId", studentId);
 
@@ -363,11 +374,11 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
                 }, error -> {
             error.printStackTrace();
             dialog1.dismiss();
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went wrong!",
+                    Toast.LENGTH_SHORT).show();
             mEmptyLayout.setVisibility(View.VISIBLE);
             errorImage.setImageResource(R.drawable.no_internet);
-            errorMessage.setText("Failed to load Students, please check your " +
-                    "internet connection and try again");
+            errorMessage.setText(R.string.failed_internet);
 
         }) {
             @Override
@@ -387,58 +398,6 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
-    }
-
-
-    public void getPreviousCourseRegistration() {
-
-        String url = Login.urlBase + "/getCourseRegistration.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    Log.i("response", "response" + response);
-                    try {
-                        String register = "";
-                        JSONObject jsonObject = new JSONObject(response);
-                        String attendance = jsonObject.getString("attendance");
-                        JSONArray jsonArray = new JSONArray(attendance);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject object = jsonArray.getJSONObject(i);
-                            register = object.getString("register");
-                        }
-                        if (!register.isEmpty()) {
-                            JSONArray array = new JSONArray(register);
-                            for (int j = 0; j < array.length(); j++) {
-                                JSONObject object1 = array.getJSONObject(j);
-                                String studentId = object1.getString("id");
-                                Log.i("studentId", studentId);
-
-                                getStudentList(mStudentTableList, studentId);
-                            }
-
-                            mStaffCourseAttendanceAdapter.notifyDataSetChanged();
-                        }
-
-                    } catch (JSONException sE) {
-                        sE.printStackTrace();
-                    }
-
-                }, error -> {
-            error.printStackTrace();
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> stringMap = new HashMap<>();
-                stringMap.put("class", mStudentClassId);
-                stringMap.put("course", courseId);
-                stringMap.put("_db", db);
-                return stringMap;
-            }
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
     }
 
 

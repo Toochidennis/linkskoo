@@ -31,8 +31,11 @@
     <string name="top_videos">Top Videos</string>
     <string name="loading_please_wait">Loading, please wait…</string>
     <string name="business_studies">Business Studies</string>
-    <string name="nothing_to_show">Go to settings to set the current
-        term!</string>
+    <string name="nothing_to_show">No attendance taken yet! Click the
+        button below to take attendance</string>
+    <string name="no_data">Nothing to show</string>
+    <string name="no_internet">Seems like you\'re not connected to the internet</string>
+    <string name="failed_internet">Failed to load Students, please check your internet connection and try again</string>
     <string-array name="gender">
         <item>Select Gender</item>
         <item>Male</item>

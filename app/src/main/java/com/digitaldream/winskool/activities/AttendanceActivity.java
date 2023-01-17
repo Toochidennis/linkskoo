@@ -13,14 +13,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.SectionPagerAdapter;
 import com.digitaldream.winskool.fragments.AdminClassAttendanceFragment;
 import com.digitaldream.winskool.fragments.CourseAttendanceFragment;
 import com.digitaldream.winskool.fragments.StaffClassAttendanceFragment;
 import com.digitaldream.winskool.fragments.StaffCourseAttendanceFragment;
+import com.digitaldream.winskool.models.GeneralSettingModel;
 import com.google.android.material.tabs.TabLayout;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -52,7 +58,6 @@ public class AttendanceActivity extends AppCompatActivity {
         mClassName = intent.getStringExtra("className");
         from = intent.getStringExtra("from");
 
-        Log.d(TAG, mStudentClassId +" "+ mStudentLevelId +" "+ mClassName);
 
         TextView name = findViewById(R.id.class_name);
         TextView classYear = findViewById(R.id.class_term);
@@ -63,7 +68,7 @@ public class AttendanceActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         String term = sharedPreferences.getString("term", "");
-        // year = mSettingModelList.get(0).getSchoolYear();
+       // year = mSettingModels.get(0).getSchoolTerm();
         String year = sharedPreferences.getString("school_year", "");
         Log.i("term", year);
 

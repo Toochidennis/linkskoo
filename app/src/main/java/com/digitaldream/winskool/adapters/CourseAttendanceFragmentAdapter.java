@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.models.CourseTable;
 
 import java.util.List;
 
@@ -22,7 +22,9 @@ public class CourseAttendanceFragmentAdapter extends RecyclerView.Adapter<Course
     private final List<CourseTable> mCourseTableList;
     private final OnCourseClickListener mOnCourseClickListener;
 
-    public CourseAttendanceFragmentAdapter(Context sContext, List<CourseTable> sCourseTableList, OnCourseClickListener sOnCourseClickListener) {
+    public CourseAttendanceFragmentAdapter(Context sContext,
+                                           List<CourseTable> sCourseTableList
+            , OnCourseClickListener sOnCourseClickListener) {
         mContext = sContext;
         mCourseTableList = sCourseTableList;
         mOnCourseClickListener = sOnCourseClickListener;
@@ -32,7 +34,9 @@ public class CourseAttendanceFragmentAdapter extends RecyclerView.Adapter<Course
     @Override
     public CourseAttendanceFragmentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view =
-                LayoutInflater.from(mContext).inflate(R.layout.fragment_course_attendance_item, parent, false);
+                LayoutInflater.from(mContext).inflate(
+                        R.layout.fragment_course_attendance_item, parent,
+                        false);
         return new ViewHolder(view, mOnCourseClickListener);
     }
 
@@ -42,7 +46,8 @@ public class CourseAttendanceFragmentAdapter extends RecyclerView.Adapter<Course
         String name = courseTable.getCourseName().toUpperCase();
         holder.mCourseTitle.setText(name);
 
-        GradientDrawable mutate = (GradientDrawable) holder.mLinearLayout.getBackground().mutate();
+        GradientDrawable mutate =
+                (GradientDrawable) holder.mLinearLayout.getBackground().mutate();
         mutate.setColor(courseTable.getColor());
         holder.mLinearLayout.setBackground(mutate);
         holder.mStudentCount.setText(courseTable.getCount());
@@ -54,11 +59,11 @@ public class CourseAttendanceFragmentAdapter extends RecyclerView.Adapter<Course
         return mCourseTableList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-      OnCourseClickListener mOnCourseClickListener;
-      private final TextView mCourseTitle;
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        OnCourseClickListener mOnCourseClickListener;
+        private final TextView mCourseTitle;
         private final TextView mStudentCount;
-      private final LinearLayout mLinearLayout;
+        private final LinearLayout mLinearLayout;
 
         public ViewHolder(@NonNull View itemView,
                           OnCourseClickListener sOnCourseClickListener) {
@@ -76,20 +81,12 @@ public class CourseAttendanceFragmentAdapter extends RecyclerView.Adapter<Course
 
         }
 
-        @Override
-        public boolean onLongClick(View sView) {
-            mOnCourseClickListener.onCourseLongClick(getAdapterPosition());
-            return false;
-        }
+
     }
 
 
-
-
-
-    public interface OnCourseClickListener{
+    public interface OnCourseClickListener {
         void onCourseClick(int position);
-        void onCourseLongClick(int position);
     }
 
 }

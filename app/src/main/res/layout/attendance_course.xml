@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="English"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Attendance"
+            android:text=""
             android:textSize="16sp" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -67,6 +67,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="25dp"
             android:backgroundTint="@android:color/holo_orange_dark"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_add" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -77,6 +78,7 @@
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="95dp"
             android:backgroundTint="@color/tab_color"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_attendance"
             android:visibility="gone" />
 
@@ -88,6 +90,7 @@
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="160dp"
             android:backgroundTint="@android:color/holo_purple"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_filter"
             android:visibility="gone" />
 
@@ -104,12 +107,12 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:contentDescription="TODO"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="200dp"
             android:layout_marginStart="150dp"
+            android:layout_marginTop="200dp"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_warning" />
 
         <TextView
@@ -122,49 +125,10 @@
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
             android:gravity="center_horizontal"
-            android:text="Nothing to show!"
+            android:text="@string/nothing_to_show"
             android:textColor="@android:color/black" />
 
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/attendance_empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="25dp"
-                android:backgroundTint="@android:color/holo_orange_dark"
-                android:src="@drawable/ic_add"
-                android:visibility="gone" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/take_attendance_empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="25dp"
-                android:layout_marginBottom="95dp"
-                android:backgroundTint="@color/tab_color"
-                android:src="@drawable/ic_attendance"
-                android:visibility="gone" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/filter_attendance_empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="25dp"
-                android:layout_marginBottom="160dp"
-                android:backgroundTint="@android:color/holo_purple"
-                android:src="@drawable/ic_filter"
-                android:visibility="gone" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </RelativeLayout>
 
 
