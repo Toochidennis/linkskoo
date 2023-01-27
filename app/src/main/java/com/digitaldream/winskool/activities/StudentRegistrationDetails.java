@@ -22,7 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.adapters.CoursesAdapter;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.CustomDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;

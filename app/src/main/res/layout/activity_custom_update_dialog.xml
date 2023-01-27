@@ -8,7 +8,7 @@
     android:layout_margin="20dp"
     android:padding="20dp"
     android:orientation="vertical"
-    tools:context=".utils.CustomUpdateDialog">
+    tools:context=".dialog.CustomUpdateDialog">
 
     <TextView
         android:layout_width="wrap_content"

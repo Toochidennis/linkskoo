@@ -33,7 +33,7 @@ import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.activities.TestUpload;
 import com.digitaldream.winskool.models.OptionsModel;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.QuestionDialog2;
+import com.digitaldream.winskool.dialog.QuestionDialog2;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

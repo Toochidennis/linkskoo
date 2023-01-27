@@ -1,4 +1,4 @@
-package com.digitaldream.winskool.utils;
+package com.digitaldream.winskool.dialog;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.utils.FlashCardTagsSettings;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.j256.ormlite.dao.Dao;
 

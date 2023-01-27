@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 
+import com.digitaldream.winskool.dialog.ShareDialog;
+
 public class WifiDirectBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager manager;
     private WifiP2pManager.Channel channel;

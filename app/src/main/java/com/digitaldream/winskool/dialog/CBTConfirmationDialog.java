@@ -1,4 +1,4 @@
-package com.digitaldream.winskool.utils;
+package com.digitaldream.winskool.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -24,6 +24,7 @@ import com.digitaldream.winskool.ExamActivity;
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.models.ExamQuestions;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.utils.Methods;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 

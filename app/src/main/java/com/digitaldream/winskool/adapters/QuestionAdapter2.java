@@ -21,7 +21,7 @@ import com.digitaldream.winskool.activities.TestUpload;
 import com.digitaldream.winskool.models.QuestionsModel;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.utils.ItemMoveCallBack;
-import com.digitaldream.winskool.utils.QuestionDialog2;
+import com.digitaldream.winskool.dialog.QuestionDialog2;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.digitaldream.winskool.utils;
+package com.digitaldream.winskool.dialog;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -26,6 +26,7 @@ import com.digitaldream.winskool.adapters.PeersListAdapter;
 import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.utils.WifiDirectBroadcastReceiver;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;

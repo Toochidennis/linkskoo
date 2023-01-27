@@ -53,8 +53,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.adapters.QAdapter;
-import com.digitaldream.winskool.utils.CustomDialog;
-import com.digitaldream.winskool.utils.ImagePreviewDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
+import com.digitaldream.winskool.dialog.ImagePreviewDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
 

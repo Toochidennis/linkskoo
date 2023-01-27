@@ -19,8 +19,8 @@ import com.digitaldream.winskool.adapters.CBTYearAdapter;
 import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.CBTConfirmationDialog;
-import com.digitaldream.winskool.utils.CustomLoadingView;
+import com.digitaldream.winskool.dialog.CBTConfirmationDialog;
+import com.digitaldream.winskool.dialog.CustomLoadingView;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 

@@ -25,7 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.CourseOutlineTable;
-import com.digitaldream.winskool.utils.CustomDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;

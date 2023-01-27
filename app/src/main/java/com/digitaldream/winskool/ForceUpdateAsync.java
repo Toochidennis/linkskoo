@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import com.digitaldream.winskool.activities.Dashboard;
 import com.digitaldream.winskool.activities.StaffDashboardActivity;
 import com.digitaldream.winskool.activities.StudentDashboardActivity;
-import com.digitaldream.winskool.utils.CustomUpdateDialog;
+import com.digitaldream.winskool.dialog.CustomUpdateDialog;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;

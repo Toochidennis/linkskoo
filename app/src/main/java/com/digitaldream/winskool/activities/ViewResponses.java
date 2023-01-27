@@ -25,7 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.adapters.ViewResponseAdapter;
 import com.digitaldream.winskool.models.ViewResponseModel;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.CustomDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;

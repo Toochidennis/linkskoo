@@ -242,9 +242,9 @@
 -keep class com.digitaldream.winskool.activities.ViewResponses { <init>(); }
 -keep class com.digitaldream.winskool.activities.ViewResult { <init>(); }
 -keep class com.digitaldream.winskool.activities.WifiActivity { <init>(); }
--keep class com.digitaldream.winskool.utils.AssignCourseDialog { <init>(); }
--keep class com.digitaldream.winskool.utils.CustomCBTDialog { <init>(); }
--keep class com.digitaldream.winskool.utils.CustomUpdateDialog { <init>(); }
+-keep class com.digitaldream.winskool.dialog.AssignCourseDialog { <init>(); }
+-keep class com.digitaldream.winskool.dialog.CustomCBTDialog { <init>(); }
+-keep class com.digitaldream.winskool.dialog.CustomUpdateDialog { <init>(); }
 -keep class com.digitaldream.winskool.utils.FileTransferService { <init>(); }
 -keep class com.google.android.gms.ads.AdActivity { <init>(); }
 -keep class com.google.android.gms.ads.AdService { <init>(); }

@@ -35,8 +35,8 @@ import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.adapters.FlashCardListAdapter;
 import com.digitaldream.winskool.models.FlashCardModel;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.CustomDialog;
-import com.digitaldream.winskool.utils.FlashCardSettingsDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
+import com.digitaldream.winskool.dialog.FlashCardSettingsDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;

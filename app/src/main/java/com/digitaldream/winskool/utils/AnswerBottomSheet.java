@@ -42,6 +42,7 @@ import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.activities.NewsView;
 import com.digitaldream.winskool.activities.QuestionView;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.dialog.CustomDialog;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

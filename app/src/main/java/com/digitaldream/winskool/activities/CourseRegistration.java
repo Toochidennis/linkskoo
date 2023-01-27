@@ -33,7 +33,7 @@ import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.models.GeneralSettingModel;
 import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.CustomDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;

@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 
 import com.digitaldream.winskool.models.OptionsModel;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.QuestionDialog;
+import com.digitaldream.winskool.dialog.QuestionDialog;
 
 import java.util.ArrayList;
 import java.util.List;

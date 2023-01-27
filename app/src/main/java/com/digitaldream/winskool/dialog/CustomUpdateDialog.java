@@ -1,4 +1,4 @@
-package com.digitaldream.winskool.utils;
+package com.digitaldream.winskool.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;

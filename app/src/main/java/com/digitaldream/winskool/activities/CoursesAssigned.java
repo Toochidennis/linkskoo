@@ -48,7 +48,7 @@ import com.digitaldream.winskool.models.TeacherCourseModel;
 import com.digitaldream.winskool.models.TeacherCourseModelCopy;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.TeachersTable;
-import com.digitaldream.winskool.utils.AssignCourseDialog;
+import com.digitaldream.winskool.dialog.AssignCourseDialog;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;

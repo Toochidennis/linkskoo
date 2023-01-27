@@ -22,7 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.fragments.AdminDashbordFragment;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.CustomDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
