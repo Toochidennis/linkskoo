@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,45 +29,51 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/top_videos_layout"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="35dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
                     android:fontFamily="@font/montserrat_alternates"
                     android:text="@string/top_videos"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    ads:layout_constraintBottom_toBottomOf="parent"
+                    ads:layout_constraintStart_toStartOf="parent"
+                    ads:layout_constraintTop_toTopOf="parent"
+                    ads:layout_constraintVertical_bias="0.5" />
 
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="182dp"
+                    android:layout_marginEnd="15dp"
+                    ads:layout_constraintBottom_toBottomOf="parent"
+                    ads:layout_constraintEnd_toEndOf="parent"
+                    ads:layout_constraintTop_toTopOf="parent"
+                    ads:layout_constraintVertical_bias="0.5"
                     app:cardCornerRadius="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:background="@color/text_bg_color"
                         android:fontFamily="@font/montserrat"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
                         android:text="@string/see_all"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
 
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -95,9 +102,6 @@
                             android:layout_height="110dp"
                             android:layout_gravity="start"
                             android:backgroundTint="@color/color_2"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
                             app:cardCornerRadius="10dp"
                             app:cardElevation="0dp"
                             app:contentPadding="10dp">
@@ -106,16 +110,15 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
                                 app:cardCornerRadius="5dp">
 
                                 <Button
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
+                                    android:clickable="true"
                                     android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:focusable="true"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -210,9 +213,6 @@
                             android:layout_height="110dp"
                             android:layout_gravity="start"
                             android:backgroundTint="@color/color_2"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
                             app:cardCornerRadius="10dp"
                             app:cardElevation="0dp"
                             app:contentPadding="10dp">
@@ -221,16 +221,15 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
                                 app:cardCornerRadius="5dp">
 
                                 <Button
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
+                                    android:clickable="true"
                                     android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:focusable="true"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -660,60 +659,40 @@
 
             </HorizontalScrollView>
 
-            <LinearLayout
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="35dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="30dp">
 
                 <TextView
+                    android:id="@+id/video_categories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
                     android:fontFamily="@font/montserrat_alternates"
                     android:text="@string/categories"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="20sp" />
-
-              <!--  <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="187dp"
-                    app:cardCornerRadius="5dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/text_bg_color"
-                        android:fontFamily="@font/montserrat"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:text="@string/see_all"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                </androidx.cardview.widget.CardView>-->
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
+                    android:id="@+id/cbt_btn"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
                     android:backgroundTint="@color/color_4"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toStartOf="@+id/videos_btn"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/video_categories">
 
                     <ImageView
                         android:layout_width="35dp"
@@ -742,16 +721,22 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
+                    android:id="@+id/videos_btn"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="15dp"
                     android:backgroundTint="@color/color_1"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/cbt_btn"
+                    app:layout_constraintTop_toBottomOf="@id/video_categories">
 
                     <ImageView
                         android:layout_width="35dp"
@@ -779,24 +764,20 @@
 
                 </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
                 <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
+                    android:id="@+id/games_btn"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
                     android:backgroundTint="@color/color_5"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toEndOf="@+id/cbt_btn"
+                    app:layout_constraintStart_toStartOf="@+id/cbt_btn"
+                    app:layout_constraintTop_toBottomOf="@+id/cbt_btn">
 
                     <ImageView
                         android:layout_width="35dp"
@@ -825,16 +806,19 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
+                    android:id="@+id/books_btn"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="10dp"
                     android:backgroundTint="@color/color_6"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toEndOf="@+id/videos_btn"
+                    app:layout_constraintStart_toStartOf="@+id/videos_btn"
+                    app:layout_constraintTop_toBottomOf="@id/videos_btn">
 
                     <ImageView
                         android:layout_width="35dp"
@@ -862,24 +846,19 @@
 
                 </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
                 <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
                     android:backgroundTint="@color/color_7"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toEndOf="@id/games_btn"
+                    app:layout_constraintStart_toStartOf="@id/games_btn"
+                    app:layout_constraintTop_toBottomOf="@id/games_btn">
 
                     <ImageView
                         android:layout_width="35dp"
@@ -908,16 +887,18 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="185dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="10dp"
                     android:backgroundTint="@color/color_3"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toEndOf="@+id/books_btn"
+                    app:layout_constraintStart_toStartOf="@+id/books_btn"
+                    app:layout_constraintTop_toBottomOf="@+id/books_btn">
 
                     <ImageView
                         android:layout_width="35dp"
@@ -945,46 +926,54 @@
 
                 </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
 
-            <LinearLayout
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="35dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="35dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
                     android:fontFamily="@font/montserrat_alternates"
-                    android:text="Recently viewed videos"
+                    android:text="Recently watched videos"
                     android:textColor="@color/text_bg_color"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    ads:layout_constraintBottom_toBottomOf="parent"
+                    ads:layout_constraintStart_toStartOf="parent"
+                    ads:layout_constraintTop_toTopOf="parent"
+                    ads:layout_constraintVertical_bias="0.5" />
 
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="15dp"
+                    ads:layout_constraintBottom_toBottomOf="parent"
+                    ads:layout_constraintEnd_toEndOf="parent"
+                    ads:layout_constraintTop_toTopOf="parent"
+                    ads:layout_constraintVertical_bias="0.5"
                     app:cardCornerRadius="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:background="@color/text_bg_color"
                         android:fontFamily="@font/montserrat"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
                         android:text="@string/view_all"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
 
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -36,6 +36,7 @@
     <string name="no_data">Nothing to show</string>
     <string name="no_internet">Seems like you\'re not connected to the internet</string>
     <string name="failed_internet">Failed to load Students, please check your internet connection and try again</string>
+    <string name="naira">\u20A6</string>
     <string-array name="gender">
         <item>Select Gender</item>
         <item>Male</item>
@@ -88,4 +89,5 @@
         <item>Yobe</item>
         <item>Zamfara</item>
     </string-array>
+    <string name="title_activity_bar_chart">BarChart</string>
 </resources>

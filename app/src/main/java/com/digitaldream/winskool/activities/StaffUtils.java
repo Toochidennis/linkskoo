@@ -2,7 +2,6 @@ package com.digitaldream.winskool.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,35 +21,38 @@ public class StaffUtils extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_utils);
+
         Intent i = getIntent();
-        String from = i.getStringExtra("from");
-
-        Log.i("From", from);
-
         String classId = i.getStringExtra("classId");
         String levelId = i.getStringExtra("levelId");
         String className = i.getStringExtra("class_name");
         String courseName = i.getStringExtra("course_name");
-        switch (from) {
+
+        switch (i.getStringExtra("from")) {
+
             case "result":
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.fragment_container, new ResultStaff()).commit();
                 break;
+
             case "student":
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.fragment_container, new ContactsStaff()).commit();
                 break;
+
             case "staff":
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.fragment_container,
                         AdminClassAttendanceFragment.newInstance(classId,
                                 levelId, className, "staff")).commit();
                 break;
+
             case "cbt":
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.fragment_container,
                         new CBTExamTypeFragment()).commit();
                 break;
+
             case "exam_type":
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.fragment_container,
@@ -61,6 +63,7 @@ public class StaffUtils extends AppCompatActivity {
                         R.id.fragment_container,
                         CBTYearFragment.newInstance(courseName, "")).commit();
                 break;
+
             case "videos":
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.fragment_container,
@@ -71,8 +74,6 @@ public class StaffUtils extends AppCompatActivity {
                         R.id.fragment_container,
                         new LibraryGamesFragment()).commit();
                 break;
-
-
         }
 
 

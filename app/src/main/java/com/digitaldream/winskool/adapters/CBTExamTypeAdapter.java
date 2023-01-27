@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,8 +13,8 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.models.ExamType;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.models.ExamType;
 import com.digitaldream.winskool.utils.Methods;
 
 import java.util.List;
@@ -34,7 +35,8 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
             R.color.color_6, R.color.color_7, R.color.color_8,
             R.color.color_2, R.color.color_5};
 
-    public CBTExamTypeAdapter(Context sContext, List<ExamType> sExamTypeList, OnExamClickListener sOnExamClickListener) {
+    public CBTExamTypeAdapter(Context sContext, List<ExamType> sExamTypeList,
+                              OnExamClickListener sOnExamClickListener) {
         mContext = sContext;
         mExamTypeList = sExamTypeList;
         mOnExamClickListener = sOnExamClickListener;
@@ -43,9 +45,11 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
 
     @NonNull
     @Override
-    public CBTExamTypeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CBTExamTypeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                            int viewType) {
         View view =
-                LayoutInflater.from(mContext).inflate(R.layout.fragment_cbt_exam_type_item, parent, false);
+                LayoutInflater.from(mContext).inflate(R.layout.fragment_cbt_exam_type_item, parent,
+                        false);
         return new ViewHolder(view, mOnExamClickListener);
     }
 
@@ -54,9 +58,9 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
         String name = mExamTypeList.get(position).getExamName();
         holder.mTextView.setText(Methods.capitaliseFirstLetter(name));
 
-        holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mContext, colors[position % 11]));
+        holder.mCardView.setCardBackgroundColor(
+                ContextCompat.getColor(mContext, colors[position % 11]));
         holder.mImageView.setImageResource(icons[position % 10]);
-
 
     }
 
@@ -91,4 +95,5 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
     public interface OnExamClickListener {
         void onExamClick(int position);
     }
+
 }

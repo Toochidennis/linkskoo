@@ -10,17 +10,19 @@ android {
         versionCode 35
         versionName "27.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
+
     buildTypes {
         release {
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             minifyEnabled true
 
-            // Enables resource shrinking, which is performed by the
-            // Android Gradle plugin.
+            // Enables resource shrinking, which is performed by the Android Gradle plugin.
             shrinkResources true
-
             // Includes the default ProGuard rules files that are packaged with
             // the Android Gradle plugin.
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
@@ -40,9 +42,15 @@ android {
         checkReleaseBuilds false
     }
     namespace 'com.digitaldream.winskool'
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
 }
 
 dependencies {
+
     def supportVersion = '1.0.0-beta01'
     def glideVersion = "4.9.0"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -53,6 +61,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation "androidx.recyclerview:recyclerview:$supportVersion"
     implementation 'com.j256.ormlite:ormlite-android:4.48'
     implementation 'cc.cloudist.acplibrary:library:1.2.1'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
@@ -73,9 +82,12 @@ dependencies {
     //image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
-    implementation "androidx.recyclerview:recyclerview:$supportVersion"
+    //zigzag
+    implementation 'ir.beigirad:ZigzagView:1.0.7'
+
     // ExoPlayer
     implementation 'com.google.android.exoplayer:exoplayer:2.8.4'
+
     // 2.9.0 has min sdk 26
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
@@ -83,4 +95,5 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation files('libs/achartengine-1.2.0.jar')
 }

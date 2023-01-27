@@ -2,6 +2,7 @@ package com.digitaldream.winskool.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +23,10 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.BooksActivity;
 import com.digitaldream.winskool.activities.StaffUtils;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +58,7 @@ public class ELibraryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_e_library, container,
                 false);
 
-       /* MobileAds.initialize(Objects.requireNonNull(getContext()), sInitializationStatus -> {
-            Log.d("AdMob", "Initialisation completed");
-
-                   RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(List.of(
-                        "33BE2250B43518CCDA7DE426D04EE231")).build();
-        MobileAds.setRequestConfiguration(configuration);
-
-        });*/
+        MobileAds.initialize(Objects.requireNonNull(getContext()), sInitializationStatus -> Log.d("AdMob", "Initialisation completed"));
 
         mToolbar = view.findViewById(R.id.toolbar);
         mImageSlider = view.findViewById(R.id.imageSlider);
@@ -71,6 +67,8 @@ public class ELibraryFragment extends Fragment {
         mGames = view.findViewById(R.id.games_btn);
         mBooks = view.findViewById(R.id.books_btn);
         mAdView = view.findViewById(R.id.adView);
+
+
 
         ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).setSupportActionBar(mToolbar);
         mActionBar =
@@ -135,9 +133,9 @@ public class ELibraryFragment extends Fragment {
         });
 
 
-      /*  AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-        Log.d("AdMob",""+ mAdView.isShown());*/
+        Log.d("AdMob",""+ mAdView.isShown());
 
 
         return view;

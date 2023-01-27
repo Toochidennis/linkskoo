@@ -43,7 +43,7 @@ import com.digitaldream.winskool.models.VideoUtilTable;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.models.TeachersTable;
-import com.digitaldream.winskool.utils.ContactUsDialog;
+import com.digitaldream.winskool.dialog.ContactUsDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
@@ -92,7 +92,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
 
         if (from != null && from.equals("testupload")) {
             FlashCardList.refresh = true;
-            bottomNavigationView.getMenu().findItem(R.id.flashcard).setChecked(true);
+            bottomNavigationView.getMenu().findItem(R.id.payment).setChecked(true);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
 
         } else {
@@ -108,7 +108,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ResultStaff()).commit();
                     return true;
 
-                case R.id.flashcard:
+                case R.id.payment:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
                     return true;
                 case R.id.student_library:

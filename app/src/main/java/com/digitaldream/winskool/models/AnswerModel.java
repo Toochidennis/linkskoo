@@ -1,5 +1,6 @@
 package com.digitaldream.winskool.models;
 
+
 public class AnswerModel {
     private String user;
     private String date;

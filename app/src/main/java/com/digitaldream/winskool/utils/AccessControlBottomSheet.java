@@ -1,7 +1,6 @@
 package com.digitaldream.winskool.utils;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +9,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.digitaldream.winskool.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class AccessControlBottomSheet extends BottomSheetDialogFragment {
 
@@ -26,12 +25,7 @@ public class AccessControlBottomSheet extends BottomSheetDialogFragment {
          super.onCreateView(inflater, container, savedInstanceState);
          View view = inflater.inflate(R.layout.activity_access,container,false);
         ImageView closeBtn = view.findViewById(R.id.close);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        closeBtn.setOnClickListener(v -> dismiss());
 
         RelativeLayout publicCont = view.findViewById(R.id.public_access);
         RelativeLayout anonymousCont = view.findViewById(R.id.anonymous);
@@ -53,30 +47,21 @@ public class AccessControlBottomSheet extends BottomSheetDialogFragment {
             publicImage.setVisibility(View.GONE);
             anonymousImage.setVisibility(View.GONE);
         }
-        publicCont.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                QuestionBottomSheet.accessText.setText("Public");
-                QuestionBottomSheet.accessImg.setImageResource(R.drawable.ic_supervisor_account);
-                dismiss();
-            }
+        publicCont.setOnClickListener(v -> {
+            QuestionBottomSheet.accessText.setText("Public");
+            QuestionBottomSheet.accessImg.setImageResource(R.drawable.ic_supervisor_account);
+            dismiss();
         });
-        anonymousCont.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                QuestionBottomSheet.accessText.setText("Anonymous");
-                QuestionBottomSheet.accessImg.setImageResource(R.drawable.ic_perm_identity);
+        anonymousCont.setOnClickListener(v -> {
+            QuestionBottomSheet.accessText.setText("Anonymous");
+            QuestionBottomSheet.accessImg.setImageResource(R.drawable.ic_perm_identity);
 
-                dismiss();
-            }
+            dismiss();
         });
-        limitedCont.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                QuestionBottomSheet.accessText.setText("Limited");
-                QuestionBottomSheet.accessImg.setImageResource(R.drawable.ic_perm_identity);
-                dismiss();
-            }
+        limitedCont.setOnClickListener(v -> {
+            QuestionBottomSheet.accessText.setText("Limited");
+            QuestionBottomSheet.accessImg.setImageResource(R.drawable.ic_perm_identity);
+            dismiss();
         });
          return view;
     }
@@ -87,14 +72,11 @@ public class AccessControlBottomSheet extends BottomSheetDialogFragment {
         super.onCreateDialog(savedInstanceState);
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
+        dialog.setOnShowListener(dialog1 -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog1;
 
-                FrameLayout bottomSheet = (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
         return dialog;
     }

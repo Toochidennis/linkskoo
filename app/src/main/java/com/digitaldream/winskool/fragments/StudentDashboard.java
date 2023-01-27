@@ -5,6 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -13,37 +29,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.AnswerView;
 import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.activities.NewsView;
 import com.digitaldream.winskool.activities.QuestionView;
 import com.digitaldream.winskool.adapters.QAAdapter;
-import com.digitaldream.winskool.utils.CustomDialog;
+import com.digitaldream.winskool.models.NewsTable;
+import com.digitaldream.winskool.models.StudentCourses;
+import com.digitaldream.winskool.dialog.CustomDialog;
 import com.digitaldream.winskool.utils.QuestionAccessViewSheet;
 import com.digitaldream.winskool.utils.QuestionBottomSheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.models.NewsTable;
-import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.models.StudentCourses;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -63,44 +62,44 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionClickListener , QuestionAccessViewSheet.OnQuestionSubmitListener {
+public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionClickListener, QuestionAccessViewSheet.OnQuestionSubmitListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private TextView schoolname,username,student_class,studentInitials;
-    private RecyclerView qaRecycler,courseRecycler;
-    private Dao<NewsTable,Long> newsDao;
-    private List<NewsTable> newsTitleList=new ArrayList<>();
+    private TextView schoolname, username, student_class, studentInitials;
+    private RecyclerView qaRecycler, courseRecycler;
+    private Dao<NewsTable, Long> newsDao;
+    private List<NewsTable> newsTitleList = new ArrayList<>();
     private DatabaseHelper databaseHelper;
     private LinearLayout news_empty_state;
-    private Dao<StudentCourses,Long> studentCoursesDao;
+    private Dao<StudentCourses, Long> studentCoursesDao;
     private List<StudentCourses> studentCourses;
     private CardView courseList_empty_state;
-    public static String level,db;
+    public static String level, db;
     List<QAAdapter.QAObject> list;
     private QAAdapter adapter;
     private LinearLayout emptyState;
     private QAAdapter.QAObject feed;
-    public static QuestionBottomSheet questionBottomSheet=null;
-    private static String json="";
+    public static QuestionBottomSheet questionBottomSheet = null;
+    private static String json = "";
     private boolean showDialog = true;
     CustomDialog dialog = null;
     private boolean allowRefresh = false;
-    public static boolean refresh=false;
-
-
-
+    public static boolean refresh = false;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_student_dashboard, container, false);
+        View view = inflater.inflate(R.layout.fragment_student_dashboard,
+                container, false);
         try {
             databaseHelper = new DatabaseHelper(getContext());
-            newsDao = DaoManager.createDao(databaseHelper.getConnectionSource(),NewsTable.class);
-            studentCoursesDao = DaoManager.createDao(databaseHelper.getConnectionSource(),StudentCourses.class);
+            newsDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    NewsTable.class);
+            studentCoursesDao = DaoManager.createDao(
+                    databaseHelper.getConnectionSource(), StudentCourses.class);
             newsTitleList = newsDao.queryForAll();
             studentCourses = studentCoursesDao.queryForAll();
         } catch (SQLException e) {
@@ -117,61 +116,65 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
         qaRecycler.setNestedScrollingEnabled(false);
 
 
-
-
-        ((AppCompatActivity)(getActivity())).setSupportActionBar(toolbar);
-        ActionBar actionBar =  ((AppCompatActivity)(getActivity())).getSupportActionBar();
+        ((AppCompatActivity) (getActivity())).setSupportActionBar(toolbar);
+        ActionBar actionBar =
+                ((AppCompatActivity) (getActivity())).getSupportActionBar();
 
         schoolname = view.findViewById(R.id.school_name);
         username = view.findViewById(R.id.student_user);
         news_empty_state = view.findViewById(R.id.news_empty_state);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-        String schoolName = sharedPreferences.getString("school_name","");
-        String studentClass = sharedPreferences.getString("student_class","");
-        level = sharedPreferences.getString("level","");
-        db = sharedPreferences.getString("db","");
+        SharedPreferences sharedPreferences =
+                getActivity().getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
+        String schoolName = sharedPreferences.getString("school_name", "");
+        String studentClass = sharedPreferences.getString("student_class", "");
+        level = sharedPreferences.getString("level", "");
+        db = sharedPreferences.getString("db", "");
         student_class.setText(studentClass.toUpperCase());
         String[] strArr = schoolName.split(" ");
         StringBuilder stringBuilder = new StringBuilder();
-        for(String s : strArr){
+        for (String s : strArr) {
             try {
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
                 stringBuilder.append(cap + " ");
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        String user = sharedPreferences.getString("user","");
+        String user = sharedPreferences.getString("user", "");
         String[] strArr1 = user.split(" ");
         StringBuilder stringBuilder1 = new StringBuilder();
-        for(String s : strArr1){
+        for (String s : strArr1) {
             try {
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
                 stringBuilder1.append(cap + " ");
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         username.setText(stringBuilder1.toString());
         actionBar.setTitle(stringBuilder.toString());
-        String student_initial = user.substring(0,1).toUpperCase();
+        String student_initial = user.substring(0, 1).toUpperCase();
         studentInitials.setText(student_initial);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                getContext());
         qaRecycler.setLayoutManager(layoutManager);
-        list=new ArrayList<>();
+        list = new ArrayList<>();
 
-        adapter = new QAAdapter(getContext(),list,this);
+        adapter = new QAAdapter(getContext(), list, this);
         qaRecycler.setAdapter(adapter);
 
 
-        FloatingActionButton addQuestionBtn = view.findViewById(R.id.add_question);
+        FloatingActionButton addQuestionBtn = view.findViewById(
+                R.id.add_question);
         addQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = ((FragmentActivity) getContext())
+                FragmentTransaction transaction =
+                        ((FragmentActivity) getContext())
                         .getSupportFragmentManager()
                         .beginTransaction();
                 questionBottomSheet = new QuestionBottomSheet();
@@ -182,11 +185,12 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
         });
 
         QuestionAccessViewSheet q = QuestionAccessViewSheet.newInstance();
-        q.setOnQuestionSubmittListener(new QuestionAccessViewSheet.OnQuestionSubmitListener() {
-            @Override
-            public void onSubmit() {
-            }
-        });
+        q.setOnQuestionSubmittListener(
+                new QuestionAccessViewSheet.OnQuestionSubmitListener() {
+                    @Override
+                    public void onSubmit() {
+                    }
+                });
 
         return view;
     }
@@ -194,13 +198,13 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
     @Override
     public void onResume() {
         super.onResume();
-        if(!json.isEmpty()) {
-            if(refresh){
+        if (!json.isEmpty()) {
+            if (refresh) {
                 getFeed(level);
-            }else {
+            } else {
                 buildJSON(json);
             }
-        }else {
+        } else {
             getFeed(level);
         }
 
@@ -212,19 +216,18 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
     }
 
 
-
     @Override
     public void onQuestionClick(int position) {
         QAAdapter.QAObject object = list.get(position);
-        if(object.getFeedType().equals("20")) {
+        if (object.getFeedType().equals("20")) {
             Intent intent = new Intent(getContext(), QuestionView.class);
-            intent.putExtra("feed",object);
+            intent.putExtra("feed", object);
             startActivity(intent);
-        }else if(object.getFeedType().equals("21")){
+        } else if (object.getFeedType().equals("21")) {
             Intent intent = new Intent(getContext(), AnswerView.class);
             intent.putExtra("feed", object);
             startActivity(intent);
-        }else{
+        } else {
             Intent intent = new Intent(getContext(), NewsView.class);
             intent.putExtra("feed", object);
             startActivity(intent);
@@ -232,15 +235,14 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
     }
 
 
+    public void getFeed(String levelId) {
 
+        dialog = new CustomDialog(getActivity());
+        dialog.show();
 
-    public  void getFeed(String levelId){
-
-            dialog = new CustomDialog(getActivity());
-            dialog.show();
-
-        String url = Login.urlBase+"/getFeed.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        String url = Login.urlBase + "/getFeed.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 dialog.dismiss();
@@ -254,12 +256,12 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
             public void onErrorResponse(VolleyError error) {
                 dialog.dismiss();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
-                params.put("id",levelId);
-                params.put("_db",db);
+                Map<String, String> params = new HashMap<>();
+                params.put("id", levelId);
+                params.put("_db", db);
                 return params;
             }
         };
@@ -268,10 +270,10 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
         requestQueue.add(stringRequest);
     }
 
-    private void buildJSON(String response){
+    private void buildJSON(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
-            for(int a=0;a<jsonArray.length();a++){
+            for (int a = 0; a < jsonArray.length(); a++) {
                 JSONObject object = jsonArray.getJSONObject(a);
                 String id = object.getString("id");
                 String title = object.getString("title");
@@ -284,48 +286,48 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
                 String desc = object.getString("description");
                 String type1 = object.getString("type");
                 String body = "";
-                body=object.optString("body");
+                body = object.optString("body");
 
                 feed = new QAAdapter.QAObject();
                 feed.setUser(user);
 
-                    feed.setQuestionId(id);
-                if(title==null || title.isEmpty()){
+                feed.setQuestionId(id);
+                if (title == null || title.isEmpty()) {
                     feed.setQuestion(desc);
 
-                }else {
+                } else {
                     feed.setQuestion(title);
                 }
                 feed.setAnswer("");
-                    feed.setPicUrl("");
-                    feed.setId(id);
-                    feed.setAnswerId(id);
-                    if (!body.isEmpty()){
+                feed.setPicUrl("");
+                feed.setId(id);
+                feed.setAnswerId(id);
+                if (!body.isEmpty()) {
 
-                        Object json = new JSONTokener(body).nextValue();
+                    Object json = new JSONTokener(body).nextValue();
 
-                        if(json instanceof JSONArray) {
+                    if (json instanceof JSONArray) {
 
-                            JSONArray answer = new JSONArray(body);
-                            boolean checktext =true;boolean checkImage = true;
-                            for (int c = 0; c < answer.length(); c++) {
-                                JSONObject object1 = answer.optJSONObject(c);
-                                String type = object1.optString("type").trim();
+                        JSONArray answer = new JSONArray(body);
+                        boolean checktext = true; boolean checkImage = true;
+                        for (int c = 0; c < answer.length(); c++) {
+                            JSONObject object1 = answer.optJSONObject(c);
+                            String type = object1.optString("type").trim();
 
-                                if (type.equalsIgnoreCase("text")&&checktext) {
-                                    String content = object1.optString("content");
+                            if (type.equalsIgnoreCase("text") && checktext) {
+                                String content = object1.optString("content");
 
-                                    feed.setPreText(content);
-                                    checktext=false;
-                                }
-                                if (type.equalsIgnoreCase("image")&&checkImage) {
-                                    String content = object1.optString("src");
-                                    feed.setPicUrl(content);
-                                    checkImage=false;
-                                }
+                                feed.setPreText(content);
+                                checktext = false;
+                            }
+                            if (type.equalsIgnoreCase("image") && checkImage) {
+                                String content = object1.optString("src");
+                                feed.setPicUrl(content);
+                                checkImage = false;
                             }
                         }
-                        feed.setAnswer(body);
+                    }
+                    feed.setAnswer(body);
 
                     //feed.setQuestion(desc);
                 }
@@ -340,10 +342,10 @@ public class StudentDashboard extends Fragment implements  QAAdapter.OnQuestionC
             }
 
             Collections.reverse(list);
-            if(list.isEmpty()){
+            if (list.isEmpty()) {
                 emptyState.setVisibility(View.VISIBLE);
 
-            }else {
+            } else {
                 emptyState.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
             }

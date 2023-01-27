@@ -8,12 +8,17 @@
     android:background="#EFEFF1"
     tools:context=".activities.ClassResultDetails">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/tab_color"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 
-        <include layout="@layout/toolbar" />
-    </androidx.cardview.widget.CardView>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -44,7 +49,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/roboto"
-                        android:text="JS1 A"
+                        android:text=""
                         android:textColor="@android:color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -78,7 +83,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <RelativeLayout
                         android:id="@+id/edit_class_btn"
@@ -232,7 +238,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="150dp"
             android:layout_marginTop="300dp"
-            android:contentDescription="TODO"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_warning" />
 
         <TextView

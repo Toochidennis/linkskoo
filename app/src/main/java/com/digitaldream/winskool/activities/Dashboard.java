@@ -46,7 +46,7 @@ import com.digitaldream.winskool.models.TeacherCourseModelCopy;
 import com.digitaldream.winskool.models.TeachersTable;
 import com.digitaldream.winskool.models.VideoTable;
 import com.digitaldream.winskool.models.VideoUtilTable;
-import com.digitaldream.winskool.utils.ContactUsDialog;
+import com.digitaldream.winskool.dialog.ContactUsDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.j256.ormlite.dao.Dao;
@@ -163,7 +163,7 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         bottomNavigationView = findViewById(R.id.bottom_navigation_student);
         if (from != null && from.equals("testupload")) {
             FlashCardList.refresh = true;
-            bottomNavigationView.getMenu().findItem(R.id.flashcard).setChecked(
+            bottomNavigationView.getMenu().findItem(R.id.payment).setChecked(
                     true);
             getSupportFragmentManager().beginTransaction().replace(
                     R.id.fragment_container, new FlashCardList()).commit();
@@ -231,7 +231,7 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                             new AdminResultFragment()).commit();
                     return true;
 
-                case R.id.flashcard:
+                case R.id.payment:
                     getSupportFragmentManager().beginTransaction().replace(
                             R.id.fragment_container,
                             new AdminPaymentFragment()).commit();
