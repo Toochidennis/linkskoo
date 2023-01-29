@@ -90,4 +90,5 @@
         <item>Zamfara</item>
     </string-array>
     <string name="title_activity_bar_chart">BarChart</string>
+    <string name="amount">Amount (₦)</string>
 </resources>

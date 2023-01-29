@@ -5,20 +5,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.PaymentActivity;
-import com.digitaldream.winskool.dialog.VendorDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
 
-public class ExpenditureFragment extends Fragment {
+public class ExpenditureHistoryFragment extends Fragment {
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -28,13 +26,13 @@ public class ExpenditureFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ExpenditureFragment() {
+    public ExpenditureHistoryFragment() {
         // Required empty public constructor
     }
 
 
-    public static ExpenditureFragment newInstance(String param1, String param2) {
-        ExpenditureFragment fragment = new ExpenditureFragment();
+    public static ExpenditureHistoryFragment newInstance(String param1, String param2) {
+        ExpenditureHistoryFragment fragment = new ExpenditureHistoryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,7 +53,7 @@ public class ExpenditureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_expenditure, container,
+        View view = inflater.inflate(R.layout.fragment_history_expenditure, container,
                 false);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);

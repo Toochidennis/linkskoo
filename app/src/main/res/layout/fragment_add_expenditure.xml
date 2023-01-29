@@ -1,59 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dialog_background">
+    tools:context=".fragments.AddExpenditureFragment">
 
-    <ImageButton
-        android:id="@+id/back_btn"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/todo"
-        android:src="@drawable/arrow_left"
-        app:tint="@color/black" />
-
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/back_btn"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="12dp"
-        android:layout_toEndOf="@id/back_btn"
-        android:fontFamily="@font/montserrat"
-        android:gravity="center_vertical"
-        android:text="Add Vendor"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <EditText
         android:id="@+id/vendor_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/appBar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="15dp"
-        android:autofillHints="name"
+        android:autofillHints="none"
         android:background="@drawable/edit_text_bg"
+        android:clickable="false"
+        android:cursorVisible="false"
         android:drawableStart="@drawable/ic_person"
         android:drawableTint="@color/color_5"
         android:ems="5"
-        android:focusable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@font/montserrat"
-        android:hint="Name (required)"
-        android:inputType="textPersonName"
+        android:hint="Name"
+        android:inputType="none"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
@@ -75,18 +64,18 @@
         android:background="@drawable/edit_text_bg"
         android:drawableStart="@drawable/email"
         android:drawableTint="@color/color_5"
-        android:ems="5"
+        android:ems="10"
         android:fontFamily="@font/montserrat"
-        android:hint="Email (optional)"
-        android:inputType="textEmailAddress"
+        android:hint="@string/amount"
+        android:inputType="numberDecimal"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp" />
 
-    <EditText
-        android:id="@+id/vendor_ref"
+    <LinearLayout
+        android:id="@+id/date_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/amount"
@@ -95,49 +84,65 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="15dp"
-        android:autofillHints="postalAddress"
-        android:background="@drawable/edit_text_bg"
-        android:drawableStart="@drawable/ic_reference_number"
-        android:drawableTint="@color/color_5"
-        android:ems="5"
-        android:fontFamily="@font/montserrat"
-        android:hint="Reference number (optional)"
-        android:inputType="textPostalAddress"
-        android:minHeight="48dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="10dp" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/vendor_ref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints="postalAddress"
+            android:background="@drawable/edit_text_bg"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:drawableStart="@drawable/ic_reference_number"
+            android:drawableTint="@color/color_5"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/montserrat"
+            android:hint="Reference number"
+            android:inputType="textPostalAddress"
+            android:minHeight="48dp"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="10dp"
+            android:textSize="12sp" />
+
+
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:autofillHints="creditCardExpirationDate"
+            android:background="@drawable/edit_text_bg"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:drawableEnd="@drawable/ic_date"
+            android:drawableTint="@color/color_5"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/montserrat"
+            android:hint="yyyy-mm-dd"
+            android:inputType="date"
+            android:minHeight="48dp"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
 
     <EditText
         android:id="@+id/purpose"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/vendor_ref"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="15dp"
-        android:autofillHints="phone"
-        android:background="@drawable/edit_text_bg"
-        android:drawableStart="@drawable/ic_phone_black"
-        android:drawableTint="@color/color_5"
-        android:ems="5"
-        android:fontFamily="@font/montserrat"
-        android:hint="Phone number (required)"
-        android:inputType="phone"
-        android:minHeight="48dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="10dp" />
-
-    <EditText
-        android:id="@+id/vendor_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/purpose"
+        android:layout_below="@id/date_layout"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
@@ -145,25 +150,25 @@
         android:layout_marginEnd="15dp"
         android:autofillHints="postalAddress"
         android:background="@drawable/edit_text_bg"
-        android:drawableStart="@drawable/ic_location"
+        android:drawableStart="@drawable/ic_comment"
         android:drawableTint="@color/color_5"
         android:ems="5"
         android:fontFamily="@font/montserrat"
-        android:gravity="start|top"
-        android:hint="Address (optional)"
-        android:inputType="textPostalAddress"
+        android:hint="Purpose of expenditure"
+        android:inputType="text"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="5dp"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="10dp"
+        android:textSize="14sp" />
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/add_vendor_btn"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_below="@id/vendor_address"
+        android:layout_below="@id/purpose"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
@@ -183,7 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/montserrat"
-            android:text="Done"
+            android:text="RECORD"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

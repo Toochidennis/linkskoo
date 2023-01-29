@@ -19,7 +19,8 @@ class PaymentActivity : AppCompatActivity() {
                 R.id.fragment_container, AdminTransactions()).commit()
 
             "expenditure" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, ExpenditureFragment()).commit()
+                R.id.fragment_container,
+                ExpenditureHistoryFragment()).commit()
 
             "receipt" -> supportFragmentManager.beginTransaction().replace(
                     R.id.fragment_container, ReceiptsFragment()).commit()
@@ -29,6 +30,9 @@ class PaymentActivity : AppCompatActivity() {
 
             "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, VendorFragment()).commit()
+
+            "vendor" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, AddExpenditureFragment()).commit()
         }
 
     }

@@ -1,12 +1,15 @@
 package com.digitaldream.winskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.dialog.VendorDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -41,8 +44,10 @@ class VendorFragment : Fragment() {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?, ): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_vendor, container, false)
 
@@ -65,6 +70,13 @@ class VendorFragment : Fragment() {
             val window = vendorDialog.window
             window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+
+        val cardBtn = view.findViewById<CardView>(R.id.vendor_card)
+
+        cardBtn.setOnClickListener {
+            startActivity(Intent(context!!, PaymentActivity().javaClass)
+                .putExtra("from", "vendor"))
         }
 
         return view;
