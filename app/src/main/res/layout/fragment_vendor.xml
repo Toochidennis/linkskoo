@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,12 +8,12 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include
             android:id="@+id/toolbar"
@@ -21,20 +21,41 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/appBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:fontFamily="@font/montserrat"
+        android:lines="2"
+        android:text="Select a vendor to continue. If not found, use the button below to add a new vendor."
+        android:textColor="@color/text_bg_color"
+        android:textSize="14sp" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/vendor_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hint"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="15dp"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBar">
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="start|center"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
@@ -62,24 +83,40 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <ImageButton
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_arrow_right"
+            app:tint="@color/text_bg_color" />
 
     </androidx.cardview.widget.CardView>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_vendor"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="62dp"
-        android:clickable="true"
-        android:contentDescription="@string/todo"
-        android:focusable="true"
-        android:src="@drawable/ic_person_add"
-        app:tint="@color/white"
-        app:backgroundTint="@color/color_2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_vendor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:focusable="true"
+            android:src="@drawable/ic_person_add"
+            app:backgroundTint="@color/color_2"
+            app:tint="@color/white" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

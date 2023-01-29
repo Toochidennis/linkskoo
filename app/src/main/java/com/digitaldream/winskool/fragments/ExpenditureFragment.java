@@ -1,5 +1,6 @@
 package com.digitaldream.winskool.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.activities.PaymentActivity;
 import com.digitaldream.winskool.dialog.VendorDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -68,13 +70,10 @@ public class ExpenditureFragment extends Fragment {
 
         floatingActionButton.setOnClickListener(sView -> {
 
-            VendorDialog vendorDialog = new VendorDialog(getContext());
-            vendorDialog.setCancelable(true);
-            vendorDialog.show();
-            Window window = vendorDialog.getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            startActivity(new Intent(getContext(), PaymentActivity.class).putExtra("from",
+                    "add_expenditure"));
         });
+
 
 
         return view;

@@ -3,10 +3,7 @@ package com.digitaldream.winskool.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.fragments.AdminTransactionDetails
-import com.digitaldream.winskool.fragments.AdminTransactions
-import com.digitaldream.winskool.fragments.ExpenditureFragment
-import com.digitaldream.winskool.fragments.ReceiptsFragment
+import com.digitaldream.winskool.fragments.*
 
 class PaymentActivity : AppCompatActivity() {
 
@@ -29,6 +26,9 @@ class PaymentActivity : AppCompatActivity() {
 
             "details" -> supportFragmentManager.beginTransaction().replace(
                     R.id.fragment_container, AdminTransactionDetails()).commit()
+
+            "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, VendorFragment()).commit()
         }
 
     }

@@ -336,19 +336,27 @@
     </LinearLayout>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_expenditure"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="64dp"
-        android:clickable="true"
-        android:contentDescription="@string/todo"
-        android:focusable="true"
-        android:src="@drawable/ic_add"
-        app:backgroundTint="@color/color_5" />
+        android:layout_alignParentBottom="true">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_expenditure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:focusable="true"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="@color/color_10" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </RelativeLayout>
