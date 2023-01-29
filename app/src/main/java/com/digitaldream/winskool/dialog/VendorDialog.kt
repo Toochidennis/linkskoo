@@ -9,7 +9,7 @@ import android.view.Gravity
 import android.view.Window
 import com.digitaldream.winskool.R
 
-class AddVendorDialog(mContext: Context): Dialog(mContext) {
+class VendorDialog(mContext: Context): Dialog(mContext) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +17,7 @@ class AddVendorDialog(mContext: Context): Dialog(mContext) {
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window!!.attributes.windowAnimations = R.style.DialogAnimation
         window!!.setGravity(Gravity.BOTTOM)
-        
-        setContentView(R.lay)
+
+        setContentView(R.layout.dialog_vendor)
     }
 }

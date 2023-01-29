@@ -1,16 +1,16 @@
 package com.digitaldream.winskool.fragments;
 
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.dialog.VendorDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
@@ -60,12 +60,21 @@ public class ExpenditureFragment extends Fragment {
         setHasOptionsMenu(true);
         toolbar.setTitle("Expenditure");
         toolbar.setNavigationIcon(R.drawable.arrow_left);
-        toolbar.setNavigationOnClickListener(sView-> Objects.requireNonNull(
+        toolbar.setNavigationOnClickListener(sView -> Objects.requireNonNull(
                 getActivity()).onBackPressed());
 
         FloatingActionButton floatingActionButton =
                 view.findViewById(R.id.add_expenditure);
 
+        floatingActionButton.setOnClickListener(sView -> {
+
+            VendorDialog vendorDialog = new VendorDialog(getContext());
+            vendorDialog.setCancelable(true);
+            vendorDialog.show();
+            Window window = vendorDialog.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        });
 
 
         return view;
