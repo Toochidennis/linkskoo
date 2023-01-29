@@ -11,19 +11,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
-import android.widget.ProgressBar;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 
 import com.digitaldream.winskool.DatabaseHelper;
 import com.digitaldream.winskool.ExamActivity;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.models.ExamQuestions;
-import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.utils.AsyncTaskResult;
 import com.digitaldream.winskool.utils.Methods;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -43,17 +46,16 @@ import java.util.Objects;
 public class CBTConfirmationDialog extends Dialog {
 
     private List<Exam> mExamList;
-    private List<ExamQuestions> mExamQuestionsList;
     private Dao<Exam, Long> mExamDao;
     private Dao<ExamQuestions, Long> mExamQuestionsDao;
     private String mJson = "";
-    private String mCourseName;
-    private String mYear, mExamTypeName;
-    private TextView mSubject, mExamYear, mExamName;
-    private DatabaseHelper mDatabaseHelper;
-    ProgressBar progressBar;
-    CardView mCancelBtn, mContinueBtn;
+    private final String mCourseName;
+    private final String mYear;
 
+    Button mCancelBtn, mContinueBtn, mCloseBtn;
+    private ImageView mErrorImage;
+    private TextView mErrorMessage;
+    private RelativeLayout mEmptyState, mUnEmptyState;
 
     public CBTConfirmationDialog(@NonNull Context context, String sCourseName
             , String sYear) {
@@ -72,32 +74,37 @@ public class CBTConfirmationDialog extends Dialog {
         getWindow().setGravity(Gravity.BOTTOM);
         setContentView(R.layout.dialog_cbt_confirmation);
 
-        mSubject = findViewById(R.id.subject);
-        mExamYear = findViewById(R.id.year);
-        mExamName = findViewById(R.id.exam_type);
-        mCancelBtn = findViewById(R.id.cancel_btn);
-        mContinueBtn = findViewById(R.id.continue_btn);
-        progressBar = findViewById(R.id.progress_bar);
+        TextView subject = findViewById(R.id.subject);
+        TextView examYear = findViewById(R.id.year);
+        TextView examName = findViewById(R.id.exam_type);
+        mCancelBtn = findViewById(R.id.cancel_button);
+        mContinueBtn = findViewById(R.id.continue_button);
+        mCloseBtn = findViewById(R.id.close_button);
+        mErrorImage = findViewById(R.id.error_image);
+        mErrorMessage = findViewById(R.id.error_message);
+        mEmptyState = findViewById(R.id.empty_state);
+        mUnEmptyState = findViewById(R.id.un_empty_state);
 
-        mDatabaseHelper = new DatabaseHelper(getContext());
 
-        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences("exam", Context.MODE_PRIVATE);
-        mExamTypeName = sharedPreferences.getString("examName", "");
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
 
+        SharedPreferences sharedPreferences = Objects.requireNonNull(
+                getContext()).getSharedPreferences("exam", Context.MODE_PRIVATE);
+        String examTypeName = sharedPreferences.getString("examName", "");
 
         try {
             mExamDao =
-                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(), Exam.class);
+                    DaoManager.createDao(databaseHelper.getConnectionSource(), Exam.class);
             mExamQuestionsDao =
-                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(), ExamQuestions.class);
+                    DaoManager.createDao(databaseHelper.getConnectionSource(),
+                            ExamQuestions.class);
         } catch (SQLException sE) {
             sE.printStackTrace();
         }
 
-
-        mExamName.setText(Methods.capitaliseFirstLetter(mExamTypeName));
-        mSubject.setText(Methods.capitaliseFirstLetter(mCourseName));
-        mExamYear.setText(mYear);
+        examName.setText(Methods.capitaliseFirstLetter(examTypeName));
+        subject.setText(Methods.capitaliseFirstLetter(mCourseName));
+        examYear.setText(mYear);
 
         loadQuestions();
 
@@ -107,7 +114,7 @@ public class CBTConfirmationDialog extends Dialog {
 
         if (mJson.isEmpty()) {
             new getCourse().execute(Integer.toString(mExamList.get(0).getYearId()));
-            Log.i("status", "ran " + mJson + " execution");
+            //  Log.i("status", "ran " + mJson + " execution");
 
         }
 
@@ -128,27 +135,10 @@ public class CBTConfirmationDialog extends Dialog {
             dismiss();
         });
 
-    }
-
-
-/*    void activateAnimation() {
-        Animation animation = AnimationUtils.loadAnimation(getContext(),
-                R.anim.fade_in);
-        progressBar.setAnimation(animation);
-        progressBar.setVisibility(View.VISIBLE);
-        mContinueText.setAnimation(animation);
-        mContinueText.setText("Please wait...");
+        mCloseBtn.setOnClickListener(sView -> dismiss());
 
     }
 
-    void cancelDialog() {
-        mCancelLayout.setBackgroundColor(mCancelBtn.getResources().getColor(R
-                .color.color_4));
-        mContinueLayout.setBackgroundColor(mContinueBtn.getResources().getColor(R.color.romance));
-        progressBar.setVisibility(View.GONE);
-        mCancelText.setTextColor(mCancelBtn.getResources().getColor(R.color.white));
-        mContinueText.setTextColor(mContinueBtn.getResources().getColor(R.color.text_bg_color));
-    }*/
 
     public void loadQuestions() {
         try {
@@ -159,41 +149,47 @@ public class CBTConfirmationDialog extends Dialog {
             if (!mExamList.isEmpty()) {
                 Exam exam = mExamList.get(0);
 
-                mExamQuestionsList =
-                        mExamQuestionsDao.queryBuilder().where().eq("examId",
-                                exam.getExamId()).query();
+                List<ExamQuestions> examQuestionsList = mExamQuestionsDao.queryBuilder().where().eq(
+                        "examId",
+                        exam.getExamId()).query();
                 Log.i("questionsList", String.valueOf(exam.getExamId()));
-                if (!mExamQuestionsList.isEmpty()) {
-                    ExamQuestions examQuestions = mExamQuestionsList.get(0);
+                if (!examQuestionsList.isEmpty()) {
+                    ExamQuestions examQuestions = examQuestionsList.get(0);
                     mJson = examQuestions.getJson();
                 }
             }
         } catch (SQLException sE) {
             sE.printStackTrace();
+            mUnEmptyState.setVisibility(View.GONE);
+            mEmptyState.setVisibility(View.VISIBLE);
         }
-        Log.i("Status", "ran" + mJson);
+        //Log.i("Status", "ran" + mJson);
     }
 
-    private class getCourse extends AsyncTask<String, Void, String> {
+    private class getCourse extends AsyncTask<String, Void,
+            AsyncTaskResult<String>> {
+
         HttpURLConnection urlConnection = null;
         BufferedReader returnedLogin = null;
         URL receiveCourse = null;
 
+
         @Override
-        protected String doInBackground(String... params) {
+        protected AsyncTaskResult<String> doInBackground(String... sStrings) {
+
             final String LOGIN_BASE_URL =
                     "http://www.cbtportal.linkskool.com/api";
             final String JSON = "json";
             final String EXAM = "exam";
             final String CODE = "appCode";
             final String PATH = "exam_json.php";
-            String jsonString = null;
+            String jsonString;
 
             Uri login = Uri.parse(LOGIN_BASE_URL).buildUpon()
                     .appendPath(PATH)
                     .appendQueryParameter(JSON, "1")
                     .appendQueryParameter(CODE, "VDOK-124-CAUCHY")
-                    .appendQueryParameter(EXAM, params[0])
+                    .appendQueryParameter(EXAM, sStrings[0])
                     .build();
             try {
                 receiveCourse = new URL(login.toString());
@@ -211,54 +207,67 @@ public class CBTConfirmationDialog extends Dialog {
                 while ((line = returnedLogin.readLine()) != null) {
                     stringBuilder.append(line).append("\n");
                 }
-
                 if (stringBuilder.length() == 0) {
                     return null;
                 }
                 jsonString = stringBuilder.toString();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                mUnEmptyState.setVisibility(View.GONE);
+                mEmptyState.setVisibility(View.VISIBLE);
+                mErrorImage.setImageResource(R.drawable.no_internet);
+                mErrorMessage.setText(R.string.no_internet);
+                return new AsyncTaskResult<>(e);
             } finally {
-                if (urlConnection != null)
+                if (urlConnection != null) {
                     urlConnection.disconnect();
+                }
 
                 if (returnedLogin != null) {
                     try {
                         returnedLogin.close();
                     } catch (IOException sE) {
-                        sE.printStackTrace();
+                        new AsyncTaskResult<>(sE);
                     }
                 }
             }
 
-            return jsonString;
+            return new AsyncTaskResult<>(jsonString);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(AsyncTaskResult<String> sStringAsyncTaskResult) {
 
-            try {
-                if (result != null) {
-                    Log.i("result", result);
-                    //mJson = result;
-                    JSONObject obj = new JSONObject(result);
+            if (sStringAsyncTaskResult.getException() ==
+                    null && sStringAsyncTaskResult.getResult() != null) {
+
+                try {
+                    JSONObject obj = new JSONObject(sStringAsyncTaskResult.getResult());
                     JSONObject object = obj.getJSONObject("e");
                     String id = object.getString("id");
                     Log.i("id", id);
                     ExamQuestions examQuestions = new ExamQuestions();
                     examQuestions.setExamId(mExamList.get(0).getExamId());
-                    examQuestions.setJson(result);
+                    examQuestions.setJson(sStringAsyncTaskResult.getResult());
                     mExamQuestionsDao.create(examQuestions);
                     loadQuestions();
-                } else {
-                    new getCourse().execute(Integer.toString(mExamList.get(0).getYearId()));
+
+                } catch (Exception e) {
+                    mUnEmptyState.setVisibility(View.GONE);
+                    mEmptyState.setVisibility(View.VISIBLE);
+                    mErrorImage.setImageResource(R.drawable.no_internet);
+                    mErrorMessage.setText(R.string.no_internet);
+
+                    new AsyncTaskResult<>(e);
                 }
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Something went wrong!",
-                        Toast.LENGTH_SHORT).show();
+            } else if (isCancelled()) {
+                // getContext().startActivity(new Intent(getContext(), ELibraryFragment.class));
+                dismiss();
             }
+
         }
+
     }
 
 }
+

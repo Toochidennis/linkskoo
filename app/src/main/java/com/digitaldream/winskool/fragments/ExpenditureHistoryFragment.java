@@ -58,7 +58,7 @@ public class ExpenditureHistoryFragment extends Fragment {
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         setHasOptionsMenu(true);
-        toolbar.setTitle("Expenditure");
+        toolbar.setTitle("Expenditure History");
         toolbar.setNavigationIcon(R.drawable.arrow_left);
         toolbar.setNavigationOnClickListener(sView -> Objects.requireNonNull(
                 getActivity()).onBackPressed());

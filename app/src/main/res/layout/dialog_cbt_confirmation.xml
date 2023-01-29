@@ -1,44 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_background"
-    android:clipToPadding="false"
     android:orientation="vertical"
-    android:padding="20dp"
     tools:context=".dialog.CBTConfirmationDialog">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/montserrat"
-        android:text="Confirm exam"
-        android:textColor="@color/text_bg_color"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/exam_layout"
+    <RelativeLayout
+        android:id="@+id/un_empty_state"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        android:layout_height="match_parent"
+        android:layout_margin="15dp">
 
         <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center_horizontal"
+            android:text="Confirm Exam"
+            android:textColor="@color/text_bg_color"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/exam_type_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/textView"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/montserrat"
             android:text="Exam Type:"
             android:textColor="@color/text_bg_color"
@@ -49,61 +45,54 @@
             android:id="@+id/exam_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_below="@id/textView"
+            android:layout_alignBaseline="@id/exam_type_label"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@id/exam_type_label"
             android:fontFamily="@font/montserrat"
-            android:text=""
+            android:lines="2"
             android:textColor="@color/text_bg_color"
             android:textSize="15sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
         <TextView
+            android:id="@+id/subject_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/exam_type_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="32dp"
             android:fontFamily="@font/montserrat"
             android:text="Subject:"
             android:textColor="@color/text_bg_color"
             android:textSize="15sp"
             android:textStyle="bold" />
 
+
         <TextView
             android:id="@+id/subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_below="@id/exam_type"
+            android:layout_alignBaseline="@id/subject_label"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="13dp"
+            android:layout_toEndOf="@id/subject_label"
             android:fontFamily="@font/montserrat"
-            android:gravity="center"
+            android:lines="2"
             android:text=""
             android:textColor="@color/text_bg_color"
             android:textSize="15sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:gravity=""
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subject_layout">
-
         <TextView
+            android:id="@+id/year_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/subject_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="32dp"
             android:fontFamily="@font/montserrat"
             android:gravity="center"
             android:text="Year:"
@@ -115,106 +104,110 @@
             android:id="@+id/year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_below="@id/subject"
+            android:layout_alignBaseline="@id/year_label"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12.5dp"
+            android:layout_toEndOf="@id/year_label"
             android:fontFamily="@font/montserrat"
-            android:gravity="center"
             android:text=""
             android:textColor="@color/text_bg_color"
             android:textSize="15sp" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/year_label"
+            android:layout_marginTop="48dp"
+            android:orientation="horizontal"
+            android:paddingBottom="30dp">
 
-    <LinearLayout
+            <Button
+                android:id="@+id/cancel_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_bg"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:contentDescription="@string/todo"
+                android:elevation=".5dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Cancel"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/continue_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_bg"
+                android:backgroundTint="@color/greenC"
+                android:contentDescription="@string/todo"
+                android:elevation=".5dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Continue"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/empty_state"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:orientation="horizontal"
-        android:paddingBottom="30dp">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cancel_btn"
-            android:layout_width="150dp"
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="15dp"
-            app:cardElevation=".5dp">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="50dp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_warning" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cancel_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/holo_red_light">
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/error_image"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/no_data" />
 
-                <TextView
-                    android:id="@+id/cancel_btn_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cancel"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/close_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/error_message"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/edit_text_bg"
+            android:backgroundTint="@color/color_5"
+            android:contentDescription="@string/todo"
+            android:elevation=".5dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Close"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/continue_btn"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="40dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="15dp"
-            app:cardElevation=".5dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/continue_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/greenC">
-
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="15dp"
-                    android:indeterminate="true"
-                    android:indeterminateDrawable="@drawable/progress_circle"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/continue_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/continue_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Continue"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-
-    </LinearLayout>
-
+    </RelativeLayout>
 
 </LinearLayout>
+
+

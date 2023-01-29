@@ -15,12 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.adapters.CBTYearAdapter;
 import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.adapters.CBTYearAdapter;
 import com.digitaldream.winskool.dialog.CBTConfirmationDialog;
 import com.digitaldream.winskool.dialog.CustomLoadingView;
+import com.digitaldream.winskool.models.Exam;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -102,39 +102,35 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
 
     @Override
     public void onYearClick(int position) {
-        if (!mExamList.isEmpty()) {
-            Exam exam = mExamList.get(position);
+        Exam exam = mExamList.get(position);
 
-            new Handler().postDelayed((Runnable) () -> {
-                CustomLoadingView customLoadingView =
-                        new CustomLoadingView(
-                                Objects.requireNonNull(getActivity()));
+        new Handler().postDelayed((Runnable) () -> {
+            CustomLoadingView customLoadingView =
+                    new CustomLoadingView(
+                            Objects.requireNonNull(getActivity()));
 
-                customLoadingView.setCancelable(false);
-                customLoadingView.show();
-                Window window = customLoadingView.getWindow();
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            customLoadingView.setCancelable(false);
+            customLoadingView.show();
+            Window window = customLoadingView.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            new Handler().postDelayed(() -> {
+                CBTConfirmationDialog confirmationDialog =
+                        new CBTConfirmationDialog(
+                                Objects.requireNonNull(getContext()),
+                                mCourseName,
+                                exam.getYear());
+                confirmationDialog.setCancelable(false);
+                confirmationDialog.show();
+                Window window1 = confirmationDialog.getWindow();
+                window1.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
+                customLoadingView.dismiss();
 
-                new Handler().postDelayed(() -> {
-                    CBTConfirmationDialog confirmationDialog =
-                            new CBTConfirmationDialog(
-                                    Objects.requireNonNull(getContext()),
-                                    mCourseName,
-                                    exam.getYear());
-                    confirmationDialog.setCancelable(false);
-                    confirmationDialog.show();
-                    Window window1 = confirmationDialog.getWindow();
-                    window1.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    customLoadingView.dismiss();
+            }, 3500);
 
-                }, 3500);
-
-            }, 50);
-
-
-        }
+        }, 50);
 
     }
 

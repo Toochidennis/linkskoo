@@ -47,7 +47,8 @@
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="10dp"
+        android:textSize="16sp" />
 
 
     <EditText
@@ -72,77 +73,73 @@
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="10dp"
+        android:textSize="16sp" />
 
-    <LinearLayout
-        android:id="@+id/date_layout"
-        android:layout_width="0dp"
+
+    <EditText
+        android:id="@+id/vendor_ref"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/amount"
         android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@+id/date"
+        android:autofillHints="postalAddress"
+        android:background="@drawable/edit_text_bg"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:drawableStart="@drawable/ic_reference_number"
+        android:drawableTint="@color/color_5"
+        android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:fontFamily="@font/montserrat"
+        android:hint="Reference number"
+        android:inputType="textPostalAddress"
+        android:minHeight="48dp"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="10dp"
+        android:textSize="12sp" />
+
+
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="154dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/amount"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="15dp"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/vendor_ref"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autofillHints="postalAddress"
-            android:background="@drawable/edit_text_bg"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:drawableStart="@drawable/ic_reference_number"
-            android:drawableTint="@color/color_5"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:fontFamily="@font/montserrat"
-            android:hint="Reference number"
-            android:inputType="textPostalAddress"
-            android:minHeight="48dp"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="5dp"
-            android:paddingBottom="10dp"
-            android:textSize="12sp" />
-
-
-        <EditText
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:autofillHints="creditCardExpirationDate"
-            android:background="@drawable/edit_text_bg"
-            android:clickable="true"
-            android:cursorVisible="false"
-            android:drawableEnd="@drawable/ic_date"
-            android:drawableTint="@color/color_5"
-            android:focusable="true"
-            android:focusableInTouchMode="false"
-            android:fontFamily="@font/montserrat"
-            android:hint="yyyy-mm-dd"
-            android:inputType="date"
-            android:minHeight="48dp"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="14sp" />
-
-    </LinearLayout>
+        android:autofillHints="creditCardExpirationDate"
+        android:background="@drawable/edit_text_bg"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:drawableEnd="@drawable/ic_date"
+        android:drawableTint="@color/color_5"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
+        android:fontFamily="@font/montserrat"
+        android:hint="yyyy-mm-dd"
+        android:inputType="date"
+        android:minHeight="48dp"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        android:textSize="14sp" />
 
 
     <EditText
         android:id="@+id/purpose"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/date_layout"
+        android:layout_below="@id/vendor_ref"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
@@ -154,7 +151,7 @@
         android:drawableTint="@color/color_5"
         android:ems="5"
         android:fontFamily="@font/montserrat"
-        android:hint="Purpose of expenditure"
+        android:hint="What is it for?(Optional)"
         android:inputType="text"
         android:minHeight="48dp"
         android:paddingStart="10dp"
