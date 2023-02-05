@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionModeBackground">@color/tab_color</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance">

@@ -137,7 +137,7 @@ public class AttendanceDetails extends AppCompatActivity {
                 response -> {
                     Log.i("Response", response);
                     dialog1.dismiss();
-                    JSONArray jsonArray = null;
+                    JSONArray jsonArray;
                     String json = "";
                     try {
                         jsonArray = new JSONArray(response);
@@ -205,5 +205,7 @@ public class AttendanceDetails extends AppCompatActivity {
         super.onResume();
         getAttendance(classId, courseId, date, db, from);
     }
+
+
 
 }

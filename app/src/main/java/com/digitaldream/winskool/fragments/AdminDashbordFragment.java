@@ -49,14 +49,14 @@ import com.digitaldream.winskool.activities.QuestionView;
 import com.digitaldream.winskool.activities.StudentContacts;
 import com.digitaldream.winskool.activities.TeacherContacts;
 import com.digitaldream.winskool.adapters.QAAdapter;
+import com.digitaldream.winskool.dialog.ContactUsDialog;
+import com.digitaldream.winskool.dialog.CustomDialog;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.GeneralSettingModel;
 import com.digitaldream.winskool.models.NewsTable;
 import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.models.TeachersTable;
 import com.digitaldream.winskool.utils.AddNewsBottomSheet;
-import com.digitaldream.winskool.dialog.ContactUsDialog;
-import com.digitaldream.winskool.dialog.CustomDialog;
 import com.digitaldream.winskool.utils.QuestionBottomSheet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -80,7 +80,8 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNewsClickListener, QAAdapter.OnQuestionClickListener {
+public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNewsClickListener,
+        QAAdapter.OnQuestionClickListener {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -195,6 +196,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
 
 
+        assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -202,6 +204,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         school_name = generalSettingsList.get(0).getSchoolName().toLowerCase();
+        Log.d("school_name", school_name);
         userId = sharedPreferences.getString("user_id", "");
         user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");
@@ -216,7 +219,6 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             term = term + "rd term";
 
         }
-
 
         if (!user_name.equals("null")) {
             try {
@@ -241,21 +243,15 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         }
         school_Name.setText(builder.toString());
 
-        studentContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), StudentContacts.class);
-                startActivity(intent);
-            }
+        studentContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), StudentContacts.class);
+            startActivity(intent);
         });
 
-        teacherContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent3 = new Intent(getContext(),
-                        TeacherContacts.class);
-                startActivity(intent3);
-            }
+        teacherContainer.setOnClickListener(v -> {
+            Intent intent3 = new Intent(getContext(),
+                    TeacherContacts.class);
+            startActivity(intent3);
         });
 
 
@@ -277,19 +273,16 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
 
         FloatingActionButton addQuestionBtn = view.findViewById(
                 R.id.add_question);
-        addQuestionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction =
-                        ((FragmentActivity) getContext())
-                        .getSupportFragmentManager()
-                        .beginTransaction();
-                AddNewsBottomSheet addNewsBottomSheet =
-                        new AddNewsBottomSheet();
-                addNewsBottomSheet.show(transaction, "newsBottomSheet");
-                //Intent intent = new Intent(getContext(), AddNews.class);
-                //startActivity(intent);
-            }
+        addQuestionBtn.setOnClickListener(v -> {
+            FragmentTransaction transaction =
+                    ((FragmentActivity) getContext())
+                            .getSupportFragmentManager()
+                            .beginTransaction();
+            AddNewsBottomSheet addNewsBottomSheet =
+                    new AddNewsBottomSheet();
+            addNewsBottomSheet.show(transaction, "newsBottomSheet");
+            //Intent intent = new Intent(getContext(), AddNews.class);
+            //startActivity(intent);
         });
         if (json.isEmpty()) {
             getFeed();
@@ -303,19 +296,15 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         progressBar = view.findViewById(R.id.progress_bar);
         NestedScrollView nestedScrollView = view.findViewById(R.id.scroll_view);
         nestedScrollView.setOnScrollChangeListener(
-                new NestedScrollView.OnScrollChangeListener() {
-                    @Override
-                    public void onScrollChange(NestedScrollView v,
-                                               int scrollX, int scrollY,
-                                               int oldScrollX, int oldScrollY) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        if (scrollY == v.getChildAt(
-                                0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                            Toast.makeText(getContext(), "bottom",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                (NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX,
+                                                           oldScrollY) -> {
+                                                               progressBar.setVisibility(View.VISIBLE);
+                                                               if (scrollY == v.getChildAt(
+                                                                       0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                                                                   Toast.makeText(getContext(), "bottom",
+                                                                           Toast.LENGTH_SHORT).show();
+                                                               }
+                                                           });
         return view;
     }
 

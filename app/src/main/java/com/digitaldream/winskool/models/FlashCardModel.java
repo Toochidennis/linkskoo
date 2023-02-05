@@ -1,5 +1,8 @@
 package com.digitaldream.winskool.models;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
 public class FlashCardModel {
     private String term;
     private String definition;
@@ -56,3 +59,4 @@ public class FlashCardModel {
         this.count = count;
     }
 }
+

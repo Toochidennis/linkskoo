@@ -21,20 +21,29 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:id="@+id/hint"
+    <EditText
+        android:id="@+id/search_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="15dp"
+        android:autofillHints="name"
+        android:background="@drawable/edit_text_bg"
+        android:drawableStart="@drawable/ic_search_24"
+        android:drawableTint="@color/gray"
+        android:ems="10"
         android:fontFamily="@font/montserrat"
-        android:lines="2"
-        android:text="Select a vendor to continue. If not found, use the button below to add a new vendor."
-        android:textColor="@color/text_bg_color"
+        android:gravity="start|top"
+        android:hint="Search for vendor"
+        android:inputType="textPersonName"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingEnd="5dp"
         android:textSize="14sp" />
 
 
@@ -42,11 +51,11 @@
         android:id="@+id/vendor_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/hint"
+        android:layout_below="@id/search_bar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:clickable="true"
         android:focusable="true"

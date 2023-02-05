@@ -108,9 +108,7 @@ public class CBTConfirmationDialog extends Dialog {
 
         loadQuestions();
 
-        mCancelBtn.setOnClickListener(sView -> {
-            dismiss();
-        });
+        mCancelBtn.setOnClickListener(sView -> dismiss());
 
         if (mJson.isEmpty()) {
             new getCourse().execute(Integer.toString(mExamList.get(0).getYearId()));
@@ -152,7 +150,7 @@ public class CBTConfirmationDialog extends Dialog {
                 List<ExamQuestions> examQuestionsList = mExamQuestionsDao.queryBuilder().where().eq(
                         "examId",
                         exam.getExamId()).query();
-                Log.i("questionsList", String.valueOf(exam.getExamId()));
+               // Log.i("questionsList", String.valueOf(exam.getExamId()));
                 if (!examQuestionsList.isEmpty()) {
                     ExamQuestions examQuestions = examQuestionsList.get(0);
                     mJson = examQuestions.getJson();

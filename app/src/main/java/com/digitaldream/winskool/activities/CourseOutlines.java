@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -49,12 +48,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.dialog.ChooseActionDialog;
 import com.digitaldream.winskool.dialog.CustomDialog;
-import com.digitaldream.winskool.utils.FileTransferService;
 import com.digitaldream.winskool.dialog.ShareDialog;
+import com.digitaldream.winskool.models.CourseOutlineTable;
+import com.digitaldream.winskool.utils.FileTransferService;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -123,7 +122,8 @@ public class CourseOutlines extends AppCompatActivity {
         courseName = getIntent().getStringExtra("courseName");
         levelName = getIntent().getStringExtra("levelName");
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
 
         setSupportActionBar(toolbar);
@@ -163,7 +163,8 @@ public class CourseOutlines extends AppCompatActivity {
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();
             Window window = dialog.getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
         });
 
         addCourseOutline2.setOnClickListener(v -> {
@@ -172,7 +173,8 @@ public class CourseOutlines extends AppCompatActivity {
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();
             Window window = dialog.getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
         });
 
         databaseHelper = new DatabaseHelper(this);
@@ -199,7 +201,8 @@ public class CourseOutlines extends AppCompatActivity {
         courseOutlineList.clear();
         adapter.removeAllSections();
         try {
-            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseOutlineTable.class);
+            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    CourseOutlineTable.class);
             QueryBuilder<CourseOutlineTable, Long> queryBuilder = courseOutlineDao.queryBuilder();
             queryBuilder.where().eq("levelId", levelId).and().eq("courseId", courseId);
             courseOutlineList = queryBuilder.query();
@@ -216,9 +219,11 @@ public class CourseOutlines extends AppCompatActivity {
         });
         for (int b = 0; b < courseOutlineList.size(); b++) {
             try {
-                List<CourseOutlineTable> courseOutlist = getWeeksTopics(courseOutlineList.get(b).getWeek());
+                List<CourseOutlineTable> courseOutlist = getWeeksTopics(
+                        courseOutlineList.get(b).getWeek());
                 if (!tpList.contains(courseOutlineList.get(b).getWeek())) {
-                    adapter.addSection(new MySection(courseOutlineList.get(b).getWeek(), courseOutlist, this));
+                    adapter.addSection(
+                            new MySection(courseOutlineList.get(b).getWeek(), courseOutlist, this));
                     tpList.add(courseOutlineList.get(b).getWeek());
 
                 }
@@ -240,7 +245,8 @@ public class CourseOutlines extends AppCompatActivity {
 
     public static List<CourseOutlineTable> getWeeksTopics(String week) throws SQLException {
         QueryBuilder<CourseOutlineTable, Long> queryBuilder = courseOutlineDao.queryBuilder();
-        queryBuilder.where().eq("levelId", levelId).and().eq("courseId", courseId).and().eq("week", week);
+        queryBuilder.where().eq("levelId", levelId).and().eq("courseId", courseId).and().eq("week",
+                week);
         return queryBuilder.query();
     }
 
@@ -264,7 +270,8 @@ public class CourseOutlines extends AppCompatActivity {
     }
 
     public boolean isWifiEnabled() {
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(
+                Context.WIFI_SERVICE);
         if (wifiManager.isWifiEnabled()) {
             // wifi is enabled
             return true;
@@ -289,10 +296,12 @@ public class CourseOutlines extends AppCompatActivity {
                     // After this point you wait for callback in
                     // onRequestPermissionsResult(int, String[], int[]) overridden method
                 } else if (!isWifiEnabled()) {
-                    Toast.makeText(CourseOutlines.this, "Turn on wifi connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CourseOutlines.this, "Turn on wifi connection",
+                            Toast.LENGTH_SHORT).show();
 
                 } else if (!locationServicesEnabled(CourseOutlines.this)) {
-                    Toast.makeText(CourseOutlines.this, "Turn on location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CourseOutlines.this, "Turn on location",
+                            Toast.LENGTH_SHORT).show();
 
                 } else {
                     ShareDialog dialog = new ShareDialog(CourseOutlines.this);
@@ -313,10 +322,14 @@ public class CourseOutlines extends AppCompatActivity {
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(10000 / 2);
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+        LocationSettingsRequest.Builder builder =
+                new LocationSettingsRequest.Builder().addLocationRequest(
+                locationRequest);
         builder.setAlwaysShow(true);
 
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(
+                googleApiClient, builder.build());
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
             public void onResult(LocationSettingsResult result) {
@@ -324,21 +337,28 @@ public class CourseOutlines extends AppCompatActivity {
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         //Log.i("tag", "All location settings are satisfied.");
-                        Toast.makeText(CourseOutlines.this, "Wifi turned on", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CourseOutlines.this, "Wifi turned on",
+                                Toast.LENGTH_SHORT).show();
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.i("tag", "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
+                        Log.i("tag",
+                                "Location settings are not satisfied. Show the user a dialog to " +
+                                        "upgrade location settings ");
 
                         try {
-                            // Show the dialog by calling startResolutionForResult(), and check the result
+                            // Show the dialog by calling startResolutionForResult(), and check
+                            // the result
                             // in onActivityResult().
-                            status.startResolutionForResult(CourseOutlines.this, REQUEST_CHECK_SETTINGS);
+                            status.startResolutionForResult(CourseOutlines.this,
+                                    REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException e) {
                             Log.i("tag", "PendingIntent unable to execute request.");
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.i("tag", "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
+                        Log.i("tag",
+                                "Location settings are inadequate, and cannot be fixed here. " +
+                                        "Dialog not created.");
                         break;
                 }
             }
@@ -352,7 +372,8 @@ public class CourseOutlines extends AppCompatActivity {
             case PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION:
                 if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     //Log.e(TAG, "Fine location permission is not granted!");
-                    Toast.makeText(CourseOutlines.this, "location permission is not granted!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CourseOutlines.this, "location permission is not granted!",
+                            Toast.LENGTH_SHORT).show();
 
                 } else {
                     ShareDialog dialog = new ShareDialog(CourseOutlines.this);
@@ -384,7 +405,8 @@ public class CourseOutlines extends AppCompatActivity {
     public static Boolean isLocationEnabled(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 // This is new method provided in API 28
-            LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            LocationManager lm = (LocationManager) context.getSystemService(
+                    Context.LOCATION_SERVICE);
             return lm.isLocationEnabled();
         }
         return false;
@@ -392,7 +414,8 @@ public class CourseOutlines extends AppCompatActivity {
 
     private void refreshCourseOutline() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
         final String username = sharedPreferences.getString("username", "");
         final String password = sharedPreferences.getString("userpassword", "");
         final String pin = sharedPreferences.getString("schoolcode", "");
@@ -411,7 +434,8 @@ public class CourseOutlines extends AppCompatActivity {
                     contentArray = jsonObject.getJSONArray("staffContent");
                 }
                 if (contentArray.length() > 0) {
-                    TableUtils.clearTable(databaseHelper.getConnectionSource(), CourseOutlineTable.class);
+                    TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                            CourseOutlineTable.class);
                     for (int a = 0; a < contentArray.length(); a++) {
                         Log.i("Value of a: ", String.valueOf(a));
                         JSONObject contentObj = contentArray.getJSONObject(a);
@@ -454,7 +478,8 @@ public class CourseOutlines extends AppCompatActivity {
                         courseOutlineDao.create(cot);
 
                     }
-                    QueryBuilder<CourseOutlineTable, Long> queryBuilder = courseOutlineDao.queryBuilder();
+                    QueryBuilder<CourseOutlineTable, Long> queryBuilder =
+                            courseOutlineDao.queryBuilder();
                     queryBuilder.where().eq("levelId", levelId).and().eq("courseId", courseId);
                     courseOutlineList = queryBuilder.query();
 
@@ -471,10 +496,12 @@ public class CourseOutlines extends AppCompatActivity {
 
                     for (int b = 0; b < courseOutlineList.size(); b++) {
                         try {
-                            List<CourseOutlineTable> courseOutlist = getWeeksTopics(courseOutlineList.get(b).getWeek());
+                            List<CourseOutlineTable> courseOutlist = getWeeksTopics(
+                                    courseOutlineList.get(b).getWeek());
 
                             if (!tpList.contains(courseOutlineList.get(b).getWeek())) {
-                                adapter.addSection(new MySection(courseOutlineList.get(b).getWeek(), courseOutlist, CourseOutlines.this));
+                                adapter.addSection(new MySection(courseOutlineList.get(b).getWeek(),
+                                        courseOutlist, CourseOutlines.this));
                                 tpList.add(courseOutlineList.get(b).getWeek());
 
 
@@ -496,7 +523,8 @@ public class CourseOutlines extends AppCompatActivity {
                         emptyLayout.setVisibility(View.VISIBLE);
                     }
                     if (show) {
-                        Toast.makeText(CourseOutlines.this, "Course Outline updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CourseOutlines.this, "Course Outline updated",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -564,18 +592,22 @@ public class CourseOutlines extends AppCompatActivity {
             String title = childList.get(position).getTitle();
             title = title.substring(0, 1).toUpperCase() + "" + title.substring(1).toLowerCase();
             itemHolder.topic.setText(title);
-            GradientDrawable gd = (GradientDrawable) ((ItemViewHolder) holder).bgColor.getBackground().mutate();
+            GradientDrawable gd =
+                    (GradientDrawable) ((ItemViewHolder) holder).bgColor.getBackground().mutate();
             Random rnd = new Random();
-            int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+                    rnd.nextInt(256));
             gd.setColor(currentColor);
             ((ItemViewHolder) holder).bgColor.setBackground(gd);
             /*Random rnd = new Random();
-            int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt
+            (256));
             itemHolder.bgColor.setBackgroundColor(currentColor);*/
             itemHolder.menuOption.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(context, itemHolder.menuOption);
 
-                if (childList.get(position).getType().equalsIgnoreCase("1") || childList.get(position).getType().equalsIgnoreCase("null")) {
+                if (childList.get(position).getType().equalsIgnoreCase("1") || childList.get(
+                        position).getType().equalsIgnoreCase("null")) {
                     popup.inflate(R.menu.pop_menu_courseoutline);
 
                 } else if (childList.get(position).getType().equalsIgnoreCase("2")) {
@@ -591,44 +623,48 @@ public class CourseOutlines extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.delete:
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(
+                                        context);
                                 builder.setTitle("Are you sure you want to delete");
                                 builder.setCancelable(false);
-                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                builder.setNegativeButton("Cancel", (dialog, which) -> {
 
-                                    }
                                 });
 
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        String id = childList.get(position).getId();
-                                        deleteContent(id);
-                                    }
+                                builder.setPositiveButton("OK", (dialog, which) -> {
+                                    String id = childList.get(position).getId();
+                                    deleteContent(id);
                                 });
 
                                 builder.show();
                                 return true;
                             case R.id.edit:
 
-                                if (childList.get(position).getType() == null || childList.get(position).getType().equalsIgnoreCase("null") || childList.get(position).getType().equalsIgnoreCase("1")) {
+                                if (childList.get(position).getType() == null || childList.get(
+                                        position).getType().equalsIgnoreCase(
+                                        "null") || childList.get(
+                                        position).getType().equalsIgnoreCase("1")) {
                                     Intent intent = new Intent(context, ContentUpload.class);
                                     intent.putExtra("topic", childList.get(position).getTitle());
-                                    intent.putExtra("objective", childList.get(position).getObjective());
+                                    intent.putExtra("objective",
+                                            childList.get(position).getObjective());
                                     intent.putExtra("week", childList.get(position).getWeek());
-                                    intent.putExtra("noteMaterialUrl", childList.get(position).getNoteMaterialPath());
-                                    intent.putExtra("otherMaterial", childList.get(position).getOtherMatherialPath());
-                                    intent.putExtra("courseId", childList.get(position).getCourseId());
-                                    intent.putExtra("levelId", childList.get(position).getLevelId());
+                                    intent.putExtra("noteMaterialUrl",
+                                            childList.get(position).getNoteMaterialPath());
+                                    intent.putExtra("otherMaterial",
+                                            childList.get(position).getOtherMatherialPath());
+                                    intent.putExtra("courseId",
+                                            childList.get(position).getCourseId());
+                                    intent.putExtra("levelId",
+                                            childList.get(position).getLevelId());
                                     intent.putExtra("author", childList.get(position).getAuthor());
                                     intent.putExtra("date", childList.get(position).getDate());
                                     intent.putExtra("content_id", childList.get(position).getId());
                                     intent.putExtra("from", "edit");
                                     context.startActivity(intent);
 
-                                } else if (childList.get(position).getType().equalsIgnoreCase("2") ||
+                                } else if (childList.get(position).getType().equalsIgnoreCase(
+                                        "2") ||
                                         childList.get(position).getType().equalsIgnoreCase("6")) {
 
                                     String id = childList.get(position).getId();
@@ -637,16 +673,22 @@ public class CourseOutlines extends AppCompatActivity {
                                     String week = childList.get(position).getWeek();
                                     getExam(id, levelId, courseId, week);
 
-                                } else if (childList.get(position).getType().equalsIgnoreCase("3")) {
+                                } else if (childList.get(position).getType().equalsIgnoreCase(
+                                        "3")) {
                                     Intent intent = new Intent(context, CreateVideoLink.class);
                                     intent.putExtra("topic", childList.get(position).getTitle());
-                                    intent.putExtra("objective", childList.get(position).getObjective());
+                                    intent.putExtra("objective",
+                                            childList.get(position).getObjective());
                                     intent.putExtra("week", childList.get(position).getWeek());
                                     intent.putExtra("id", childList.get(position).getId());
-                                    intent.putExtra("courseId", childList.get(position).getCourseId());
-                                    intent.putExtra("levelId", childList.get(position).getLevelId());
-                                    intent.putExtra("url", childList.get(position).getNoteMaterialPath());
-                                    intent.putExtra("note", childList.get(position).getOtherMatherialPath());
+                                    intent.putExtra("courseId",
+                                            childList.get(position).getCourseId());
+                                    intent.putExtra("levelId",
+                                            childList.get(position).getLevelId());
+                                    intent.putExtra("url",
+                                            childList.get(position).getNoteMaterialPath());
+                                    intent.putExtra("note",
+                                            childList.get(position).getOtherMatherialPath());
                                     intent.putExtra("author", childList.get(position).getAuthor());
                                     intent.putExtra("date", childList.get(position).getDate());
                                     intent.putExtra("from", "edit");
@@ -657,11 +699,13 @@ public class CourseOutlines extends AppCompatActivity {
                             case R.id.share:
                                 if (ShareDialog.info != null) {
                                     String fileUrl = childList.get(position).getNoteMaterialPath();
-                                    String fileUrl2 = childList.get(position).getOtherMatherialPath();
+                                    String fileUrl2 = childList.get(
+                                            position).getOtherMatherialPath();
                                     String fileName2 = "";
                                     String fileName = "";
                                     try {
-                                        fileName2 = fileUrl2.substring(fileUrl2.lastIndexOf("/") + 1);
+                                        fileName2 = fileUrl2.substring(
+                                                fileUrl2.lastIndexOf("/") + 1);
                                         fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 
                                     } catch (StringIndexOutOfBoundsException e) {
@@ -687,30 +731,37 @@ public class CourseOutlines extends AppCompatActivity {
                                             getExternalStoragePublicDirectory(Environment
                                                     .DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName;
 
-                                    Intent serviceIntent = new Intent(context, FileTransferService.class);
+                                    Intent serviceIntent = new Intent(context,
+                                            FileTransferService.class);
                                     serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
                                     serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, f);
-                                    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_ARRAY, files);
+                                    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_ARRAY,
+                                            files);
                                     if (fileName.isEmpty()) {
                                         serviceIntent.putExtra(FileTransferService.TYPE, "json");
                                     } else {
                                         serviceIntent.putExtra(FileTransferService.TYPE, "file");
 
                                     }
-                                    serviceIntent.putExtra(FileTransferService.JSON, buildJson(courseOutlineObject));
+                                    serviceIntent.putExtra(FileTransferService.JSON,
+                                            buildJson(courseOutlineObject));
                                     if (ShareDialog.info.groupFormed && !ShareDialog.info.isGroupOwner) {
-                                        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+                                        serviceIntent.putExtra(
+                                                FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
                                                 ShareDialog.info.groupOwnerAddress.getHostAddress());
                                     } else {
-                                        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+                                        serviceIntent.putExtra(
+                                                FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
                                                 ShareDialog.clientIp.substring(1));
                                     }
 
                                     //Log.i("client",info.groupOwnerAddress.getHostAddress());
-                                    serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+                                    serviceIntent.putExtra(
+                                            FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
                                     context.startService(serviceIntent);
                                 } else {
-                                    Toast.makeText(context, "You are not connected to any device", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "You are not connected to any device",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                                 return true;
                             case R.id.view_responses:
@@ -731,7 +782,9 @@ public class CourseOutlines extends AppCompatActivity {
                 itemHolder.menuOption.setVisibility(View.GONE);
             }
 
-            if (childList.get(position).getType() == null || childList.get(position).getType().equalsIgnoreCase("1") || childList.get(position).getType().equalsIgnoreCase("null")) {
+            if (childList.get(position).getType() == null || childList.get(
+                    position).getType().equalsIgnoreCase("1") || childList.get(
+                    position).getType().equalsIgnoreCase("null")) {
                 itemHolder.icon.setImageResource(R.drawable.ic_library_books);
             } else if (childList.get(position).getType().equalsIgnoreCase("2")) {
                 itemHolder.icon.setImageResource(R.drawable.ic_poll);
@@ -747,14 +800,18 @@ public class CourseOutlines extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if (childList.get(position).getType() == null || childList.get(position).getType().equalsIgnoreCase("null") || childList.get(position).getType().equalsIgnoreCase("1")) {
+                    if (childList.get(position).getType() == null || childList.get(
+                            position).getType().equalsIgnoreCase("null") || childList.get(
+                            position).getType().equalsIgnoreCase("1")) {
 
                         Intent intent = new Intent(context, ContentDownload.class);
                         intent.putExtra("topic", childList.get(position).getTitle());
                         intent.putExtra("objective", childList.get(position).getObjective());
                         intent.putExtra("week", childList.get(position).getWeek());
-                        intent.putExtra("noteMaterialUrl", childList.get(position).getNoteMaterialPath());
-                        intent.putExtra("otherMaterial", childList.get(position).getOtherMatherialPath());
+                        intent.putExtra("noteMaterialUrl",
+                                childList.get(position).getNoteMaterialPath());
+                        intent.putExtra("otherMaterial",
+                                childList.get(position).getOtherMatherialPath());
                         intent.putExtra("courseId", childList.get(position).getCourseId());
                         intent.putExtra("levelId", childList.get(position).getLevelId());
                         intent.putExtra("author", childList.get(position).getAuthor());
@@ -838,7 +895,8 @@ public class CourseOutlines extends AppCompatActivity {
         @Override
         public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
             final HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-            String header = headerTitle.substring(0, 1).toUpperCase() + "" + headerTitle.substring(1).toLowerCase();
+            String header = headerTitle.substring(0, 1).toUpperCase() + "" + headerTitle.substring(
+                    1).toLowerCase();
             headerHolder.headerText.setText(header);
 
         }
@@ -875,28 +933,29 @@ public class CourseOutlines extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             String url = Login.urlBase + "/get_exam.php";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    dialog.dismiss();
-                    Log.i("response", response);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            dialog.dismiss();
+                            Log.i("response", response);
 
-                    if (!response.isEmpty()) {
+                            if (!response.isEmpty()) {
 
-                        Intent intent1 = new Intent(context, TestUpload.class);
-                        intent1.putExtra("json", response);
-                        intent1.putExtra("from", "edit");
-                        intent1.putExtra("courseId", courseId);
-                        intent1.putExtra("levelId", levelId);
-                        intent1.putExtra("week", week);
-                        intent1.putExtra("id", id);
-                        intent1.putExtra("levelName", levelName);
-                        intent1.putExtra("courseName", courseName);
-                        context.startActivity(intent1);
-                    }
+                                Intent intent1 = new Intent(context, TestUpload.class);
+                                intent1.putExtra("json", response);
+                                intent1.putExtra("from", "edit");
+                                intent1.putExtra("courseId", courseId);
+                                intent1.putExtra("levelId", levelId);
+                                intent1.putExtra("week", week);
+                                intent1.putExtra("id", id);
+                                intent1.putExtra("levelName", levelName);
+                                intent1.putExtra("courseName", courseName);
+                                context.startActivity(intent1);
+                            }
 
-                }
-            }, new Response.ErrorListener() {
+                        }
+                    }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
@@ -929,60 +988,71 @@ public class CourseOutlines extends AppCompatActivity {
             dialog1.setCanceledOnTouchOutside(false);
             dialog1.show();
             String url = Login.urlBase + "/deleteContent.php";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("response", response);
-                    dialog1.dismiss();
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        String status = jsonObject.getString("status");
-                        if (status.equalsIgnoreCase("success")) {
-                            DeleteBuilder<CourseOutlineTable, Long> deleteBuilder = courseOutlineDao.deleteBuilder();
-                            deleteBuilder.where().eq("id", id);
-                            deleteBuilder.delete();
-                            QueryBuilder<CourseOutlineTable, Long> queryBuilder = courseOutlineDao.queryBuilder();
-                            queryBuilder.where().eq("levelId", levelId).and().eq("courseId", courseId);
-                            courseOutlineList = queryBuilder.query();
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("response", response);
+                            dialog1.dismiss();
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                String status = jsonObject.getString("status");
+                                if (status.equalsIgnoreCase("success")) {
+                                    DeleteBuilder<CourseOutlineTable, Long> deleteBuilder =
+                                            courseOutlineDao.deleteBuilder();
+                                    deleteBuilder.where().eq("id", id);
+                                    deleteBuilder.delete();
+                                    QueryBuilder<CourseOutlineTable, Long> queryBuilder =
+                                            courseOutlineDao.queryBuilder();
+                                    queryBuilder.where().eq("levelId", levelId).and().eq("courseId",
+                                            courseId);
+                                    courseOutlineList = queryBuilder.query();
 
-                            adapter = new SectionedRecyclerViewAdapter();
-                            List<String> tpList = new ArrayList<>();
-                            tpList.clear();
-                            List<Section> list;
-                            Collections.sort(courseOutlineList, (o1, o2) -> o1.getWeek().compareToIgnoreCase(o2.getWeek()));
-                            adapter.removeAllSections();
+                                    adapter = new SectionedRecyclerViewAdapter();
+                                    List<String> tpList = new ArrayList<>();
+                                    tpList.clear();
+                                    List<Section> list;
+                                    Collections.sort(courseOutlineList,
+                                            (o1, o2) -> o1.getWeek().compareToIgnoreCase(
+                                                    o2.getWeek()));
+                                    adapter.removeAllSections();
 
-                            for (int b = 0; b < courseOutlineList.size(); b++) {
-                                try {
-                                    List<CourseOutlineTable> courseOutlist = getWeeksTopics(courseOutlineList.get(b).getWeek());
-                                    if (!tpList.contains(courseOutlineList.get(b).getWeek())) {
-                                        adapter.addSection(new MySection(courseOutlineList.get(b).getWeek(), courseOutlist, context));
-                                        tpList.add(courseOutlineList.get(b).getWeek());
+                                    for (int b = 0; b < courseOutlineList.size(); b++) {
+                                        try {
+                                            List<CourseOutlineTable> courseOutlist = getWeeksTopics(
+                                                    courseOutlineList.get(b).getWeek());
+                                            if (!tpList.contains(
+                                                    courseOutlineList.get(b).getWeek())) {
+                                                adapter.addSection(new MySection(
+                                                        courseOutlineList.get(b).getWeek(),
+                                                        courseOutlist, context));
+                                                tpList.add(courseOutlineList.get(b).getWeek());
 
+                                            }
+
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
 
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
+                                    if (adapter.getItemCount() > 0) {
+                                        emptyLayout.setVisibility(View.GONE);
+                                        layout.setVisibility(View.VISIBLE);
+                                        recyclerView.setAdapter(adapter);
+                                        adapter.notifyDataSetChanged();
+                                    } else {
+                                        layout.setVisibility(View.GONE);
+                                        emptyLayout.setVisibility(View.VISIBLE);
+                                    }
+                                } else {
+                                    Toast.makeText(context, "Operation failed",
+                                            Toast.LENGTH_SHORT).show();
                                 }
+                            } catch (SQLException | JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            if (adapter.getItemCount() > 0) {
-                                emptyLayout.setVisibility(View.GONE);
-                                layout.setVisibility(View.VISIBLE);
-                                recyclerView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                layout.setVisibility(View.GONE);
-                                emptyLayout.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (SQLException | JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, error -> {
+                    }, error -> {
                 error.printStackTrace();
                 dialog1.dismiss();
             }) {

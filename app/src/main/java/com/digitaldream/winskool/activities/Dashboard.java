@@ -232,9 +232,11 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                     return true;
 
                 case R.id.payment:
-                    getSupportFragmentManager().beginTransaction().replace(
+                    /*getSupportFragmentManager().beginTransaction().replace(
                             R.id.fragment_container,
-                            new AdminPaymentFragment()).commit();
+                            new AdminPaymentFragment()).commit();*/
+                    startActivity(new Intent(this, PaymentActivity.class).putExtra("from",
+                            "dashboard"));
                     return true;
                 case R.id.student_library:
                     getSupportFragmentManager().beginTransaction().replace(

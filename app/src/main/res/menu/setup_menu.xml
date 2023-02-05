@@ -7,9 +7,5 @@
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="Settings"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/info"
-        android:icon="@drawable/ic_info"
-        android:title="Contact us"
-        app:showAsAction="always" />
+
 </menu>
