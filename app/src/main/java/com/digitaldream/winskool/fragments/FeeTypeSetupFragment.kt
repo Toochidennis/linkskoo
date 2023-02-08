@@ -82,6 +82,7 @@ class FeeTypeSetupFragment : Fragment() {
         mFeeList = arrayListOf()
         mAdapter = FeeTypeAdapter(requireContext(), mFeeList, mErrorMessage)
         mRecyclerView.setHasFixedSize(true)
+        mRecyclerView.isNestedScrollingEnabled = false
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mRecyclerView.adapter = mAdapter
 
@@ -140,6 +141,8 @@ class FeeTypeSetupFragment : Fragment() {
                     val feeName = jsonObject.getString("fee_name")
                     val mandatory = jsonObject.getString("mandatory")
 
+                    println("FeeId: $feeId and FeName: $feeName")
+
                     val feeTypeModel = FeeTypeModel()
                     feeTypeModel.setFeeId(feeId.toInt())
                     feeTypeModel.setFeeName(feeName)
@@ -147,6 +150,7 @@ class FeeTypeSetupFragment : Fragment() {
 
                     mFeeList.add(feeTypeModel)
                 }
+                println(mFeeList.toString())
 
                 if (mFeeList.isEmpty()) {
                     mErrorMessage.isVisible = true

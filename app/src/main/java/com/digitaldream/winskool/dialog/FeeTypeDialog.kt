@@ -29,7 +29,7 @@ class FeeTypeDialog(
 
     private var mInputName: EditText? = null
     private var mSwitchBtn: SwitchCompat? = null
-    private var mMandatory: String? = null
+    private var mMandatory: String = "0"
     private var db: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,7 +107,7 @@ class FeeTypeDialog(
                     stringMap["id"] = sFeeId.toString()
                 }
                 stringMap["fee_name"] = mInputName!!.text.toString()
-                stringMap["mandatory"] = mMandatory!!
+                stringMap["mandatory"] = mMandatory
                 stringMap["_db"] = db!!
                 return stringMap
             }

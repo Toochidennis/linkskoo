@@ -95,4 +95,5 @@
     <string name="amount">Amount (₦)</string>
     <string name="mandatory">Mandatory</string>
     <string name="not_mandatory">Not mandatory</string>
+    <string name="zero_balance">₦0.0</string>
 </resources>

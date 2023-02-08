@@ -43,12 +43,11 @@ class AddExpenditureFragment : Fragment() {
             false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        setHasOptionsMenu(true)
 
         toolbar.apply {
             setNavigationIcon(R.drawable.arrow_left)
             title = "Record Expenditure"
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
 
         return view

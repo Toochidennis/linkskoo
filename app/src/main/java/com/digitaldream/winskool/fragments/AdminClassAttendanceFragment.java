@@ -32,6 +32,7 @@ import com.digitaldream.winskool.activities.AdminClassAttendance;
 import com.digitaldream.winskool.activities.AttendanceDetails;
 import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.adapters.AttendanceAdapter;
+import com.digitaldream.winskool.models.FeeTypeModel;
 import com.digitaldream.winskool.models.StudentTable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -125,8 +126,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
 
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) Objects.requireNonNull(
-                getActivity())).setSupportActionBar(toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         Objects.requireNonNull(
                 ((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle(
                 "Attendance Details");
@@ -143,8 +143,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         }
 
 
-        SharedPreferences sharedPreferences = Objects.requireNonNull(
-                        getContext())
+        SharedPreferences sharedPreferences = requireContext()
                 .getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         db = sharedPreferences.getString("db", "");
         term = sharedPreferences.getString("term", "");
@@ -281,6 +280,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         }
     }
 
+
     public void getAttendance() {
 
         final ACProgressFlower dialog1 = new ACProgressFlower.Builder(
@@ -344,7 +344,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
             }
         };
         RequestQueue requestQueue = Volley.newRequestQueue(
-                Objects.requireNonNull(getContext()));
+                requireContext());
         requestQueue.add(stringRequest);
     }
 
@@ -408,7 +408,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(
-                Objects.requireNonNull(getContext()));
+                requireContext());
         requestQueue.add(stringRequest);
 
     }

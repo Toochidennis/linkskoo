@@ -163,7 +163,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             e.printStackTrace();
         }
 
-        fromLogin = getActivity().getIntent().getBooleanExtra("isFromLogin",
+        fromLogin = requireActivity().getIntent().getBooleanExtra("isFromLogin",
                 false);
         if (fromLogin == true) {
             isFirstTime = true;
@@ -201,7 +201,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         school_name = generalSettingsList.get(0).getSchoolName().toLowerCase();
         Log.d("school_name", school_name);
@@ -209,7 +209,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");
 
-        String session = generalSettingsList.get(0).getSchoolYear();
+/*        String session = generalSettingsList.get(0).getSchoolYear();
         String term = generalSettingsList.get(0).getSchoolTerm();
         if (term.equals("1")) {
             term = term + "st term";
@@ -218,7 +218,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         } else if (term.equals("3")) {
             term = term + "rd term";
 
-        }
+        }*/
 
         if (!user_name.equals("null")) {
             try {
@@ -298,13 +298,13 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         nestedScrollView.setOnScrollChangeListener(
                 (NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX,
                                                            oldScrollY) -> {
-                                                               progressBar.setVisibility(View.VISIBLE);
-                                                               if (scrollY == v.getChildAt(
-                                                                       0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                                                                   Toast.makeText(getContext(), "bottom",
-                                                                           Toast.LENGTH_SHORT).show();
-                                                               }
-                                                           });
+                    progressBar.setVisibility(View.VISIBLE);
+                    if (scrollY == v.getChildAt(
+                            0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                        Toast.makeText(getContext(), "bottom",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
         return view;
     }
 

@@ -36,7 +36,7 @@ class FeeTypeAdapter(
     private var selectedItems = arrayListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
+        val view = LayoutInflater.from(sContext).inflate(
             R.layout.fragment_fee_setup_item, parent, false
         )
 
@@ -107,7 +107,7 @@ class FeeTypeAdapter(
                                 show()
                             }
                         }
-                        if (sFeeList.size == 0){
+                        if (sFeeList.size == 0) {
                             sErrorMessage.isVisible = true
                             sErrorMessage.text = sContext.getString(R.string.nothing_to_show)
                         }
@@ -158,6 +158,7 @@ class FeeTypeAdapter(
     }
 
     override fun getItemCount() = sFeeList.size
+
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

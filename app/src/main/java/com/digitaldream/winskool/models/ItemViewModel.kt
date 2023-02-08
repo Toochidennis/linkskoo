@@ -10,6 +10,5 @@ class ItemViewModel : ViewModel() {
         mutableLiveData.value = s
     }
 
-
     fun getText() = mutableLiveData;
 }

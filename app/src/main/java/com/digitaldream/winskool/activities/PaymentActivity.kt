@@ -48,7 +48,6 @@ open class PaymentActivity : AppCompatActivity() {
                 R.id.fragment_container, FeeTypeSetupFragment()).commit()
         }
 
-
     }
 
 }

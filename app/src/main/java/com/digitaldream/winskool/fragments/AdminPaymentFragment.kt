@@ -69,9 +69,8 @@ class AdminPaymentFragment : Fragment() {
 
         }
 
-        val animate = AlphaAnimation(1F, 0.8F)
+
         receiptBtn.setOnClickListener {
-            it.startAnimation(animate)
             startActivity(Intent(activity, PaymentActivity().javaClass)
                 .putExtra("from", "receipt"))
         }

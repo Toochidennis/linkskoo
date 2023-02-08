@@ -66,7 +66,6 @@ public class AttendanceActivity extends AppCompatActivity {
         Log.i("term", year);
 
         try {
-
             int previousYear = Integer.parseInt(year) - 1;
 
             String termText = "";

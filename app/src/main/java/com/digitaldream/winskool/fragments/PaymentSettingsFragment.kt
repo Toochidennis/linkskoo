@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
+import com.digitaldream.winskool.dialog.TermFeeDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,26 +44,45 @@ class PaymentSettingsFragment : Fragment() {
             }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?, ): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_settings_payment, container, false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        setHasOptionsMenu(true)
 
         toolbar.apply {
             setNavigationIcon(R.drawable.arrow_left)
             title = "Payment Settings"
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
 
         val feeBtn = view.findViewById<CardView>(R.id.fee_settings)
+        val termBtn: CardView = view.findViewById(R.id.term_settings)
 
         feeBtn.setOnClickListener {
-            startActivity(Intent(context, PaymentActivity().javaClass).putExtra("from",
-                "fee_settings"))
+            startActivity(
+                Intent(context, PaymentActivity().javaClass).putExtra(
+                    "from",
+                    "fee_settings"
+                )
+            )
 
+        }
+
+        termBtn.setOnClickListener {
+            val termFeeDialog = TermFeeDialog(requireContext())
+            termFeeDialog.apply {
+                setCancelable(true)
+                show()
+            }
+            val window = termFeeDialog.window
+            window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
 
         return view
