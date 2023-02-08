@@ -61,6 +61,7 @@ class PaymentSettingsFragment : Fragment() {
 
         val feeBtn = view.findViewById<CardView>(R.id.fee_settings)
         val termBtn: CardView = view.findViewById(R.id.term_settings)
+        val accountBtn: CardView = view.findViewById(R.id.account_settings)
 
         feeBtn.setOnClickListener {
             startActivity(
@@ -82,6 +83,15 @@ class PaymentSettingsFragment : Fragment() {
             window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        accountBtn.setOnClickListener {
+            startActivity(
+                Intent(context, PaymentActivity().javaClass).putExtra(
+                    "from",
+                    "account_settings"
+                )
             )
         }
 

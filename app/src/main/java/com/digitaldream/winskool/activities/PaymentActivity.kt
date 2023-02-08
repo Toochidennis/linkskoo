@@ -46,6 +46,9 @@ open class PaymentActivity : AppCompatActivity() {
 
             "fee_settings" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, FeeTypeSetupFragment()).commit()
+
+            "account_settings" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, AccountSetupFragment()).commit()
         }
 
     }

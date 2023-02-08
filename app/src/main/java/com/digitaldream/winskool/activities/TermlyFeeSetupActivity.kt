@@ -7,10 +7,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
@@ -27,6 +28,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.TermFeeAdapter
+import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.TermlyFeeDialog
 import com.digitaldream.winskool.models.FeeTypeModel
 import org.json.JSONArray
@@ -34,7 +36,7 @@ import java.util.*
 
 
 class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_setup),
-    TermlyFeeDialog.OnInputListener {
+    OnInputListener {
 
     private var mLevel: String? = null
     private var mLevelName: String? = null
@@ -45,15 +47,15 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     private lateinit var mFeeNameList: MutableList<FeeTypeModel>
     private lateinit var mRefreshLayout: SwipeRefreshLayout
     private lateinit var mErrorMessage: TextView
-    private lateinit var mLevelText: EditText
+    private lateinit var mLevelText: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val backBtn: ImageView = findViewById(R.id.back_btn)
-        val saveBtn: ImageView = findViewById(R.id.save_btn)
-        val title: TextView = findViewById(R.id.title)
+        val mBackBtn: ImageView = findViewById(R.id.back_btn)
+        val mSaveBtn: Button = findViewById(R.id.save_btn)
         val mFeeTotal: TextView = findViewById(R.id.fee_total)
+        val mTitle: TextView = findViewById(R.id.title)
         mRecyclerView = findViewById(R.id.term_fee_recycler)
         mRefreshLayout = findViewById(R.id.swipeRefresh)
         mErrorMessage = findViewById(R.id.error_message)
@@ -67,9 +69,6 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         val term = sharedPreferences.getString("term", "")
         mDb = sharedPreferences.getString("db", "")
 
-        backBtn.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
 
         try {
             val previousYear = year!!.toInt() - 1
@@ -80,30 +79,20 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                 else -> "3rd Term"
             }
 
-            title.text = String.format(
+            mTitle.text = String.format(
                 Locale.getDefault(),
                 "%d/%s %s %s",
                 previousYear, year, termText, "Fees"
             )
 
-            mLevelText.setOnClickListener {
-                val termFeeDialog = TermlyFeeDialog(this, this)
-                termFeeDialog.apply {
-                    setCancelable(false)
-                    show()
-                }
-
-                val window = termFeeDialog.window
-                window?.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            }
-
-            mLevelText.setText(mLevel)
+            mLevelText.text = mLevel
 
         } catch (e: NumberFormatException) {
             e.printStackTrace()
+        }
+
+        mBackBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
 
         mFeeNameList = arrayListOf()
@@ -115,6 +104,8 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         mRecyclerView.adapter = mAdapter
 
         getFeeName()
+
+        openDialog()
 
         mRefreshLayout.setColorSchemeColors(
             ContextCompat.getColor(
@@ -139,6 +130,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.save_menu, menu)
+                menu.clear()
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -216,13 +208,35 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     }
 
     private fun setLevelName() {
-        mLevelText.setText(mLevelName)
+        mLevelText.text = mLevelName
+    }
+
+    private fun openDialog() {
+
+        mLevelText.setOnClickListener {
+
+            val termFeeDialog = TermlyFeeDialog(
+                this@TermlyFeeSetupActivity,
+                this@TermlyFeeSetupActivity,
+                mLevelText.text.toString()
+            )
+            termFeeDialog.apply {
+                setCancelable(true)
+                show()
+            }
+
+            val window = termFeeDialog.window
+            window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+        }
     }
 
     override fun sendInput(input: String) {
         mLevelName = input
         setLevelName()
+        refreshData()
     }
-
-
 }

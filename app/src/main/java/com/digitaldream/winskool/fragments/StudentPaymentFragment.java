@@ -31,11 +31,9 @@ public class StudentPaymentFragment extends Fragment {
                 false);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        setHasOptionsMenu(true);
         toolbar.setTitle("Payment");
         toolbar.setNavigationIcon(R.drawable.arrow_left);
-        toolbar.setNavigationOnClickListener(sView -> Objects.requireNonNull(
-                getActivity()).onBackPressed());
+        toolbar.setNavigationOnClickListener(sView -> requireActivity().onBackPressed());
 
         Button button = view.findViewById(R.id.view_details);
 

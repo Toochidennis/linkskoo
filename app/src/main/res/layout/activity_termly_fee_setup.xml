@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
@@ -17,114 +18,114 @@
             android:background="@color/tab_color"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <androidx.cardview.widget.CardView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:backgroundTint="@android:color/transparent">
+                android:layout_height="200dp"
+                android:layout_marginTop="20dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/back_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp">
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="15dp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/arrow_left" />
 
-                    <ImageView
-                        android:id="@+id/back_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/arrow_left" />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_toStartOf="@id/save_btn"
+                    android:layout_toEndOf="@id/back_btn"
+                    android:fontFamily="@font/montserrat"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/save_btn"
+                    android:layout_width="80dp"
+                    android:layout_height="38dp"
+                    android:layout_below="@id/back_btn"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ripple_effect3"
+                    android:clickable="true"
+                    android:contentDescription="@string/todo"
+                    android:focusable="true"
+                    android:minHeight="48dp"
+                    android:padding="10dp"
+                    android:text="save"
+                    android:textColor="@color/text_bg_color"
+                    android:textSize="12sp"/>
+
+                <Button
+                    android:id="@+id/level_name"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/ripple_effect2"
+                    android:clickable="true"
+                    android:contentDescription="@string/todo"
+                    android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
+                    android:drawableTint="@color/white"
+                    android:focusable="true"
+                    android:minHeight="48dp"
+                    android:padding="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:tint="@color/white" />
+
+                <LinearLayout
+                    android:id="@+id/total_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toEndOf="@id/level_name"
+                    android:clipToPadding="true"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                     <TextView
-                        android:id="@+id/title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_toStartOf="@id/save_btn"
-                        android:layout_toEndOf="@id/back_btn"
+                        android:layout_marginTop="5dp"
                         android:fontFamily="@font/montserrat"
-                        android:text="2022/2023 2nd Term Fees"
+                        android:text="Total"
                         android:textColor="@color/white"
-                        android:textSize="15sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/save_btn"
+                    <TextView
+                        android:id="@+id/fee_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="15dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_save" />
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/montserrat"
+                        android:gravity="end"
+                        android:text="@string/zero_balance"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
 
-            </androidx.cardview.widget.CardView>
+            </RelativeLayout>
 
-
-            <EditText
-                android:id="@+id/level_name"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:autofillHints="level"
-                android:background="@drawable/button_bg"
-                android:clickable="true"
-                android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
-                android:drawableTint="@color/white"
-                android:focusable="true"
-                android:focusableInTouchMode="false"
-                android:fontFamily="@font/montserrat"
-                android:hint="level"
-                android:inputType="textCapSentences"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="10dp"
-                android:clipToPadding="true"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat"
-                    android:text="Total"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/fee_total"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat"
-                    android:gravity="end"
-                    android:text="@string/zero_balance"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 
