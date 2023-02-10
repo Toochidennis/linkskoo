@@ -101,7 +101,7 @@ class TermlyFeeDialog(
 
         try {
             sInputListener = context as OnInputListener
-        } catch (e: java.lang.ClassCastException) {
+        } catch (e: ClassCastException) {
             println(e.printStackTrace())
         }
     }

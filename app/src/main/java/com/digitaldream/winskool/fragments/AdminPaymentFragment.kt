@@ -98,7 +98,8 @@ class AdminPaymentFragment : Fragment() {
         when (item.itemId) {
             R.id.settings -> startActivity(Intent(context, PaymentActivity().javaClass).putExtra
                 ("from", "settings"))
-            android.R.id.home -> requireActivity().onBackPressed()
+            android.R.id.home -> requireActivity().onBackPressedDispatcher
+                .onBackPressed()
         }
         return false
     }

@@ -44,12 +44,12 @@ class SchoolFeesDetailsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_school_fees_details, container, false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        setHasOptionsMenu(true)
 
         toolbar.apply {
             setNavigationIcon(R.drawable.arrow_left)
             title = "Fee Details"
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher
+                .onBackPressed()  }
         }
 
         return view;

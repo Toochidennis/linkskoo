@@ -53,19 +53,19 @@ class VendorFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_vendor, container, false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        setHasOptionsMenu(true)
 
         toolbar.apply {
             setNavigationIcon(R.drawable.arrow_left)
             title = "Select a vendor"
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher
+                .onBackPressed() }
         }
 
 
         val addVendorBtn = view.findViewById<FloatingActionButton>(R.id.add_vendor)
 
         addVendorBtn.setOnClickListener {
-            val vendorDialog = VendorDialog(context!!)
+            val vendorDialog = VendorDialog(requireContext())
             vendorDialog.setCancelable(true)
             vendorDialog.show()
             val window = vendorDialog.window
@@ -76,7 +76,7 @@ class VendorFragment : Fragment() {
         val cardBtn = view.findViewById<CardView>(R.id.vendor_card)
 
         cardBtn.setOnClickListener {
-            startActivity(Intent(context!!, PaymentActivity().javaClass)
+            startActivity(Intent(requireContext(), PaymentActivity().javaClass)
                 .putExtra("from", "vendor"))
         }
 

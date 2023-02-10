@@ -91,10 +91,9 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-
             <LinearLayout
                 android:id="@+id/separator"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/status"
                 android:layout_alignParentStart="true"
@@ -126,7 +125,6 @@
 
             </LinearLayout>
 
-
             <TextView
                 android:id="@+id/transaction_label"
                 android:layout_width="wrap_content"
@@ -138,7 +136,6 @@
                 android:text="Transaction Type"
                 android:textColor="@color/gray"
                 android:textSize="12sp" />
-
 
             <TextView
                 android:id="@+id/transaction_type"
@@ -337,7 +334,7 @@
                 android:layout_alignBaseline="@id/ref_label"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@id/ref_label"
                 android:fontFamily="@font/montserrat"
                 android:gravity="end"
@@ -369,7 +366,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/montserrat"
-            android:text="Share Receipt"
+            android:text="Receipt"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
