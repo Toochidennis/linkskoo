@@ -22,7 +22,7 @@ class NotificationUtils: Application() {
                 "Receipt",
                 NotificationManager.IMPORTANCE_HIGH
             )
-            channel.description = "Download"
+            channel.description = "Payment Receipt"
 
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)

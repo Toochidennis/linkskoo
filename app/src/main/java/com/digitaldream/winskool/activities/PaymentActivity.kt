@@ -30,7 +30,7 @@ open class PaymentActivity : AppCompatActivity() {
                 ReceiptHistoryFragment()).commit()
 
             "details" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AdminTransactionDetails()).commit()
+                R.id.fragment_container, TransactionReceiptFragment()).commit()
 
             "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, VendorFragment()).commit()

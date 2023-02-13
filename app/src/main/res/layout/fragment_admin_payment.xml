@@ -44,22 +44,6 @@
                 android:textColor="@color/icons_color"
                 android:textSize="14sp" />
 
-            <ImageView
-                android:id="@+id/hide_show_balance"
-                android:visibility="gone"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignBaseline="@id/revenue_label"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/revenue_label"
-                android:backgroundTint="@android:color/transparent"
-                android:clickable="true"
-                android:contentDescription="@string/todo"
-                android:focusable="true"
-                android:src="@drawable/ic_eye_view"
-                app:tint="@color/icons_color" />
-
             <TextView
                 android:id="@+id/expected_revenue"
                 android:layout_width="0dp"

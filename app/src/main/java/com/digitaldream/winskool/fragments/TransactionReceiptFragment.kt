@@ -1,11 +1,14 @@
 package com.digitaldream.winskool.fragments
 
 import android.Manifest
+import android.app.PendingIntent
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -38,7 +41,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class AdminTransactionDetails : Fragment(), OnInputListener {
+class TransactionReceiptFragment : Fragment(), OnInputListener {
 
     private var param1: String? = null
     private var param2: String? = null
@@ -70,7 +73,7 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AdminTransactionDetails().apply {
+            TransactionReceiptFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -85,7 +88,7 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(
-            R.layout.fragment_admin_transaction_details,
+            R.layout.fragment_transaction_receipt,
             container, false
         )
 
@@ -123,6 +126,7 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
 
     private fun createPDF(): PdfDocument {
         val displayMetrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width = displayMetrics.widthPixels //1.4142
         val height = displayMetrics.heightPixels
@@ -152,7 +156,7 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
             )
             createPDF().writeTo(FileOutputStream(file))
             val fileSize = (file.length() / 1024).toInt()
-            notification(fileSize)
+            notification(fileSize, file)
 
         } catch (e: IOException) {
             e.printStackTrace()
@@ -190,7 +194,7 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
         }
     }
 
-    private fun notification(max: Int) {
+    private fun notification(max: Int, sFile: File) {
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -208,13 +212,19 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+
+            val pendingIntent = PendingIntent.getActivity(
+                requireContext(),
+                0, notificationIntent(sFile), PendingIntent.FLAG_IMMUTABLE
+            )
+
             val notification = NotificationCompat.Builder(
                 requireContext(), CHANNEL_ID_1
             ).apply {
                 setSmallIcon(R.drawable.win_school)
-                setContentTitle("Download")
+                setContentTitle("Payment Receipt")
                 setContentText("Download in progress")
-                setAutoCancel(false)
+                setContentIntent(pendingIntent)
                 color = ContextCompat.getColor(requireContext(), R.color.color_5)
                 setProgress(max, 0, false)
                 setOngoing(true)
@@ -226,7 +236,7 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
 
             Thread {
                 SystemClock.sleep(1000)
-                for (progress in 0..max step 5) {
+                for (progress in 0..max step 10) {
                     notification.setProgress(max, progress, false)
                     notificationManger.notify(1, notification.build())
                     SystemClock.sleep(1000)
@@ -237,6 +247,17 @@ class AdminTransactionDetails : Fragment(), OnInputListener {
                 notificationManger.notify(1, notification.build())
             }.start()
         }
+    }
+
+    private fun notificationIntent(sFile: File): Intent {
+        val intent = Intent(Intent.ACTION_VIEW)
+        val uri = FileProvider.getUriForFile(
+            requireContext(), requireActivity().packageName + "" +
+                    ".provider", sFile
+        )
+        intent.setDataAndType(uri, "application/pdf")
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        return intent
     }
 
     override fun sendInput(input: String) {

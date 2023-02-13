@@ -23,17 +23,10 @@ class DownloadReceiptDialog(
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window!!.attributes.windowAnimations = R.style.DialogAnimation
         window!!.setGravity(Gravity.BOTTOM)
-
         setContentView(R.layout.dialog_receipt_download)
 
-        val cancelBtn: ImageView = findViewById(R.id.cancel_button)
         val shareBtn: Button = findViewById(R.id.share_receipt)
         val downloadBtn: Button = findViewById(R.id.download_receipt)
-
-
-        cancelBtn.setOnClickListener {
-            dismiss()
-        }
 
         shareBtn.setOnClickListener {
             sInputListener.sendInput(shareBtn.text.toString())
