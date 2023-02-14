@@ -56,35 +56,35 @@ class TermFeeAdapter(
         holder.mFeeName.text = termFeesModel.getFeeName()
         mFeeAmountTotal = 0.0
 
-            try {
-                mFeeNameList[id] = termFeesModel.getFeeName().toString()
-                mFeeAmountList[id] = termFeesModel.getFeeAmount().toString()
+        try {
+            mFeeNameList[id] = termFeesModel.getFeeName().toString()
+            mFeeAmountList[id] = termFeesModel.getFeeAmount().toString()
 
-                mFeeAmountList.forEach { (_, value) ->
-                    val total = value.toDouble()
-                    mFeeAmountTotal += total
-                }
-                sTotal.text = String.format(
-                    Locale.getDefault(), "%s%s", sContext
-                        .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
-                )
-
-            } catch (e: NumberFormatException) {
-                mFeeAmountTotal = 0.0
-
-                mFeeNameList[id] = "0"
-                mFeeAmountList[id] = "0"
-
-                mFeeAmountList.forEach { (_, value) ->
-                    val total = value.toDouble()
-                    mFeeAmountTotal += total
-                }
-                sTotal.text = String.format(
-                    Locale.getDefault(), "%s%s", sContext
-                        .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
-                )
-                e.printStackTrace()
+            mFeeAmountList.forEach { (_, value) ->
+                val total = value.toDouble()
+                mFeeAmountTotal += total
             }
+            sTotal.text = String.format(
+                Locale.getDefault(), "%s%s", sContext
+                    .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
+            )
+
+        } catch (e: NumberFormatException) {
+            mFeeAmountTotal = 0.0
+
+            mFeeNameList[id] = "0"
+            mFeeAmountList[id] = "0"
+
+            mFeeAmountList.forEach { (_, value) ->
+                val total = value.toDouble()
+                mFeeAmountTotal += total
+            }
+            sTotal.text = String.format(
+                Locale.getDefault(), "%s%s", sContext
+                    .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
+            )
+            e.printStackTrace()
+        }
 
         holder.mRequired.isVisible =
             !(termFeesModel.getMandatory() == "null" || termFeesModel.getMandatory() == "0")

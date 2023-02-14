@@ -151,7 +151,7 @@ class FeeTypeSetupFragment : Fragment() {
                         feeTypeModel.setMandatory(mandatory)
 
                         mFeeList.add(feeTypeModel)
-                        mFeeList.sortedBy { it.getFeeName() }
+                        mFeeList.sortBy { it.getFeeName() }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()

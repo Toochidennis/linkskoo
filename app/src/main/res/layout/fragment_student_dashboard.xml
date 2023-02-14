@@ -1,97 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@color/bg_color"
+    android:orientation="vertical"
     tools:context=".fragments.StudentDashboard">
+
     <androidx.appcompat.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/toolbar"
-        android:background="@drawable/bg_drawable"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+        android:background="@color/tab_color"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbarSize="0dp"
         android:layout_below="@id/toolbar"
-
-        >
+        android:scrollbarSize="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/t"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:background="@drawable/bg_drawable"
-        >
-        <LinearLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:orientation="vertical"
-            android:layout_marginLeft="30dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/circle_initials"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/initials_student"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/lato"
-                android:textColor="@android:color/white"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical">
-            <TextView
-                android:id="@+id/student_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dike kingsley"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/montserrat"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                />
-            <TextView
-                android:id="@+id/student_class"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="JS1 A"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/montserrat"
-                android:layout_marginBottom="10dp"/>
-        </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/t"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/tab_color"
+                android:orientation="horizontal">
 
+                <LinearLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="30dp"
+                    android:background="@drawable/circle_initials"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/initials_student"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lato"
+                        android:text="A"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/student_user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Dike kingsley"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/student_class"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="JS1 A"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
 
 
             <LinearLayout
@@ -103,16 +97,16 @@
                     android:id="@+id/qa_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="150dp"
-                    >
+                    android:paddingBottom="150dp">
 
                 </androidx.recyclerview.widget.RecyclerView>
+
                 <LinearLayout
                     android:id="@+id/qa_empty_state"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:visibility="gone"
 
                     >
@@ -120,12 +114,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="There are no Questions"
-                        android:fontFamily="@font/roboto"
-                        android:layout_margin="20dp"
                         android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="15sp"/>
+                        android:layout_margin="20dp"
+                        android:fontFamily="@font/roboto"
+                        android:text="There are no Questions"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
 
@@ -133,16 +127,18 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="80dp"
-        android:layout_marginRight="20dp"
-        android:backgroundTint="#FF0071"
-        android:src="@drawable/ic_add" />
+        android:backgroundTint="@color/color_6"
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/todo" />
 
 
 </RelativeLayout>

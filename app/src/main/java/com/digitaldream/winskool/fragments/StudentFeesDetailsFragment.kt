@@ -18,7 +18,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.android.volley.RequestQueue
@@ -35,12 +34,12 @@ import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import org.json.JSONException
 import org.json.JSONObject
+import java.text.DecimalFormat
 import java.util.*
 
 
 class SchoolFeesDetailsFragment : Fragment() {
 
-    private lateinit var mRefreshLayout: SwipeRefreshLayout
     private lateinit var mCardView: CardView
     private lateinit var mSchoolName: TextView
     private lateinit var mTermTitle: TextView
@@ -49,8 +48,9 @@ class SchoolFeesDetailsFragment : Fragment() {
     private lateinit var mFeeTotal: TextView
     private lateinit var mPayBtn: Button
     private lateinit var mErrorMessage: TextView
+    private lateinit var mRefreshBtn: Button
 
-    private lateinit var mAdapter: StudentFeesDetailsAdapter
+
     private var mYear: String? = null
     private var mTerm: String? = null
     private var mNameSchool: String? = null
@@ -59,6 +59,7 @@ class SchoolFeesDetailsFragment : Fragment() {
     private var mTotal = 0.0
     private var mLevelList: MutableList<LevelTable> = arrayListOf()
     private var mFeesList: MutableList<TermFeesDataModel> = arrayListOf()
+    private lateinit var mAdapter: StudentFeesDetailsAdapter
 
 
     override fun onCreateView(
@@ -72,7 +73,7 @@ class SchoolFeesDetailsFragment : Fragment() {
         )
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        mRefreshLayout = view.findViewById(R.id.swipeRefresh)
+        mRefreshBtn = view.findViewById(R.id.refresh_btn)
         mCardView = view.findViewById(R.id.card_view)
         mSchoolName = view.findViewById(R.id.school_name)
         mTermTitle = view.findViewById(R.id.fee_title)
@@ -100,13 +101,12 @@ class SchoolFeesDetailsFragment : Fragment() {
 
         try {
             val previousYear = mYear!!.toInt() - 1
-
             val termText = when (mTerm) {
                 "1" -> "First Term School Fee Charges for"
                 "2" -> "Second Term School Fee Charges for"
                 else -> "Third Term School Fee Charges for"
             }
-            // android:text="FIRST TERM SCHOOL FEE CHARGES FOR 2022/2023 SESSION"
+
             mSchoolName.text = mNameSchool
 
             mTermTitle.text = String.format(
@@ -123,18 +123,22 @@ class SchoolFeesDetailsFragment : Fragment() {
             mLevelList = levelDao.queryForAll()
             mLevelId = mLevelList[0].levelId
 
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        mAdapter = StudentFeesDetailsAdapter(mFeesList)
+        mAdapter = StudentFeesDetailsAdapter(requireContext(), mFeesList)
         mRecyclerView.hasFixedSize()
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mRecyclerView.adapter = mAdapter
 
+        getTermFees()
 
-        return view;
+        mRefreshBtn.setOnClickListener {
+            getTermFees()
+        }
+
+        return view
     }
 
     private fun getTermFees() {
@@ -149,8 +153,7 @@ class SchoolFeesDetailsFragment : Fragment() {
         val url =
             Login.urlBase + "/manageTermFees.php?list=1&&level=$mLevelId&&term=$mTerm&&year=$mYear"
         val stringRequest: StringRequest = object : StringRequest(
-            Method.GET,
-            url,
+            Method.GET, url,
             { response: String ->
                 Log.i("response", response)
                 progressFlower.dismiss()
@@ -164,7 +167,7 @@ class SchoolFeesDetailsFragment : Fragment() {
 
                         val termFeesModel = TermFeesDataModel()
                         termFeesModel.setFeeName(feeName)
-                        termFeesModel.setFeeAmount(feeAmount.replace(".00", ""))
+                        termFeesModel.setFeeAmount(feeAmount)
                         mFeesList.add(termFeesModel)
                         mFeesList.sortBy { it.getFeeName() }
                     }
@@ -173,7 +176,17 @@ class SchoolFeesDetailsFragment : Fragment() {
                 }
 
                 for (amount in mFeesList) {
-                    mTotal += amount.getFeeAmount()!!.toDouble()
+                    mTotal = 0.0
+                    if (amount.getFeeAmount().isNullOrBlank()) {
+                        mFeeTotal.text = getString(R.string.zero_balance)
+                    } else {
+                        mTotal += amount.getFeeAmount()!!.toDouble()
+                        mFeeTotal.text = String.format(
+                            Locale.getDefault(), "%s%s",
+                            requireActivity().getString(R.string.naira),
+                            currencyFormat(mTotal)
+                        )
+                    }
                 }
 
                 if (mFeesList.isEmpty()) {
@@ -181,17 +194,26 @@ class SchoolFeesDetailsFragment : Fragment() {
                     mErrorMessage.text = getString(R.string.no_data)
                     mCardView.isGone = true
                     mPaymentLayout.isGone = true
+                } else if (mTotal == 0.0) {
+                    mErrorMessage.isVisible = true
+                    "Fees not set yet. Check back later!".also { mErrorMessage.text = it }
+                    mCardView.isGone = true
+                    mPaymentLayout.isGone = true
+                    mRefreshBtn.isVisible = false
                 } else {
                     mCardView.isGone = false
                     mPaymentLayout.isGone = false
                     mErrorMessage.isVisible = false
+                    mRefreshBtn.isVisible = false
                 }
                 mAdapter.notifyDataSetChanged()
 
             }, { error: VolleyError ->
                 error.printStackTrace()
                 mErrorMessage.isVisible = true
-                mRecyclerView.isVisible = false
+                mRefreshBtn.isVisible = true
+                mCardView.isGone = true
+                mPaymentLayout.isGone = true
                 mErrorMessage.text = getString(R.string.can_not_retrieve)
                 progressFlower.dismiss()
             }) {
@@ -205,4 +227,8 @@ class SchoolFeesDetailsFragment : Fragment() {
         requestQueue.add(stringRequest)
     }
 
+    private fun currencyFormat(number: Double): String {
+        val formatter = DecimalFormat("###,###,##0.00")
+        return formatter.format(number)
+    }
 }

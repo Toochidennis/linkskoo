@@ -183,7 +183,7 @@ class AccountSetupFragment : Fragment() {
                         accountModel.setAccountType(accountType)
 
                         mAccountList.add(accountModel)
-                        mAccountList.sortedBy { it.getAccountName() }
+                        mAccountList.sortBy { it.getAccountName() }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
