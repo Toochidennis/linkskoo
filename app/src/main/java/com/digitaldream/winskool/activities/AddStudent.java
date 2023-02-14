@@ -180,9 +180,6 @@ public class AddStudent extends AppCompatActivity {
 
 
 
-
-
-
         ArrayAdapter adapterGender = new ArrayAdapter(this, R.layout.spinner_item, genderList);
         adapterGender.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gender.setAdapter(adapterGender);

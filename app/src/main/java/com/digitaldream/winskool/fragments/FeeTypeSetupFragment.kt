@@ -29,6 +29,7 @@ import com.digitaldream.winskool.dialog.FeeTypeDialog
 import com.digitaldream.winskool.models.FeeTypeModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
+import org.json.JSONException
 
 
 class FeeTypeSetupFragment : Fragment() {
@@ -73,7 +74,7 @@ class FeeTypeSetupFragment : Fragment() {
 
         openDialog()
 
-        mRefresh.setColorSchemeColors(ContextCompat.getColor(requireContext(),R.color.color_5))
+        mRefresh.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.color_5))
         mRefresh.setOnRefreshListener {
             refreshData()
             mRefresh.isRefreshing = false
@@ -117,7 +118,7 @@ class FeeTypeSetupFragment : Fragment() {
         val sharedPreferences = requireContext().getSharedPreferences(
             "loginDetail", Context.MODE_PRIVATE
         )
-       val db = sharedPreferences.getString("db", "")
+        val db = sharedPreferences.getString("db", "")
 
         val progressFlower = ACProgressFlower.Builder(context)
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)
@@ -134,27 +135,32 @@ class FeeTypeSetupFragment : Fragment() {
                 Log.i("response", response)
                 progressFlower.dismiss()
 
-                val jsonArray = JSONArray(response)
-                for (i in 0 until jsonArray.length()) {
-                    val jsonObject = jsonArray.getJSONObject(i)
-                    val feeId = jsonObject.getString("id")
-                    val feeName = jsonObject.getString("fee_name")
-                    val mandatory = jsonObject.getString("mandatory")
+                try {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        val jsonObject = jsonArray.getJSONObject(i)
+                        val feeId = jsonObject.getString("id")
+                        val feeName = jsonObject.getString("fee_name")
+                        val mandatory = jsonObject.getString("mandatory")
 
-                    println("FeeId: $feeId and FeName: $feeName")
+                        println("FeeId: $feeId and FeName: $feeName")
 
-                    val feeTypeModel = FeeTypeModel()
-                    feeTypeModel.setFeeId(feeId.toInt())
-                    feeTypeModel.setFeeName(feeName)
-                    feeTypeModel.setMandatory(mandatory)
+                        val feeTypeModel = FeeTypeModel()
+                        feeTypeModel.setFeeId(feeId.toInt())
+                        feeTypeModel.setFeeName(feeName)
+                        feeTypeModel.setMandatory(mandatory)
 
-                    mFeeList.add(feeTypeModel)
+                        mFeeList.add(feeTypeModel)
+                        mFeeList.sortedBy { it.getFeeName() }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
                 }
-                println(mFeeList.toString())
+
 
                 if (mFeeList.isEmpty()) {
                     mErrorMessage.isVisible = true
-                    mErrorMessage.text = getString(R.string.nothing_to_show)
+                    mErrorMessage.text = getString(R.string.no_data)
                     mRecyclerView.isGone = true
                 } else {
                     mRecyclerView.isGone = false
@@ -166,6 +172,7 @@ class FeeTypeSetupFragment : Fragment() {
                 error.printStackTrace()
                 mErrorMessage.isVisible = true
                 mRecyclerView.isVisible = false
+                mErrorMessage.text = getString(R.string.can_not_retrieve)
                 progressFlower.dismiss()
             }) {
             override fun getParams(): Map<String, String> {

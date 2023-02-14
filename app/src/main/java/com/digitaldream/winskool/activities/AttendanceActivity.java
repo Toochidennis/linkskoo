@@ -63,7 +63,7 @@ public class AttendanceActivity extends AppCompatActivity {
         String term = sharedPreferences.getString("term", "");
         // year = mSettingModels.get(0).getSchoolTerm();
         String year = sharedPreferences.getString("school_year", "");
-        Log.i("term", year);
+        Log.i("term", mStudentLevelId);
 
         try {
             int previousYear = Integer.parseInt(year) - 1;

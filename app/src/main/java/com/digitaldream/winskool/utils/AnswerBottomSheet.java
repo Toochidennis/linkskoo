@@ -115,7 +115,7 @@ public class AnswerBottomSheet extends BottomSheetDialogFragment {
         ImageView closeBtn = view.findViewById(R.id.close);
         TextView submitBtn = view.findViewById(R.id.submit);
          gallery = (GridView) view.findViewById(R.id.galleryGridView);
-         TextView t = view.findViewById(R.id.title);
+         TextView t = view.findViewById(R.id.fee_title);
         EditText edt = view.findViewById(R.id.editT);
         if(from.equals("reply") || from.equals("news")){
              t.setText("Add Comment");

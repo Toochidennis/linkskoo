@@ -53,7 +53,7 @@ public class FlashCardSettingsDialog extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
          super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.flash_card_setting,container,false);
-        EditText titleEDT = view.findViewById(R.id.title);
+        EditText titleEDT = view.findViewById(R.id.fee_title);
         TextView submitBtn = view.findViewById(R.id.submit);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override

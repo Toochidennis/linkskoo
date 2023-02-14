@@ -21,7 +21,7 @@
 
     <androidx.cardview.widget.CardView
         android:visibility="gone"
-        android:id="@+id/title"
+        android:id="@+id/fee_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
@@ -57,7 +57,7 @@
         android:id="@+id/account_settings"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/fee_title"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"

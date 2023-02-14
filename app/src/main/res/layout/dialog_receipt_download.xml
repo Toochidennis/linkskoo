@@ -6,7 +6,7 @@
     android:padding="15dp">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/fee_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -23,7 +23,7 @@
         android:id="@+id/share_receipt"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_below="@id/title"
+        android:layout_below="@id/fee_title"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="15dp"

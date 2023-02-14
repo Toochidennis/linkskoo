@@ -68,7 +68,7 @@ public class ViewResponses extends AppCompatActivity implements ViewResponseAdap
         recyclerView.setHasFixedSize(true);
         adapter = new ViewResponseAdapter(this,list,this);
         recyclerView.setAdapter(adapter);
-        TextView title = findViewById(R.id.title);
+        TextView title = findViewById(R.id.fee_title);
          studentNo = findViewById(R.id.no_of_student);
          title.setText(intent.getStringExtra("title").toUpperCase());
          Log.i("response","id: "+examId+" db: "+db);

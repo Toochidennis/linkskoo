@@ -3,18 +3,12 @@ package com.digitaldream.winskool.activities
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +20,17 @@ import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.digitaldream.winskool.DatabaseHelper
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.TermFeeAdapter
 import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.TermlyFeeDialog
-import com.digitaldream.winskool.models.FeeTypeModel
-import org.json.JSONArray
+import com.digitaldream.winskool.models.LevelTable
+import com.digitaldream.winskool.models.TermFeesDataModel
+import com.j256.ormlite.dao.Dao
+import com.j256.ormlite.dao.DaoManager
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 
@@ -41,21 +40,26 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     private var mLevel: String? = null
     private var mLevelName: String? = null
     private var mDb: String? = null
+    private var mYear: String? = null
+    private var mTerm: String? = null
+    private var mLevelId: String? = null
+    private var mLevelList: MutableList<LevelTable> = arrayListOf()
 
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: TermFeeAdapter
-    private lateinit var mFeeNameList: MutableList<FeeTypeModel>
+    private lateinit var mTermFeesList: MutableList<TermFeesDataModel>
     private lateinit var mRefreshLayout: SwipeRefreshLayout
     private lateinit var mErrorMessage: TextView
+    private lateinit var mFeeTotal: TextView
     private lateinit var mLevelText: Button
+    private lateinit var mSaveBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mBackBtn: ImageView = findViewById(R.id.back_btn)
-        val mSaveBtn: Button = findViewById(R.id.save_btn)
-        val mFeeTotal: TextView = findViewById(R.id.fee_total)
-        val mTitle: TextView = findViewById(R.id.title)
+        val mToolbar: Toolbar = findViewById(R.id.toolbar)
+        mSaveBtn = findViewById(R.id.pay_btn)
+        mFeeTotal = findViewById(R.id.fee_total)
         mRecyclerView = findViewById(R.id.term_fee_recycler)
         mRefreshLayout = findViewById(R.id.swipeRefresh)
         mErrorMessage = findViewById(R.id.error_message)
@@ -65,45 +69,48 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
 
         val sharedPreferences =
             getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-        val year = sharedPreferences.getString("school_year", "")
-        val term = sharedPreferences.getString("term", "")
+        mYear = sharedPreferences.getString("school_year", "")
+        mTerm = sharedPreferences.getString("term", "")
         mDb = sharedPreferences.getString("db", "")
 
-
         try {
-            val previousYear = year!!.toInt() - 1
+            val previousYear = mYear!!.toInt() - 1
 
-            val termText = when (term) {
+            val termText = when (mTerm) {
                 "1" -> "1st Term"
                 "2" -> "2nd Term"
                 else -> "3rd Term"
             }
 
-            mTitle.text = String.format(
-                Locale.getDefault(),
-                "%d/%s %s %s",
-                previousYear, year, termText, "Fees"
-            )
+            mToolbar.apply {
+                title = String.format(
+                    Locale.getDefault(),
+                    "%d/%s %s %s",
+                    previousYear, mYear, termText, "Fees"
+                )
+                setNavigationIcon(R.drawable.arrow_left)
+                setNavigationOnClickListener {
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
 
             mLevelText.text = mLevel
 
-        } catch (e: NumberFormatException) {
+            mLevelId = getLevelId(mLevel!!.replace(" ", ""))
+
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        mBackBtn.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        mTermFeesList = arrayListOf()
 
-        mFeeNameList = arrayListOf()
-
-        mAdapter = TermFeeAdapter(this, mFeeNameList, mFeeTotal)
+        mAdapter = TermFeeAdapter(this, mTermFeesList, mFeeTotal, mSaveBtn, mLevelId!!)
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         mRecyclerView.hasFixedSize()
         mRecyclerView.isNestedScrollingEnabled = false
         mRecyclerView.adapter = mAdapter
 
-        getFeeName()
+        getTermFees(mLevelId!!)
 
         openDialog()
 
@@ -114,7 +121,6 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
             )
         )
         mRefreshLayout.setOnRefreshListener {
-            refreshData()
             mFeeTotal.text = getString(R.string.zero_balance)
             mRefreshLayout.isRefreshing = false
         }
@@ -122,36 +128,10 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     }
 
     private fun refreshData() {
-        mFeeNameList.clear()
-        getFeeName()
+        mTermFeesList.clear()
     }
 
-    private fun setUpMenu() {
-        addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.save_menu, menu)
-                menu.clear()
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.save -> {
-                        Toast.makeText(this@TermlyFeeSetupActivity, "Saved", Toast.LENGTH_SHORT)
-                            .show()
-                        true
-                    }
-                    android.R.id.home -> {
-                        onBackPressedDispatcher.onBackPressed()
-                        return true
-                    }
-                    else -> false
-                }
-            }
-        })
-    }
-
-    private fun getFeeName() {
-
+    private fun getTermFees(sLevelId: String) {
         val progressFlower = ACProgressFlower.Builder(this)
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)
             .textMarginTop(10)
@@ -160,7 +140,8 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
-        val url = Login.urlBase + "/manageFees.php?list=1"
+        val url =
+            Login.urlBase + "/manageTermFees.php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
         val stringRequest: StringRequest = object : StringRequest(
             Method.GET,
             url,
@@ -168,22 +149,30 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                 Log.i("response", response)
                 progressFlower.dismiss()
 
-                val jsonArray = JSONArray(response)
-                for (i in 0 until jsonArray.length()) {
-                    val jsonObject = jsonArray.getJSONObject(i)
-                    val feeId = jsonObject.getString("id")
-                    val feeName = jsonObject.getString("fee_name")
+                try {
+                    val jsonObjects = JSONObject(response)
+                    for (objects in jsonObjects.keys()) {
+                        val jsonObject = jsonObjects.getJSONObject(objects)
+                        val feeId = jsonObject.getString("fee_id")
+                        val feeName = jsonObject.getString("fee_name")
+                        val mandatory = jsonObject.getString("mandatory")
+                        val feeAmount = jsonObject.getString("amount")
 
-                    val feeTypeModel = FeeTypeModel()
-                    feeTypeModel.setFeeId(feeId.toInt())
-                    feeTypeModel.setFeeName(feeName)
-
-                    mFeeNameList.add(feeTypeModel)
+                        val termFeesModel = TermFeesDataModel()
+                        termFeesModel.setFeeId(feeId.toInt())
+                        termFeesModel.setFeeName(feeName)
+                        termFeesModel.setFeeAmount(feeAmount.replace(".00", ""))
+                        termFeesModel.setMandatory(mandatory)
+                        mTermFeesList.add(termFeesModel)
+                        mTermFeesList.sortBy { it.getFeeName() }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
                 }
 
-                if (mFeeNameList.isEmpty()) {
+                if (mTermFeesList.isEmpty()) {
                     mErrorMessage.isVisible = true
-                    mErrorMessage.text = getString(R.string.nothing_to_show)
+                    mErrorMessage.text = getString(R.string.no_data)
                     mRecyclerView.isGone = true
                 } else {
                     mRecyclerView.isGone = false
@@ -195,6 +184,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                 error.printStackTrace()
                 mErrorMessage.isVisible = true
                 mRecyclerView.isVisible = false
+                mErrorMessage.text = getString(R.string.can_not_retrieve)
                 progressFlower.dismiss()
             }) {
             override fun getParams(): Map<String, String> {
@@ -234,9 +224,32 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         }
     }
 
+    private fun getLevelId(sLevelName: String): String {
+        var id = ""
+        try {
+            val databaseHelper = DatabaseHelper(this)
+            val mDao: Dao<LevelTable, Long> = DaoManager.createDao(
+                databaseHelper
+                    .connectionSource, LevelTable::class.java
+            )
+            mLevelList = mDao.queryBuilder().where().eq("levelName", sLevelName).query()
+
+            id = mLevelList[0].levelId
+
+        } catch (e: Exception) {
+            when (e) {
+                is IndexOutOfBoundsException, is IllegalArgumentException -> e.printStackTrace()
+                else -> throw e
+            }
+        }
+        return id
+    }
+
     override fun sendInput(input: String) {
         mLevelName = input
         setLevelName()
-        refreshData()
+        mLevelId = getLevelId(mLevelName!!.replace(" ", ""))
+        mTermFeesList.clear()
+        getTermFees(mLevelId!!)
     }
 }

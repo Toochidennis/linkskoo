@@ -65,7 +65,7 @@ public class TestSettingHeaderAdapter extends RecyclerView.Adapter<TestSettingHe
 
         public TestSettingHeaderViewHolder(@NonNull View itemView,OnTestSettingHeaderClickListener onTestSettingHeaderClickListener) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
+            title = itemView.findViewById(R.id.fee_title);
             week = itemView.findViewById(R.id.weeks);
             this.onTestSettingHeaderClickListener = onTestSettingHeaderClickListener;
             itemView.setOnClickListener(this);

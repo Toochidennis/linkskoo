@@ -128,12 +128,12 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         Objects.requireNonNull(
-                ((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle(
+                ((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(
                 "Attendance Details");
         toolbar.setNavigationIcon(R.drawable.arrow_left);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(
-                v -> getActivity().onBackPressed());
+                v -> requireActivity().onBackPressed());
         setHasOptionsMenu(true);
 
         if (from.equals("staff")) {
@@ -317,6 +317,10 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
 
                 if (mStudentTableList.isEmpty()) {
                     mEmptyLayout.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
+                } else {
+                    mEmptyLayout.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
                 }
             } catch (JSONException | ParseException sE) {
                 sE.printStackTrace();

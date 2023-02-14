@@ -6,7 +6,6 @@ class FeeTypeModel {
     private var mFeeName: String? = null
     private var mMandatory: String? = null
 
-
     fun setFeeId(sId: Int) {
         mFeeId = sId
     }
