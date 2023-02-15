@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.Methods;
+import com.digitaldream.winskool.utils.UtilsFun;
 
 import java.util.List;
 import java.util.Random;
@@ -42,7 +42,7 @@ public class CBTCoursesAdapter extends RecyclerView.Adapter<CBTCoursesAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull CBTCoursesAdapter.ViewHolder holder, int position) {
         String name = mExamList.get(position).getCourse();
-        holder.mCourseName.setText(Methods.capitaliseFirstLetter(name));
+        holder.mCourseName.setText(UtilsFun.capitaliseFirstLetter(name));
 
         try {
             String initial = name.substring(0, 1).toUpperCase();

@@ -30,6 +30,7 @@ import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.StudentFeesDetailsAdapter
 import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.TermFeesDataModel
+import com.digitaldream.winskool.utils.UtilsFun
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import org.json.JSONException
@@ -49,7 +50,6 @@ class SchoolFeesDetailsFragment : Fragment() {
     private lateinit var mPayBtn: Button
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
-
 
     private var mYear: String? = null
     private var mTerm: String? = null
@@ -184,7 +184,7 @@ class SchoolFeesDetailsFragment : Fragment() {
                         mFeeTotal.text = String.format(
                             Locale.getDefault(), "%s%s",
                             requireActivity().getString(R.string.naira),
-                            currencyFormat(mTotal)
+                            UtilsFun.currencyFormat(mTotal)
                         )
                     }
                 }
@@ -225,10 +225,5 @@ class SchoolFeesDetailsFragment : Fragment() {
         }
         val requestQueue: RequestQueue = Volley.newRequestQueue(requireContext())
         requestQueue.add(stringRequest)
-    }
-
-    private fun currencyFormat(number: Double): String {
-        val formatter = DecimalFormat("###,###,##0.00")
-        return formatter.format(number)
     }
 }

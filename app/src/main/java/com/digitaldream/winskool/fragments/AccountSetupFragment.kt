@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -15,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.android.volley.RequestQueue
@@ -26,19 +26,21 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.AccountSetupAdapter
 import com.digitaldream.winskool.dialog.AccountSetupDialog
+import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class AccountSetupFragment : Fragment(), OnInputListener {
 
-class AccountSetupFragment : Fragment() {
-
-    private var param1: String? = null
-    private var param2: String? = null
     private var mDb: String? = null
 
     private lateinit var mRecyclerView: RecyclerView
@@ -46,27 +48,9 @@ class AccountSetupFragment : Fragment() {
     private lateinit var mAccountList: MutableList<AccountSetupDataModel>
     private lateinit var mErrorMessage: TextView
     private lateinit var mAddAccountBtn: FloatingActionButton
-    private lateinit var mRefreshLayout: SwipeRefreshLayout
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AccountSetupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+    private lateinit var mRefreshBtn: Button
+    private val page = 1
+    private val limit = 14
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +63,7 @@ class AccountSetupFragment : Fragment() {
         mAddAccountBtn = view.findViewById(R.id.add_account_btn)
         mRecyclerView = view.findViewById(R.id.account_recycler)
         mErrorMessage = view.findViewById(R.id.error_message)
-        mRefreshLayout = view.findViewById(R.id.swipeRefresh)
+        mRefreshBtn = view.findViewById(R.id.refresh_btn)
 
         ((activity as AppCompatActivity)).setSupportActionBar(toolbar)
         val actionBar = ((activity as AppCompatActivity)).supportActionBar
@@ -109,23 +93,19 @@ class AccountSetupFragment : Fragment() {
 
         getAccount() //get Accounts
         openDialog()
-        refreshData() // refresh accounts
+
+        mRefreshBtn.setOnClickListener {
+            refreshData() // refresh accounts
+        }
+
+        getData(page, limit)
 
         return view
     }
 
     private fun refreshData() {
-        mRefreshLayout.setColorSchemeColors(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.color_5
-            )
-        )
-        mRefreshLayout.setOnRefreshListener {
-            mAccountList.clear()
-            getAccount()
-            mRefreshLayout.isRefreshing = false
-        }
+        mAccountList.clear()
+        getAccount()
     }
 
     private fun openDialog() {
@@ -135,10 +115,9 @@ class AccountSetupFragment : Fragment() {
                 "add", "",
                 "",
                 "",
-                ""
-            )
-
-            accountDialog.apply {
+                "",
+                this
+            ).apply {
                 setCancelable(true)
                 show()
             }
@@ -150,6 +129,7 @@ class AccountSetupFragment : Fragment() {
         }
 
     }
+
     private fun getAccount() {
         val progressFlower = ACProgressFlower.Builder(requireContext())
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)
@@ -161,15 +141,13 @@ class AccountSetupFragment : Fragment() {
         progressFlower.show()
         val url = Login.urlBase + "/manageAccount.php?list=1"
         val stringRequest: StringRequest = object : StringRequest(
-            Method.GET,
-            url,
+            Method.GET, url,
             { response: String ->
                 Log.i("response", response)
                 progressFlower.dismiss()
                 try {
-
                     val jsonArray = JSONArray(response)
-                    for (i in 0 until jsonArray.length()) {
+                    for (i in 0 until (jsonArray.length() - 125)) {
                         val jsonObject = jsonArray.getJSONObject(i)
                         val id = jsonObject.getString("id")
                         val accountName = jsonObject.getString("account_name")
@@ -193,9 +171,11 @@ class AccountSetupFragment : Fragment() {
                     mErrorMessage.isVisible = true
                     mErrorMessage.text = getString(R.string.no_data)
                     mRecyclerView.isGone = true
+                    mRefreshBtn.isVisible = false
                 } else {
                     mRecyclerView.isGone = false
                     mErrorMessage.isVisible = false
+                    mRefreshBtn.isVisible = false
                 }
                 mAdapter.notifyDataSetChanged()
 
@@ -203,6 +183,7 @@ class AccountSetupFragment : Fragment() {
                 error.printStackTrace()
                 mErrorMessage.isVisible = true
                 mRecyclerView.isVisible = false
+                mRefreshBtn.isVisible = true
                 mErrorMessage.text = getString(R.string.can_not_retrieve)
                 progressFlower.dismiss()
             }) {
@@ -215,4 +196,43 @@ class AccountSetupFragment : Fragment() {
         val requestQueue: RequestQueue = Volley.newRequestQueue(requireContext())
         requestQueue.add(stringRequest)
     }
+
+    override fun sendInput(input: String) {
+        if (input == "refresh") mRefreshBtn.isVisible = true
+    }
+
+    private fun getData(sPage: Int, sLimit: Int) {
+        val url = Login.fileBaseUrl + "/manageAccount.php?list=1?db=$mDb"
+
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(url)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val retroInterface = retrofit.create(RetroTest::class.java)
+
+        val call = retroInterface.STRING_CALL(sPage, sLimit)
+
+        call.enqueue(object : Callback<String?> {
+            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                if (response.isSuccessful && response.body() != null) {
+                    println("Respect: ${response.body()}")
+                }
+            }
+
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                println("error: $t")
+            }
+
+        })
+    }
 }
+
+internal interface RetroTest {
+    @GET("v2/list")
+    fun STRING_CALL(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Call<String?>
+}
+

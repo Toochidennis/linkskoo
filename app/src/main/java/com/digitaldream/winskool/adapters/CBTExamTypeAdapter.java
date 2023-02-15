@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.ExamType;
-import com.digitaldream.winskool.utils.Methods;
+import com.digitaldream.winskool.utils.UtilsFun;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
     @Override
     public void onBindViewHolder(@NonNull CBTExamTypeAdapter.ViewHolder holder, int position) {
         String name = mExamTypeList.get(position).getExamName();
-        holder.mTextView.setText(Methods.capitaliseFirstLetter(name));
+        holder.mTextView.setText(UtilsFun.capitaliseFirstLetter(name));
 
         holder.mCardView.setCardBackgroundColor(
                 ContextCompat.getColor(mContext, colors[position % 11]));

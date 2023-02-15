@@ -31,7 +31,6 @@ class StudentFeesDetailsAdapter(
         } else {
             holder.mFeeAmount.text = termFeesModel.getFeeAmount()
         }
-
     }
 
     override fun getItemCount() = sFeeList.size

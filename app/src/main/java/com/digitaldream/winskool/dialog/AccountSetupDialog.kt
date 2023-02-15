@@ -23,9 +23,10 @@ class AccountSetupDialog(
     sContext: Context,
     private val sFrom: String,
     private val sId: String,
-    private val sName: String,
+    private val sAccountName: String,
     private val sAccountId: String,
-    private val sAccountType: String
+    private val sAccountType: String,
+    private var sInputListener: OnInputListener
 ) : Dialog(sContext) {
 
     private lateinit var mAccountName: EditText
@@ -84,17 +85,32 @@ class AccountSetupDialog(
         }
 
         mDoneBtn.setOnClickListener {
-            setAccount()
-            dismiss()
+
+            if (validation()) {
+                setAccount()
+                sInputListener.sendInput("refresh")
+                dismiss()
+            } else {
+                Toast.makeText(
+                    context, "Empty field(s) identified", Toast
+                        .LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        try {
+            if (sFrom == "edit") {
+                mAccountName.setText(sAccountName)
+                mAccountId.setText(sAccountId)
+                // mAccountType.setSelection(sAccountType.toInt())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
     }
 
     private fun setAccount() {
-
-        println("Name: ${mAccountName.text}")
-        println("Id: ${mAccountId.text}")
-        println("Type: $mSelectedAccount")
 
         val url = Login.urlBase + "/manageAccount.php"
         val stringRequest: StringRequest = object : StringRequest(
@@ -104,41 +120,48 @@ class AccountSetupDialog(
                 try {
                     val jsonObject = JSONObject(response)
                     val status = jsonObject.getString("status")
+                    val message = jsonObject.getString("message")
 
                     if (status == "success") {
 
-                        if (sFrom == "edit")
+                        if (sFrom == "edit") {
                             Toast.makeText(
                                 context, "Account edited Successfully", Toast
                                     .LENGTH_SHORT
-                            )
-                                .show()
-                        else
+                            ).show()
+                        } else {
                             Toast.makeText(
                                 context, "Account added Successfully", Toast
                                     .LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            context, message, Toast.LENGTH_SHORT
+                        ).show()
                     }
-                } catch (ex: JSONException) {
+                } catch (ex: Exception) {
                     ex.printStackTrace()
                 }
 
-
             }, { error: VolleyError ->
                 error.printStackTrace()
-                Toast.makeText(
-                    context, error.message,
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }) {
             override fun getParams(): Map<String, String> {
-                val stringMap: MutableMap<String, String> = HashMap()
+                val stringMap: MutableMap<String, String> = hashMapOf()
+                if (sId != "") {
+                    stringMap["id"] = sId
+                }
                 stringMap["account_name"] = mAccountName.text.toString()
                 stringMap["account_id"] = mAccountId.text.toString()
+
                 when (mSelectedAccount) {
                     "Income" -> stringMap["account_type"] = "0"
                     "Expenditure" -> stringMap["account_type"] = "1"
+                    else -> Toast.makeText(
+                        context, "Select account type", Toast.LENGTH_SHORT
+                    ).show()
                 }
                 stringMap["_db"] = mDb!!
                 return stringMap
@@ -146,6 +169,22 @@ class AccountSetupDialog(
         }
         val requestQueue: RequestQueue = Volley.newRequestQueue(context)
         requestQueue.add(stringRequest)
+    }
+
+    private fun validation(): Boolean {
+        if (mAccountName.text.isNullOrBlank() || mAccountId.text.isNullOrBlank())
+            return false
+        return true
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        try {
+            sInputListener = context as OnInputListener
+        } catch (e: ClassCastException) {
+            println(e.printStackTrace())
+        }
     }
 
 }

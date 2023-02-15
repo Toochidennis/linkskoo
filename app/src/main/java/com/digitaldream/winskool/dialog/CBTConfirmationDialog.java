@@ -27,7 +27,7 @@ import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.models.ExamQuestions;
 import com.digitaldream.winskool.utils.AsyncTaskResult;
-import com.digitaldream.winskool.utils.Methods;
+import com.digitaldream.winskool.utils.UtilsFun;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -102,8 +102,8 @@ public class CBTConfirmationDialog extends Dialog {
             sE.printStackTrace();
         }
 
-        examName.setText(Methods.capitaliseFirstLetter(examTypeName));
-        subject.setText(Methods.capitaliseFirstLetter(mCourseName));
+        examName.setText(UtilsFun.capitaliseFirstLetter(examTypeName));
+        subject.setText(UtilsFun.capitaliseFirstLetter(mCourseName));
         examYear.setText(mYear);
 
         loadQuestions();

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.dialog.AccountSetupDialog
+import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.digitaldream.winskool.models.ItemViewModel
 import java.util.*
@@ -22,8 +23,7 @@ class AccountSetupAdapter(
     private val sContext: Context,
     private val sAccountModel: MutableList<AccountSetupDataModel>,
     private val sErrorMessage: TextView
-) :
-    RecyclerView.Adapter<AccountSetupAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AccountSetupAdapter.ViewHolder>(), OnInputListener {
 
     private lateinit var mItemViewModel: ItemViewModel
     private var isEnabled = false
@@ -133,17 +133,18 @@ class AccountSetupAdapter(
                 val accountName = mModel.getAccountName()
                 val accountType = mModel.getAccountType()
 
-                val accountDialog =
-                    AccountSetupDialog(
-                        sContext,
-                        "edit",
-                        id.toString(),
-                        accountName!!,
-                        accountId!!,
-                        accountType!!
-                    )
-                accountDialog.setCancelable(true)
-                accountDialog.show()
+                val accountDialog = AccountSetupDialog(
+                    sContext,
+                    "edit",
+                    id.toString(),
+                    accountName!!,
+                    accountId!!,
+                    accountType!!,
+                    this
+                ).apply {
+                    setCancelable(true)
+                    show()
+                }
                 val window = accountDialog.window
                 window!!.setLayout(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -162,7 +163,6 @@ class AccountSetupAdapter(
     }
 
     private fun clickedItems(holder: ViewHolder) {
-
         // get selected items value
         val value = sAccountModel[holder.adapterPosition]
 
@@ -177,6 +177,10 @@ class AccountSetupAdapter(
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
         }
         mItemViewModel.setText(selectedItems.size.toString())
+
+    }
+
+    override fun sendInput(input: String) {
 
     }
 }

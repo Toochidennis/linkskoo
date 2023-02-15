@@ -21,10 +21,10 @@ import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.models.TermFeesDataModel
+import com.digitaldream.winskool.utils.UtilsFun
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.DecimalFormat
 import java.util.*
 
 class TermFeeAdapter(
@@ -52,10 +52,11 @@ class TermFeeAdapter(
         val termFeesModel = sTermFeesList[position]
         val id = termFeesModel.getFeeId()
         holder.mFeeAmount.setText(termFeesModel.getFeeAmount())
-
         holder.mFeeName.text = termFeesModel.getFeeName()
-        mFeeAmountTotal = 0.0
 
+        mFeeNameList.clear()
+        mFeeAmountList.clear()
+        mFeeAmountTotal = 0.0
         try {
             mFeeNameList[id] = termFeesModel.getFeeName().toString()
             mFeeAmountList[id] = termFeesModel.getFeeAmount().toString()
@@ -66,7 +67,7 @@ class TermFeeAdapter(
             }
             sTotal.text = String.format(
                 Locale.getDefault(), "%s%s", sContext
-                    .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
+                    .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
             )
 
         } catch (e: NumberFormatException) {
@@ -81,7 +82,7 @@ class TermFeeAdapter(
             }
             sTotal.text = String.format(
                 Locale.getDefault(), "%s%s", sContext
-                    .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
+                    .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
             )
             e.printStackTrace()
         }
@@ -112,7 +113,7 @@ class TermFeeAdapter(
                         }
                         sTotal.text = String.format(
                             Locale.getDefault(), "%s%s", sContext
-                                .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
+                                .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
                         )
 
                         println("Total: $sTotal.text")
@@ -131,7 +132,7 @@ class TermFeeAdapter(
                         }
                         sTotal.text = String.format(
                             Locale.getDefault(), "%s%s", sContext
-                                .getString(R.string.naira), currencyFormat(mFeeAmountTotal)
+                                .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
                         )
 
                         println("Total: $sTotal.text")
@@ -158,12 +159,7 @@ class TermFeeAdapter(
         val mRequired: ImageView = itemView.findViewById(R.id.mandatory)
     }
 
-    private fun currencyFormat(number: Double): String {
-        val formatter = DecimalFormat("###,###,##0.00")
-        return formatter.format(number)
-    }
-
-    private fun getData(): JSONArray {
+    private fun getTermFeeDataFromEditText(): JSONArray {
         val jsonArray = JSONArray()
         mFeeNameList.forEach { (key, value) ->
             if (value != "0") {
@@ -174,12 +170,11 @@ class TermFeeAdapter(
                 jsonArray.put(jsonObject)
             }
         }
-
         return jsonArray
     }
 
     private fun setTermFees() {
-        println("Package: ${getData()}")
+        println("Package: ${getTermFeeDataFromEditText()}")
 
         val sharedPreferences = sContext.getSharedPreferences(
             "loginDetail",
@@ -188,8 +183,6 @@ class TermFeeAdapter(
         val mDb = sharedPreferences.getString("db", "")
         val year = sharedPreferences.getString("school_year", "")
         val term = sharedPreferences.getString("term", "")
-
-        println("year: $year  term: $term")
 
         val url = Login.urlBase + "/manageTermFees.php"
         val stringRequest: StringRequest = object : StringRequest(
@@ -221,7 +214,7 @@ class TermFeeAdapter(
             }) {
             override fun getParams(): Map<String, String> {
                 val stringMap: MutableMap<String, String> = HashMap()
-                stringMap["fees"] = getData().toString()
+                stringMap["fees"] = getTermFeeDataFromEditText().toString()
                 stringMap["level"] = sLevelId
                 stringMap["year"] = year!!
                 stringMap["term"] = term!!

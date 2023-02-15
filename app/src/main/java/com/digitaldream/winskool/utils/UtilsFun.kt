@@ -13,9 +13,10 @@ import org.achartengine.model.XYMultipleSeriesDataset
 import org.achartengine.model.XYSeries
 import org.achartengine.renderer.XYMultipleSeriesRenderer
 import org.achartengine.renderer.XYSeriesRenderer
+import java.text.DecimalFormat
 import java.util.*
 
-object Methods {
+object UtilsFun {
     //var counter = 0
 
     @JvmStatic
@@ -51,8 +52,10 @@ object Methods {
 
     fun setColor(): Int {
         val random = Random()
-        return Color.argb(255, random.nextInt(256), random.nextInt(256),
-            random.nextInt(256))
+        return Color.argb(
+            255, random.nextInt(256), random.nextInt(256),
+            random.nextInt(256)
+        )
     }
 
     /*    public static CountDownTimer startCountDown(ProgressBar sProgressBar,
@@ -113,7 +116,7 @@ object Methods {
 
         val seriesRenderer = XYSeriesRenderer()
         seriesRenderer.color = Color.WHITE
-       // seriesRenderer.isFillPoints = true
+        // seriesRenderer.isFillPoints = true
         seriesRenderer.isDisplayChartValues = true
         seriesRenderer.chartValuesTextSize = 20f
 
@@ -137,10 +140,18 @@ object Methods {
         for (i in graphLength.indices)
             multipleRenderer.addXTextLabel(graphLength[i].toDouble(), mMonth[i])
 
-        graphicalView = ChartFactory.getBarChartView(sContext, dataset, multipleRenderer,
-            BarChart.Type.DEFAULT)
+        graphicalView = ChartFactory.getBarChartView(
+            sContext, dataset, multipleRenderer,
+            BarChart.Type.DEFAULT
+        )
 
         return graphicalView
+    }
+
+    @JvmStatic
+    fun currencyFormat(number: Double): String {
+        val formatter = DecimalFormat("###,###,##0.00")
+        return formatter.format(number)
     }
 
 

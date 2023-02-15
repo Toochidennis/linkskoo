@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.Methods;
+import com.digitaldream.winskool.utils.UtilsFun;
 
 import org.achartengine.GraphicalView;
 
@@ -80,7 +80,7 @@ public class ReceiptHistoryFragment extends Fragment {
 
         if (mGraphicalView == null) {
 
-            mGraphicalView = Methods.drawGraph(new Integer[]{1000,20000,0,0,0,0,0,0,0,0,0,0},
+            mGraphicalView = UtilsFun.drawGraph(new Integer[]{1000,20000,0,0,0,0,0,0,0,0,0,0},
                     Objects.requireNonNull(getContext()));
             mLayout.addView(mGraphicalView);
         } else {

@@ -29,7 +29,7 @@ import com.digitaldream.winskool.activities.StaffUtils;
 import com.digitaldream.winskool.adapters.CBTExamTypeAdapter;
 import com.digitaldream.winskool.models.ExamType;
 import com.digitaldream.winskool.utils.AsyncTaskResult;
-import com.digitaldream.winskool.utils.Methods;
+import com.digitaldream.winskool.utils.UtilsFun;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -162,12 +162,12 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     }
 
     public void displayProgress() {
-        Methods.animateObject(mAverageProgressBar, mAverageScore, 10);
-        Methods.animateObject(mMathsProgressBar, mMathsScore, 0);
-        Methods.animateObject(mEnglishProgressBar, mEnglishScore, 0);
-        Methods.animateObject(mPhysicsProgressBar, mPhysicsScore, 0);
-        Methods.animateObject(mBiologyProgressBar, mBiologyScore, 0);
-        Methods.animateObject(mChemistryProgressBar, mChemistryScore, 0);
+        UtilsFun.animateObject(mAverageProgressBar, mAverageScore, 10);
+        UtilsFun.animateObject(mMathsProgressBar, mMathsScore, 0);
+        UtilsFun.animateObject(mEnglishProgressBar, mEnglishScore, 0);
+        UtilsFun.animateObject(mPhysicsProgressBar, mPhysicsScore, 0);
+        UtilsFun.animateObject(mBiologyProgressBar, mBiologyScore, 0);
+        UtilsFun.animateObject(mChemistryProgressBar, mChemistryScore, 0);
     }
 
 
