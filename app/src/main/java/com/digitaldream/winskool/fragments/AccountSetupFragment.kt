@@ -31,14 +31,6 @@ import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONException
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
-
 class AccountSetupFragment : Fragment(), OnInputListener {
 
     private var mDb: String? = null
@@ -49,8 +41,6 @@ class AccountSetupFragment : Fragment(), OnInputListener {
     private lateinit var mErrorMessage: TextView
     private lateinit var mAddAccountBtn: FloatingActionButton
     private lateinit var mRefreshBtn: Button
-    private val page = 1
-    private val limit = 14
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,8 +87,6 @@ class AccountSetupFragment : Fragment(), OnInputListener {
         mRefreshBtn.setOnClickListener {
             refreshData() // refresh accounts
         }
-
-        getData(page, limit)
 
         return view
     }
@@ -201,38 +189,5 @@ class AccountSetupFragment : Fragment(), OnInputListener {
         if (input == "refresh") mRefreshBtn.isVisible = true
     }
 
-    private fun getData(sPage: Int, sLimit: Int) {
-        val url = Login.fileBaseUrl + "/manageAccount.php?list=1?db=$mDb"
-
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(url)
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-
-        val retroInterface = retrofit.create(RetroTest::class.java)
-
-        val call = retroInterface.STRING_CALL(sPage, sLimit)
-
-        call.enqueue(object : Callback<String?> {
-            override fun onResponse(call: Call<String?>, response: Response<String?>) {
-                if (response.isSuccessful && response.body() != null) {
-                    println("Respect: ${response.body()}")
-                }
-            }
-
-            override fun onFailure(call: Call<String?>, t: Throwable) {
-                println("error: $t")
-            }
-
-        })
-    }
-}
-
-internal interface RetroTest {
-    @GET("v2/list")
-    fun STRING_CALL(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int
-    ): Call<String?>
 }
 

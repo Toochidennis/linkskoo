@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.TermFeesDataModel
+import com.digitaldream.winskool.utils.UtilsFun
 import java.util.*
 
 class StudentFeesDetailsAdapter(
@@ -26,11 +27,11 @@ class StudentFeesDetailsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val termFeesModel = sFeeList[position]
         holder.mFeeName.text = termFeesModel.getFeeName()
-        if (termFeesModel.getFeeAmount().isNullOrBlank()) {
-            holder.mFeeAmount.text = sContext.getString(R.string.zero_balance)
-        } else {
-            holder.mFeeAmount.text = termFeesModel.getFeeAmount()
-        }
+        holder.mFeeAmount.text = String.format(
+            Locale.getDefault(),
+            "%s%s", sContext.getString(R.string.naira),
+            UtilsFun.currencyFormat(termFeesModel.getFeeAmount()!!.toDouble())
+        )
     }
 
     override fun getItemCount() = sFeeList.size

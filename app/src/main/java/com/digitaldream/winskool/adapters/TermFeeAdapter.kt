@@ -54,8 +54,6 @@ class TermFeeAdapter(
         holder.mFeeAmount.setText(termFeesModel.getFeeAmount())
         holder.mFeeName.text = termFeesModel.getFeeName()
 
-        mFeeNameList.clear()
-        mFeeAmountList.clear()
         mFeeAmountTotal = 0.0
         try {
             mFeeNameList[id] = termFeesModel.getFeeName().toString()
@@ -175,6 +173,7 @@ class TermFeeAdapter(
 
     private fun setTermFees() {
         println("Package: ${getTermFeeDataFromEditText()}")
+        println("Package: $sLevelId")
 
         val sharedPreferences = sContext.getSharedPreferences(
             "loginDetail",

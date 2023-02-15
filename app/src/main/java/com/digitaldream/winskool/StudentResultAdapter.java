@@ -19,10 +19,6 @@ import com.digitaldream.winskool.models.StudentTable;
 import java.util.List;
 import java.util.Random;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
 public class StudentResultAdapter extends RecyclerView.Adapter<StudentResultAdapter.StudentResultViewHolder> {
     Context context;
     List<StudentTable> studentResultList;

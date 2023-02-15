@@ -35,7 +35,6 @@ import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.DecimalFormat
 import java.util.*
 
 
@@ -47,6 +46,7 @@ class SchoolFeesDetailsFragment : Fragment() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mPaymentLayout: RelativeLayout
     private lateinit var mFeeTotal: TextView
+    private lateinit var mFeeTotal2: TextView
     private lateinit var mPayBtn: Button
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
@@ -57,7 +57,6 @@ class SchoolFeesDetailsFragment : Fragment() {
     private var mLevelId: String? = null
     private var mDb: String? = null
     private var mTotal = 0.0
-    private var mLevelList: MutableList<LevelTable> = arrayListOf()
     private var mFeesList: MutableList<TermFeesDataModel> = arrayListOf()
     private lateinit var mAdapter: StudentFeesDetailsAdapter
 
@@ -80,6 +79,7 @@ class SchoolFeesDetailsFragment : Fragment() {
         mRecyclerView = view.findViewById(R.id.details_recycler)
         mPaymentLayout = view.findViewById(R.id.payment_layout)
         mFeeTotal = view.findViewById(R.id.fee_total)
+        mFeeTotal2 = view.findViewById(R.id.total2)
         mPayBtn = view.findViewById(R.id.pay_btn)
         mErrorMessage = view.findViewById(R.id.error_message)
 
@@ -97,6 +97,7 @@ class SchoolFeesDetailsFragment : Fragment() {
         mYear = sharedPreferences.getString("school_year", "")
         mNameSchool = sharedPreferences.getString("school_name", "")
         mTerm = sharedPreferences.getString("term", "")
+        mLevelId = sharedPreferences.getString("level", "")
         mDb = sharedPreferences.getString("db", "")
 
         try {
@@ -113,15 +114,6 @@ class SchoolFeesDetailsFragment : Fragment() {
                 Locale.getDefault(),
                 "%s %d/%s %s", termText, previousYear, mYear, "Session"
             )
-
-            val databaseHelper = DatabaseHelper(requireContext())
-
-            val levelDao: Dao<LevelTable, Long> = DaoManager.createDao(
-                databaseHelper
-                    .connectionSource, LevelTable::class.java
-            )
-            mLevelList = levelDao.queryForAll()
-            mLevelId = mLevelList[0].levelId
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -166,28 +158,30 @@ class SchoolFeesDetailsFragment : Fragment() {
                         val feeAmount = jsonObject.getString("amount")
 
                         val termFeesModel = TermFeesDataModel()
-                        termFeesModel.setFeeName(feeName)
-                        termFeesModel.setFeeAmount(feeAmount)
-                        mFeesList.add(termFeesModel)
-                        mFeesList.sortBy { it.getFeeName() }
+                        if (!feeAmount.isNullOrBlank()) {
+                            termFeesModel.setFeeName(feeName)
+                            termFeesModel.setFeeAmount(feeAmount)
+                            mFeesList.add(termFeesModel)
+                            mFeesList.sortBy { it.getFeeName() }
+                        }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
 
+                mTotal = 0.0
                 for (amount in mFeesList) {
-                    mTotal = 0.0
-                    if (amount.getFeeAmount().isNullOrBlank()) {
-                        mFeeTotal.text = getString(R.string.zero_balance)
-                    } else {
-                        mTotal += amount.getFeeAmount()!!.toDouble()
-                        mFeeTotal.text = String.format(
-                            Locale.getDefault(), "%s%s",
-                            requireActivity().getString(R.string.naira),
-                            UtilsFun.currencyFormat(mTotal)
-                        )
-                    }
+                    mTotal += amount.getFeeAmount()!!.toDouble()
                 }
+                mFeeTotal.text = String.format(
+                    Locale.getDefault(), "%s%s",
+                    requireActivity().getString(R.string.naira), UtilsFun.currencyFormat(mTotal)
+                )
+
+                mFeeTotal2.text = String.format(
+                    Locale.getDefault(), "%s%s",
+                    requireActivity().getString(R.string.naira), UtilsFun.currencyFormat(mTotal)
+                )
 
                 if (mFeesList.isEmpty()) {
                     mErrorMessage.isVisible = true

@@ -30,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:visibility="gone"
-            android:elevation="5dp">
+            android:elevation="5dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -48,6 +48,7 @@
                     android:fontFamily="@font/montserrat"
                     android:gravity="center"
                     android:lines="2"
+                    android:textStyle="bold"
                     android:textAllCaps="true"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
@@ -73,6 +74,47 @@
                     android:layout_below="@id/fee_title"
                     android:layout_marginTop="20dp" />
 
+                <LinearLayout
+                    android:id="@+id/line"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/details_recycler"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/line"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/total_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/line"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Total"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/total2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/details_recycler"
+                    android:layout_alignBaseline="@id/total_label"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toEndOf="@id/total_label"
+                    android:fontFamily="@font/montserrat"
+                    android:gravity="end"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
@@ -84,16 +126,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
         android:background="@color/color_5"
-        android:padding="15dp">
+        android:padding="15dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"
-            android:layout_toEndOf="@id/pay_btn"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@id/pay_btn"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="5dp">
@@ -103,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Total"
+                android:text="Amount to pay"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -126,9 +169,10 @@
             android:id="@+id/pay_btn"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="15dp"
             android:background="@drawable/ripple_effect"
             android:clickable="true"
             android:focusable="true"
@@ -151,7 +195,7 @@
         android:textAlignment="center"
         android:textColor="@color/text_bg_color"
         android:textSize="14sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/refresh_btn"
@@ -166,6 +210,6 @@
         android:text="refresh"
         android:textColor="@color/color_5"
         android:textSize="14sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -2,17 +2,11 @@ package com.digitaldream.winskool.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -23,14 +17,10 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.BooksActivity;
 import com.digitaldream.winskool.activities.StaffUtils;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 //the manipulated man
 //the anatomy of female
@@ -41,10 +31,7 @@ public class ELibraryFragment extends Fragment {
 
     private ImageSlider mImageSlider;
     private List<SlideModel> mSlideModelList;
-    private Toolbar mToolbar;
-    private ActionBar mActionBar;
     private CardView mCbt, mVideos, mGames, mBooks;
-    private AdView mAdView;
 
 
     public ELibraryFragment() {
@@ -58,28 +45,20 @@ public class ELibraryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_e_library, container,
                 false);
 
-        MobileAds.initialize(Objects.requireNonNull(getContext()), sInitializationStatus -> Log.d("AdMob", "Initialisation completed"));
+       /* MobileAds.initialize(requireContext(), sInitializationStatus -> Log.d("AdMob",
+                "Initialisation completed"));*/
 
-        mToolbar = view.findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         mImageSlider = view.findViewById(R.id.imageSlider);
         mCbt = view.findViewById(R.id.cbt_btn);
         mVideos = view.findViewById(R.id.videos_btn);
         mGames = view.findViewById(R.id.games_btn);
         mBooks = view.findViewById(R.id.books_btn);
-        mAdView = view.findViewById(R.id.adView);
 
 
-
-        ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).setSupportActionBar(mToolbar);
-        mActionBar =
-                ((AppCompatActivity) (getActivity())).getSupportActionBar();
-        assert mActionBar != null;
-        mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle("E-library");
-        setHasOptionsMenu(true);
-        mToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        toolbar.setTitle("E-library");
+        toolbar.setNavigationIcon(R.drawable.arrow_left);
+        toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
 
         mSlideModelList = new ArrayList<>();
 
@@ -132,20 +111,11 @@ public class ELibraryFragment extends Fragment {
             startActivity(intent);
         });
 
-
-        AdRequest adRequest = new AdRequest.Builder().build();
+ /*       AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-        Log.d("AdMob",""+ mAdView.isShown());
-
+        Log.d("AdMob",""+ mAdView.isShown());*/
 
         return view;
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-    }
-
 
 }
