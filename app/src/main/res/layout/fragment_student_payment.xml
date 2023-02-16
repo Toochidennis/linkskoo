@@ -96,7 +96,7 @@
                     android:textSize="11sp" />
 
                 <Button
-                    android:id="@+id/pay_now"
+                    android:id="@+id/btn_pay_now"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="35dp"

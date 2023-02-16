@@ -21,7 +21,8 @@
                 android:id="@+id/close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close" />
+                android:src="@drawable/ic_close"
+                android:contentDescription="@string/todo" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -43,20 +44,20 @@
         android:padding="5dp">
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/img6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
             android:src="@drawable/ic_supervisor_account"
-            android:tint="@color/gray" />
+            app:tint="@color/gray" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:layout_toRightOf="@id/img"
+            android:layout_toRightOf="@id/img6"
             android:orientation="vertical"
 
             >
@@ -103,7 +104,7 @@
         android:padding="5dp">
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/img6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -116,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:layout_toRightOf="@id/img"
+            android:layout_toRightOf="@id/img6"
             android:orientation="vertical"
 
             >
@@ -164,7 +165,7 @@
         android:padding="5dp">
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/img6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -177,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:layout_toRightOf="@id/img"
+            android:layout_toRightOf="@id/img6"
             android:orientation="vertical"
 
             >

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.SchoolFeesDetailsFragment">
@@ -146,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Amount to pay"
+                android:text="@string/amount_to_pay"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -176,7 +175,7 @@
             android:background="@drawable/ripple_effect"
             android:clickable="true"
             android:focusable="true"
-            android:text="Pay now!"
+            android:text="Proceed to pay"
             android:textColor="@color/color_5"
             android:textSize="14sp" />
 

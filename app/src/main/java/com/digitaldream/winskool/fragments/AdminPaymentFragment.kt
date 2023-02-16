@@ -31,7 +31,7 @@ class AdminPaymentFragment : Fragment() {
             false
         )
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
 
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         val actionBar = (activity as AppCompatActivity).supportActionBar

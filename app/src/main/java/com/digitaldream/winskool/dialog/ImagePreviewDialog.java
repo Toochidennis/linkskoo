@@ -28,7 +28,7 @@ public class ImagePreviewDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_preview_layout);
-        ImageView img = findViewById(R.id.img);
+        ImageView img = findViewById(R.id.img6);
         if(from.equals("preview")) {
             if(tag.equals("0")) {
                 Uri uri = Uri.parse(imageUrl);

@@ -54,8 +54,8 @@ class PaymentSettingsFragment : Fragment() {
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
 
         toolbar.apply {
-            setNavigationIcon(R.drawable.arrow_left)
             title = "Payment Settings"
+            setNavigationIcon(R.drawable.arrow_left)
             setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
 

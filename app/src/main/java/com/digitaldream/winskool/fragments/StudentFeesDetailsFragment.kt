@@ -24,15 +24,11 @@ import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.digitaldream.winskool.DatabaseHelper
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.StudentFeesDetailsAdapter
-import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.TermFeesDataModel
 import com.digitaldream.winskool.utils.UtilsFun
-import com.j256.ormlite.dao.Dao
-import com.j256.ormlite.dao.DaoManager
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -112,7 +108,7 @@ class SchoolFeesDetailsFragment : Fragment() {
 
             mTermTitle.text = String.format(
                 Locale.getDefault(),
-                "%s %d/%s %s", termText, previousYear, mYear, "Session"
+                "%s %d/%s %s", termText, previousYear, mYear, "session"
             )
 
         } catch (e: Exception) {

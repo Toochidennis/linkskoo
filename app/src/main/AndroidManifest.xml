@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
@@ -29,7 +28,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activities.PayStackPaymentActivity"
+            android:name=".activities.PaystackPaymentActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -225,6 +224,7 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9708958609167471~9055223780" />
+
     </application>
 
 </manifest>

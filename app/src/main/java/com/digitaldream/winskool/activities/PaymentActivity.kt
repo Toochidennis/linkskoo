@@ -1,12 +1,15 @@
 package com.digitaldream.winskool.activities
 
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.fragments.*
 
 open class PaymentActivity : AppCompatActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_payment)

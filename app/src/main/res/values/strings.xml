@@ -102,4 +102,11 @@
     <string name="mandatory">Mandatory</string>
     <string name="not_mandatory">Not mandatory</string>
     <string name="zero_balance">₦0.00</string>
+    <string name="card_details">Card Details</string>
+    <string name="card_number">Card Number</string>
+    <string name="expiry">Expiry</string>
+    <string name="cvv">CVV</string>
+    <string name="mm_yy">MM/YY</string>
+    <string name="secured_by_paystack">Secured by Paystack</string>
+    <string name="amount_to_pay">Amount to pay</string>
 </resources>

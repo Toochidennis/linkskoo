@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.activities.PaystackPaymentActivity;
 import com.digitaldream.winskool.activities.PaymentActivity;
-
-import java.util.Objects;
 
 
 public class StudentPaymentFragment extends Fragment {
@@ -27,7 +26,7 @@ public class StudentPaymentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_student_payment, container,
+        View view = inflater.inflate(R.layout.fragment_student_payment, container,
                 false);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
@@ -36,12 +35,17 @@ public class StudentPaymentFragment extends Fragment {
         toolbar.setNavigationOnClickListener(sView -> requireActivity().onBackPressed());
 
         Button button = view.findViewById(R.id.view_details);
+        Button btnPayNow = view.findViewById(R.id.btn_pay_now);
 
-        button.setOnClickListener(sView->{
-            startActivity(new Intent(getActivity(), PaymentActivity.class).putExtra("from",
-                    "fee_details"));
-        });
+        button.setOnClickListener(sView ->
+                startActivity(new Intent(getActivity(),
+                        PaymentActivity.class).putExtra("from",
+                        "fee_details")));
 
-       return view;
+        btnPayNow.setOnClickListener(sView ->
+                startActivity(new Intent(getActivity(), PaystackPaymentActivity.class)
+                        .putExtra("amount", 100)));
+
+        return view;
     }
 }
