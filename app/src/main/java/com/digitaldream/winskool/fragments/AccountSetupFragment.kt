@@ -31,6 +31,7 @@ import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONException
+
 class AccountSetupFragment : Fragment(), OnInputListener {
 
     private var mDb: String? = null
@@ -65,6 +66,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
             setDisplayHomeAsUpEnabled(true)
         }
 
+
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -78,7 +80,8 @@ class AccountSetupFragment : Fragment(), OnInputListener {
         mAccountList = arrayListOf()
         mAdapter = AccountSetupAdapter(requireContext(), mAccountList, mErrorMessage)
         mRecyclerView.hasFixedSize()
-        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val manager = LinearLayoutManager(requireContext())
+        mRecyclerView.layoutManager = manager
         mRecyclerView.adapter = mAdapter
 
         getAccount() //get Accounts
@@ -135,7 +138,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
                 progressFlower.dismiss()
                 try {
                     val jsonArray = JSONArray(response)
-                    for (i in 0 until (jsonArray.length() - 125)) {
+                    for (i in 0 until jsonArray.length()) {
                         val jsonObject = jsonArray.getJSONObject(i)
                         val id = jsonObject.getString("id")
                         val accountName = jsonObject.getString("account_name")

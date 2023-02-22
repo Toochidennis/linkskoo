@@ -97,7 +97,7 @@ public class VideoContent extends YouTubeBaseActivity {
         title = findViewById(R.id.topic_header);
         title.setText(topic);
         author = findViewById(R.id.author_name);
-        date = findViewById(R.id.date);
+        date = findViewById(R.id.date_layout);
         date.setText(dateText);
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         user = sharedPreferences.getString("user","Anonymous");

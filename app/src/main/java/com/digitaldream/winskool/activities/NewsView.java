@@ -87,7 +87,7 @@ public class NewsView extends AppCompatActivity implements RefreshListener, Answ
         }
         String content1 = feed.getAnswer();
         TextView titleTXT = findViewById(R.id.news_title);
-        TextView dateTXT = findViewById(R.id.date);
+        TextView dateTXT = findViewById(R.id.date_layout);
         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss");
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss");
 

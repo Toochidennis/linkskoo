@@ -13,7 +13,10 @@ import org.achartengine.model.XYMultipleSeriesDataset
 import org.achartengine.model.XYSeries
 import org.achartengine.renderer.XYMultipleSeriesRenderer
 import org.achartengine.renderer.XYSeriesRenderer
+import java.text.DateFormat
 import java.text.DecimalFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 object UtilsFun {
@@ -152,6 +155,17 @@ object UtilsFun {
     fun currencyFormat(number: Double): String {
         val formatter = DecimalFormat("###,###,##0.00")
         return formatter.format(number)
+    }
+
+    @JvmStatic
+    @Throws(ParseException::class)
+    fun dateConverter(date: String): String? {
+        val format = "$date 00:00:00.000Z".replace(" ", "T")
+        val simpleDateFormat = SimpleDateFormat(
+            "yyyy-MM-dd" + "'T'HH" + ":mm:ss.SSS'Z'", Locale.US
+        )
+        val oldDate = simpleDateFormat.parse(format)!!
+        return DateFormat.getDateInstance(DateFormat.FULL).format(oldDate)
     }
 
 

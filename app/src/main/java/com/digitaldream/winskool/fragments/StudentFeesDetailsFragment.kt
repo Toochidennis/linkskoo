@@ -71,7 +71,7 @@ class SchoolFeesDetailsFragment : Fragment() {
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
         mCardView = view.findViewById(R.id.card_view)
         mSchoolName = view.findViewById(R.id.school_name)
-        mTermTitle = view.findViewById(R.id.fee_title)
+        mTermTitle = view.findViewById(R.id.debt_fee_title)
         mRecyclerView = view.findViewById(R.id.details_recycler)
         mPaymentLayout = view.findViewById(R.id.payment_layout)
         mFeeTotal = view.findViewById(R.id.fee_total)
@@ -128,7 +128,6 @@ class SchoolFeesDetailsFragment : Fragment() {
 
         return view
     }
-
     private fun getTermFees() {
         val progressFlower = ACProgressFlower.Builder(requireContext())
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)

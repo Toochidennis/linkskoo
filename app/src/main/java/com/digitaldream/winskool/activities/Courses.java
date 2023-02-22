@@ -97,7 +97,7 @@ public class Courses extends AppCompatActivity implements CoursesAdapter.OnCours
         actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
 
         String from = i.getStringExtra("from");
-        TextView title = findViewById(R.id.fee_title);
+        TextView title = findViewById(R.id.debt_fee_title);
         TextView desc = findViewById(R.id.desc);
         TextView yearTxt = findViewById(R.id.year);
         int prevYear = Integer.parseInt(RegYearList.year)-1;

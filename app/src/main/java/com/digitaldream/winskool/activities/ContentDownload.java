@@ -173,7 +173,7 @@ public class ContentDownload extends AppCompatActivity {
         objective = findViewById(R.id.objective_download);
         //topicHeader = findViewById(R.id.topic_download);
         author = findViewById(R.id.author_name);
-        date = findViewById(R.id.date);
+        date = findViewById(R.id.date_layout);
         commentsLayout = findViewById(R.id.comments);
         sendBtn = findViewById(R.id.send);
         commentEdittext = findViewById(R.id.comment_text1);
@@ -735,7 +735,7 @@ public class ContentDownload extends AppCompatActivity {
                 TextView user_name = view.findViewById(R.id.user);
                 TextView reply = view.findViewById(R.id.reply);
                 TextView initial = view.findViewById(R.id.initials);
-                TextView date = view.findViewById(R.id.date);
+                TextView date = view.findViewById(R.id.date_layout);
                 LinearLayout initialBg = view.findViewById(R.id.initials_cont);
                 TextView commentId1 = view.findViewById(R.id.comment_id);
                 LinearLayout reply_layout=view.findViewById(R.id.replies);
@@ -828,7 +828,7 @@ public class ContentDownload extends AppCompatActivity {
                     TextView initial = vi.findViewById(R.id.initials);
                     TextView reply = vi.findViewById(R.id.reply);
                     reply.setText("Reply");
-                    TextView date = vi.findViewById(R.id.date);
+                    TextView date = vi.findViewById(R.id.date_layout);
 
                     date.setText(dateText);
                     reply.setOnClickListener(new View.OnClickListener() {

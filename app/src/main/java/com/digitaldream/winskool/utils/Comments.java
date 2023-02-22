@@ -122,7 +122,7 @@ public class Comments {
                 TextView user_name = view.findViewById(R.id.user);
                 TextView reply = view.findViewById(R.id.reply);
                 TextView initial = view.findViewById(R.id.initials);
-                TextView date = view.findViewById(R.id.date);
+                TextView date = view.findViewById(R.id.date_layout);
                 LinearLayout initialBg = view.findViewById(R.id.initials_cont);
                 TextView commentId1 = view.findViewById(R.id.comment_id);
                 LinearLayout reply_layout = view.findViewById(R.id.replies);
@@ -215,7 +215,7 @@ public class Comments {
                     TextView initial = vi.findViewById(R.id.initials);
                     TextView reply = vi.findViewById(R.id.reply);
                     reply.setText("Reply");
-                    TextView date = vi.findViewById(R.id.date);
+                    TextView date = vi.findViewById(R.id.date_layout);
 
                     date.setText(dateText);
                     reply.setOnClickListener(new View.OnClickListener() {
@@ -368,7 +368,7 @@ public class Comments {
                 TextView user_name = view.findViewById(R.id.user);
                 TextView reply = view.findViewById(R.id.reply);
                 TextView initial = view.findViewById(R.id.initials);
-                TextView date = view.findViewById(R.id.date);
+                TextView date = view.findViewById(R.id.date_layout);
                 TextView commentId = view.findViewById(R.id.comment_id);
                 LinearLayout initialBg = view.findViewById(R.id.initials_cont);
                 String  currentTime = DateFormat.getDateTimeInstance()
@@ -445,7 +445,7 @@ public class Comments {
                 TextView user_name = vi.findViewById(R.id.user);
                 TextView initial = vi.findViewById(R.id.initials);
                 TextView reply = vi.findViewById(R.id.reply);
-                TextView date = vi.findViewById(R.id.date);
+                TextView date = vi.findViewById(R.id.date_layout);
                 String  currentDateTime = DateFormat.getDateTimeInstance()
                         .format(new Date());
                 date.setText(currentDateTime);

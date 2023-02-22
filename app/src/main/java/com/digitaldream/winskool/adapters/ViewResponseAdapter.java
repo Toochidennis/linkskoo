@@ -80,7 +80,7 @@ public class ViewResponseAdapter extends RecyclerView.Adapter<ViewResponseAdapte
             number = itemView.findViewById(R.id.number);
             studentName = itemView.findViewById(R.id.student_name);
             score = itemView.findViewById(R.id.progress_text);
-            date = itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.date_layout);
             bg = itemView.findViewById(R.id.num_bg);
             itemView.setOnClickListener(this);
             this.onResponseClickListener = onResponseClickListener;

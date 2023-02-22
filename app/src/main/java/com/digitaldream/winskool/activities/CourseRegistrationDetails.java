@@ -80,7 +80,7 @@ public class CourseRegistrationDetails extends AppCompatActivity implements Cour
         actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         Intent i = getIntent();
         PrevYrModel pr = (PrevYrModel) i.getSerializableExtra("object");
-        TextView className = findViewById(R.id.fee_title);
+        TextView className = findViewById(R.id.debt_fee_title);
         TextView desc = findViewById(R.id.desc);
 
         className.setText(ClassResultDetails.class_name);

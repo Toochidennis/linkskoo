@@ -86,9 +86,9 @@ public class Flashcard extends AppCompatActivity {
         }
         String week = i.getStringExtra("week");
         TextView weekTxt = findViewById(R.id.week);
-        TextView titleText = findViewById(R.id.fee_title);
+        TextView titleText = findViewById(R.id.debt_fee_title);
         TextView cardNo = findViewById(R.id.count);
-        TextView dateText = findViewById(R.id.date);
+        TextView dateText = findViewById(R.id.date_layout);
         cardNo.setText(count);
         dateText.setText(date);
         Button startBtn = findViewById(R.id.start_flashcard);

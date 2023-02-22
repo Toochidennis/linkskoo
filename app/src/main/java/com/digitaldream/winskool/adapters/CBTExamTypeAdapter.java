@@ -80,7 +80,7 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
             mOnExamClickListener = sOnExamClickListener;
             mCardView = itemView.findViewById(R.id.grid_layout);
             mTextView = itemView.findViewById(R.id.exam_name);
-            mImageView = itemView.findViewById(R.id.icon);
+            mImageView = itemView.findViewById(R.id.debt_icon);
             itemView.setOnClickListener(this);
         }
 

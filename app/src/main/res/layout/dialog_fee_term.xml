@@ -10,7 +10,7 @@
     android:paddingBottom="30dp">
 
     <TextView
-        android:id="@+id/fee_title"
+        android:id="@+id/debt_fee_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toStartOf="@+id/jss_2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fee_title" />
+        app:layout_constraintTop_toBottomOf="@id/debt_fee_title" />
 
     <Button
         android:id="@+id/jss_2"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/jss_1"
-        app:layout_constraintTop_toBottomOf="@id/fee_title" />
+        app:layout_constraintTop_toBottomOf="@id/debt_fee_title" />
 
     <Button
         android:id="@+id/jss_3"

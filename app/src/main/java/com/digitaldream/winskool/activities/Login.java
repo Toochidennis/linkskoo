@@ -309,7 +309,8 @@ public class Login extends AppCompatActivity {
                                 String date_admitted = jsonArray1.getString(
                                         getIndex(columnArr1, "date_admitted"));
                                 //String class_name = jsonArray1.getString(28);
-                                QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
+                                QueryBuilder<StudentTable, Long> queryBuilder =
+                                        studentDao.queryBuilder();
                                 queryBuilder.where().eq("studentId", id);
                                 student = queryBuilder.query();
 
@@ -381,7 +382,8 @@ public class Login extends AppCompatActivity {
                                         getIndex(columnArr, "access_level"));
                                 String password = jsonArray3.getString(
                                         columnList.indexOf("password"));
-                                QueryBuilder<TeachersTable, Long> queryBuilder = teacherDao.queryBuilder();
+                                QueryBuilder<TeachersTable, Long> queryBuilder =
+                                        teacherDao.queryBuilder();
                                 queryBuilder.where().eq("staffId", id);
 
                                 teacher = queryBuilder.query();
@@ -423,7 +425,8 @@ public class Login extends AppCompatActivity {
                                         getIndex(columnArr2, "class_name"));
                                 String level = jsonArray5.getString(
                                         getIndex(columnArr2, "level"));
-                                QueryBuilder<ClassNameTable, Long> queryBuilder = classDao.queryBuilder();
+                                QueryBuilder<ClassNameTable, Long> queryBuilder =
+                                        classDao.queryBuilder();
                                 queryBuilder.where().eq("classId", classId);
                                 classnames = queryBuilder.query();
                                 if (classnames.isEmpty()) {
@@ -510,30 +513,31 @@ public class Login extends AppCompatActivity {
                                     Log.i("response", jsonObject11.toString());
                                     JSONArray jsonArray11 =
                                             jsonObject11.getJSONArray(
-                                            "rows");
+                                                    "rows");
                                     JSONArray columnArr5 =
                                             jsonObject11.getJSONArray(
-                                            "columns");
+                                                    "columns");
 
                                     for (int b = 0; b < jsonArray11.length(); b++) {
                                         JSONArray coursesArray =
                                                 jsonArray11.getJSONArray(
-                                                b);
+                                                        b);
                                         String courseId =
                                                 coursesArray.getString(
-                                                getIndex(columnArr5, "id"));
+                                                        getIndex(columnArr5, "id"));
                                         String courseName =
                                                 coursesArray.getString(
-                                                getIndex(columnArr5,
-                                                        "course_name"));
+                                                        getIndex(columnArr5,
+                                                                "course_name"));
                                         String courseCode =
                                                 coursesArray.getString(
-                                                getIndex(columnArr5,
-                                                        "course_code"));
+                                                        getIndex(columnArr5,
+                                                                "course_code"));
 
                                         //String levelId = coursesArray
                                         // .getString(3);
-                                        QueryBuilder<CourseTable, Long> queryBuilder = courseDao.queryBuilder();
+                                        QueryBuilder<CourseTable, Long> queryBuilder =
+                                                courseDao.queryBuilder();
                                         queryBuilder.where().eq("courseId",
                                                 courseId);
                                         courseList = queryBuilder.query();
@@ -561,7 +565,7 @@ public class Login extends AppCompatActivity {
                             for (int a = 0; a < jsonArray12.length(); a++) {
                                 JSONArray jsonArray13 =
                                         jsonArray12.getJSONArray(
-                                        a);
+                                                a);
                                 String gradeId = jsonArray13.getString(
                                         getIndex(columnArr6, "id"));
                                 String gradeName = jsonArray13.getString(
@@ -595,7 +599,7 @@ public class Login extends AppCompatActivity {
                             for (int c = 0; c < jsonArray15.length(); c++) {
                                 JSONArray jsonArray16 =
                                         jsonArray15.getJSONArray(
-                                        c);
+                                                c);
                                 String assessmentId = jsonArray16.getString(
                                         getIndex(columnArr7, "id"));
                                 String assessmentName = jsonArray16.getString(
@@ -604,7 +608,8 @@ public class Login extends AppCompatActivity {
                                         getIndex(columnArr7, "max_score"));
                                 String levelId = jsonArray16.getString(
                                         getIndex(columnArr7, "level"));
-                                QueryBuilder<AssessmentModel, Long> queryBuilder = assessmentDao.queryBuilder();
+                                QueryBuilder<AssessmentModel, Long> queryBuilder =
+                                        assessmentDao.queryBuilder();
                                 queryBuilder.where().eq("assessmentId",
                                         assessmentId);
                                 assessmentList = queryBuilder.query();
@@ -625,7 +630,7 @@ public class Login extends AppCompatActivity {
                             for (int a = 0; a < contentArray.length(); a++) {
                                 JSONObject contentObj =
                                         contentArray.getJSONObject(
-                                        a);
+                                                a);
                                 String id = contentObj.getString("id");
                                 String week = contentObj.getString("rank");
                                 String title = contentObj.getString("title");
@@ -635,7 +640,7 @@ public class Login extends AppCompatActivity {
                                         "url");
                                 String otherMatherialPath =
                                         contentObj.getString(
-                                        "picref");
+                                                "picref");
                                 String levelID = contentObj.getString("level");
                                 String courseID = contentObj.getString(
                                         "course_id");
@@ -683,7 +688,7 @@ public class Login extends AppCompatActivity {
                             for (int s = 0; s < jsonArray30.length(); s++) {
                                 JSONArray jsonArray31 =
                                         jsonArray30.getJSONArray(
-                                        s);
+                                                s);
                                 String id = jsonArray31.getString(
                                         getIndex(columnArr8, "id"));
                                 String courseId = jsonArray31.getString(
@@ -717,7 +722,7 @@ public class Login extends AppCompatActivity {
                             for (int a = 0; a < jsonArray130.length(); a++) {
                                 JSONArray jsonArray1 =
                                         jsonArray130.getJSONArray(
-                                        a);
+                                                a);
                                 String className = jsonArray1.getString(
                                         getIndex(columnArr9, "class_name"));
                                 String staffId = jsonArray1.getString(
@@ -738,7 +743,7 @@ public class Login extends AppCompatActivity {
                                     "columns");
                             JSONArray schlProfileObject =
                                     jsonArray20.getJSONArray(
-                                    getIndex(columnArr10, "id"));
+                                            getIndex(columnArr10, "id"));
                             String school_Name = schlProfileObject.getString(
                                     getIndex(columnArr10, "name"));
                             String schoolYear = schlProfileObject.getString(
@@ -749,7 +754,7 @@ public class Login extends AppCompatActivity {
                                     getIndex(columnArr10, "website"));
                             String schoolShortName =
                                     schlProfileObject.getString(
-                                    getIndex(columnArr10, "short_name"));
+                                            getIndex(columnArr10, "short_name"));
                             String schoolAddress = schlProfileObject.getString(
                                     getIndex(columnArr10, "address"));
                             String city = schlProfileObject.getString(
@@ -762,7 +767,7 @@ public class Login extends AppCompatActivity {
                                     getIndex(columnArr10, "email"));
                             String schoolPhoneNumber =
                                     schlProfileObject.getString(
-                                    getIndex(columnArr10, "phone"));
+                                            getIndex(columnArr10, "phone"));
                             String studentPrefix = schlProfileObject.getString(
                                     getIndex(columnArr10, "student_prefix"));
                             String staffPrefix = schlProfileObject.getString(
@@ -800,7 +805,7 @@ public class Login extends AppCompatActivity {
                             String db = jsonObject10.getString("_db");
                             SharedPreferences sharedPreferences =
                                     getSharedPreferences(
-                                    "loginDetail", Context.MODE_PRIVATE);
+                                            "loginDetail", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor =
                                     sharedPreferences.edit();
                             editor.putBoolean("loginStatus", true);
@@ -828,12 +833,13 @@ public class Login extends AppCompatActivity {
                             dialog1.dismiss();
                             AlertDialog.Builder builder =
                                     new AlertDialog.Builder(
-                                    Login.this);
+                                            Login.this);
                             builder.setMessage("Invalid Login details");
                             builder.setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                        public void onClick(DialogInterface dialogInterface,
+                                                            int i) {
 
                                         }
                                     });
@@ -907,7 +913,8 @@ public class Login extends AppCompatActivity {
                                 String date_admitted = jsonArray1.getString(
                                         getIndex(columnArr11, "date_admitted"));
                                 //String class_name = jsonArray1.getString(28);
-                                QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
+                                QueryBuilder<StudentTable, Long> queryBuilder =
+                                        studentDao.queryBuilder();
                                 queryBuilder.where().eq("studentId", id);
                                 student = queryBuilder.query();
 
@@ -952,7 +959,8 @@ public class Login extends AppCompatActivity {
                                         getIndex(columnArr12, "class_name"));
                                 String level = jsonArray5.getString(
                                         getIndex(columnArr12, "level"));
-                                QueryBuilder<ClassNameTable, Long> queryBuilder = classDao.queryBuilder();
+                                QueryBuilder<ClassNameTable, Long> queryBuilder =
+                                        classDao.queryBuilder();
                                 queryBuilder.where().eq("classId", classId);
                                 classnames = queryBuilder.query();
                                 if (classnames.isEmpty()) {
@@ -1040,7 +1048,7 @@ public class Login extends AppCompatActivity {
                             String db = jsonObject10.getString("_db");
                             SharedPreferences sharedPreferences =
                                     getSharedPreferences(
-                                    "loginDetail", Context.MODE_PRIVATE);
+                                            "loginDetail", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor =
                                     sharedPreferences.edit();
                             editor.putBoolean("loginStatus", true);
@@ -1076,7 +1084,7 @@ public class Login extends AppCompatActivity {
                             for (int i = 0; i < jsonArray1.length(); i++) {
                                 JSONObject jsonObject1 =
                                         jsonArray1.getJSONObject(
-                                        i);
+                                                i);
                                 String courseId = jsonObject1.getString("id");
                                 String staffNo = jsonObject1.getString(
                                         "ref_no");
@@ -1106,11 +1114,11 @@ public class Login extends AppCompatActivity {
 
                             JSONArray staffContentArray =
                                     jsonObject.getJSONArray(
-                                    "staffContent");
+                                            "staffContent");
                             for (int a = 0; a < staffContentArray.length(); a++) {
                                 JSONObject contentObj =
                                         staffContentArray.getJSONObject(
-                                        a);
+                                                a);
                                 String id = contentObj.getString("id");
                                 String week = contentObj.getString("rank");
                                 String title = contentObj.getString("title");
@@ -1120,7 +1128,7 @@ public class Login extends AppCompatActivity {
                                         "url");
                                 String otherMatherialPath =
                                         contentObj.getString(
-                                        "picref");
+                                                "picref");
                                 String levelID = contentObj.getString("level");
                                 String courseID = contentObj.getString(
                                         "course_id");
@@ -1158,12 +1166,13 @@ public class Login extends AppCompatActivity {
                             dialog1.dismiss();
                             AlertDialog.Builder builder =
                                     new AlertDialog.Builder(
-                                    Login.this);
+                                            Login.this);
                             builder.setMessage("Invalid Login details");
                             builder.setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                        public void onClick(DialogInterface dialogInterface,
+                                                            int i) {
 
                                         }
                                     });
@@ -1184,7 +1193,11 @@ public class Login extends AppCompatActivity {
                         String studentClass = jsonObject1.getString(
                                 "class_name");
                         String level = jsonObject1.getString("level");
-                        Log.i("responsedb", db);
+                        String classId1 = jsonObject1.getString("student_class");
+                        String studentRegNo = jsonObject1.getString("registration_no");
+                        String studentEmail = jsonObject.optString("guardian_email","");
+
+                        Log.i("responseDb", db);
 
                         SharedPreferences sharedPreferences = getSharedPreferences(
                                 "loginDetail", Context.MODE_PRIVATE);
@@ -1201,7 +1214,9 @@ public class Login extends AppCompatActivity {
                         editor.putString("db", db);
                         editor.putString("student_class", studentClass);
                         editor.putString("level", level);
-                        editor.apply();
+                        editor.putString("classId", classId1);
+                        editor.putString("student_reg_no", studentRegNo);
+                        editor.putString("student_email", studentEmail);
 
                         Object object = jsonObject.get("result");
                         if (object instanceof JSONObject) {
@@ -1243,7 +1258,8 @@ public class Login extends AppCompatActivity {
                                     }
 
 
-                                    StudentResultDownloadTable st = new StudentResultDownloadTable();
+                                    StudentResultDownloadTable st =
+                                            new StudentResultDownloadTable();
                                     st.setFirstTerm(first_term);
                                     st.setSecondTerm(second_term);
                                     st.setThirdTerm(third_term);
@@ -1254,8 +1270,6 @@ public class Login extends AppCompatActivity {
                                     studentResultDao.create(st);
                                 }
                             }
-                        } else if (object instanceof JSONArray) {
-
                         }
 
 
@@ -1290,7 +1304,6 @@ public class Login extends AppCompatActivity {
                             }
 
                         }
-
 
                         JSONArray jsonArray1 = jsonObject.getJSONArray(
                                 "courses");
@@ -1352,6 +1365,13 @@ public class Login extends AppCompatActivity {
 
                         }
 
+                        JSONObject settingsObject = jsonObject.getJSONObject("settings");
+                        String studentYear = settingsObject.getString("year");
+                        String studentTerm = settingsObject.getString("term");
+                        editor.putString("year", studentYear);
+                        editor.putString("term", studentTerm);
+                        editor.apply();
+
 
                         Intent intent = new Intent(Login.this,
                                 StudentDashboardActivity.class);
@@ -1361,11 +1381,6 @@ public class Login extends AppCompatActivity {
                     }
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-                dialog1.dismiss();
-                Toast.makeText(Login.this, "Error fetching data from server",
-                        Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
                 dialog1.dismiss();

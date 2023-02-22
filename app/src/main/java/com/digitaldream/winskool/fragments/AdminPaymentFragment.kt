@@ -80,13 +80,6 @@ class AdminPaymentFragment : Fragment() {
             )
         }
 
-        detailsBtn.setOnClickListener {
-
-            startActivity(
-                Intent(activity, PaymentActivity().javaClass)
-                    .putExtra("from", "details")
-            )
-        }
 
         return view
     }

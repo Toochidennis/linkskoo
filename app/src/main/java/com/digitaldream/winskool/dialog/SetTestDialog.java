@@ -75,7 +75,7 @@ public class SetTestDialog extends Dialog implements View.OnClickListener {
         aSwitch = findViewById(R.id.exam_time_switch);
         setTimingLayout = findViewById(R.id.timing_layout);
         apply = findViewById(R.id.apply);
-        title = findViewById(R.id.fee_title);
+        title = findViewById(R.id.debt_fee_title);
         description = findViewById(R.id.description);
         startDate = findViewById(R.id.date_start);
         endDate = findViewById(R.id.date_end);

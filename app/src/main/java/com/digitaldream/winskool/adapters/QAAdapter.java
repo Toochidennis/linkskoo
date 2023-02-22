@@ -138,7 +138,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.QAVH> {
         public QAVH(@NonNull View itemView,OnQuestionClickListener onQuestionClickListener) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
-            date = itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.date_layout);
             initial = itemView.findViewById(R.id.initials);
             question = itemView.findViewById(R.id.question);
             answer = itemView.findViewById(R.id.answer);

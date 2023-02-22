@@ -52,7 +52,7 @@ public class StudentRegistrationDetails extends AppCompatActivity implements Cou
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        TextView title = findViewById(R.id.fee_title);
+        TextView title = findViewById(R.id.debt_fee_title);
         TextView description = findViewById(R.id.desc);
         TextView desc1=findViewById(R.id.desc1);
         int prevYear = Integer.parseInt(CourseRegistrationDetails.year)-1;

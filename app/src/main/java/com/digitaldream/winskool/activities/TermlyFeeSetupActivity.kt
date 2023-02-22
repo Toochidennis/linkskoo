@@ -252,4 +252,5 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         mTermFeesList.clear()
         getTermFees(mLevelId!!)
     }
+
 }

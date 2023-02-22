@@ -65,7 +65,7 @@ public class PrevYrsAdapter extends RecyclerView.Adapter<PrevYrsAdapter.PrevYrVH
         OnYearClickListener onYearClickListener;
         public PrevYrVH(@NonNull View itemView,OnYearClickListener onYearClickListener) {
             super(itemView);
-            title = itemView.findViewById(R.id.fee_title);
+            title = itemView.findViewById(R.id.debt_fee_title);
             linearLayout = itemView.findViewById(R.id.initials_bg);
             itemView.setOnClickListener(this);
             this.onYearClickListener= onYearClickListener;

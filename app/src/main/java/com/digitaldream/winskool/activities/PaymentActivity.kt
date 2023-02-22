@@ -15,43 +15,68 @@ open class PaymentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_admin_payment)
 
         val intent = intent
+        val amount = intent.getStringExtra("amount")
+        val reference = intent.getStringExtra("reference")
+        val status = intent.getStringExtra("status")
+        val session = intent.getStringExtra("session")
+        val term = intent.getStringExtra("term")
+        val date = intent.getStringExtra("date")
 
         when (intent.getStringExtra("from")) {
 
             "dashboard" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AdminPaymentFragment()).commit()
+                R.id.fragment_container, AdminPaymentFragment()
+            ).commit()
 
             "transactions" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AdminTransactions()).commit()
+                R.id.fragment_container, AdminTransactions()
+            ).commit()
 
             "expenditure" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                ExpenditureHistoryFragment()).commit()
+                ExpenditureHistoryFragment()
+            ).commit()
 
             "receipt" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                ReceiptHistoryFragment()).commit()
+                ReceiptHistoryFragment()
+            ).commit()
 
-            "details" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, TransactionReceiptFragment()).commit()
+            "student_receipt" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, StudentTransactionReceiptFragment
+                    .newInstance(
+                        amount!!,
+                        reference!!,
+                        status!!,
+                        session!!,
+                        term!!,
+                        date!!
+                    )
+            ).commit()
 
             "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, VendorFragment()).commit()
+                R.id.fragment_container, VendorFragment()
+            ).commit()
 
             "vendor" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AddExpenditureFragment()).commit()
+                R.id.fragment_container, AddExpenditureFragment()
+            ).commit()
 
             "fee_details" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, SchoolFeesDetailsFragment()).commit()
+                R.id.fragment_container, SchoolFeesDetailsFragment()
+            ).commit()
 
             "settings" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, PaymentSettingsFragment()).commit()
+                R.id.fragment_container, PaymentSettingsFragment()
+            ).commit()
 
             "fee_settings" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, FeeTypeSetupFragment()).commit()
+                R.id.fragment_container, FeeTypeSetupFragment()
+            ).commit()
 
             "account_settings" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AccountSetupFragment()).commit()
+                R.id.fragment_container, AccountSetupFragment()
+            ).commit()
         }
 
     }

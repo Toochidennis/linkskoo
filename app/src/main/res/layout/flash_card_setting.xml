@@ -52,7 +52,7 @@
     </androidx.cardview.widget.CardView>
 
     <EditText
-        android:id="@+id/fee_title"
+        android:id="@+id/debt_fee_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Flashcard Title"

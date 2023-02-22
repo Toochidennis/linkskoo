@@ -29,7 +29,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/fee_title"
+                android:id="@+id/debt_fee_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="JS1 A"

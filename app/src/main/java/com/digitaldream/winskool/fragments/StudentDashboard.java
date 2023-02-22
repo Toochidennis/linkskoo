@@ -62,7 +62,8 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionClickListener, QuestionAccessViewSheet.OnQuestionSubmitListener {
+public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionClickListener,
+        QuestionAccessViewSheet.OnQuestionSubmitListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
@@ -125,7 +126,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         news_empty_state = view.findViewById(R.id.news_empty_state);
         SharedPreferences sharedPreferences =
                 getActivity().getSharedPreferences(
-                "loginDetail", Context.MODE_PRIVATE);
+                        "loginDetail", Context.MODE_PRIVATE);
         String schoolName = sharedPreferences.getString("school_name", "");
         String studentClass = sharedPreferences.getString("student_class", "");
         level = sharedPreferences.getString("level", "");
@@ -136,7 +137,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         for (String s : strArr) {
             try {
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                stringBuilder.append(cap + " ");
+                stringBuilder.append(cap).append(" ");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -148,7 +149,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         for (String s : strArr1) {
             try {
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                stringBuilder1.append(cap + " ");
+                stringBuilder1.append(cap).append(" ");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -175,8 +176,8 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
             public void onClick(View v) {
                 FragmentTransaction transaction =
                         ((FragmentActivity) getContext())
-                        .getSupportFragmentManager()
-                        .beginTransaction();
+                                .getSupportFragmentManager()
+                                .beginTransaction();
                 questionBottomSheet = new QuestionBottomSheet();
                 questionBottomSheet.show(transaction, "questionBottomSheet");
 

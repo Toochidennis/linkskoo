@@ -77,7 +77,7 @@ public class FlashCardListAdapter extends RecyclerView.Adapter<FlashCardListAdap
             super(itemView);
             cardName = itemView.findViewById(R.id.card_name);
             initials = itemView.findViewById(R.id.initial);
-            date = itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.date_layout);
             cardNo = itemView.findViewById(R.id.card_no);
             bg = itemView.findViewById(R.id.initials_bg);
             this.onFlashCardClickListener =onFlashCardClickListener;

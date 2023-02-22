@@ -1,42 +1,47 @@
 package com.digitaldream.winskool.activities
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.HorizontalScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import co.paystack.android.Paystack.TransactionCallback
-import co.paystack.android.PaystackSdk
-import co.paystack.android.Transaction
-import co.paystack.android.model.Card
-import co.paystack.android.model.Charge
-import com.digitaldream.winskool.BuildConfig
+import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
+import com.android.volley.RequestQueue
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.utils.UtilsFun
+import java.util.*
 
 
 class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_paystack) {
 
-    private lateinit var mCardNumber: EditText
-    private lateinit var mCardExpiry: EditText
-    private lateinit var mCardCVV: EditText
-    private lateinit var mPayBtn: Button
-
-    private var mCardNumberText: String? = null
-    private var mCardExpiryText: String? = null
-    private var mCardCVVText: String? = null
+    private var mStudentId: String? = null
+    private var mClassId: String? = null
+    private var mLevelId: String? = null
+    private var mRegistrationNumber: String? = null
+    private var mStudentName: String? = null
+    private var mSchoolName: String? = null
+    private var mClassName: String? = null
+    private var mYear: String? = null
+    private var mTerm: String? = null
+    private var mDb: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val intent = intent
+        val reference = intent.getStringExtra("reference")
+        val authorizationURL = intent.getStringExtra("url")
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-        mCardNumber = findViewById(R.id.card_number)
-        mCardExpiry = findViewById(R.id.card_expiry)
-        mCardCVV = findViewById(R.id.card_cvv)
-        mPayBtn = findViewById(R.id.btn_make_payment)
 
         toolbar.apply {
             title = "Pay"
@@ -46,124 +51,115 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
             }
         }
 
-        initializePayStack()
-        validateFormVariables()
+        val sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        mStudentId = sharedPreferences.getString("user_id", "")
+        mClassId = sharedPreferences.getString("classId", "")
+        mLevelId = sharedPreferences.getString("level", "")
+        mRegistrationNumber = sharedPreferences.getString("student_reg_no", "")
+        mStudentName = sharedPreferences.getString("user", "")
+        mSchoolName = sharedPreferences.getString("school_name", "")
+        mClassName = sharedPreferences.getString("student_class", "")
+        mYear = sharedPreferences.getString("year", "")
+        mTerm = sharedPreferences.getString("term", "")
+        mDb = sharedPreferences.getString("db", "")
 
+        loadCheckOut(authorizationURL!!, reference!!)
 
-        mPayBtn.setOnClickListener {
-            if (
-                mCardNumber.text.length == 19 && mCardExpiry.text.length == 5 &&
-                mCardCVV.text.length == 3
-            ) {
-                performCharge()
-            } else {
-                Toast.makeText(this, "Complete", Toast.LENGTH_LONG).show()
-            }
+    }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun loadCheckOut(authorizationURL: String, sReference: String) {
+        val webView: WebView = findViewById(R.id.web_view)
+        val card: NestedScrollView = findViewById(R.id.receipt_view)
+
+        webView.settings.apply {
+            javaScriptEnabled = true
+            javaScriptCanOpenWindowsAutomatically = true
+            domStorageEnabled = true
         }
 
-    }
-
-    private fun initializePayStack() {
-        PaystackSdk.initialize(this)
-        PaystackSdk.setPublicKey(BuildConfig.PSTK_PUBLIC_KEY)
-    }
-
-    private fun validateFormVariables() {
-        mCardNumber.addTextChangedListener(object : TextWatcher {
-            var lock = false
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+        webView.webViewClient = object : WebViewClient() {
+            @Deprecated("Deprecated in Java")
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                url: String?
+            ): Boolean {
+                postReferenceNumber(sReference)
+                webView.isVisible = false
+                card.isVisible = true
+                generateReceipt(sReference)
+                return false
             }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (lock || s!!.length > 16) {
-                    return
-                }
-                lock = true
-
-                var i = 4
-                while (i < s.length) {
-                    if (s.toString()[i] != ' ') {
-                        s.insert(i, " ")
-                    }
-                    i += 5
-                }
-                lock = false
-            }
-        })
-
-        mCardExpiry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (mCardExpiry.text.length == 2 &&
-                    !mCardExpiry.text.contains("/")
-                ) {
-                    mCardExpiry.append("/")
-                }
-            }
-        })
-
-    }
-
-    private fun performCharge() {
-
-        mCardNumberText = mCardNumber.text.toString()
-        mCardExpiryText = mCardExpiry.text.toString()
-        mCardCVVText = mCardCVV.text.toString()
-
-        val cardExpiryArray = mCardExpiryText!!.split("/").toTypedArray()
-        val cardNumber = mCardNumberText!!.replace(" ", "")
-        val expiryMonth = cardExpiryArray[0].toInt()
-        val expiryYear = cardExpiryArray[1].toInt()
-        val amountToPay = intent.getIntExtra("amount", 0)
-        //amountToPay *= 100 // convert to kobo
-
-        val mCard = Card(cardNumber, expiryMonth, expiryYear, mCardCVVText)
-        if (mCard.isValid) {
-            val charge = Charge().apply {
-                amount = amountToPay
-                email = "dennistoochi@gmail.com"
-                card = mCard
-            }
-
-            PaystackSdk.chargeCard(
-                this@PaystackPaymentActivity,
-                charge,
-                object : TransactionCallback {
-                    override fun onSuccess(transaction: Transaction?) {
-                        parseResponse(transaction!!.reference)
-                    }
-
-                    override fun beforeValidate(transaction: Transaction?) {
-                        Log.d("PaystackActivity", "beforeValidate: " + transaction!!.reference)
-                    }
-
-                    override fun onError(error: Throwable?, transaction: Transaction?) {
-                        Log.d("PaystackActivity", "onError: " + error!!.localizedMessage)
-                        Log.d("PaystackActivity", "onError: $error")
-                    }
-                })
-        } else {
-            Toast.makeText(this, "Invalid card", Toast.LENGTH_LONG).show()
         }
 
+        webView.loadUrl(authorizationURL)
     }
 
-    private fun parseResponse(transactionReference: String) {
-        val message = "Payment Successful - $transactionReference"
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    private fun postReferenceNumber(sReference: String) {
+
+        val url = Login.urlBase + "/manageReceipts.php"
+        val stringRequest: StringRequest = object : StringRequest(
+            Method.POST, url,
+            { response: String ->
+                Log.d("TAG", response)
+
+            }, { error: VolleyError ->
+                error.printStackTrace()
+            }) {
+            override fun getParams(): Map<String, String> {
+                val stringMap: MutableMap<String, String> = HashMap()
+                stringMap["student_id"] = mStudentId!!
+                stringMap["class"] = mClassId!!
+                stringMap["level"] = mLevelId!!
+                stringMap["reg_no"] = mRegistrationNumber!!
+                stringMap["name"] = mStudentName!!
+                stringMap["amount"] = "10000"
+                stringMap["date"] = getDate()
+                stringMap["reference"] = sReference
+                stringMap["year"] = mYear!!
+                stringMap["term"] = mTerm!!
+                stringMap["_db"] = mDb!!
+                return stringMap
+            }
+        }
+        val requestQueue: RequestQueue = Volley.newRequestQueue(this)
+        requestQueue.add(stringRequest)
     }
 
+    private fun generateReceipt(sReference: String) {
+
+        val schoolName: TextView = findViewById(R.id.school_name)
+        val amount: TextView = findViewById(R.id.paid_amount)
+        val status: TextView = findViewById(R.id.status)
+        val date: TextView = findViewById(R.id.date)
+        val name: TextView = findViewById(R.id.student_name)
+        val level: TextView = findViewById(R.id.student_level)
+        val studentClass: TextView = findViewById(R.id.student_class)
+        val studentRegNo: TextView = findViewById(R.id.registration_no)
+        val session: TextView = findViewById(R.id.session)
+        val term: TextView = findViewById(R.id.term)
+        val referenceNumber: TextView = findViewById(R.id.reference_number)
+
+
+        schoolName.text = mSchoolName
+        amount.text = getString(R.string.zero_balance)
+        status.text = ""
+        date.text = getDate()
+        name.text = UtilsFun.capitaliseFirstLetter(mStudentName!!)
+        level.text = ""
+        studentClass.text = mClassName
+        studentRegNo.text = mRegistrationNumber
+        session.text = ""
+        term.text = mTerm
+        referenceNumber.text = sReference
+
+    }
+
+    fun getDate(): String {
+        val calendar = Calendar.getInstance()
+        val year = calendar[Calendar.YEAR].toString()
+        val month = (calendar[Calendar.MONTH] + 1).toString()
+        val dayOfMonth = calendar[Calendar.DAY_OF_MONTH].toString()
+        return "$year-$month-$dayOfMonth"
+    }
 }

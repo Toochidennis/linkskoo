@@ -10,7 +10,7 @@
     android:background="#fff">
 
     <TextView
-        android:id="@+id/fee_title"
+        android:id="@+id/debt_fee_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -32,7 +32,7 @@
         android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fee_title"
+        app:layout_constraintTop_toBottomOf="@id/debt_fee_title"
         android:background="#000"
         android:scaleType="center"
         android:id="@+id/media_container">

@@ -232,7 +232,6 @@ public class AddStudent extends AppCompatActivity {
                     if (status.equals("success")) {
                         JSONObject jsonObject1 = jsonObject.getJSONObject("records");
 
-
                         String studentId = jsonObject1.getString("id");
                         String studentSurname = jsonObject1.getString("surname");
                         String studentFirstname = jsonObject1.getString("first_name");
@@ -335,10 +334,6 @@ public class AddStudent extends AppCompatActivity {
         if (state_of_origin.getSelectedItemPosition() != 0) {
             statOriginText = state_of_origin.getSelectedItem().toString();
         }
-
-
-
-
 
         if (surnameText.isEmpty() || firstnameText.isEmpty() || registrationNumberText.isEmpty() || guardianAddressText.isEmpty() ||
                 guardianNameText.isEmpty() || guardianEmailText.isEmpty() || guardianPhoneText.isEmpty() || birthdayText.isEmpty() ||

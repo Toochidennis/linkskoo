@@ -141,20 +141,10 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("CONTINUE ?");
                 builder.setPositiveButton("LOGOUT",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                logout();
-                            }
-                        });
+                        (dialog, which) -> logout());
                 builder.setNegativeButton("CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
+                        (dialog, which) -> {
 
-                            }
                         });
                 builder.show();
                 break;
@@ -169,8 +159,8 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        int seletedItemId = bottomNavigationView.getSelectedItemId();
-        if (R.id.student_dashboard != seletedItemId) {
+        int selectedItemId = bottomNavigationView.getSelectedItemId();
+        if (R.id.student_dashboard != selectedItemId) {
             setHomeItem(StudentDashboardActivity.this);
         } else {
             super.onBackPressed();

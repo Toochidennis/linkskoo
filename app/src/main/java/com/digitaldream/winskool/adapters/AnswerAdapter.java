@@ -125,7 +125,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
         public AnswerViewHolder(@NonNull View itemView,OnAnswerClickListener onAnswerClickListener) {
             super(itemView);
             user = itemView.findViewById(R.id.name);
-            date = itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.date_layout);
             initial = itemView.findViewById(R.id.initials);
             answer = itemView.findViewById(R.id.answer);
             likeNo = itemView.findViewById(R.id.like);

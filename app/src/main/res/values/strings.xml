@@ -38,6 +38,7 @@
     <string name="failed_internet">Failed to load Students, please check your internet connection and try again</string>
     <string name="can_not_retrieve">Failed to load data, please check your internet connection
         and try again</string>
+    <string name="no_history">No payment made yet</string>
     <string name="naira">\u20A6</string>
 
     <string-array name="account_type">
@@ -109,4 +110,6 @@
     <string name="mm_yy">MM/YY</string>
     <string name="secured_by_paystack">Secured by Paystack</string>
     <string name="amount_to_pay">Amount to pay</string>
+    <string name="refresh_layout">Refresh</string>
+    <string name="failed">Failed</string>
 </resources>

@@ -114,8 +114,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
             sE.printStackTrace();
         }
 
-        ((AppCompatActivity) (Objects.requireNonNull(
-                getActivity()))).setSupportActionBar(
+        ((AppCompatActivity) (requireActivity())).setSupportActionBar(
                 toolbar);
         ActionBar actionBar =
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
@@ -148,7 +147,7 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
 
         ExamType examType = mExamTypeList.get(position);
         SharedPreferences sharedPreferences =
-                Objects.requireNonNull(getContext()).getSharedPreferences(
+                requireContext().getSharedPreferences(
                         "exam",
                         Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
