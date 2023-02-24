@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/appBar">
 
         <LinearLayout
@@ -70,28 +70,38 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/horizontal_view"
+        <RelativeLayout
+            android:id="@+id/slider_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="1">
+            android:layout_margin="15dp"
+            android:visibility="gone">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/card_recycler"
-                android:layout_width="wrap_content"
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/card_pager"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:contentDescription="@string/todo" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/card_tab"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="true" />
+                android:layout_below="@id/card_pager"
+                android:contentDescription="@string/todo"
+                app:tabBackground="@drawable/indicator_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp" />
 
-        </LinearLayout>
-
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/history_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp">
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp">
 
             <TextView
                 android:id="@+id/history_text"

@@ -8,10 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -21,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.android.volley.RequestQueue
@@ -33,11 +31,12 @@ import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.activities.PaystackPaymentActivity
 import com.digitaldream.winskool.adapters.StudentPaymentAdapter
-import com.digitaldream.winskool.adapters.StudentPaymentCardAdapter
+import com.digitaldream.winskool.adapters.StudentPaymentSliderAdapter
 import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.PaymentEmailDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
 import com.digitaldream.winskool.utils.UtilsFun
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.http.client.HttpClient
@@ -51,21 +50,23 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class StudentPaymentFragment : Fragment(), OnInputListener,
-    StudentPaymentAdapter.OnHistoryClickListener, StudentPaymentCardAdapter.OnCardClickListener {
+    StudentPaymentAdapter.OnHistoryClickListener, StudentPaymentSliderAdapter
+    .OnCardClickListener {
 
     private lateinit var mMainView: LinearLayout
     private lateinit var mPaidSate: LinearLayout
-    private lateinit var mTermView: LinearLayout
+    private lateinit var mTermView: RelativeLayout
     private lateinit var mHistoryRecyclerView: RecyclerView
-    private lateinit var mCardRecyclerView: RecyclerView
     private lateinit var mHistoryMessage: TextView
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
+    private lateinit var mViewPager: ViewPager
+    private lateinit var mTabLayout: TabLayout
 
     private val mHistoryList = mutableListOf<StudentPaymentModel>()
     private val mCardList = mutableListOf<StudentPaymentModel>()
     private lateinit var mHistoryAdapter: StudentPaymentAdapter
-    private lateinit var mCardAdapter: StudentPaymentCardAdapter
+    private lateinit var mCardAdapter: StudentPaymentSliderAdapter
     private var mStudentId: String? = null
     private var mDb: String? = null
     private var mInvoiceId: String? = null
@@ -90,12 +91,13 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mMainView = view.findViewById(R.id.main_layout)
         mPaidSate = view.findViewById(R.id.paid_state)
-        mTermView = view.findViewById(R.id.horizontal_view)
+        mTermView = view.findViewById(R.id.slider_view)
         mHistoryRecyclerView = view.findViewById(R.id.history_recycler)
-        mCardRecyclerView = view.findViewById(R.id.card_recycler)
         mHistoryMessage = view.findViewById(R.id.history_error_message)
         mErrorMessage = view.findViewById(R.id.error_message)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
+        mViewPager = view.findViewById(R.id.card_pager)
+        mTabLayout = view.findViewById(R.id.card_tab)
 
         val sharedPreferences = requireContext().getSharedPreferences(
             "loginDetail", Context
@@ -116,13 +118,14 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         mHistoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mHistoryRecyclerView.adapter = mHistoryAdapter
 
-        mCardAdapter = StudentPaymentCardAdapter(requireContext(), mCardList, this)
-        mCardRecyclerView.hasFixedSize()
-        mCardRecyclerView.layoutManager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
-        )
-        mCardRecyclerView.adapter = mCardAdapter
+        mCardAdapter = StudentPaymentSliderAdapter(requireContext(), mCardList, this)
+        mViewPager.adapter = mCardAdapter
+
+        Timer().apply {
+            scheduleAtFixedRate(CardTimer(), 1000, 3000)
+        }
+
+        mTabLayout.setupWithViewPager(mViewPager, true)
 
         refreshData()
 
@@ -366,6 +369,8 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     override fun onResume() {
         super.onResume()
         mHistoryList.clear()
+        mCardList.clear()
+        mCardAdapter.notifyDataSetChanged()
         paymentHistory()
     }
 
@@ -401,6 +406,24 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
+        }
+
+    }
+
+    inner class CardTimer : TimerTask() {
+        override fun run() {
+            try {
+                requireActivity().runOnUiThread {
+                    if (mViewPager.currentItem < mCardList.size - 1) {
+                        mViewPager.currentItem = mViewPager.currentItem + 1
+                    } else {
+                        mViewPager.currentItem = 0
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
 
     }

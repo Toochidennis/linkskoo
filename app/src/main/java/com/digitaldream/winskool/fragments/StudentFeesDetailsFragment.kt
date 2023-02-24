@@ -131,32 +131,12 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
         val mStudentEmail = sharedPreferences.getString("student_email", "")
         mDb = sharedPreferences.getString("db", "")
 
-        try {
-            println(" Term: $mTerm")
-
-            val termText = when (mTerm) {
-                "1" -> "First Term School Fee Charges for"
-                "2" -> "Second Term School Fee Charges for"
-                else -> "Third Term School Fee Charges for"
-            }
-
-            mSchoolName.text = mNameSchool
-
-            mTermTitle.text = String.format(
-                Locale.getDefault(),
-                "%s %s %s", termText, mSession, "session"
-            )
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        mSchoolName.text = mNameSchool
 
         mAdapter = StudentFeesDetailsAdapter(requireContext(), mFeesList)
         mRecyclerView.hasFixedSize()
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mRecyclerView.adapter = mAdapter
-
-        getTermFees()
 
         mRefreshBtn.setOnClickListener {
             getTermFees()
@@ -202,52 +182,74 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
             { response: String ->
                 Log.i("response", response)
                 progressFlower.dismiss()
-                try {
-                    val jsonObjects = JSONObject(response)
-                    val invoiceArray = jsonObjects.getJSONArray("invoice")
+                if (response == "[]") {
+                    mErrorMessage.isVisible = true
+                    "You've have paid for this term".also { mErrorMessage.text = it }
+                } else {
+                    try {
+                        val jsonObjects = JSONObject(response)
+                        val invoiceArray = jsonObjects.getJSONArray("invoice")
 
-                    for (i in 0 until invoiceArray.length()) {
-                        val invoiceObject = invoiceArray.getJSONObject(i)
-                        mInvoiceId = invoiceObject.getString("tid")
-                        mYear = invoiceObject.getString("year")
-                        val term = invoiceObject.getString("term")
-                        mTotal = invoiceObject.getString("amount")
-                            .replace(".00", "")
-                        val descriptionArray = invoiceObject.getJSONArray("description")
+                        for (i in 0 until invoiceArray.length()) {
+                            val invoiceObject = invoiceArray.getJSONObject(i)
+                            mInvoiceId = invoiceObject.getString("tid")
+                            mYear = invoiceObject.getString("year")
+                            val term = invoiceObject.getString("term")
+                            mTotal = invoiceObject.getString("amount")
+                                .replace(".00", "")
+                            val descriptionArray = invoiceObject.getJSONArray("description")
 
-                        for (j in 0 until descriptionArray.length()) {
-                            val descriptionObject = descriptionArray.getJSONObject(j)
-                            val feeName = descriptionObject.getString("fee_name")
-                            val feeAmount = descriptionObject.getString("fee_amount")
+                            for (j in 0 until descriptionArray.length()) {
+                                val descriptionObject = descriptionArray.getJSONObject(j)
+                                val feeName = descriptionObject.getString("fee_name")
+                                val feeAmount = descriptionObject.getString("fee_amount")
 
-                            val termFeesDataModel = TermFeesDataModel()
-                            if (mTerm == term) {
-                                val previousYear = mYear!!.toInt() - 1
-                                mSession =
-                                    String.format(Locale.getDefault(), "%d/%s", previousYear, mYear)
-                                termFeesDataModel.setFeeName(feeName)
-                                termFeesDataModel.setFeeAmount(feeAmount)
-                                mFeesList.add(termFeesDataModel)
-                                mFeesList.sortBy { it.getFeeName() }
+                                val termFeesDataModel = TermFeesDataModel()
+                                if (mTerm == term) {
+                                    val previousYear = mYear!!.toInt() - 1
+                                    mSession =
+                                        String.format(
+                                            Locale.getDefault(),
+                                            "%d/%s",
+                                            previousYear,
+                                            mYear
+                                        )
+                                    println("Year: $mYear")
+                                    termFeesDataModel.setFeeName(feeName)
+                                    termFeesDataModel.setFeeAmount(feeAmount)
+                                    mFeesList.add(termFeesDataModel)
+                                    mFeesList.sortBy { it.getFeeName() }
 
-                                mFeeTotal.text = String.format(
-                                    Locale.getDefault(),
-                                    "%s%s",
-                                    requireActivity().getString(R.string.naira),
-                                    UtilsFun.currencyFormat(mTotal!!.toDouble())
-                                )
+                                    val termText = when (mTerm) {
+                                        "1" -> "First Term School Fee Charges for"
+                                        "2" -> "Second Term School Fee Charges for"
+                                        else -> "Third Term School Fee Charges for"
+                                    }
 
-                                mFeeTotal2.text = String.format(
-                                    Locale.getDefault(),
-                                    "%s%s",
-                                    requireActivity().getString(R.string.naira),
-                                    UtilsFun.currencyFormat(mTotal!!.toDouble())
-                                )
+                                    mTermTitle.text = String.format(
+                                        Locale.getDefault(),
+                                        "%s %s %s", termText, mSession, "session"
+                                    )
+
+                                    mFeeTotal.text = String.format(
+                                        Locale.getDefault(),
+                                        "%s%s",
+                                        requireActivity().getString(R.string.naira),
+                                        UtilsFun.currencyFormat(mTotal!!.toDouble())
+                                    )
+
+                                    mFeeTotal2.text = String.format(
+                                        Locale.getDefault(),
+                                        "%s%s",
+                                        requireActivity().getString(R.string.naira),
+                                        UtilsFun.currencyFormat(mTotal!!.toDouble())
+                                    )
+                                }
                             }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
 
                 if (mFeesList.isEmpty()) {
@@ -348,5 +350,11 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
             .apply()
 
         requestURL(input)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mFeesList.clear()
+        getTermFees()
     }
 }
