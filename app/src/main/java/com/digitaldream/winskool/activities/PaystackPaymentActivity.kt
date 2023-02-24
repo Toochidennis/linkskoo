@@ -88,7 +88,6 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         loadCheckOut(authorizationURL!!, reference!!, transactionId!!, amount!!)
 
         writeReceipt()
-
     }
 
     @SuppressLint("SetJavaScriptEnabled")

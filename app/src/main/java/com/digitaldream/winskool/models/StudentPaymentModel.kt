@@ -3,27 +3,28 @@ package com.digitaldream.winskool.models
 class StudentPaymentModel {
     private var mId: Int = 0
     private var mStatus: String? = null
+    private var mInvoiceId: String? = null
     private var mName: String? = null
     private var mLevelName: String? = null
     private var mClassName: String? = null
-    private var mRegistrationNo: String? = null
     private var mTerm: String? = null
     private var mDate: String? = null
     private var mSession: String? = null
     private var mAmount: String? = null
+    private var mAmountT: String? = null
     private var mReferenceNumber: String? = null
 
     fun getId() = mId
 
     fun getStatus() = mStatus
 
+    fun getInvoiceId() = mInvoiceId
+
     fun getName() = mName
 
     fun getLevelName() = mLevelName
 
     fun getClassName() = mClassName
-
-    fun getRegistrationNo() = mRegistrationNo
 
     fun getTerm() = mTerm
 
@@ -33,6 +34,8 @@ class StudentPaymentModel {
 
     fun getAmount() = mAmount
 
+    fun getAmountT() = mAmountT
+
     fun getReferenceNumber() = mReferenceNumber
 
     fun setId(sId: Int) {
@@ -41,6 +44,10 @@ class StudentPaymentModel {
 
     fun setStatus(sStatus: String) {
         mStatus = sStatus
+    }
+
+    fun setInvoiceId(sInvoiceId: String) {
+        mInvoiceId = sInvoiceId
     }
 
     fun setName(sName: String) {
@@ -53,10 +60,6 @@ class StudentPaymentModel {
 
     fun setClassName(sClassName: String) {
         mClassName = sClassName
-    }
-
-    fun setRegistrationNo(sRegistrationNo: String) {
-        mRegistrationNo = sRegistrationNo
     }
 
     fun setTerm(sTerm: String) {
@@ -73,6 +76,10 @@ class StudentPaymentModel {
 
     fun setAmount(sAmount: String) {
         mAmount = sAmount
+    }
+
+    fun setAmountT(sAmountT: String) {
+        mAmountT = sAmountT
     }
 
     fun setReferenceNumber(sReferenceNumber: String) {

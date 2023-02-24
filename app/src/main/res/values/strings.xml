@@ -119,4 +119,6 @@
     <string name="first_term">First Term</string>
     <string name="second_term">Second Term</string>
     <string name="third_term">Third Term</string>
+    <string name="thanks_for_paying">Thanks for paying!</string>
+    <string name="payment_history">Payment History</string>
 </resources>

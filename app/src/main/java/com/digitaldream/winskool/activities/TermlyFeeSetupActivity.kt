@@ -225,7 +225,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     }
 
     private fun getLevelId(sLevelName: String): String {
-        var id = ""
+
         try {
             val databaseHelper = DatabaseHelper(this)
             val mDao: Dao<LevelTable, Long> = DaoManager.createDao(
@@ -234,7 +234,6 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
             )
             mLevelList = mDao.queryBuilder().where().eq("levelName", sLevelName).query()
 
-            id = mLevelList[0].levelId
 
         } catch (e: Exception) {
             when (e) {
@@ -242,7 +241,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                 else -> throw e
             }
         }
-        return id
+        return mLevelList[0].levelId
     }
 
     override fun sendInput(input: String) {
@@ -251,6 +250,8 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         mLevelId = getLevelId(mLevelName!!.replace(" ", ""))
         mTermFeesList.clear()
         getTermFees(mLevelId!!)
+        mAdapter = TermFeeAdapter(this, mTermFeesList, mFeeTotal, mSaveBtn, mLevelId!!)
+        mRecyclerView.adapter = mAdapter
     }
 
 }
