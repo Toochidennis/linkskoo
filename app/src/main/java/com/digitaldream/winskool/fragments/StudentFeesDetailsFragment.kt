@@ -34,7 +34,7 @@ import org.json.JSONObject
 import java.util.*
 
 
-class SchoolFeesDetailsFragment : Fragment() {
+class StudentFeesDetailsFragment : Fragment() {
 
     private lateinit var mCardView: CardView
     private lateinit var mSchoolName: TextView
@@ -128,6 +128,7 @@ class SchoolFeesDetailsFragment : Fragment() {
 
         return view
     }
+
     private fun getTermFees() {
         val progressFlower = ACProgressFlower.Builder(requireContext())
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)

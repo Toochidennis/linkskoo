@@ -40,6 +40,7 @@
         and try again</string>
     <string name="no_history">No payment made yet</string>
     <string name="naira">\u20A6</string>
+    <string name="success">Success</string>
 
     <string-array name="account_type">
         <item>Account Type</item>
@@ -112,4 +113,7 @@
     <string name="amount_to_pay">Amount to pay</string>
     <string name="refresh_layout">Refresh</string>
     <string name="failed">Failed</string>
+    <string name="pay_now">Pay Now!</string>
+    <string name="view_details">View Details</string>
+    <string name="paid">Paid!</string>
 </resources>

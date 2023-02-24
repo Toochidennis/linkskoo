@@ -2,16 +2,19 @@ package com.digitaldream.winskool.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -46,21 +49,33 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class StudentPaymentFragment : Fragment(), OnInputListener,
     StudentPaymentAdapter.OnHistoryClickListener {
 
-    private lateinit var mMainView: ConstraintLayout
-    private lateinit var mCurrentTermAmount: TextView
-    private lateinit var mViewCurrentTermFees: Button
-    private lateinit var mPayCurrentTermFees: Button
+    private lateinit var mMainView: RelativeLayout
+    private lateinit var mFirstTermAmount: TextView
+    private lateinit var mFirstTermViewDetails: Button
+    private lateinit var mFirstTermPayBtn: Button
+    private lateinit var mSecondTermAmount: TextView
+    private lateinit var mSecondTermViewDetails: Button
+    private lateinit var mSecondTermPayBtn: Button
+    private lateinit var mThirdTermAmount: TextView
+    private lateinit var mThirdTermViewDetails: Button
+    private lateinit var mThirdTermPayBtn: Button
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mHistoryMessage: TextView
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
+    private lateinit var mFirstTermCard: CardView
+    private lateinit var mSecondTermCard: CardView
+    private lateinit var mThirdTermCard: CardView
 
     private lateinit var mAdapter: StudentPaymentAdapter
     private var mStudentId: String? = null
     private var mDb: String? = null
+    private var mInvoiceId: String? = null
+    private var mFirstAmount: String? = null
     private val mHistoryList = mutableListOf<StudentPaymentModel>()
 
 
@@ -77,13 +92,22 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
 
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mMainView = view.findViewById(R.id.main_layout)
-        mCurrentTermAmount = view.findViewById(R.id.amount)
-        mViewCurrentTermFees = view.findViewById(R.id.view_details)
-        mPayCurrentTermFees = view.findViewById(R.id.btn_pay_now)
+        mFirstTermAmount = view.findViewById(R.id.first_term_amount)
+        mFirstTermViewDetails = view.findViewById(R.id.first_term_view_details)
+        mFirstTermPayBtn = view.findViewById(R.id.first_term_pay_btn)
+        mSecondTermAmount = view.findViewById(R.id.second_term_amount)
+        mSecondTermViewDetails = view.findViewById(R.id.second_term_view_details)
+        mSecondTermPayBtn = view.findViewById(R.id.second_term_pay_btn)
+        mThirdTermAmount = view.findViewById(R.id.third_term_amount)
+        mThirdTermViewDetails = view.findViewById(R.id.third_term_view_details)
+        mThirdTermPayBtn = view.findViewById(R.id.third_term_pay_btn)
         mRecyclerView = view.findViewById(R.id.history_recycler)
         mHistoryMessage = view.findViewById(R.id.history_error_message)
         mErrorMessage = view.findViewById(R.id.error_message)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
+        mFirstTermCard = view.findViewById(R.id.first_term_card)
+        mSecondTermCard = view.findViewById(R.id.second_term_card)
+        mThirdTermCard = view.findViewById(R.id.third_term_card)
 
         val sharedPreferences = requireContext().getSharedPreferences(
             "loginDetail", Context
@@ -99,7 +123,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
             setNavigationOnClickListener { requireActivity().onBackPressed() }
         }
 
-        mViewCurrentTermFees.setOnClickListener {
+        mFirstTermViewDetails.setOnClickListener {
             startActivity(
                 Intent(activity, PaymentActivity::class.java)
                     .putExtra("from", "fee_details")
@@ -117,15 +141,14 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         return view
     }
 
-
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {
-            getPaymentHistory()
+            paymentHistory()
         }
     }
 
     private fun makePayment(studentEmail: String) {
-        mPayCurrentTermFees.setOnClickListener {
+        mFirstTermPayBtn.setOnClickListener {
             if (studentEmail.isNotBlank()) {
                 requestURL(studentEmail)
             } else {
@@ -143,15 +166,15 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestURL(sStudentEmail: String) {
         val builder = StringBuilder()
         val json = JSONObject()
             .put("email", sStudentEmail)
-            .put("amount", "${10000 * 100}")
+            .put("amount", "${mFirstAmount!!.toLong() * 100}")
         val url = "https://api.paystack.co/transaction/initialize"
 
         lifecycleScope.launch(Dispatchers.IO) {
-            //delay(1000)
             try {
                 val mEntity = StringEntity(json.toString())
                 val httpClient: HttpClient = HttpClientBuilder.create().build()
@@ -185,6 +208,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                         val intent = Intent(activity, PaystackPaymentActivity::class.java)
                         intent.putExtra("url", authorizationURL)
                         intent.putExtra("reference", reference)
+                        intent.putExtra("transaction_id", mInvoiceId)
                         startActivity(intent)
                     }
                     else -> throw Exception("Can't generate url")
@@ -196,7 +220,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         }
     }
 
-    private fun getPaymentHistory() {
+    private fun paymentHistory() {
         val progressFlower = ACProgressFlower.Builder(context)
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)
             .textMarginTop(10)
@@ -214,9 +238,36 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                 progressFlower.dismiss()
                 try {
                     val jsonObject = JSONObject(response)
-                    val jsonArray = jsonObject.getJSONArray("receipts")
-                    for (i in 0 until jsonArray.length()) {
-                        val receiptsObjects = jsonArray.getJSONObject(i)
+                    val receiptsArray = jsonObject.getJSONArray("receipts")
+                    val invoiceArray = jsonObject.getJSONArray("invoice")
+                    var firstTermAmount = ""
+
+                    for (i in 0 until invoiceArray.length()) {
+                        val invoiceObjects = invoiceArray.getJSONObject(i)
+                        mInvoiceId = invoiceObjects.getString("tid")
+                        mFirstAmount = invoiceObjects.getString("amount")
+                        UtilsFun.currencyFormat(
+                            mFirstAmount!!.toDouble()
+                        ).also { firstTermAmount = it }
+                    }
+
+                    if (firstTermAmount.isNotBlank()) {
+                        String.format(
+                            Locale.getDefault(), "%s%s",
+                            getString(R.string.naira), firstTermAmount
+                        ).also { mFirstTermAmount.text = it }
+
+                        mFirstTermPayBtn.isVisible = true
+                        mFirstTermViewDetails.isVisible = true
+                    } else {
+                        mFirstTermAmount.text = getString(R.string.paid)
+                        mFirstTermPayBtn.isVisible = false
+                        mFirstTermViewDetails.isVisible = false
+                    }
+
+
+                    for (i in 0 until receiptsArray.length()) {
+                        val receiptsObjects = receiptsArray.getJSONObject(i)
                         val name = receiptsObjects.getString("name")
                         val reference = receiptsObjects.getString("reference")
                         val amount = receiptsObjects.getString("amount")
@@ -227,6 +278,12 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                             "2" -> "Second Term Fees"
                             else -> "Third Term Fees"
                         }
+                        requireContext().getSharedPreferences(
+                            "loginDetail",
+                            Context.MODE_PRIVATE
+                        ).edit()
+                            .putString("level_name", receiptsObjects.getString("level_name"))
+                            .apply()
                         val previousYear = year.toInt() - 1
                         val session =
                             String.format(Locale.getDefault(), "%d/%s", previousYear, year)
@@ -323,6 +380,6 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     override fun onResume() {
         super.onResume()
         mHistoryList.clear()
-        getPaymentHistory()
+        paymentHistory()
     }
 }

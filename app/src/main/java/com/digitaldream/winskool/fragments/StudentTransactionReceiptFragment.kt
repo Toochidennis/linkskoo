@@ -55,7 +55,6 @@ class StudentTransactionReceiptFragment : Fragment() {
     private var mTerm: String? = null
     private var mDate: String? = null
 
-    private lateinit var notificationManger: NotificationManagerCompat
     private lateinit var mReceiptCard: CardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +78,6 @@ class StudentTransactionReceiptFragment : Fragment() {
             PackageManager.PERMISSION_GRANTED
         )
 
-        notificationManger = NotificationManagerCompat.from(requireContext())
     }
 
     companion object {
@@ -103,6 +101,7 @@ class StudentTransactionReceiptFragment : Fragment() {
                     putString(ARG_DATE, date)
                 }
             }
+
     }
 
     override fun onCreateView(
@@ -128,11 +127,11 @@ class StudentTransactionReceiptFragment : Fragment() {
         }
 
         downloadBtn.setOnClickListener {
-            downloadPDF()
+            UtilsFun.downloadPDF(mReceiptCard, requireActivity())
         }
 
         shareBtn.setOnClickListener {
-            sharePDF()
+            UtilsFun.sharePDF(mReceiptCard, requireActivity())
         }
 
         generateReceipt(view)
@@ -162,13 +161,14 @@ class StudentTransactionReceiptFragment : Fragment() {
         val mClass = sharedPreferences.getString("student_class", "")
         val studentName = sharedPreferences.getString("user", "")
         val mRegNo = sharedPreferences.getString("student_reg_no", "")
+        val mLevelName = sharedPreferences.getString("level_name", "")
 
         schoolName.text = mSchoolName
         amount.text = mAmount
         status.text = mStatus
         date.text = mDate
         name.text = UtilsFun.capitaliseFirstLetter(studentName!!)
-        level.text = ""
+        level.text = mLevelName
         studentClass.text = mClass
         studentRegNo.text = mRegNo
         session.text = mSession
@@ -176,147 +176,5 @@ class StudentTransactionReceiptFragment : Fragment() {
         referenceNumber.text = mReference
     }
 
-    private fun createBitMap(sView: View, sWidth: Int, sHeight: Int): Bitmap {
-        val bitmap = Bitmap.createBitmap(sWidth, sHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        sView.draw(canvas)
-        return bitmap
-    }
-
-    private fun createPDF(): PdfDocument {
-        val displayMetrics = DisplayMetrics()
-        @Suppress("DEPRECATION")
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val width = displayMetrics.widthPixels //1.4142
-        val height = displayMetrics.heightPixels
-
-        val pdfDocument = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(width, height, 1).create()
-        val page = pdfDocument.startPage(pageInfo)
-        val canvas = page.canvas
-        val paint = Paint()
-
-        var bitmap = createBitMap(mReceiptCard, mReceiptCard.width, mReceiptCard.height)
-        bitmap = Bitmap.createScaledBitmap(bitmap, mReceiptCard.width, mReceiptCard.height, true)
-        canvas.drawBitmap(bitmap, 0f, 0f, paint)
-
-        pdfDocument.finishPage(page)
-
-        return pdfDocument
-    }
-
-    private fun downloadPDF() {
-        val randomId = UUID.randomUUID().toString()
-
-        try {
-            val file = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .absolutePath + "/receipt$randomId.pdf"
-            )
-            createPDF().writeTo(FileOutputStream(file))
-            val fileSize = (file.length() / 1024).toInt()
-            notification(fileSize, file)
-
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(
-                requireContext(), "Something went wrong please try again!", Toast
-                    .LENGTH_SHORT
-            ).show()
-        }
-        createPDF().close()
-    }
-
-    private fun sharePDF() {
-
-        val path = requireContext().cacheDir
-        val output = File.createTempFile("receipt", ".pdf", path)
-
-        try {
-            createPDF().writeTo(FileOutputStream(output))
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        createPDF().close()
-
-        val uri = FileProvider.getUriForFile(
-            requireContext(), requireActivity().packageName + "" +
-                    ".provider", output
-        )
-
-        ShareCompat.IntentBuilder(requireContext()).apply {
-            setType("application/pdf")
-            setSubject("Share Pdf")
-            addStream(uri)
-            setChooserTitle("Share receipt")
-            startChooser()
-        }
-    }
-
-    private fun notification(max: Int, sFile: File) {
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(
-                    Manifest.permission.POST_NOTIFICATIONS
-                ),
-                PackageManager.PERMISSION_GRANTED
-            )
-        } else if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-
-            val pendingIntent = PendingIntent.getActivity(
-                requireContext(),
-                0, notificationIntent(sFile), PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val notification = NotificationCompat.Builder(
-                requireContext(), CHANNEL_ID
-            ).apply {
-                setSmallIcon(R.drawable.win_school)
-                setContentTitle("Payment Receipt")
-                setContentText("Download in progress")
-                setContentIntent(pendingIntent)
-                color = ContextCompat.getColor(requireContext(), R.color.color_5)
-                setProgress(max, 0, false)
-                setOngoing(true)
-                setOnlyAlertOnce(true)
-                priority = NotificationCompat.PRIORITY_DEFAULT
-            }
-
-            notificationManger.notify(1, notification.build())
-
-            Thread {
-                SystemClock.sleep(1000)
-                for (progress in 0..max step 10) {
-                    notification.setProgress(max, progress, false)
-                    notificationManger.notify(1, notification.build())
-                    SystemClock.sleep(1000)
-                }
-                notification.setContentText("Download finished")
-                    .setProgress(0, 0, false)
-                    .setOngoing(false)
-                notificationManger.notify(1, notification.build())
-            }.start()
-        }
-    }
-
-    private fun notificationIntent(sFile: File): Intent {
-        val intent = Intent(Intent.ACTION_VIEW)
-        val uri = FileProvider.getUriForFile(
-            requireContext(), requireActivity().packageName + "" +
-                    ".provider", sFile
-        )
-        intent.setDataAndType(uri, "application/pdf")
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        return intent
-    }
 
 }

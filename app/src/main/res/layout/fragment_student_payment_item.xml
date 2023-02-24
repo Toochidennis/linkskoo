@@ -11,7 +11,6 @@
     <androidx.cardview.widget.CardView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/color_5"
         app:cardCornerRadius="40dp"
@@ -30,7 +29,7 @@
         android:id="@+id/payment_session"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="65dp"
+        android:layout_marginStart="55dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
         android:textColor="@android:color/black"
@@ -41,7 +40,7 @@
         android:id="@+id/payment_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="65dp"
+        android:layout_marginStart="55dp"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/montserrat"
         android:textColor="@color/gray"
@@ -54,8 +53,9 @@
         android:layout_gravity="end"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/montserrat"
         android:textColor="@android:color/black"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:textStyle="bold" />
 
     <TextView
