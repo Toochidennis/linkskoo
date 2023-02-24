@@ -84,8 +84,7 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
             sE.printStackTrace();
         }
 
-        ((AppCompatActivity) (Objects.requireNonNull(
-                getActivity()))).setSupportActionBar(toolbar);
+        ((AppCompatActivity) (requireActivity())).setSupportActionBar(toolbar);
         ActionBar actionBar =
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
         assert actionBar != null;
@@ -107,7 +106,7 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
         new Handler().postDelayed((Runnable) () -> {
             CustomLoadingView customLoadingView =
                     new CustomLoadingView(
-                            Objects.requireNonNull(getActivity()));
+                            requireActivity());
 
             customLoadingView.setCancelable(false);
             customLoadingView.show();
@@ -118,7 +117,7 @@ public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearCl
             new Handler().postDelayed(() -> {
                 CBTConfirmationDialog confirmationDialog =
                         new CBTConfirmationDialog(
-                                Objects.requireNonNull(getContext()),
+                                requireContext(),
                                 mCourseName,
                                 exam.getYear());
                 confirmationDialog.setCancelable(false);

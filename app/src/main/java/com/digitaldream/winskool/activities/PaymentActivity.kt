@@ -63,7 +63,9 @@ open class PaymentActivity : AppCompatActivity() {
             ).commit()
 
             "fee_details" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, StudentFeesDetailsFragment()
+                /* containerViewId = */
+                R.id.fragment_container, /* fragment = */
+                StudentFeesDetailsFragment.newInstance(term!!),
             ).commit()
 
             "settings" -> supportFragmentManager.beginTransaction().replace(

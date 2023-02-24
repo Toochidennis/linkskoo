@@ -116,4 +116,7 @@
     <string name="pay_now">Pay Now!</string>
     <string name="view_details">View Details</string>
     <string name="paid">Paid!</string>
+    <string name="first_term">First Term</string>
+    <string name="second_term">Second Term</string>
+    <string name="third_term">Third Term</string>
 </resources>

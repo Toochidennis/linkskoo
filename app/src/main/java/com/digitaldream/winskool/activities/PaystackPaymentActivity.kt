@@ -39,6 +39,7 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
     private var mLevelName: String? = null
     private var mYear: String? = null
     private var mTerm: String? = null
+    private var mSession: String? = null
     private var mDb: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +59,10 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         val reference = intent.getStringExtra("reference")
         val authorizationURL = intent.getStringExtra("url")
         val transactionId = intent.getStringExtra("transaction_id")
+        mSession = intent.getStringExtra("session")
+        mTerm = intent.getStringExtra("term")
+        mYear = intent.getStringExtra("year")
+        val amount = intent.getStringExtra("amount")
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
 
@@ -78,18 +83,21 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         mSchoolName = sharedPreferences.getString("school_name", "")
         mClassName = sharedPreferences.getString("student_class", "")
         mLevelName = sharedPreferences.getString("level_name", "")
-        mYear = sharedPreferences.getString("year", "")
-        mTerm = sharedPreferences.getString("term", "")
         mDb = sharedPreferences.getString("db", "")
 
-        loadCheckOut(authorizationURL!!, reference!!, transactionId!!)
+        loadCheckOut(authorizationURL!!, reference!!, transactionId!!, amount!!)
 
         writeReceipt()
 
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun loadCheckOut(authorizationURL: String, sReference: String, sTransactionId: String) {
+    private fun loadCheckOut(
+        authorizationURL: String,
+        sReference: String,
+        sTransactionId: String,
+        sAmount: String,
+    ) {
         val webView: WebView = findViewById(R.id.web_view)
         val card: NestedScrollView = findViewById(R.id.receipt_view)
 
@@ -103,12 +111,12 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
             @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(
                 view: WebView?,
-                url: String?
+                url: String?,
             ): Boolean {
-                postReferenceNumber(sReference, sTransactionId)
+                postReferenceNumber(sReference, sTransactionId, sAmount)
                 webView.isVisible = false
                 card.isVisible = true
-                generateReceipt(sReference)
+                generateReceipt(sReference, sAmount)
                 return false
             }
         }
@@ -116,7 +124,7 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         webView.loadUrl(authorizationURL)
     }
 
-    private fun postReferenceNumber(sReference: String, sTransactionId: String) {
+    private fun postReferenceNumber(sReference: String, sTransactionId: String, sAmount: String) {
         val url = Login.urlBase + "/manageReceipts.php"
         val stringRequest: StringRequest = object : StringRequest(
             Method.POST, url,
@@ -128,13 +136,13 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
             }) {
             override fun getParams(): Map<String, String> {
                 val stringMap: MutableMap<String, String> = HashMap()
-                stringMap["tid"] = sTransactionId
+                stringMap["invoice_id"] = sTransactionId
                 stringMap["student_id"] = mStudentId!!
                 stringMap["class"] = mClassId!!
                 stringMap["level"] = mLevelId!!
                 stringMap["reg_no"] = mRegistrationNumber!!
                 stringMap["name"] = mStudentName!!
-                stringMap["amount"] = "10000"
+                stringMap["amount"] = sAmount
                 stringMap["date"] = getDate()
                 stringMap["reference"] = sReference
                 stringMap["year"] = mYear!!
@@ -147,7 +155,7 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         requestQueue.add(stringRequest)
     }
 
-    private fun generateReceipt(sReference: String) {
+    private fun generateReceipt(sReference: String, sAmount: String) {
         val schoolName: TextView = findViewById(R.id.school_name)
         val amount: TextView = findViewById(R.id.paid_amount)
         val status: TextView = findViewById(R.id.status)
@@ -161,15 +169,23 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         val referenceNumber: TextView = findViewById(R.id.reference_number)
 
         schoolName.text = mSchoolName
-        amount.text = getString(R.string.zero_balance)
+        amount.text = String.format(
+            Locale.getDefault(), "%s%s", getString(R.string.naira),
+            UtilsFun.currencyFormat(sAmount.toDouble())
+        )
         status.text = getString(R.string.success)
         date.text = getDate()
         name.text = UtilsFun.capitaliseFirstLetter(mStudentName!!)
         level.text = mLevelName
         studentClass.text = mClassName
         studentRegNo.text = mRegistrationNumber
-        session.text = ""
-        term.text = mTerm
+        session.text = mSession
+        when (mTerm) {
+            "1" -> term.text = getString(R.string.first_term)
+            "2" -> term.text = getString(R.string.second_term)
+            "3" -> term.text = getString(R.string.third_term)
+        }
+
         referenceNumber.text = sReference
     }
 

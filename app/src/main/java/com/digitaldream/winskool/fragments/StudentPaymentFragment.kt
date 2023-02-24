@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -37,7 +36,6 @@ import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.PaymentEmailDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
 import com.digitaldream.winskool.utils.UtilsFun
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.http.client.HttpClient
@@ -67,22 +65,31 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     private lateinit var mHistoryMessage: TextView
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
-    private lateinit var mFirstTermCard: CardView
-    private lateinit var mSecondTermCard: CardView
-    private lateinit var mThirdTermCard: CardView
+    private lateinit var mFirstTermTitle: TextView
+    private lateinit var mSecondTermTitle: TextView
+    private lateinit var mThirdTermTitle: TextView
 
     private lateinit var mAdapter: StudentPaymentAdapter
     private var mStudentId: String? = null
     private var mDb: String? = null
+    private var mFirstTerm: String? = null
+    private var mSecondTerm: String? = null
+    private var mThirdTerm: String? = null
     private var mInvoiceId: String? = null
     private var mFirstAmount: String? = null
+    private var mSecondAmount: String? = null
+    private var mThirdAmount: String? = null
+    private var clickedValue: String? = null
+    private var mSession: String? = null
+    private var mYear: String? = null
+    private var mTerm: String? = null
     private val mHistoryList = mutableListOf<StudentPaymentModel>()
 
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(
@@ -105,9 +112,9 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         mHistoryMessage = view.findViewById(R.id.history_error_message)
         mErrorMessage = view.findViewById(R.id.error_message)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
-        mFirstTermCard = view.findViewById(R.id.first_term_card)
-        mSecondTermCard = view.findViewById(R.id.second_term_card)
-        mThirdTermCard = view.findViewById(R.id.third_term_card)
+        mFirstTermTitle = view.findViewById(R.id.first_term_fee_title)
+        mSecondTermTitle = view.findViewById(R.id.second_term_fee_title)
+        mThirdTermTitle = view.findViewById(R.id.third_term_fee_title)
 
         val sharedPreferences = requireContext().getSharedPreferences(
             "loginDetail", Context
@@ -123,19 +130,15 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
             setNavigationOnClickListener { requireActivity().onBackPressed() }
         }
 
-        mFirstTermViewDetails.setOnClickListener {
-            startActivity(
-                Intent(activity, PaymentActivity::class.java)
-                    .putExtra("from", "fee_details")
-            )
-        }
-
         mAdapter = StudentPaymentAdapter(mHistoryList, this)
         mRecyclerView.hasFixedSize()
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mRecyclerView.adapter = mAdapter
 
         makePayment(studentEmail!!)
+
+        viewDetails()
+
         refreshData()
 
         return view
@@ -149,8 +152,45 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
 
     private fun makePayment(studentEmail: String) {
         mFirstTermPayBtn.setOnClickListener {
+            clickedValue = "1"
             if (studentEmail.isNotBlank()) {
-                requestURL(studentEmail)
+                requestURL(studentEmail, mFirstAmount!!.toLong())
+            } else {
+                val emailDialog = PaymentEmailDialog(requireContext(), this)
+                    .apply {
+                        setCancelable(true)
+                        show()
+                    }
+                val window = emailDialog.window
+                window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+        }
+
+        mSecondTermPayBtn.setOnClickListener {
+            clickedValue = "2"
+            if (studentEmail.isNotBlank()) {
+                requestURL(studentEmail, mSecondAmount!!.toLong())
+            } else {
+                val emailDialog = PaymentEmailDialog(requireContext(), this)
+                    .apply {
+                        setCancelable(true)
+                        show()
+                    }
+                val window = emailDialog.window
+                window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+        }
+
+        mThirdTermPayBtn.setOnClickListener {
+            clickedValue = "3"
+            if (studentEmail.isNotBlank()) {
+                requestURL(studentEmail, mThirdAmount!!.toLong())
             } else {
                 val emailDialog = PaymentEmailDialog(requireContext(), this)
                     .apply {
@@ -167,11 +207,11 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun requestURL(sStudentEmail: String) {
+    private fun requestURL(sStudentEmail: String, sAmount: Long) {
         val builder = StringBuilder()
         val json = JSONObject()
             .put("email", sStudentEmail)
-            .put("amount", "${mFirstAmount!!.toLong() * 100}")
+            .put("amount", "${sAmount * 100}")
         val url = "https://api.paystack.co/transaction/initialize"
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -209,6 +249,15 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                         intent.putExtra("url", authorizationURL)
                         intent.putExtra("reference", reference)
                         intent.putExtra("transaction_id", mInvoiceId)
+                        intent.putExtra("session", mSession)
+                        intent.putExtra("term", mTerm)
+                        intent.putExtra("year", mYear)
+
+                        when (clickedValue) {
+                            "1" -> intent.putExtra("amount", mFirstAmount)
+                            "2" -> intent.putExtra("amount", mSecondAmount)
+                            else -> intent.putExtra("amount", mThirdAmount)
+                        }
                         startActivity(intent)
                     }
                     else -> throw Exception("Can't generate url")
@@ -240,29 +289,100 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                     val jsonObject = JSONObject(response)
                     val receiptsArray = jsonObject.getJSONArray("receipts")
                     val invoiceArray = jsonObject.getJSONArray("invoice")
-                    var firstTermAmount = ""
 
                     for (i in 0 until invoiceArray.length()) {
                         val invoiceObjects = invoiceArray.getJSONObject(i)
                         mInvoiceId = invoiceObjects.getString("tid")
-                        mFirstAmount = invoiceObjects.getString("amount")
-                        UtilsFun.currencyFormat(
-                            mFirstAmount!!.toDouble()
-                        ).also { firstTermAmount = it }
+                        val amount = invoiceObjects.getString("amount")
+                        mYear = invoiceObjects.getString("year")
+                        mTerm = invoiceObjects.getString("term")
+
+                        val previousYear = mYear!!.toInt() - 1
+                        mSession =
+                            String.format(Locale.getDefault(), "%d/%s", previousYear, mYear)
+
+                        when (mTerm) {
+                            "1" -> {
+                                mFirstAmount = amount.replace(".00", "")
+                                mFirstTerm = mTerm
+
+                                mFirstTermTitle.text = String.format(
+                                    Locale.getDefault(), "%s " +
+                                            "%s", mSession, "First Term Fees"
+                                )
+                            }
+
+                            "2" -> {
+                                mSecondAmount = amount.replace(".00", "")
+                                mSecondTerm = mTerm
+
+                                mSecondTermTitle.text = String.format(
+                                    Locale.getDefault(), "%s " +
+                                            "%s", mSession, "Second Term Fees"
+                                )
+                            }
+                            else -> {
+                                mThirdAmount = amount.replace(".00", "")
+                                mThirdTerm = mTerm
+
+                                mThirdTermTitle.text = String.format(
+                                    Locale.getDefault(), "%s " +
+                                            "%s", mSession, "Third Term Fees"
+                                )
+                            }
+                        }
+
                     }
 
-                    if (firstTermAmount.isNotBlank()) {
+                    if (mFirstAmount == "" || mFirstAmount == null) {
+                        mFirstTermAmount.text = getString(R.string.paid)
+                        mFirstTermPayBtn.isVisible = false
+                        mFirstTermViewDetails.isVisible = false
+                    } else {
                         String.format(
                             Locale.getDefault(), "%s%s",
-                            getString(R.string.naira), firstTermAmount
+                            getString(R.string.naira),
+                            UtilsFun.currencyFormat(
+                                mFirstAmount!!.toDouble()
+                            )
                         ).also { mFirstTermAmount.text = it }
 
                         mFirstTermPayBtn.isVisible = true
                         mFirstTermViewDetails.isVisible = true
+                    }
+
+                    if (mSecondAmount == null || mSecondAmount == "") {
+                        mSecondTermAmount.text = getString(R.string.paid)
+                        mSecondTermPayBtn.isVisible = false
+                        mSecondTermViewDetails.isVisible = false
                     } else {
-                        mFirstTermAmount.text = getString(R.string.paid)
-                        mFirstTermPayBtn.isVisible = false
-                        mFirstTermViewDetails.isVisible = false
+                        String.format(
+                            Locale.getDefault(), "%s%s",
+                            getString(R.string.naira),
+                            UtilsFun.currencyFormat(
+                                mSecondAmount!!.toDouble()
+                            )
+                        ).also { mSecondTermAmount.text = it }
+
+                        mSecondTermPayBtn.isVisible = true
+                        mSecondTermViewDetails.isVisible = true
+                    }
+
+                    if (mThirdAmount == "" || mThirdAmount == null) {
+                        mThirdTermAmount.text = getString(R.string.paid)
+                        mThirdTermPayBtn.isVisible = false
+                        mThirdTermViewDetails.isVisible = false
+                    } else {
+                        String.format(
+                            Locale.getDefault(), "%s%s",
+                            getString(R.string.naira),
+                            UtilsFun.currencyFormat(
+                                mThirdAmount!!.toDouble()
+                            )
+                        ).also { mThirdTermAmount.text = it }
+
+                        mThirdTermPayBtn.isVisible = true
+                        mThirdTermViewDetails.isVisible = true
                     }
 
 
@@ -304,6 +424,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                         paymentModel.setStatus("Success")
 
                         mHistoryList.add(paymentModel)
+                        mHistoryList.sortByDescending { it.getDate() }
                     }
 
                 } catch (e: Exception) {
@@ -342,8 +463,33 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         requestQueue.add(stringRequest)
     }
 
+    private fun viewDetails() {
+        mFirstTermViewDetails.setOnClickListener {
+            startActivity(
+                Intent(activity, PaymentActivity::class.java)
+                    .putExtra("from", "fee_details")
+                    .putExtra("term", mFirstTerm)
+            )
+        }
+
+        mSecondTermViewDetails.setOnClickListener {
+            startActivity(
+                Intent(activity, PaymentActivity::class.java)
+                    .putExtra("from", "fee_details")
+                    .putExtra("term", mSecondTerm)
+            )
+        }
+
+        mThirdTermViewDetails.setOnClickListener {
+            startActivity(
+                Intent(activity, PaymentActivity::class.java)
+                    .putExtra("from", "fee_details")
+                    .putExtra("term", mThirdTerm)
+            )
+        }
+    }
+
     override fun onHistoryClick(position: Int) {
-        Snackbar.make(requireView(), "You clicked me", Snackbar.LENGTH_SHORT).show()
         val paymentModel = mHistoryList[position]
         val amount = paymentModel.getAmount()
         val reference = paymentModel.getReferenceNumber()
@@ -373,8 +519,11 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
             .putString("student_email", input)
             .apply()
 
-        requestURL(input)
-
+        when (clickedValue) {
+            "1" -> requestURL(input, mFirstAmount!!.toLong())
+            "2" -> requestURL(input, mSecondAmount!!.toLong())
+            else -> requestURL(input, mThirdAmount!!.toLong())
+        }
     }
 
     override fun onResume() {

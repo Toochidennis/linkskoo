@@ -75,7 +75,6 @@
                             android:layout_toEndOf="@+id/icon"
                             android:fontFamily="@font/montserrat"
                             android:gravity="center_horizontal"
-                            android:text="2022/2023 First Term Fees"
                             android:textColor="@color/icons_color"
                             android:textSize="14sp" />
 
@@ -168,7 +167,7 @@
                             app:tint="@color/white" />
 
                         <TextView
-                            android:id="@+id/debt_fee_title"
+                            android:id="@+id/second_term_fee_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
@@ -177,7 +176,6 @@
                             android:layout_toEndOf="@+id/debt_icon"
                             android:fontFamily="@font/montserrat"
                             android:gravity="center_horizontal"
-                            android:text="2022/2023 Second Term Fees"
                             android:textColor="@color/icons_color"
                             android:textSize="14sp" />
 
@@ -185,7 +183,7 @@
                             android:id="@+id/second_term_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/debt_fee_title"
+                            android:layout_below="@id/second_term_fee_title"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="10dp"
                             android:layout_toEndOf="@id/debt_icon"
@@ -270,7 +268,7 @@
                             app:tint="@color/white" />
 
                         <TextView
-                            android:id="@+id/debt_fee_title_3"
+                            android:id="@+id/third_term_fee_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
@@ -279,7 +277,6 @@
                             android:layout_toEndOf="@+id/debt_icon_3"
                             android:fontFamily="@font/montserrat"
                             android:gravity="center_horizontal"
-                            android:text="2022/2023 Third Term Fees"
                             android:textColor="@color/icons_color"
                             android:textSize="14sp" />
 
@@ -287,7 +284,7 @@
                             android:id="@+id/third_term_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/debt_fee_title_3"
+                            android:layout_below="@id/third_term_fee_title"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="10dp"
                             android:layout_toEndOf="@id/debt_icon_3"
