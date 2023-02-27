@@ -43,7 +43,7 @@ class TermlyFeeDialog(
         when (sCurrentText) {
             "JSS 1" -> {
                 jss1Btn.apply {
-                    setBackgroundResource(R.drawable.ripple_effect2)
+                    //setBackgroundResource(R.drawable.ripple_effect2)
                     setTextColor(ContextCompat.getColor(sContext, R.color.white))
                 }
             }
