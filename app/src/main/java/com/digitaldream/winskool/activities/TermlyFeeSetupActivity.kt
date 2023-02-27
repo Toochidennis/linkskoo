@@ -121,13 +121,14 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
             )
         )
         mRefreshLayout.setOnRefreshListener {
-            mFeeTotal.text = getString(R.string.zero_balance)
+            refreshData()
             mRefreshLayout.isRefreshing = false
         }
 
     }
 
     private fun refreshData() {
+        getTermFees(mLevelId!!)
         mTermFeesList.clear()
     }
 
@@ -141,7 +142,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
         val url =
-            Login.urlBase + "/manageTermFees.php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
+            "${Login.urlBase}/manageTermFees.php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
         val stringRequest: StringRequest = object : StringRequest(
             Method.GET,
             url,
@@ -202,9 +203,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     }
 
     private fun openDialog() {
-
         mLevelText.setOnClickListener {
-
             val termFeeDialog = TermlyFeeDialog(
                 this@TermlyFeeSetupActivity,
                 this@TermlyFeeSetupActivity,
