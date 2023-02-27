@@ -25,7 +25,7 @@ class StudentPaymentSliderAdapter(
         val layoutInflater =
             sContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view =
-            layoutInflater.inflate( R.layout.fragment_student_payment_scroll_view_item, null)
+            layoutInflater.inflate(R.layout.fragment_student_payment_slider_item, null)
 
         val sessionTitle: TextView = view.findViewById(R.id.session_title)
         val termAmount: TextView = view.findViewById(R.id.term_amount)

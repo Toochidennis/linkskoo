@@ -58,6 +58,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     private lateinit var mTermView: RelativeLayout
     private lateinit var mHistoryRecyclerView: RecyclerView
     private lateinit var mHistoryMessage: TextView
+    private lateinit var mHistoryImage: ImageView
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
     private lateinit var mViewPager: ViewPager
@@ -94,6 +95,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         mTermView = view.findViewById(R.id.slider_view)
         mHistoryRecyclerView = view.findViewById(R.id.history_recycler)
         mHistoryMessage = view.findViewById(R.id.history_error_message)
+        mHistoryImage = view.findViewById(R.id.error_image)
         mErrorMessage = view.findViewById(R.id.error_message)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
         mViewPager = view.findViewById(R.id.card_pager)
@@ -122,7 +124,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         mViewPager.adapter = mCardAdapter
 
         Timer().apply {
-            scheduleAtFixedRate(CardTimer(), 1000, 3000)
+            scheduleAtFixedRate(CardTimer(), 1000, 5000)
         }
 
         mTabLayout.setupWithViewPager(mViewPager, true)
@@ -301,12 +303,14 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                     }
                     if (mHistoryList.isEmpty()) {
                         mHistoryMessage.isVisible = true
+                        mHistoryImage.isVisible = true
                         mHistoryMessage.text = getString(R.string.no_history)
                         mMainView.isVisible = true
                         mErrorMessage.isVisible = false
                         mRefreshBtn.isVisible = false
                     } else {
                         mHistoryMessage.isVisible = false
+                        mHistoryImage.isVisible = false
                         mMainView.isVisible = true
                         mErrorMessage.isVisible = false
                         mRefreshBtn.isVisible = false
