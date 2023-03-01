@@ -316,7 +316,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                         mRefreshBtn.isVisible = false
                     }
 
-                    mHistoryAdapter.notifyDataSetChanged()
+                    mHistoryAdapter.notifyItemChanged(mHistoryList.size - 1)
                 }
 
             }, { error: VolleyError ->

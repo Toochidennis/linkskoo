@@ -26,7 +26,6 @@ import com.digitaldream.winskool.NewsAdapter;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.fragments.AdminDashbordFragment;
 import com.digitaldream.winskool.fragments.AdminELearning;
-import com.digitaldream.winskool.fragments.AdminPaymentFragment;
 import com.digitaldream.winskool.fragments.AdminResultFragment;
 import com.digitaldream.winskool.fragments.ELibraryFragment;
 import com.digitaldream.winskool.fragments.FlashCardList;

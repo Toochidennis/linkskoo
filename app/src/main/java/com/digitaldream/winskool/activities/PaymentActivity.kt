@@ -25,7 +25,7 @@ open class PaymentActivity : AppCompatActivity() {
         when (intent.getStringExtra("from")) {
 
             "dashboard" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AdminPaymentFragment()
+                R.id.fragment_container, AdminPaymentDashboardFragment()
             ).commit()
 
             "transactions" -> supportFragmentManager.beginTransaction().replace(
@@ -78,6 +78,10 @@ open class PaymentActivity : AppCompatActivity() {
 
             "account_settings" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, AccountSetupFragment()
+            ).commit()
+
+            "see_all" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, AdminTransactionHistoryFragment()
             ).commit()
         }
 

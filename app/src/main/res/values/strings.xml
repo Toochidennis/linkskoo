@@ -121,4 +121,6 @@
     <string name="third_term">Third Term</string>
     <string name="thanks_for_paying">Thanks for paying!</string>
     <string name="payment_history">Payment History</string>
+    <string name="school_fees">School Fees</string>
+    <string name="expenditure">Expenditure</string>
 </resources>

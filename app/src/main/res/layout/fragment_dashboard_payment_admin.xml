@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.AdminPaymentDashboardFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        ads:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:layout_constraintTop_toBottomOf="@id/appBar">
+
+        <LinearLayout
+            android:id="@+id/dashboard_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/dashboard_card"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_margin="15dp"
+                android:backgroundTint="@color/color_5"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/revenue_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Expected Revenue"
+                        android:textColor="@color/icons_color"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/expected_revenue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/revenue_label"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/zero_balance"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/received_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/expected_revenue"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Received"
+                        android:textColor="@color/icons_color"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/debt_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/expected_revenue"
+                        android:layout_alignBaseline="@id/received_label"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/received_label"
+                        android:fontFamily="@font/montserrat"
+                        android:gravity="end"
+                        android:text="Debt"
+                        android:textColor="@color/icons_color"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/received_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/received_label"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/zero_balance"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/debt_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/debt_label"
+                        android:layout_alignBaseline="@id/received_balance"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/received_balance"
+                        android:fontFamily="@font/montserrat"
+                        android:gravity="end"
+                        android:text="@string/zero_balance"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/montserrat_alternates"
+                android:text="Record"
+                android:textColor="@color/text_bg_color"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <Button
+                    android:id="@+id/receipt_btn"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="85dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_bg"
+                    android:backgroundTint="@color/color_5"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_receipt"
+                    android:drawableTint="@color/white"
+                    android:elevation="10dp"
+                    android:focusable="true"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="10dp"
+                    android:text="Receipt"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/expenditure_btn"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="85dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_bg"
+                    android:backgroundTint="@color/color_10"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_expenditure"
+                    android:drawableTint="@color/white"
+                    android:elevation="10dp"
+                    android:focusable="true"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="10dp"
+                    android:text="@string/expenditure"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/history_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp">
+
+                <TextView
+                    android:id="@+id/history_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:text="Transaction History"
+                    android:textColor="@color/text_bg_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/see_all_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    app:cardCornerRadius="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@color/text_bg_color"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="@string/see_all"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/transaction_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/history_text"
+                    android:layout_marginTop="@dimen/dimen_10"
+                    android:layout_marginBottom="55dp"
+                    android:clipToPadding="true" />
+
+                <ImageView
+                    android:id="@+id/error_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="150dp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/baseline_money_off_24"
+                    android:visibility="gone"
+                    app:tint="@color/color_7" />
+
+                <TextView
+                    android:id="@+id/transaction_error_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="200dp"
+                    android:layout_marginEnd="0dp"
+                    android:fontFamily="@font/montserrat"
+                    android:lines="2"
+                    android:text="@string/can_not_retrieve"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_bg_color"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:fontFamily="@font/montserrat"
+        android:lines="2"
+        android:text="@string/can_not_retrieve"
+        android:textAlignment="center"
+        android:textColor="@color/text_bg_color"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+    <Button
+        android:id="@+id/refresh_btn"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/error_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ripple_effect"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/refresh_layout"
+        android:textColor="@color/color_5"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/error_message" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
