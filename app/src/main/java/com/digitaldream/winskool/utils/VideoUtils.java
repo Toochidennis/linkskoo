@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.utils;
 
 import android.content.Intent;
 import androidx.appcompat.app.ActionBar;
@@ -9,7 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.VideoPlayerRecyclerView;
+import com.digitaldream.winskool.activities.YoutubePlayerActivity;
 import com.digitaldream.winskool.adapters.VideoAdapter;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.VideoTable;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -63,7 +67,7 @@ public class VideoUtils extends AppCompatActivity implements VideoAdapter.OnVide
 
     @Override
     public void onVideoItemClick(int position) {
-        Intent intent = new Intent(this,YoutubePlayerActivity.class);
+        Intent intent = new Intent(this, YoutubePlayerActivity.class);
         VideoTable vt = new VideoTable();
         vt.setVideoTitle(videoList.get(position).getVideoTitle());
         vt.setVideoUrl(videoList.get(position).getVideoUrl());

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.CourseAttendance;
 import com.digitaldream.winskool.adapters.CourseAttendanceFragmentAdapter;

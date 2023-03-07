@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.digitaldream.winskool.models.StudentResultDownloadTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.ViewResultWebView;
+import com.digitaldream.winskool.activities.ViewResultWebView;
 
 import java.util.List;
 

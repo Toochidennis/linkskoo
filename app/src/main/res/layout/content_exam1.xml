@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="10dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ExamActivity"
+    tools:context=".activities.ExamActivity"
     tools:showIn="@layout/activity_exam">
 
     <RelativeLayout

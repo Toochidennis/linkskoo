@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.digitaldream.winskool.activities.TestUpload;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.models.TestSettingModel;

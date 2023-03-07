@@ -21,13 +21,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.ExamActivity;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.activities.ExamActivity;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.models.ExamQuestions;
 import com.digitaldream.winskool.utils.AsyncTaskResult;
-import com.digitaldream.winskool.utils.UtilsFun;
+import com.digitaldream.winskool.utils.FunctionUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -102,8 +102,8 @@ public class CBTConfirmationDialog extends Dialog {
             sE.printStackTrace();
         }
 
-        examName.setText(UtilsFun.capitaliseFirstLetter(examTypeName));
-        subject.setText(UtilsFun.capitaliseFirstLetter(mCourseName));
+        examName.setText(FunctionUtils.capitaliseFirstLetter(examTypeName));
+        subject.setText(FunctionUtils.capitaliseFirstLetter(mCourseName));
         examYear.setText(mYear);
 
         loadQuestions();

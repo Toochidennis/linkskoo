@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
-import com.digitaldream.winskool.ExamActivity;
+import com.digitaldream.winskool.activities.ExamActivity;
 import com.digitaldream.winskool.models.QViewModel;
 import com.digitaldream.winskool.R;
 

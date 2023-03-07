@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.activities;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.digitaldream.winskool.activities.ElearningCourses;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.ElearningLevelAdapter;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.LevelTable;

@@ -10,13 +10,13 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.models.AdminPaymentDashboardModel
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.models.AdminPaymentModel
+import com.digitaldream.winskool.utils.FunctionUtils
 import java.util.*
 
 class AdminTransactionHistoryAdapter(
     private val sContext: Context,
-    private val sTransactionList: MutableList<AdminPaymentDashboardModel>,
+    private val sTransactionList: MutableList<AdminPaymentModel>,
     private val sOnTransactionClickListener: OnTransactionClickListener,
 ) : RecyclerView.Adapter<AdminTransactionHistoryAdapter.ViewHolder>() {
 
@@ -45,7 +45,7 @@ class AdminTransactionHistoryAdapter(
                 holder.mDescription.text = adminModel.getDescription()
                 String.format(
                     Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
-                    UtilsFun.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+                    FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
                 ).also { holder.mTransactionAmount.text = it }
 
             }
@@ -60,7 +60,7 @@ class AdminTransactionHistoryAdapter(
                 holder.mDescription.text = adminModel.getDescription()
                 String.format(
                     Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
-                    UtilsFun.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+                    FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
                 ).also { holder.mTransactionAmount.text = it }
             }
         }

@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.StudentTable;
 
 import java.util.ArrayList;

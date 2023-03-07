@@ -25,7 +25,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.fragments.ClassResultFragment;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.TeachersTable;

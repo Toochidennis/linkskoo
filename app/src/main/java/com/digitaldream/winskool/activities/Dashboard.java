@@ -9,23 +9,26 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.ForceUpdateAsync;
-import com.digitaldream.winskool.NewsAdapter;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.config.ForceUpdateAsync;
+import com.digitaldream.winskool.adapters.NewsAdapter;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.fragments.AdminDashbordFragment;
+import com.digitaldream.winskool.fragments.AdminDashboardFragment;
 import com.digitaldream.winskool.fragments.AdminELearning;
+import com.digitaldream.winskool.fragments.AdminPaymentDashboardFragment;
 import com.digitaldream.winskool.fragments.AdminResultFragment;
 import com.digitaldream.winskool.fragments.ELibraryFragment;
 import com.digitaldream.winskool.fragments.FlashCardList;
@@ -56,7 +59,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsClickListener {
-    private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private List<NewsTable> newsTitleList;
@@ -72,15 +74,13 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
     private BottomNavigationView bottomNavigationView;
     public static String check = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         check = "";
 
-
-        setSupportActionBar(toolbar);
+        //  setSupportActionBar(toolbar);
         Intent i = getIntent();
         String from = i.getStringExtra("from");
         databaseHelper = new DatabaseHelper(this);
@@ -94,10 +94,42 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        /*getSupportActionBar().setTitle("Dashboard");
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);*/
+
+        addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.settings_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.settings:
+                        startActivity(new Intent(Dashboard.this, Settings.class));
+                        return true;
+                    case R.id.setup:
+                        startActivity(
+                                new Intent(Dashboard.this, PaymentActivity.class).putExtra
+                                        ("from", "settings")
+                        );
+                        return true;
+                    case R.id.info:
+                        ContactUsDialog dialog = new ContactUsDialog(Dashboard.this);
+                        dialog.show();
+                        Window window = dialog.getWindow();
+                        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                        return true;
+
+                    case android.R.id.home:
+                        drawerLayout.openDrawer(GravityCompat.START);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         drawerLayout.setDescendantFocusability(
@@ -135,7 +167,6 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
             e.printStackTrace();
         }*/
 
-
         if (!user_name.equals("null")) {
             try {
                 user_name = user_name.substring(0,
@@ -172,7 +203,7 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                     R.id.student_dashboard).setChecked(true);
             getSupportFragmentManager().beginTransaction().replace(
                     R.id.fragment_container,
-                    new AdminDashbordFragment()).commit();
+                    new AdminDashboardFragment()).commit();
         }
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
@@ -214,16 +245,18 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
             }
 
         });
-        navigationView.getMenu().getItem(0).setChecked(true);
 
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.student_dashboard:
+
                     getSupportFragmentManager().beginTransaction().replace(
                             R.id.fragment_container,
-                            new AdminDashbordFragment()).commit();
+                            new AdminDashboardFragment()).commit();
                     return true;
+
                 case R.id.student_results:
                     getSupportFragmentManager().beginTransaction().replace(
                             R.id.fragment_container,
@@ -231,11 +264,12 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                     return true;
 
                 case R.id.payment:
-                    /*getSupportFragmentManager().beginTransaction().replace(
+                    getSupportFragmentManager().beginTransaction().replace(
                             R.id.fragment_container,
-                            new AdminPaymentFragment()).commit();*/
-                    startActivity(new Intent(this, PaymentActivity.class).putExtra("from",
-                            "dashboard"));
+                            new AdminPaymentDashboardFragment()).commit();
+
+                    /*startActivity(new Intent(this, PaymentActivity.class).putExtra("from",
+                            "dashboard"));*/
                     return true;
                 case R.id.student_library:
                     getSupportFragmentManager().beginTransaction().replace(
@@ -251,37 +285,7 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
             }
             return false;
         });
-
-
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.settings_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
-                break;
-            case R.id.settings:
-                Intent i = new Intent(Dashboard.this, Settings.class);
-                startActivity(i);
-                break;
-            case R.id.info:
-                ContactUsDialog dialog = new ContactUsDialog(this);
-                dialog.show();
-                Window window = dialog.getWindow();
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                break;
-        }
-        return true;
-    }
-
 
     @Override
     public void onNewsClick(int position) {
@@ -289,6 +293,93 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         Intent intent = new Intent(this, NewsPage.class);
         intent.putExtra("newsId", newsTitleList.get(position).getNewsId());
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (fromLogin && isFirstTime) {
+            dialog = new ContactUsDialog(this);
+            dialog.show();
+            Window window = dialog.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            isFirstTime = false;
+        } else {
+            forceUpdate();
+
+        }
+
+        navigationView.getMenu().getItem(0).setChecked(true);
+
+        /*int seletedItemId = bottomNavigationView.getSelectedItemId();
+        switch (seletedItemId){
+                case R.id.student_dashboard:
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new AdminDashbordFragment())
+                    .commit();
+                    break;
+                case R.id.student_results:
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new AdminResultFragment()).commit();
+                    break;
+
+                case R.id.flashcard:
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new FlashCardList()).commit();
+                    break;
+                case R.id.student_cbt:
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new ExamFragment()).commit();
+                    break;
+
+                case R.id.student_elearning:
+                    getSupportFragmentManager().beginTransaction().replace(R
+                    .id.fragment_container,new AdminElearning()).commit();
+                    break;
+
+        }*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        int selectedItemId = bottomNavigationView.getSelectedItemId();
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (R.id.student_dashboard != selectedItemId) {
+            setHomeItem(Dashboard.this);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public void forceUpdate() {
+        PackageManager packageManager = this.getPackageManager();
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String currentVersion = packageInfo.versionName;
+        new ForceUpdateAsync(currentVersion, Dashboard.this).execute();
+    }
+
+
+    public String stripHtml(String html) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
+        } else {
+            return Html.fromHtml(html).toString();
+        }
+    }
+
+    public void setHomeItem(Activity activity) {
+
+        BottomNavigationView bottomNavigationView = activity.findViewById(
+                R.id.bottom_navigation_student);
+        bottomNavigationView.setSelectedItemId(R.id.student_dashboard);
+
     }
 
     private void logout() {
@@ -341,92 +432,6 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         Intent intent = new Intent(Dashboard.this, Login.class);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (fromLogin && isFirstTime) {
-            dialog = new ContactUsDialog(this);
-            dialog.show();
-            Window window = dialog.getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            isFirstTime = false;
-        } else {
-            forceUpdate();
-
-        }
-        navigationView.getMenu().getItem(0).setChecked(true);
-
-
-
-        /*int seletedItemId = bottomNavigationView.getSelectedItemId();
-        switch (seletedItemId){
-                case R.id.student_dashboard:
-                    getSupportFragmentManager().beginTransaction().replace(R
-                    .id.fragment_container,new AdminDashbordFragment())
-                    .commit();
-                    break;
-                case R.id.student_results:
-                    getSupportFragmentManager().beginTransaction().replace(R
-                    .id.fragment_container,new AdminResultFragment()).commit();
-                    break;
-
-                case R.id.flashcard:
-                    getSupportFragmentManager().beginTransaction().replace(R
-                    .id.fragment_container,new FlashCardList()).commit();
-                    break;
-                case R.id.student_cbt:
-                    getSupportFragmentManager().beginTransaction().replace(R
-                    .id.fragment_container,new ExamFragment()).commit();
-                    break;
-
-                case R.id.student_elearning:
-                    getSupportFragmentManager().beginTransaction().replace(R
-                    .id.fragment_container,new AdminElearning()).commit();
-                    break;
-
-        }*/
-    }
-
-    @Override
-    public void onBackPressed() {
-        int seletedItemId = bottomNavigationView.getSelectedItemId();
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (R.id.student_dashboard != seletedItemId) {
-            setHomeItem(Dashboard.this);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    public void forceUpdate() {
-        PackageManager packageManager = this.getPackageManager();
-        PackageInfo packageInfo = null;
-        try {
-            packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        String currentVersion = packageInfo.versionName;
-        new ForceUpdateAsync(currentVersion, Dashboard.this).execute();
-    }
-
-
-    public String stripHtml(String html) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
-        } else {
-            return Html.fromHtml(html).toString();
-        }
-    }
-
-    public static void setHomeItem(Activity activity) {
-        BottomNavigationView bottomNavigationView = activity.findViewById(
-                R.id.bottom_navigation_student);
-        bottomNavigationView.setSelectedItemId(R.id.student_dashboard);
     }
 
 }

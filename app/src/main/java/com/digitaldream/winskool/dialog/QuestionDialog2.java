@@ -28,7 +28,7 @@ import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.activities.TestUpload;
 import com.digitaldream.winskool.adapters.OptionsAdapter2;
 import com.digitaldream.winskool.adapters.QuestionAdapter2;
-import com.digitaldream.winskool.ExamActivity;
+import com.digitaldream.winskool.activities.ExamActivity;
 import com.digitaldream.winskool.models.OptionsModel;
 import com.digitaldream.winskool.models.QuestionsModel;
 import com.digitaldream.winskool.R;

@@ -4,27 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import cc.cloudist.acplibrary.ACProgressConstant
-import cc.cloudist.acplibrary.ACProgressFlower
-import com.android.volley.RequestQueue
+import com.android.volley.Request
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.BuildConfig
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
@@ -35,7 +28,10 @@ import com.digitaldream.winskool.adapters.StudentPaymentSliderAdapter
 import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.PaymentEmailDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
+import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,7 +65,6 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     private lateinit var mHistoryAdapter: StudentPaymentAdapter
     private lateinit var mCardAdapter: StudentPaymentSliderAdapter
     private var mStudentId: String? = null
-    private var mDb: String? = null
     private var mInvoiceId: String? = null
     private var mAmount: String? = null
     private var mStudentEmail: String? = null
@@ -105,7 +100,6 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
             "loginDetail", Context
                 .MODE_PRIVATE
         )
-        mDb = sharedPreferences.getString("db", "")
         mStudentId = sharedPreferences.getString("user_id", "")
         mStudentEmail = sharedPreferences.getString("student_email", "")
 
@@ -198,143 +192,138 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     }
 
     private fun paymentHistory() {
-        val progressFlower = ACProgressFlower.Builder(context)
-            .direction(ACProgressConstant.DIRECT_CLOCKWISE)
-            .textMarginTop(10)
-            .fadeColor(ContextCompat.getColor((context as AppCompatActivity), R.color.color_5))
-            .build()
-        progressFlower.setCancelable(false)
-        progressFlower.setCanceledOnTouchOutside(false)
-        progressFlower.show()
 
         val url = Login.urlBase + "/manageReceipts.php?list=$mStudentId"
-        val stringRequest: StringRequest = object : StringRequest(
-            Method.GET, url,
-            { response: String ->
-                Log.d("TAG", response)
-                progressFlower.dismiss()
+        val hashMap = hashMapOf<String, String>()
 
-                if (response == "[]") {
-                    mErrorMessage.isVisible = true
-                    "Fees not set yet. Check back later!".also { mErrorMessage.text = it }
-                } else {
-                    try {
-                        val jsonObject = JSONObject(response)
-                        if (jsonObject.has("invoice")) {
-                            val invoiceArray = jsonObject.getJSONArray("invoice")
-                            for (i in 0 until invoiceArray.length()) {
-                                val invoiceObjects = invoiceArray.getJSONObject(i)
-                                val invoiceId = invoiceObjects.getString("tid")
-                                val amount = invoiceObjects.getString("amount").replace(".00", "")
-                                val year = invoiceObjects.getString("year")
-                                val term = invoiceObjects.getString("term")
-                                val previousYear = year.toInt() - 1
-                                val session =
-                                    String.format(Locale.getDefault(), "%d/%s", previousYear, year)
-
-                                val paymentModel = StudentPaymentModel()
-                                paymentModel.setInvoiceId(invoiceId)
-                                paymentModel.setAmount(amount)
-                                paymentModel.setAmountT(amount)
-                                paymentModel.setSession(session)
-                                paymentModel.setTerm(term)
-                                mCardList.add(paymentModel)
-                            }
-
-                        }
-                        if (mCardList.isEmpty()) {
-                            mTermView.isVisible = false
-                            mPaidSate.isVisible = true
-                        } else {
-                            mTermView.isVisible = true
-                            mPaidSate.isVisible = false
-                        }
-                        mCardAdapter.notifyDataSetChanged()
-
-                        if (jsonObject.has("receipts")) {
-                            val receiptsArray = jsonObject.getJSONArray("receipts")
-                            for (i in 0 until receiptsArray.length()) {
-                                val receiptsObjects = receiptsArray.getJSONObject(i)
-                                val name = receiptsObjects.getString("name")
-                                val reference = receiptsObjects.getString("reference")
-                                val amount = receiptsObjects.getString("amount")
-                                val date = receiptsObjects.getString("date")
-                                val year = receiptsObjects.getString("year")
-                                val term = when (receiptsObjects.getString("term")) {
-                                    "1" -> "First Term Fees"
-                                    "2" -> "Second Term Fees"
-                                    else -> "Third Term Fees"
-                                }
-                                requireContext().getSharedPreferences(
-                                    "loginDetail",
-                                    Context.MODE_PRIVATE
-                                ).edit()
-                                    .putString(
-                                        "level_name",
-                                        receiptsObjects.getString("level_name")
-                                    )
-                                    .apply()
-                                val previousYear = year.toInt() - 1
-                                val session =
-                                    String.format(Locale.getDefault(), "%d/%s", previousYear, year)
-                                val formattedAmount = UtilsFun.currencyFormat(amount.toDouble())
-
-                                val paymentModel = StudentPaymentModel()
-                                paymentModel.setName(name)
-                                paymentModel.setAmount(
-                                    String.format(
-                                        Locale.getDefault(), "%s%s",
-                                        getString(R.string.naira), formattedAmount
-                                    )
-                                )
-                                paymentModel.setSession(session)
-                                paymentModel.setTerm(term)
-                                paymentModel.setDate(date)
-                                paymentModel.setReferenceNumber(reference)
-                                paymentModel.setStatus("Success")
-
-                                mHistoryList.add(paymentModel)
-                                mHistoryList.sortByDescending { it.getDate() }
-                            }
-                        }
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    if (mHistoryList.isEmpty()) {
-                        mHistoryMessage.isVisible = true
-                        mHistoryImage.isVisible = true
-                        mHistoryMessage.text = getString(R.string.no_history)
-                        mMainView.isVisible = true
-                        mErrorMessage.isVisible = false
-                        mRefreshBtn.isVisible = false
+        requestFromServer(Request.Method.GET, url, requireContext(), hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    if (response == "[]") {
+                        mErrorMessage.isVisible = true
+                        "Fees not set yet. Check back later!".also { mErrorMessage.text = it }
                     } else {
-                        mHistoryMessage.isVisible = false
-                        mHistoryImage.isVisible = false
-                        mMainView.isVisible = true
-                        mErrorMessage.isVisible = false
-                        mRefreshBtn.isVisible = false
-                    }
+                        try {
+                            val jsonObject = JSONObject(response)
+                            if (jsonObject.has("invoice")) {
+                                val invoiceArray = jsonObject.getJSONArray("invoice")
+                                for (i in 0 until invoiceArray.length()) {
+                                    val invoiceObjects = invoiceArray.getJSONObject(i)
+                                    val invoiceId = invoiceObjects.getString("tid")
+                                    val amount =
+                                        invoiceObjects.getString("amount").replace(".00", "")
+                                    val year = invoiceObjects.getString("year")
+                                    val term = invoiceObjects.getString("term")
+                                    val previousYear = year.toInt() - 1
+                                    val session =
+                                        String.format(
+                                            Locale.getDefault(),
+                                            "%d/%s",
+                                            previousYear,
+                                            year
+                                        )
 
-                    mHistoryAdapter.notifyItemChanged(mHistoryList.size - 1)
+                                    val paymentModel = StudentPaymentModel()
+                                    paymentModel.setInvoiceId(invoiceId)
+                                    paymentModel.setAmount(amount)
+                                    paymentModel.setAmountT(amount)
+                                    paymentModel.setSession(session)
+                                    paymentModel.setTerm(term)
+                                    mCardList.add(paymentModel)
+                                }
+                            }
+
+                            if (mCardList.isEmpty()) {
+                                mTermView.isVisible = false
+                                mPaidSate.isVisible = true
+                            } else {
+                                mTermView.isVisible = true
+                                mPaidSate.isVisible = false
+                            }
+                            mCardAdapter.notifyDataSetChanged()
+
+                            if (jsonObject.has("receipts")) {
+                                val receiptsArray = jsonObject.getJSONArray("receipts")
+                                for (i in 0 until receiptsArray.length()) {
+                                    val receiptsObjects = receiptsArray.getJSONObject(i)
+                                    val name = receiptsObjects.getString("name")
+                                    val reference = receiptsObjects.getString("reference")
+                                    val amount = receiptsObjects.getString("amount")
+                                    val date = receiptsObjects.getString("date")
+                                    val year = receiptsObjects.getString("year")
+                                    val term = when (receiptsObjects.getString("term")) {
+                                        "1" -> "First Term Fees"
+                                        "2" -> "Second Term Fees"
+                                        else -> "Third Term Fees"
+                                    }
+                                    requireContext().getSharedPreferences(
+                                        "loginDetail",
+                                        Context.MODE_PRIVATE
+                                    ).edit()
+                                        .putString(
+                                            "level_name",
+                                            receiptsObjects.getString("level_name")
+                                        )
+                                        .apply()
+                                    val previousYear = year.toInt() - 1
+                                    val session =
+                                        String.format(
+                                            Locale.getDefault(),
+                                            "%d/%s",
+                                            previousYear,
+                                            year
+                                        )
+                                    val formattedAmount =
+                                        currencyFormat(amount.toDouble())
+
+                                    val paymentModel = StudentPaymentModel()
+                                    paymentModel.setName(name)
+                                    paymentModel.setAmount(
+                                        String.format(
+                                            Locale.getDefault(), "%s%s",
+                                            getString(R.string.naira), formattedAmount
+                                        )
+                                    )
+                                    paymentModel.setSession(session)
+                                    paymentModel.setTerm(term)
+                                    paymentModel.setDate(date)
+                                    paymentModel.setReferenceNumber(reference)
+                                    paymentModel.setStatus("Success")
+
+                                    mHistoryList.add(paymentModel)
+                                    mHistoryList.sortByDescending { it.getDate() }
+                                }
+                            }
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        if (mHistoryList.isEmpty()) {
+                            mHistoryMessage.isVisible = true
+                            mHistoryImage.isVisible = true
+                            mHistoryMessage.text = getString(R.string.no_history)
+                            mMainView.isVisible = true
+                            mErrorMessage.isVisible = false
+                            mRefreshBtn.isVisible = false
+                        } else {
+                            mHistoryMessage.isVisible = false
+                            mHistoryImage.isVisible = false
+                            mMainView.isVisible = true
+                            mErrorMessage.isVisible = false
+                            mRefreshBtn.isVisible = false
+                        }
+
+                        mHistoryAdapter.notifyItemChanged(mHistoryList.size - 1)
+                    }
                 }
 
-            }, { error: VolleyError ->
-                error.printStackTrace()
-                progressFlower.dismiss()
-                mMainView.isVisible = false
-                mErrorMessage.isVisible = true
-                mErrorMessage.text = getString(R.string.can_not_retrieve)
-                mRefreshBtn.isVisible = true
-            }) {
-            override fun getParams(): Map<String, String> {
-                val stringMap: MutableMap<String, String> = HashMap()
-                stringMap["_db"] = mDb!!
-                return stringMap
-            }
-        }
-        val requestQueue: RequestQueue = Volley.newRequestQueue(requireContext())
-        requestQueue.add(stringRequest)
+                override fun onError(error: VolleyError) {
+                    mMainView.isVisible = false
+                    mErrorMessage.isVisible = true
+                    mErrorMessage.text = getString(R.string.can_not_retrieve)
+                    mRefreshBtn.isVisible = true
+                }
+            })
     }
 
     override fun onHistoryClick(position: Int) {

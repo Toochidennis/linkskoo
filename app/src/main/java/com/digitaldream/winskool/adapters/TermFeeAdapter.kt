@@ -3,25 +3,20 @@ package com.digitaldream.winskool.adapters
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.RequestQueue
+import com.android.volley.Request
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.models.TermFeesDataModel
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.VolleyCallback
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -32,7 +27,7 @@ class TermFeeAdapter(
     private val sTermFeesList: MutableList<TermFeesDataModel>,
     private val sTotal: TextView,
     private val sSaveBtn: Button,
-    private val sLevelId: String
+    private val sLevelId: String,
 ) : RecyclerView.Adapter<TermFeeAdapter.ViewHolder>() {
 
     private var isOnTextChanged = false
@@ -65,7 +60,7 @@ class TermFeeAdapter(
             }
             sTotal.text = String.format(
                 Locale.getDefault(), "%s%s", sContext
-                    .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
+                    .getString(R.string.naira), FunctionUtils.currencyFormat(mFeeAmountTotal)
             )
 
         } catch (e: NumberFormatException) {
@@ -80,7 +75,7 @@ class TermFeeAdapter(
             }
             sTotal.text = String.format(
                 Locale.getDefault(), "%s%s", sContext
-                    .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
+                    .getString(R.string.naira), FunctionUtils.currencyFormat(mFeeAmountTotal)
             )
             e.printStackTrace()
         }
@@ -110,13 +105,12 @@ class TermFeeAdapter(
                             mFeeAmountTotal += total
                         }
                         sTotal.text = String.format(
-                            Locale.getDefault(), "%s%s", sContext
-                                .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
+                            Locale.getDefault(),
+                            "%s%s",
+                            sContext
+                                .getString(R.string.naira),
+                            FunctionUtils.currencyFormat(mFeeAmountTotal)
                         )
-
-                        println("Total: $sTotal.text")
-                        println("Total: $mFeeNameList.text")
-                        println("Total: $mFeeAmountList.text")
 
                     } catch (e: NumberFormatException) {
                         mFeeAmountTotal = 0.0
@@ -129,13 +123,12 @@ class TermFeeAdapter(
                             mFeeAmountTotal += total
                         }
                         sTotal.text = String.format(
-                            Locale.getDefault(), "%s%s", sContext
-                                .getString(R.string.naira), UtilsFun.currencyFormat(mFeeAmountTotal)
+                            Locale.getDefault(),
+                            "%s%s",
+                            sContext
+                                .getString(R.string.naira),
+                            FunctionUtils.currencyFormat(mFeeAmountTotal)
                         )
-
-                        println("Total: $sTotal.text")
-                        println("Total: $mFeeNameList.text")
-                        println("Total: $mFeeAmountList.text")
 
                         e.printStackTrace()
                     }
@@ -172,58 +165,46 @@ class TermFeeAdapter(
     }
 
     private fun setTermFees() {
-        println("Package: ${getTermFeeDataFromEditText()}")
-        println("Package: $sLevelId")
 
         val sharedPreferences = sContext.getSharedPreferences(
             "loginDetail",
             Context.MODE_PRIVATE
         )
-        val mDb = sharedPreferences.getString("db", "")
         val year = sharedPreferences.getString("school_year", "")
         val term = sharedPreferences.getString("term", "")
 
         val url = Login.urlBase + "/manageTermFees.php"
-        val stringRequest: StringRequest = object : StringRequest(
-            Method.POST,
-            url,
-            { response: String ->
-                Log.i("response", response)
-                try {
-                    val jsonObject = JSONObject(response)
-                    when (jsonObject.getString("status")) {
-                        "success" -> {
-                            Toast.makeText(
-                                sContext, "Saved successfully", Toast
-                                    .LENGTH_SHORT
-                            ).show()
-                            /* mFeeAmountList.clear()
-                             mFeeNameList.clear()*/
-                        }
-                        else -> Toast.makeText(sContext, "Failed", Toast.LENGTH_SHORT).show()
-                    }
+        val hashMap = hashMapOf<String, String>()
+        hashMap["fees"] = getTermFeeDataFromEditText().toString()
+        hashMap["level"] = sLevelId
+        hashMap["year"] = year!!
+        hashMap["term"] = term!!
 
-                } catch (e: JSONException) {
-                    e.printStackTrace()
+        requestFromServer(Request.Method.POST, url, sContext, hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    try {
+                        val jsonObject = JSONObject(response)
+                        when (jsonObject.getString("status")) {
+                            "success" -> {
+                                Toast.makeText(
+                                    sContext, "Saved successfully", Toast
+                                        .LENGTH_SHORT
+                                ).show()
+                            }
+                            else -> Toast.makeText(sContext, "Failed", Toast.LENGTH_SHORT).show()
+                        }
+
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
                 }
 
-            }, { error: VolleyError ->
-                error.printStackTrace()
+                override fun onError(error: VolleyError) {
 
-            }) {
-            override fun getParams(): Map<String, String> {
-                val stringMap: MutableMap<String, String> = HashMap()
-                stringMap["fees"] = getTermFeeDataFromEditText().toString()
-                stringMap["level"] = sLevelId
-                stringMap["year"] = year!!
-                stringMap["term"] = term!!
-                stringMap["_db"] = mDb!!
-                return stringMap
+                }
             }
-        }
-        val requestQueue: RequestQueue = Volley.newRequestQueue(sContext)
-        requestQueue.add(stringRequest)
-
+        )
     }
 
 }

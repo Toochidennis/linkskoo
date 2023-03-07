@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.digitaldream.winskool.activities.CourseOutlines;
 import com.digitaldream.winskool.activities.TestUpload;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.LevelTable;

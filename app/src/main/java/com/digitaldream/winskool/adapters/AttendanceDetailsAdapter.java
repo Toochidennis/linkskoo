@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.utils.UtilsFun;
+import com.digitaldream.winskool.utils.FunctionUtils;
 
 import java.util.List;
 import java.util.Random;
@@ -45,7 +45,7 @@ public class AttendanceDetailsAdapter extends RecyclerView.Adapter<AttendanceDet
 
         String name = model.getStudentFullName();
 
-        holder.mName.setText(UtilsFun.capitaliseFirstLetter(name));
+        holder.mName.setText(FunctionUtils.capitaliseFirstLetter(name));
 
         try {
             holder.mInitial.setText(name.substring(0, 1).toUpperCase());

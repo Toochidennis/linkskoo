@@ -16,11 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.StudentResultAdapter;
+import com.digitaldream.winskool.adapters.StudentResultAdapter;
 import com.digitaldream.winskool.activities.StudentResultDownload;
 import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.utils.RefreshListener;

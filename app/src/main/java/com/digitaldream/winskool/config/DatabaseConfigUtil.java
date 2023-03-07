@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.config;
 
 import com.digitaldream.winskool.models.AssessmentModel;
 import com.digitaldream.winskool.models.ClassNameTable;

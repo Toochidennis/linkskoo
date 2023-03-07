@@ -1,7 +1,9 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.digitaldream.winskool.R;
 
 public class Contacts extends AppCompatActivity {
 

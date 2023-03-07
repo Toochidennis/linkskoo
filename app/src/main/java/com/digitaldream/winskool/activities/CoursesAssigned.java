@@ -41,7 +41,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.adapters.FormCourseAdapter;
 import com.digitaldream.winskool.models.CourseTable;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.StaffTableUtil;
 import com.digitaldream.winskool.models.TeacherCourseModel;

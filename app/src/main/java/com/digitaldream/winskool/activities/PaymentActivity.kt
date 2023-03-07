@@ -16,6 +16,10 @@ open class PaymentActivity : AppCompatActivity() {
 
         val intent = intent
         val amount = intent.getStringExtra("amount")
+        val name = intent.getStringExtra("name")
+        val levelName = intent.getStringExtra("level_name")
+        val className = intent.getStringExtra("class_name")
+        val regNo = intent.getStringExtra("reg_no")
         val reference = intent.getStringExtra("reference")
         val status = intent.getStringExtra("status")
         val session = intent.getStringExtra("session")
@@ -39,7 +43,7 @@ open class PaymentActivity : AppCompatActivity() {
 
             "receipt" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                ReceiptHistoryFragment()
+                ReceiptsHistoryFragment()
             ).commit()
 
             "student_receipt" -> supportFragmentManager.beginTransaction().replace(
@@ -48,6 +52,21 @@ open class PaymentActivity : AppCompatActivity() {
                         amount!!,
                         reference!!,
                         status!!,
+                        session!!,
+                        term!!,
+                        date!!
+                    )
+            ).commit()
+
+            "admin_receipt" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, ReceiptsDetailsFragment
+                    .newInstance(
+                        amount!!,
+                        name!!,
+                        levelName!!,
+                        className!!,
+                        regNo!!,
+                        reference!!,
                         session!!,
                         term!!,
                         date!!

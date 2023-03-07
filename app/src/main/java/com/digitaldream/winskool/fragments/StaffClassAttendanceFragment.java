@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.winskool.activities.StaffUtils;
 import com.digitaldream.winskool.adapters.StaffClassAttendanceAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.R;
 import com.j256.ormlite.dao.Dao;

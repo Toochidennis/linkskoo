@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.CBTYearAdapter;
 import com.digitaldream.winskool.dialog.CBTConfirmationDialog;
@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class CBTYearFragment extends Fragment implements CBTYearAdapter.OnYearClickListener {
 

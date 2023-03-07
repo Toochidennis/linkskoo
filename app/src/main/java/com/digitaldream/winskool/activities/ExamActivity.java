@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.activities;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -51,7 +51,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.activities.Login;
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.QAdapter;
 import com.digitaldream.winskool.dialog.CustomDialog;
 import com.digitaldream.winskool.dialog.ImagePreviewDialog;

@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.PagerAdapter
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.StudentPaymentModel
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.utils.FunctionUtils
 import java.util.*
 
 class StudentPaymentSliderAdapter(
@@ -59,7 +59,7 @@ class StudentPaymentSliderAdapter(
         String.format(
             Locale.getDefault(), "%s%s",
             sContext.getString(R.string.naira),
-            UtilsFun.currencyFormat(
+            FunctionUtils.currencyFormat(
                 paymentModel.getAmount()!!.toDouble()
             )
         ).also { termAmount.text = it }

@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.Login;
 
 import cc.cloudist.acplibrary.ACProgressConstant;

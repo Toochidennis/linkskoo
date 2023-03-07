@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.config.YoutubeConfig;
 import com.digitaldream.winskool.models.VideoTable;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;

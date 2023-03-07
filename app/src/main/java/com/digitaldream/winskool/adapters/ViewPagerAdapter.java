@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.ViewPagerModel;
+import com.digitaldream.winskool.models.ViewPagerModel;
 
 import java.util.List;
 

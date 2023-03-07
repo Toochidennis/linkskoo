@@ -1,9 +1,10 @@
 package com.digitaldream.winskool.models
 
-class AdminPaymentDashboardModel {
+class AdminPaymentModel {
     private var mId: Int = 0
     private var mInvoice: String? = null
     private var mTransactionName: String? = null
+    private var mStudentName: String? = null
     private var mLevelName: String? = null
     private var mClassName: String? = null
     private var mTransactionTerm: String? = null
@@ -12,13 +13,17 @@ class AdminPaymentDashboardModel {
     private var mExpenditureAmount: String? = null
     private var mReceivedAmount: String? = null
     private var mReferenceNumber: String? = null
+    private var mRegistrationNumber: String? = null
     private var mDescription: String? = null
+    private var mTerm: String? = null
+    private var mSession: String? = null
 
     fun getId() = mId
 
     fun getInvoice() = mInvoice
 
     fun getTransactionName() = mTransactionName
+    fun getStudentName() = mStudentName
 
     fun getLevelName() = mLevelName
 
@@ -35,8 +40,12 @@ class AdminPaymentDashboardModel {
     fun getReceivedAmount() = mReceivedAmount
 
     fun getReferenceNumber() = mReferenceNumber
+    fun getRegistrationNumber() = mRegistrationNumber
 
     fun getDescription() = mDescription
+
+    fun getTerm() = mTerm
+    fun getSession() = mSession
 
     fun setId(sId: Int) {
         mId = sId
@@ -49,6 +58,11 @@ class AdminPaymentDashboardModel {
     fun setTransactionName(sTransactionName: String) {
         mTransactionName = sTransactionName
     }
+
+    fun setStudentName(sStudentName: String) {
+        mStudentName = sStudentName
+    }
+
 
     fun setLevelName(sLevelName: String) {
         mLevelName = sLevelName
@@ -82,8 +96,20 @@ class AdminPaymentDashboardModel {
         mReferenceNumber = sReferenceNumber
     }
 
+    fun setRegistrationNumber(sRegistrationNumber: String) {
+        mRegistrationNumber = sRegistrationNumber
+    }
+
     fun setDescription(sDescription: String) {
         mDescription = sDescription
+    }
+
+    fun setTerm(sTerm: String) {
+        mTerm = sTerm
+    }
+
+    fun setSession(sSession: String) {
+        mSession = sSession
     }
 
 }

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_ligth"
-    tools:context=".ExamActivity">
+    tools:context=".activities.ExamActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

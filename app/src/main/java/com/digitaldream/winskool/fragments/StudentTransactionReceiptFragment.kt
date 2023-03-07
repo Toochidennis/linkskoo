@@ -1,41 +1,22 @@
 package com.digitaldream.winskool.fragments
 
 import android.Manifest
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.SystemClock
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.ShareCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.utils.CHANNEL_ID
-import com.digitaldream.winskool.utils.UtilsFun
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import com.digitaldream.winskool.utils.FunctionUtils
 import java.util.*
 
 private const val ARG_AMOUNT = "amount"
@@ -127,11 +108,11 @@ class StudentTransactionReceiptFragment : Fragment() {
         }
 
         downloadBtn.setOnClickListener {
-            UtilsFun.downloadPDF(mReceiptCard, requireActivity())
+            FunctionUtils.downloadPDF(mReceiptCard, requireActivity())
         }
 
         shareBtn.setOnClickListener {
-            UtilsFun.sharePDF(mReceiptCard, requireActivity())
+            FunctionUtils.sharePDF(mReceiptCard, requireActivity())
         }
 
         generateReceipt(view)
@@ -167,7 +148,7 @@ class StudentTransactionReceiptFragment : Fragment() {
         amount.text = mAmount
         status.text = mStatus
         date.text = mDate
-        name.text = UtilsFun.capitaliseFirstLetter(studentName!!)
+        name.text = FunctionUtils.capitaliseFirstLetter(studentName!!)
         level.text = mLevelName
         studentClass.text = mClass
         studentRegNo.text = mRegNo

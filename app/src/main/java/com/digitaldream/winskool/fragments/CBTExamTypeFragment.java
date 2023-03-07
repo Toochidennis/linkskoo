@@ -23,13 +23,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.StaffUtils;
 import com.digitaldream.winskool.adapters.CBTExamTypeAdapter;
 import com.digitaldream.winskool.models.ExamType;
 import com.digitaldream.winskool.utils.AsyncTaskResult;
-import com.digitaldream.winskool.utils.UtilsFun;
+import com.digitaldream.winskool.utils.FunctionUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -46,7 +46,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 import cc.cloudist.acplibrary.ACProgressConstant;
 import cc.cloudist.acplibrary.ACProgressFlower;
@@ -161,12 +160,12 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
     }
 
     public void displayProgress() {
-        UtilsFun.animateObject(mAverageProgressBar, mAverageScore, 10);
-        UtilsFun.animateObject(mMathsProgressBar, mMathsScore, 0);
-        UtilsFun.animateObject(mEnglishProgressBar, mEnglishScore, 0);
-        UtilsFun.animateObject(mPhysicsProgressBar, mPhysicsScore, 0);
-        UtilsFun.animateObject(mBiologyProgressBar, mBiologyScore, 0);
-        UtilsFun.animateObject(mChemistryProgressBar, mChemistryScore, 0);
+        FunctionUtils.animateObject(mAverageProgressBar, mAverageScore, 10);
+        FunctionUtils.animateObject(mMathsProgressBar, mMathsScore, 0);
+        FunctionUtils.animateObject(mEnglishProgressBar, mEnglishScore, 0);
+        FunctionUtils.animateObject(mPhysicsProgressBar, mPhysicsScore, 0);
+        FunctionUtils.animateObject(mBiologyProgressBar, mBiologyScore, 0);
+        FunctionUtils.animateObject(mChemistryProgressBar, mChemistryScore, 0);
     }
 
 

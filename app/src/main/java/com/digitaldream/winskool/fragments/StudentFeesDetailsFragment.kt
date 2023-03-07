@@ -36,7 +36,7 @@ import com.digitaldream.winskool.adapters.StudentFeesDetailsAdapter
 import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.PaymentEmailDialog
 import com.digitaldream.winskool.models.TermFeesDataModel
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.utils.FunctionUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.http.client.HttpClient
@@ -235,14 +235,14 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
                                         Locale.getDefault(),
                                         "%s%s",
                                         requireActivity().getString(R.string.naira),
-                                        UtilsFun.currencyFormat(mTotal!!.toDouble())
+                                        FunctionUtils.currencyFormat(mTotal!!.toDouble())
                                     )
 
                                     mFeeTotal2.text = String.format(
                                         Locale.getDefault(),
                                         "%s%s",
                                         requireActivity().getString(R.string.naira),
-                                        UtilsFun.currencyFormat(mTotal!!.toDouble())
+                                        FunctionUtils.currencyFormat(mTotal!!.toDouble())
                                     )
                                 }
                             }

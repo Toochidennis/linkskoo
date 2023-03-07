@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.fragments;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.models.ViewPagerModel;
 import com.digitaldream.winskool.adapters.ViewPagerAdapter;
 
 import java.util.ArrayList;

@@ -25,8 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.ForceUpdateAsync;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.config.ForceUpdateAsync;
 import com.digitaldream.winskool.fragments.ExamFragment;
 import com.digitaldream.winskool.fragments.FlashCardList;
 import com.digitaldream.winskool.fragments.ResultStaff;

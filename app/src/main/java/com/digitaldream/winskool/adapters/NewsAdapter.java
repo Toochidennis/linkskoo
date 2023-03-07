@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.adapters;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.NewsTable;
 
 import java.text.DateFormat;

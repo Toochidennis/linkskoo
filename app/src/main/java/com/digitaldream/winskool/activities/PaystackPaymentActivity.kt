@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
@@ -18,12 +17,17 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
-import com.android.volley.RequestQueue
+import com.android.volley.Request
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
+import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
+import com.digitaldream.winskool.utils.FunctionUtils.downloadPDF
+import com.digitaldream.winskool.utils.FunctionUtils.getDate
+import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.sharePDF
+import com.digitaldream.winskool.utils.VolleyCallback
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -40,7 +44,6 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
     private var mYear: String? = null
     private var mTerm: String? = null
     private var mSession: String? = null
-    private var mDb: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +86,6 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         mSchoolName = sharedPreferences.getString("school_name", "")
         mClassName = sharedPreferences.getString("student_class", "")
         mLevelName = sharedPreferences.getString("level_name", "")
-        mDb = sharedPreferences.getString("db", "")
 
         loadCheckOut(authorizationURL!!, reference!!, transactionId!!, amount!!)
 
@@ -125,33 +127,29 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
 
     private fun postReferenceNumber(sReference: String, sTransactionId: String, sAmount: String) {
         val url = Login.urlBase + "/manageReceipts.php"
-        val stringRequest: StringRequest = object : StringRequest(
-            Method.POST, url,
-            { response: String ->
-                Log.d("Paystack", response)
+        val stringMap = hashMapOf<String, String>()
+        stringMap["invoice_id"] = sTransactionId
+        stringMap["student_id"] = mStudentId!!
+        stringMap["class"] = mClassId!!
+        stringMap["level"] = mLevelId!!
+        stringMap["reg_no"] = mRegistrationNumber!!
+        stringMap["name"] = mStudentName!!
+        stringMap["amount"] = sAmount
+        stringMap["date"] = getDate()
+        stringMap["reference"] = sReference
+        stringMap["year"] = mYear!!
+        stringMap["term"] = mTerm!!
 
-            }, { error: VolleyError ->
-                error.printStackTrace()
-            }) {
-            override fun getParams(): Map<String, String> {
-                val stringMap: MutableMap<String, String> = HashMap()
-                stringMap["invoice_id"] = sTransactionId
-                stringMap["student_id"] = mStudentId!!
-                stringMap["class"] = mClassId!!
-                stringMap["level"] = mLevelId!!
-                stringMap["reg_no"] = mRegistrationNumber!!
-                stringMap["name"] = mStudentName!!
-                stringMap["amount"] = sAmount
-                stringMap["date"] = getDate()
-                stringMap["reference"] = sReference
-                stringMap["year"] = mYear!!
-                stringMap["term"] = mTerm!!
-                stringMap["_db"] = mDb!!
-                return stringMap
-            }
-        }
-        val requestQueue: RequestQueue = Volley.newRequestQueue(this)
-        requestQueue.add(stringRequest)
+        requestFromServer(Request.Method.POST, url, this, stringMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            })
     }
 
     private fun generateReceipt(sReference: String, sAmount: String) {
@@ -170,11 +168,11 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         schoolName.text = mSchoolName
         amount.text = String.format(
             Locale.getDefault(), "%s%s", getString(R.string.naira),
-            UtilsFun.currencyFormat(sAmount.toDouble())
+            currencyFormat(sAmount.toDouble())
         )
         status.text = getString(R.string.success)
         date.text = getDate()
-        name.text = UtilsFun.capitaliseFirstLetter(mStudentName!!)
+        name.text = capitaliseFirstLetter(mStudentName!!)
         level.text = mLevelName
         studentClass.text = mClassName
         studentRegNo.text = mRegistrationNumber
@@ -194,20 +192,12 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         val downloadReceipt: Button = findViewById(R.id.download_receipt)
 
         downloadReceipt.setOnClickListener {
-            UtilsFun.downloadPDF(receiptCard, this)
+           downloadPDF(receiptCard, this)
         }
 
         shareReceipt.setOnClickListener {
-            UtilsFun.sharePDF(receiptCard, this)
+            sharePDF(receiptCard, this)
         }
-
     }
 
-    fun getDate(): String {
-        val calendar = Calendar.getInstance()
-        val year = calendar[Calendar.YEAR].toString()
-        val month = (calendar[Calendar.MONTH] + 1).toString()
-        val dayOfMonth = calendar[Calendar.DAY_OF_MONTH].toString()
-        return "$year-$month-$dayOfMonth"
-    }
 }

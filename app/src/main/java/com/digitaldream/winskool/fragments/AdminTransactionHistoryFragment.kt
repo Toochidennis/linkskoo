@@ -26,7 +26,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.AdminTransactionHistoryAdapter
 import com.digitaldream.winskool.adapters.OnTransactionClickListener
-import com.digitaldream.winskool.models.AdminPaymentDashboardModel
+import com.digitaldream.winskool.models.AdminPaymentModel
 import org.json.JSONObject
 
 
@@ -37,7 +37,7 @@ class AdminTransactionHistoryFragment : Fragment(), OnTransactionClickListener {
     private lateinit var mErrorMessage: TextView
     private lateinit var mRefreshBtn: Button
 
-    private val mTransactionList = mutableListOf<AdminPaymentDashboardModel>()
+    private val mTransactionList = mutableListOf<AdminPaymentModel>()
     private lateinit var mAdapter: AdminTransactionHistoryAdapter
 
     override fun onCreateView(
@@ -115,7 +115,7 @@ class AdminTransactionHistoryFragment : Fragment(), OnTransactionClickListener {
                         val amount = transactionsObject.getString("amount")
                         val date = transactionsObject.getString("date")
 
-                        val adminModel = AdminPaymentDashboardModel()
+                        val adminModel = AdminPaymentModel()
                         adminModel.setTransactionName(transactionType)
                         adminModel.setDescription(description)
                         adminModel.setReceivedAmount(amount)

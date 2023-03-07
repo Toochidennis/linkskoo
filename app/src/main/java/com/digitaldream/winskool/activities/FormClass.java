@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.digitaldream.winskool.adapters.FormClassAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.FormClassModel;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.TeachersTable;

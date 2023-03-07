@@ -1,8 +1,9 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.config;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.AssessmentModel;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.CommentTable;
@@ -42,7 +43,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<TeachersTable,Long> teachersDao;
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION,R.raw.ormlite_config);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
         this.context = context;
     }
 

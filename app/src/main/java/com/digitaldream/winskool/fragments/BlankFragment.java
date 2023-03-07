@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitaldream.winskool.adapters.CustomSpinnerAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.ExamActivity;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.activities.ExamActivity;
 import com.digitaldream.winskool.models.Exam;
 import com.digitaldream.winskool.models.ExamQuestions;
 import com.digitaldream.winskool.R;

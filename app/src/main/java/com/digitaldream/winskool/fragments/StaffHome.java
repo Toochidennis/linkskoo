@@ -24,12 +24,12 @@ import android.widget.TextView;
 
 import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.adapters.CoursesRecylerAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.models.NewsTable;
-import com.digitaldream.winskool.NewsAdapter;
+import com.digitaldream.winskool.adapters.NewsAdapter;
 import com.digitaldream.winskool.activities.NewsPage;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.StudentTable;

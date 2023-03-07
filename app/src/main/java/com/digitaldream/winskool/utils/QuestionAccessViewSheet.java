@@ -20,9 +20,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.activities.Login;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.dialog.CustomDialog;
-import com.digitaldream.winskool.fragments.AdminDashbordFragment;
+import com.digitaldream.winskool.fragments.AdminDashboardFragment;
 import com.digitaldream.winskool.fragments.StaffDashboardFragment;
 import com.digitaldream.winskool.fragments.StudentDashboard;
 import com.digitaldream.winskool.models.CourseOutlineTable;
@@ -428,10 +428,10 @@ public class QuestionAccessViewSheet extends BottomSheetDialogFragment {
                             StudentDashboard.refresh=true;
                             getFragmentManager().beginTransaction().replace(R.id.fragment_container,new StudentDashboard()).commit();
                         }
-                        if(AdminDashbordFragment.questionBottomSheet !=null){
-                            AdminDashbordFragment.questionBottomSheet.dismiss();
-                            AdminDashbordFragment.refresh=true;
-                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,new AdminDashbordFragment()).commit();
+                        if(AdminDashboardFragment.questionBottomSheet !=null){
+                            AdminDashboardFragment.questionBottomSheet.dismiss();
+                            AdminDashboardFragment.refresh=true;
+                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,new AdminDashboardFragment()).commit();
 
                         }
                         if(StaffDashboardFragment.questionBottomSheet !=null){

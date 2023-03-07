@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.TermFeesDataModel
-import com.digitaldream.winskool.utils.UtilsFun
+import com.digitaldream.winskool.utils.FunctionUtils
 import java.util.*
 
 class StudentFeesDetailsAdapter(
@@ -30,7 +30,7 @@ class StudentFeesDetailsAdapter(
         holder.mFeeAmount.text = String.format(
             Locale.getDefault(),
             "%s%s", sContext.getString(R.string.naira),
-            UtilsFun.currencyFormat(termFeesModel.getFeeAmount()!!.toDouble())
+            FunctionUtils.currencyFormat(termFeesModel.getFeeAmount()!!.toDouble())
         )
     }
 

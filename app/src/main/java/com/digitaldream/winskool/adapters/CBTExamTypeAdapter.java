@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.ExamType;
-import com.digitaldream.winskool.utils.UtilsFun;
+import com.digitaldream.winskool.utils.FunctionUtils;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class CBTExamTypeAdapter extends RecyclerView.Adapter<CBTExamTypeAdapter.
     @Override
     public void onBindViewHolder(@NonNull CBTExamTypeAdapter.ViewHolder holder, int position) {
         String name = mExamTypeList.get(position).getExamName();
-        holder.mTextView.setText(UtilsFun.capitaliseFirstLetter(name));
+        holder.mTextView.setText(FunctionUtils.capitaliseFirstLetter(name));
 
         holder.mCardView.setCardBackgroundColor(
                 ContextCompat.getColor(mContext, colors[position % 11]));

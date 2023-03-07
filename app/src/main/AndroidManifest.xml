@@ -97,7 +97,7 @@
         <activity android:name=".activities.ResponseDetails" />
         <activity android:name=".activities.ViewResponses" />
         <activity android:name=".activities.FlashView" />
-        <activity android:name="com.digitaldream.winskool.ExamActivity2" />
+        <activity android:name="com.digitaldream.winskool.activities.ExamActivity2" />
         <activity android:name=".activities.WifiActivity" />
         <activity android:name=".activities.AdminElearningCourses" />
         <activity android:name=".activities.CreateVideoLink" />
@@ -116,14 +116,14 @@
         <activity android:name=".activities.ContentUpload" />
         <activity android:name=".activities.CourseOutlines" />
         <activity android:name=".activities.ElearningCourses" />
-        <activity android:name="com.digitaldream.winskool.ELearning" />
+        <activity android:name="com.digitaldream.winskool.activities.ELearning" />
         <activity android:name=".AssignCourseDialog" />
         <activity android:name=".activities.CoursesAssigned" />
         <activity android:name=".activities.FormClass" />
         <activity android:name=".CustomCBTDialog" />
-        <activity android:name="com.digitaldream.winskool.ExamActivity" />
+        <activity android:name="com.digitaldream.winskool.activities.ExamActivity" />
         <activity android:name=".CustomUpdateDialog" />
-        <activity android:name="com.digitaldream.winskool.VideoUtils" />
+        <activity android:name="com.digitaldream.winskool.utils.VideoUtils" />
         <activity android:name=".activities.StaffCourses" />
         <activity android:name=".activities.StaffUtils" />
         <activity android:name=".activities.AddCourse" />
@@ -141,13 +141,13 @@
         <activity android:name=".activities.ClassResultDetails" />
         <activity android:name=".activities.SubjectResultUtil" />
         <activity
-            android:name="com.digitaldream.winskool.YoutubePlayerActivity"
+            android:name="com.digitaldream.winskool.activities.YoutubePlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="YoutubePlayerActivity" />
         <activity android:name=".activities.StudentDashboardActivity" />
         <activity android:name=".activities.AddResult" />
         <activity android:name=".activities.StaffDashboardActivity" />
-        <activity android:name="com.digitaldream.winskool.ViewResultWebView" />
+        <activity android:name="com.digitaldream.winskool.activities.ViewResultWebView" />
         <activity android:name=".activities.TeacherProfileEdit" />
         <activity android:name=".activities.AddTeacher" />
         <activity
@@ -184,7 +184,7 @@
             android:name=".activities.ViewResult"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.winskool.Contacts"
+            android:name="com.digitaldream.winskool.activities.Contacts"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.Dashboard"

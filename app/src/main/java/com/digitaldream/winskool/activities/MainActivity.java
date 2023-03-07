@@ -14,8 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.ForceUpdateAsync;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.config.ForceUpdateAsync;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.models.NewsTable;

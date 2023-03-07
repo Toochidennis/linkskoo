@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.config;
 
 public class YoutubeConfig {
 

@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.digitaldream.winskool.activities.StudentElearningCourses;
 import com.digitaldream.winskool.adapters.StudentLevelAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.R;
 import com.j256.ormlite.dao.Dao;

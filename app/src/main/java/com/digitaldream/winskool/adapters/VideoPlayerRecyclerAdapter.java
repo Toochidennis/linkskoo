@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
+import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.VideoPlayerViewHolder;
 import com.digitaldream.winskool.models.MediaObject;
 
 import java.util.ArrayList;

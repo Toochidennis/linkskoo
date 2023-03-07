@@ -17,21 +17,28 @@ import android.os.Build
 import android.os.Environment
 import android.os.SystemClock
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import cc.cloudist.acplibrary.ACProgressConstant
+import cc.cloudist.acplibrary.ACProgressFlower
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
-import org.achartengine.chart.BarChart
+import org.achartengine.chart.PointStyle
 import org.achartengine.model.XYMultipleSeriesDataset
 import org.achartengine.model.XYSeries
 import org.achartengine.renderer.XYMultipleSeriesRenderer
@@ -42,10 +49,10 @@ import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
-object UtilsFun {
+object FunctionUtils {
     //var counter = 0
-
     @JvmStatic
     fun capitaliseFirstLetter(sS: String): String {
         val strings = sS.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
@@ -123,39 +130,40 @@ object UtilsFun {
     }
 
     @JvmStatic
-    fun drawGraph(sValues: Array<Int>, sContext: Context): GraphicalView {
+    fun drawGraph(
+        sAmount: ArrayList<String>,
+        sDate: ArrayList<String>,
+        sContext: Context,
+        sTitle: String = "",
+    ): GraphicalView {
 
-        val mMonth = arrayOf(
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        )
-        val graphLength = intArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+        val graphLength = sAmount.size - 1
 
-        val graphicalView: GraphicalView
+        println("Lent: $graphLength")
 
-        val series = XYSeries("Income")
+        val series = XYSeries("Received")
 
-        for (i in graphLength.indices)
-            series.add(graphLength[i].toDouble(), sValues[i].toDouble())
+        for (i in 0 until graphLength)
+            series.add(i.toDouble(), sAmount[i].toDouble())
 
         val dataset = XYMultipleSeriesDataset()
         dataset.addSeries(series)
 
         val seriesRenderer = XYSeriesRenderer()
-        seriesRenderer.color = Color.WHITE
-        // seriesRenderer.isFillPoints = true
+        seriesRenderer.color = ContextCompat.getColor(sContext, R.color.color_4)
+        seriesRenderer.isFillPoints = true
+        seriesRenderer.annotationsColor = Color.WHITE
+        seriesRenderer.lineWidth = 4f
+        seriesRenderer.pointStyle = PointStyle.CIRCLE
         seriesRenderer.isDisplayChartValues = true
         seriesRenderer.chartValuesTextSize = 20f
 
         val multipleRenderer = XYMultipleSeriesRenderer()
         multipleRenderer.xLabels = 0
         multipleRenderer.yLabels = 0
-        multipleRenderer.xTitle = "Year 2023"
+        multipleRenderer.margins = intArrayOf(20, 30, 15, 0)
+        multipleRenderer.xTitle = sTitle
         multipleRenderer.isPanEnabled = false
-        multipleRenderer.gridLineWidth = 1f
-        multipleRenderer.setShowGrid(true)
-        multipleRenderer.setGridColor(Color.WHITE)
-        multipleRenderer.barSpacing = .5
         multipleRenderer.marginsColor = Color.parseColor("#130C6B")
         multipleRenderer.isZoomEnabled = false
         multipleRenderer.backgroundColor = Color.parseColor("#130C6B")
@@ -164,15 +172,12 @@ object UtilsFun {
         multipleRenderer.labelsTextSize = 20f
         multipleRenderer.addSeriesRenderer(seriesRenderer)
 
-        for (i in graphLength.indices)
-            multipleRenderer.addXTextLabel(graphLength[i].toDouble(), mMonth[i])
+        for (i in 0 until graphLength)
+            multipleRenderer.addXTextLabel(i.toDouble(), sDate[i])
 
-        graphicalView = ChartFactory.getBarChartView(
+        return ChartFactory.getLineChartView(
             sContext, dataset, multipleRenderer,
-            BarChart.Type.DEFAULT
         )
-
-        return graphicalView
     }
 
     @JvmStatic
@@ -341,4 +346,69 @@ object UtilsFun {
         }
     }
 
+    @JvmStatic
+    fun requestFromServer(
+        method: Int,
+        url: String,
+        context: Context,
+        values: HashMap<String, String>,
+        volleyCallback: VolleyCallback,
+    ) {
+        val sharedPreferences =
+            context.getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        val db = sharedPreferences.getString("db", "")
+
+        val progressFlower = ACProgressFlower.Builder(context)
+            .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+            .textMarginTop(10)
+            .fadeColor(ContextCompat.getColor((context as AppCompatActivity), R.color.color_5))
+            .build()
+        progressFlower.setCancelable(false)
+        progressFlower.setCanceledOnTouchOutside(false)
+        progressFlower.show()
+
+        val stringRequest = object : StringRequest(
+            method,
+            url,
+            { response: String ->
+                Log.i("response", response)
+                volleyCallback.onResponse(response)
+                progressFlower.dismiss()
+
+            }, { error: VolleyError ->
+                volleyCallback.onError(error)
+                progressFlower.dismiss()
+            }) {
+
+            override fun getParams(): MutableMap<String, String> {
+                val stringMap = mutableMapOf<String, String>()
+
+                if (values.isNotEmpty()) {
+                    for ((key, value) in values) {
+                        stringMap[key] = value
+                    }
+                }
+                stringMap["_db"] = db!!
+
+                return stringMap
+            }
+        }
+
+         Volley.newRequestQueue(context).add(stringRequest)
+    }
+
+    @JvmStatic
+    fun getDate(): String {
+        val calendar = Calendar.getInstance()
+        val year = calendar[Calendar.YEAR].toString()
+        val month = (calendar[Calendar.MONTH] + 1).toString()
+        val dayOfMonth = calendar[Calendar.DAY_OF_MONTH].toString()
+        return "$year-$month-$dayOfMonth"
+    }
+
+}
+
+interface VolleyCallback {
+    fun onResponse(response: String)
+    fun onError(error: VolleyError)
 }

@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.digitaldream.winskool.adapters.AllTeacherAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.TeachersTable;
 import com.j256.ormlite.dao.Dao;

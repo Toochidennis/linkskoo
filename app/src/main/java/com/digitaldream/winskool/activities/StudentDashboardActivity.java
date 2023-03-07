@@ -2,7 +2,6 @@ package com.digitaldream.winskool.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -17,8 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.ForceUpdateAsync;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.config.ForceUpdateAsync;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.fragments.ELibraryFragment;
 import com.digitaldream.winskool.fragments.FlashCardList;

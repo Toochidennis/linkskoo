@@ -25,7 +25,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.AdminClassAttendanceAdapter;
 import com.digitaldream.winskool.models.StudentTable;
@@ -262,7 +262,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
@@ -278,7 +277,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                     selection(true);
                     mSelectAll = true;
                 }
-
 
                 if (getSelectedCount() == 0) {
 
@@ -296,10 +294,8 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
         }
 
-
         return false;
     }
-
 
     @Override
     public void onStudentClick(int position) {

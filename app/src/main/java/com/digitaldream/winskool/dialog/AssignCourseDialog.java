@@ -17,7 +17,7 @@ import com.digitaldream.winskool.adapters.CustomSpinnerAdapter;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.activities.CoursesAssigned;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.TeacherCourseModel;
 import com.digitaldream.winskool.models.TeacherCourseModelCopy;
 import com.digitaldream.winskool.R;

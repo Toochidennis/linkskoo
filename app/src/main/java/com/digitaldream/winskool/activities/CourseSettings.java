@@ -28,7 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.adapters.CoursesSettingsAdapter;
 import com.digitaldream.winskool.models.CourseTable;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.R;
 import com.j256.ormlite.dao.Dao;

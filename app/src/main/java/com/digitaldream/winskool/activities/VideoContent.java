@@ -38,7 +38,7 @@ import android.widget.Toolbar;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.utils.Comments;
 import com.digitaldream.winskool.dialog.CustomDialog;
-import com.digitaldream.winskool.YoutubeConfig;
+import com.digitaldream.winskool.config.YoutubeConfig;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;

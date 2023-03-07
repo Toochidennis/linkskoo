@@ -11,11 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,23 +23,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.core.widget.NestedScrollView;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.DatabaseHelper;
-import com.digitaldream.winskool.NewsAdapter;
+import com.digitaldream.winskool.config.DatabaseHelper;
+import com.digitaldream.winskool.adapters.NewsAdapter;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.AnswerView;
 import com.digitaldream.winskool.activities.ClassListUtil;
@@ -49,7 +47,6 @@ import com.digitaldream.winskool.activities.QuestionView;
 import com.digitaldream.winskool.activities.StudentContacts;
 import com.digitaldream.winskool.activities.TeacherContacts;
 import com.digitaldream.winskool.adapters.QAAdapter;
-import com.digitaldream.winskool.dialog.ContactUsDialog;
 import com.digitaldream.winskool.dialog.CustomDialog;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.GeneralSettingModel;
@@ -58,9 +55,7 @@ import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.models.TeachersTable;
 import com.digitaldream.winskool.utils.AddNewsBottomSheet;
 import com.digitaldream.winskool.utils.QuestionBottomSheet;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -77,19 +72,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNewsClickListener,
+
+public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener,
         QAAdapter.OnQuestionClickListener {
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private TextView teacherCount, studentCount, newsHeader, userName,
-            school_Name, classesCount, schoolSession;
-    private ViewPager viewPager;
+    private TextView newsHeader;
+    private TextView userName;
+    private TextView school_Name;
+    private TextView classesCount;
+    private TextView schoolSession;
     private List<NewsTable> newsTitleList;
-    private RecyclerView recyclerView;
     private Dao<NewsTable, Long> newsDao;
     private DatabaseHelper databaseHelper;
     private Dao<StudentTable, Long> studentDao;
@@ -99,21 +90,16 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
     private List<TeachersTable> teacherList;
     private List<ClassNameTable> classList;
     private RecyclerView qaRecycler;
-    private LinearLayout news_empty_state;
-    private LinearLayout studentContainer, teacherContainer, resultContainer,
+    private LinearLayout studentContainer, teacherContainer,
             classesContainer;
     private Dao<GeneralSettingModel, Long> generalSettingDao;
     private List<GeneralSettingModel> generalSettingsList;
     public static String db;
-    private String user_name, school_name, userId;
-    private TextView schoolName, user, errorMessage;
-    private SwipeRefreshLayout newsRefresh;
-    private ContactUsDialog dialog;
+    private String school_name;
+    private String userId;
+    private TextView errorMessage;
     private boolean fromLogin = false;
     private boolean isFirstTime = false;
-    private BottomNavigationView bottomNavigationView;
-    NewsAdapter newsAdapter;
-    RelativeLayout newsTitleContainer;
     private LinearLayout emptyState;
     private QAAdapter.QAObject feed;
     List<QAAdapter.QAObject> list;
@@ -127,7 +113,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
     private Bundle bundle;
     private int currentPage = 1;
     private ProgressBar progressBar;
-
+    private MenuHost menuHost;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,11 +121,19 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_dashbord,
                 container, false);
-        setHasOptionsMenu(true);
+
         databaseHelper = new DatabaseHelper(getContext());
         emptyState = view.findViewById(R.id.qa_empty_state);
         errorMessage = view.findViewById(R.id.error_message);
-
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        TextView studentCount = view.findViewById(R.id.no_of_student_txt1);
+        TextView teacherCount = view.findViewById(R.id.no_of_teacher_txt1);
+        classesCount = view.findViewById(R.id.no_of_classes);
+        studentContainer = view.findViewById(R.id.student_no_cont);
+        teacherContainer = view.findViewById(R.id.teacher_no_container);
+        classesContainer = view.findViewById(R.id.class_no_container);
+        userName = view.findViewById(R.id.user_name);
+        school_Name = view.findViewById(R.id.school_name_1);
 
         try {
             newsDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
@@ -168,15 +162,6 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         if (fromLogin == true) {
             isFirstTime = true;
         }
-        toolbar = view.findViewById(R.id.toolbar);
-
-        studentCount = view.findViewById(R.id.no_of_student_txt1);
-        teacherCount = view.findViewById(R.id.no_of_teacher_txt1);
-        classesCount = view.findViewById(R.id.no_of_classes);
-        studentContainer = view.findViewById(R.id.student_no_cont);
-        teacherContainer = view.findViewById(R.id.teacher_no_container);
-        classesContainer = view.findViewById(R.id.class_no_container);
-
 
         try {
             studentCount.setText(String.valueOf(studentList.size()));
@@ -186,27 +171,22 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             e.printStackTrace();
         }
 
-
-        news_empty_state = view.findViewById(R.id.qa_empty_state);
-        userName = view.findViewById(R.id.user_name);
-        school_Name = view.findViewById(R.id.school_name_1);
-
-        ((AppCompatActivity) (getActivity())).setSupportActionBar(toolbar);
+        ((AppCompatActivity) (requireActivity())).setSupportActionBar(toolbar);
         ActionBar actionBar =
-                ((AppCompatActivity) (getActivity())).getSupportActionBar();
-
+                ((AppCompatActivity) (requireActivity())).getSupportActionBar();
 
         assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        menuHost = requireActivity();
 
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         school_name = generalSettingsList.get(0).getSchoolName().toLowerCase();
         Log.d("school_name", school_name);
         userId = sharedPreferences.getString("user_id", "");
-        user_name = sharedPreferences.getString("user", "User ID: " + userId);
+        String user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");
 
 /*        String session = generalSettingsList.get(0).getSchoolYear();
@@ -220,7 +200,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
 
         }*/
 
-        if (!user_name.equals("null")) {
+     /*   if (!user_name.equals("null")) {
             try {
                 user_name = user_name.substring(0,
                         1).toUpperCase() + user_name.substring(1);
@@ -230,18 +210,19 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         String[] strArray = school_name.split(" ");
         StringBuilder builder = new StringBuilder();
         try {
             for (String s : strArray) {
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                builder.append(cap + " ");
+                builder.append(cap).append(" ");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         school_Name.setText(builder.toString());
+
 
         studentContainer.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), StudentContacts.class);
@@ -262,7 +243,6 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
 
         qaRecycler = view.findViewById(R.id.qa_recycler);
 
-
         qaRecycler.setNestedScrollingEnabled(false);
         layoutManager = new LinearLayoutManager(getContext());
         qaRecycler.setLayoutManager(layoutManager);
@@ -273,9 +253,10 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
 
         FloatingActionButton addQuestionBtn = view.findViewById(
                 R.id.add_question);
+
         addQuestionBtn.setOnClickListener(v -> {
             FragmentTransaction transaction =
-                    ((FragmentActivity) getContext())
+                    requireActivity()
                             .getSupportFragmentManager()
                             .beginTransaction();
             AddNewsBottomSheet addNewsBottomSheet =
@@ -284,6 +265,7 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             //Intent intent = new Intent(getContext(), AddNews.class);
             //startActivity(intent);
         });
+
         if (json.isEmpty()) {
             getFeed();
         } else {
@@ -305,16 +287,10 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
         return view;
     }
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu,
-                                    @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
 
     public String stripHtml(String html) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -323,7 +299,6 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
             return Html.fromHtml(html).toString();
         }
     }
-
 
     @Override
     public void onNewsClick(int position) {
@@ -343,8 +318,9 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
     public void onResume() {
         super.onResume();
         qaRecycler.smoothScrollToPosition(5);
-    }
+        setUpMenu();
 
+    }
 
     @Override
     public void onQuestionClick(int position) {
@@ -488,5 +464,23 @@ public class AdminDashbordFragment extends Fragment implements NewsAdapter.OnNew
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setUpMenu() {
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.settings_menu, menu);
+
+                menu.getItem(0).setVisible(true);
+                menu.getItem(2).setVisible(true);
+                menu.getItem(1).setVisible(false);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        });
     }
 }

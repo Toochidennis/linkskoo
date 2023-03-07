@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.digitaldream.winskool.activities.StaffEnterResult;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.R;
 import com.j256.ormlite.dao.Dao;

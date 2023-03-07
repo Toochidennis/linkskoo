@@ -34,6 +34,8 @@
     <string name="nothing_to_show">No attendance taken yet! Click the
         button below to take attendance</string>
     <string name="no_data">Nothing to show</string>
+    <string name="contact_developer">Nothing to show! Please contact your developer for
+        help!</string>
     <string name="no_internet">Seems like you\'re not connected to the internet</string>
     <string name="failed_internet">Failed to load Students, please check your internet connection and try again</string>
     <string name="can_not_retrieve">Failed to load data, please check your internet connection
@@ -41,6 +43,8 @@
     <string name="no_history">No payment made yet</string>
     <string name="naira">\u20A6</string>
     <string name="success">Success</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string-array name="account_type">
         <item>Account Type</item>

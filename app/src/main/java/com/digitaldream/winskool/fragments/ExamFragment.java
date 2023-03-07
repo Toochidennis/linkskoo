@@ -23,7 +23,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 import com.digitaldream.winskool.adapters.ExamOptionsAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.ExamType;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.dialog.CustomCBTDialog;

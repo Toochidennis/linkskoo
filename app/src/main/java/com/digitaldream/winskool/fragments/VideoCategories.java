@@ -24,7 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.activities.VideoCourses;
 import com.digitaldream.winskool.adapters.VideoCategoryAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.VideoUtilTable;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.models.VideoTable;

@@ -20,7 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.fragments.AdminDashbordFragment;
+import com.digitaldream.winskool.fragments.AdminDashboardFragment;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.dialog.CustomDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -105,7 +105,7 @@ public class AddNews extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     String status = jsonObject.getString("status");
                     if(status.equals("success")){
-                        AdminDashbordFragment.json = "";
+                        AdminDashboardFragment.json = "";
                         Intent intent = new Intent(AddNews.this,Dashboard.class);
                         startActivity(intent);
                         finish();

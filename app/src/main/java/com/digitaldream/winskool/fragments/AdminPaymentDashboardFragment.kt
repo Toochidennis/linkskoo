@@ -3,32 +3,28 @@ package com.digitaldream.winskool.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cc.cloudist.acplibrary.ACProgressConstant
-import cc.cloudist.acplibrary.ACProgressFlower
+import com.android.volley.Request
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.AdminPaymentDashboardAdapter
 import com.digitaldream.winskool.adapters.OnTransactionClickListener
-import com.digitaldream.winskool.models.AdminPaymentDashboardModel
-import com.digitaldream.winskool.utils.UtilsFun
-import org.json.JSONArray
+import com.digitaldream.winskool.models.AdminPaymentModel
+import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.VolleyCallback
 import org.json.JSONObject
 import java.util.*
 
@@ -47,10 +43,11 @@ class AdminPaymentDashboardFragment : Fragment(),
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mTransactionMessage: TextView
     private lateinit var mTransactionImage: ImageView
-    private lateinit var mErrorMessage: TextView
+    private lateinit var mErrorView: LinearLayout
     private lateinit var mRefreshBtn: Button
+    private lateinit var mMenu: Menu
 
-    private val mTransactionList = mutableListOf<AdminPaymentDashboardModel>()
+    private val mTransactionList = mutableListOf<AdminPaymentModel>()
     private lateinit var mAdapter: AdminPaymentDashboardAdapter
 
     override fun onCreateView(
@@ -70,13 +67,17 @@ class AdminPaymentDashboardFragment : Fragment(),
         val actionBar = (activity as AppCompatActivity).supportActionBar
         menuHost = requireActivity()
 
-        setUpMenu()
+        // setUpMenu()
 
         actionBar!!.apply {
             setHomeButtonEnabled(true)
             title = "Payment"
             setHomeAsUpIndicator(R.drawable.arrow_left)
             setDisplayHomeAsUpEnabled(true)
+        }
+
+        toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
         }
 
         mMainLayout = view.findViewById(R.id.dashboard_view)
@@ -89,7 +90,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         mReceiptBtn = view.findViewById(R.id.receipt_btn)
         mExpectedAmount = view.findViewById(R.id.expected_revenue)
         mSeeAllBtn = view.findViewById(R.id.see_all_btn)
-        mErrorMessage = view.findViewById(R.id.error_message)
+        mErrorView = view.findViewById(R.id.error_view)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
 
         mExpenditureBtn.setOnClickListener {
@@ -118,141 +119,115 @@ class AdminPaymentDashboardFragment : Fragment(),
         mRecyclerView.hasFixedSize()
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mRecyclerView.adapter = mAdapter
-        
+
         refreshData()
 
         return view
     }
+
     private fun getDashboardDetails() {
         val sharedPreferences =
             requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-        val db = sharedPreferences.getString("db", "")
         val term = sharedPreferences.getString("term", "")
         val year = sharedPreferences.getString("school_year", "")
 
-        val progressFlower = ACProgressFlower.Builder(context)
-            .direction(ACProgressConstant.DIRECT_CLOCKWISE)
-            .textMarginTop(10)
-            .fadeColor(ContextCompat.getColor((context as AppCompatActivity), R.color.color_5))
-            .build()
-        progressFlower.setCancelable(false)
-        progressFlower.setCanceledOnTouchOutside(false)
-        progressFlower.show()
-
         val url = "${Login.urlBase}/manageTransactions.php?dashboard=1&&term=$term&&year=$year"
-        val stringRequest = object : StringRequest(
-            Method.GET,
-            url,
-            { response: String ->
-                Log.i("response", response)
-                progressFlower.dismiss()
+        val hashMap = hashMapOf<String, String>()
 
-                try {
-                    val jsonObject = JSONObject(response)
-                    val receiptsArray = jsonObject.getJSONArray("receipts")
-                    val invoiceArray = jsonObject.getJSONArray("invoice")
-                    val transactionsArray = jsonObject.getJSONArray("transactions")
+        requestFromServer(Request.Method.GET, url, requireContext(), hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
 
-                    val receiptsObject = receiptsArray.getJSONObject(0)
-                    val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
+                    try {
+                        val jsonObject = JSONObject(response)
+                        val receiptsArray = jsonObject.getJSONArray("receipts")
+                        val invoiceArray = jsonObject.getJSONArray("invoice")
+                        val transactionsArray = jsonObject.getJSONArray("transactions")
 
-                    val invoiceObject = invoiceArray.getJSONObject(0)
-                    val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
+                        val receiptsObject = receiptsArray.getJSONObject(0)
+                        val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
 
-                    if (receiptsSum == "null" && invoiceSum == "null") {
-                        mReceivedAmount.text = getString(R.string.zero_balance)
-                        mExpectedAmount.text = getString(R.string.zero_balance)
-                        mDebtAmount.text = getString(R.string.zero_balance)
-                    } else {
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            UtilsFun.currencyFormat(receiptsSum.toDouble())
-                        ).also { mReceivedAmount.text = it }
+                        val invoiceObject = invoiceArray.getJSONObject(0)
+                        val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
 
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            UtilsFun.currencyFormat(invoiceSum.toDouble())
-                        ).also { mExpectedAmount.text = it }
+                        if (receiptsSum == "null" && invoiceSum == "null") {
+                            mReceivedAmount.text = getString(R.string.zero_balance)
+                            mExpectedAmount.text = getString(R.string.zero_balance)
+                            mDebtAmount.text = getString(R.string.zero_balance)
+                        } else {
+                            String.format(
+                                Locale.getDefault(), "%s%s", getString(R.string.naira),
+                                FunctionUtils.currencyFormat(receiptsSum.toDouble())
+                            ).also { mReceivedAmount.text = it }
 
-                        val debtSum = invoiceSum.toLong() - receiptsSum.toLong()
+                            String.format(
+                                Locale.getDefault(), "%s%s", getString(R.string.naira),
+                                FunctionUtils.currencyFormat(invoiceSum.toDouble())
+                            ).also { mExpectedAmount.text = it }
 
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            UtilsFun.currencyFormat(debtSum.toDouble())
-                        ).also { mDebtAmount.text = it }
+                            val debtSum = invoiceSum.toLong() - receiptsSum.toLong()
+
+                            String.format(
+                                Locale.getDefault(), "%s%s", getString(R.string.naira),
+                                FunctionUtils.currencyFormat(debtSum.toDouble())
+                            ).also { mDebtAmount.text = it }
+                        }
+
+                        for (i in 0 until transactionsArray.length()) {
+                            val transactionsObject = transactionsArray.getJSONObject(i)
+                            val transactionType = transactionsObject.getString("trans_type")
+                            val reference = transactionsObject.getString("reference")
+                            val description = transactionsObject.getString("description")
+                            val amount = transactionsObject.getString("amount")
+                            val date = transactionsObject.getString("date")
+
+                            val adminModel = AdminPaymentModel()
+                            adminModel.setTransactionName(transactionType)
+                            adminModel.setDescription(description)
+                            adminModel.setReceivedAmount(amount)
+                            adminModel.setTransactionDate(date)
+                            mTransactionList.add(adminModel)
+                            mTransactionList.sortByDescending { it.getTransactionDate() }
+                        }
+
+                        if (mTransactionList.isEmpty()) {
+                            mMainLayout.isVisible = true
+                            mTransactionMessage.isVisible = true
+                            mTransactionImage.isVisible = true
+                            mErrorView.isVisible = false
+                        } else {
+                            mMainLayout.isVisible = true
+                            mTransactionMessage.isVisible = false
+                            mTransactionImage.isVisible = false
+                            mErrorView.isVisible = false
+                        }
+                        mAdapter.notifyItemChanged(mTransactionList.size - 1)
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-
-                    for (i in 0 until 5) {
-                        val transactionsObject = transactionsArray.getJSONObject(i)
-                        val transactionType = transactionsObject.getString("trans_type")
-                        val reference = transactionsObject.getString("reference")
-                        val description = transactionsObject.getString("description")
-                        val amount = transactionsObject.getString("amount")
-                        val date = transactionsObject.getString("date")
-
-                        val adminModel = AdminPaymentDashboardModel()
-                        adminModel.setTransactionName(transactionType)
-                        adminModel.setDescription(description)
-                        adminModel.setReceivedAmount(amount)
-                        adminModel.setTransactionDate(date)
-                        mTransactionList.add(adminModel)
-                        mTransactionList.sortByDescending { it.getTransactionDate() }
-                    }
-
-                    if (mTransactionList.isEmpty()) {
-                        mMainLayout.isVisible = true
-                        mTransactionMessage.isVisible = true
-                        mTransactionImage.isVisible = true
-                        mErrorMessage.isVisible = false
-                        mRefreshBtn.isVisible = false
-                    } else {
-                        mMainLayout.isVisible = true
-                        mTransactionMessage.isVisible = false
-                        mTransactionImage.isVisible = false
-                        mErrorMessage.isVisible = false
-                        mRefreshBtn.isVisible = false
-                    }
-                    mAdapter.notifyItemChanged(mTransactionList.size - 1)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
 
-            }, { error: VolleyError ->
-                error.printStackTrace()
-                progressFlower.dismiss()
-                mMainLayout.isVisible = false
-                mErrorMessage.isVisible = true
-                mRefreshBtn.isVisible = true
-                mErrorMessage.text = getString(R.string.can_not_retrieve)
-
-            }) {
-            override fun getParams(): MutableMap<String, String> {
-                val stringMap = hashMapOf<String, String>()
-                stringMap["_db"] = db!!
-
-                return stringMap
+                override fun onError(error: VolleyError) {
+                    mMainLayout.isVisible = false
+                    mErrorView.isVisible = true
+                }
             }
-        }
-
-        val requestQueue = Volley.newRequestQueue(requireContext())
-        requestQueue.add(stringRequest)
+        )
     }
+
     private fun setUpMenu() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.setup_menu, menu)
+                menuInflater.inflate(R.menu.settings_menu, menu)
+                mMenu = menu
+                menu.getItem(0).isVisible = false
+                menu.getItem(2).isVisible = false
+                menu.getItem(1).isVisible = true
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.settings -> {
-                        startActivity(
-                            Intent(context, PaymentActivity().javaClass).putExtra
-                                ("from", "settings")
-                        )
-                        true
-                    }
                     android.R.id.home -> {
                         requireActivity().onBackPressedDispatcher
                             .onBackPressed()
@@ -275,9 +250,10 @@ class AdminPaymentDashboardFragment : Fragment(),
         super.onResume()
         mTransactionList.clear()
         getDashboardDetails()
+        setUpMenu()
     }
+
     override fun onTransactionClick(position: Int) {
         Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
     }
 }
-

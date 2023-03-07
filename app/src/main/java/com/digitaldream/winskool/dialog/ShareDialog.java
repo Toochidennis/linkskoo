@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitaldream.winskool.adapters.PeersListAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.utils.WifiDirectBroadcastReceiver;

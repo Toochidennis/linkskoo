@@ -31,7 +31,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.CourseAttendanceAdapter;
 import com.digitaldream.winskool.fragments.DateDialogFragment;
@@ -64,7 +64,6 @@ import cc.cloudist.acplibrary.ACProgressFlower;
 public class CourseAttendance extends AppCompatActivity implements CourseAttendanceAdapter.OnCourseClickListener, DatePickerDialog.OnDateSetListener {
 
     private CourseAttendanceAdapter mAttendanceAdapter;
-    private Dao<CourseTable, Long> mCourseDao;
     private List<CourseTable> mCourseList;
     private List<StudentTable> mStudentTableList;
     private StudentTable mList;
@@ -109,10 +108,10 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
         mDatabaseHelper = new DatabaseHelper(this);
         try {
-            mCourseDao =
-                    DaoManager.createDao(mDatabaseHelper.getConnectionSource(),
-                            CourseTable.class);
-            mCourseList = mCourseDao.queryBuilder().where().eq("courseId",
+            Dao<CourseTable, Long> courseDao = DaoManager.createDao(
+                    mDatabaseHelper.getConnectionSource(),
+                    CourseTable.class);
+            mCourseList = courseDao.queryBuilder().where().eq("courseId",
                     mCourseId).query();
 
         } catch (SQLException e) {
@@ -270,7 +269,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
                     mStudentTableList.add(studentTable);
 
                 }
-                mAttendanceAdapter.notifyDataSetChanged();
+                mAttendanceAdapter.notifyItemChanged(mStudentTableList.size() - 1);
 
                 if (!mStudentTableList.isEmpty()) {
                     mLayout.setVisibility(View.GONE);
@@ -295,8 +294,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
             ImageView imageView = findViewById(R.id.image);
             TextView textView = findViewById(R.id.error_message);
             imageView.setImageResource(R.drawable.no_internet);
-            textView.setText(
-                    "Seems like you're not connected to the internet!");
+            textView.setText(getString(R.string.can_not_retrieve));
         }) {
 
             @Override
@@ -321,7 +319,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
                 response -> {
-                    Log.i("response", "response" + response);
+
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         String attendance = jsonObject.getString("attendance");
@@ -332,7 +330,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
                             mList.setResponseId(responseId);
 
                         }
-
 
                     } catch (JSONException sE) {
                         sE.printStackTrace();

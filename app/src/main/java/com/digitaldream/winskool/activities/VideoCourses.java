@@ -10,10 +10,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.digitaldream.winskool.adapters.VideoCourseAdapter;
-import com.digitaldream.winskool.DatabaseHelper;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.VideoTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.VideoUtils;
+import com.digitaldream.winskool.utils.VideoUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 

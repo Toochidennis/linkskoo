@@ -1,4 +1,4 @@
-package com.digitaldream.winskool;
+package com.digitaldream.winskool.config;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,7 @@ import org.jsoup.Jsoup;
 
 import java.io.IOException;
 
-public class ForceUpdateAsync extends AsyncTask<String,String, JSONObject> {
+public class ForceUpdateAsync extends AsyncTask<String, String, JSONObject> {
     private String latestVersion;
     private String currentVersion;
     private Context context;
@@ -27,17 +27,19 @@ public class ForceUpdateAsync extends AsyncTask<String,String, JSONObject> {
     @Override
     protected JSONObject doInBackground(String... strings) {
         try {
-            latestVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + context.getPackageName()+ "&hl=en")
+            latestVersion = Jsoup.connect(
+                            "https://play.google.com/store/apps/details?id=" + context.getPackageName() + "&hl=en")
                     .timeout(30000)
-                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .userAgent(
+                            "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) " +
+                                    "Gecko/20070725 Firefox/2.0.0.6")
                     .referrer("http://www.google.com")
                     .get()
-                    .select("div.hAyfc:nth-child(4) > span:nth-child(2) > div:nth-child(1) > span:nth-child(1)")
+                    .select("div.hAyfc:nth-child(4) > span:nth-child(2) > div:nth-child(1) > " +
+                            "span:nth-child(1)")
                     .first()
                     .ownText();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new JSONObject();
@@ -49,16 +51,16 @@ public class ForceUpdateAsync extends AsyncTask<String,String, JSONObject> {
             double cv = Double.parseDouble(currentVersion);
             double lv = Double.parseDouble(latestVersion);
 
-        if(latestVersion!=null){
-            if(lv>cv){
-                if(!(context instanceof Dashboard)|| !(context instanceof StaffDashboardActivity)||!(context instanceof StudentDashboardActivity)) {
-                    if(!((Activity)context).isFinishing()){
-                        showForceUpdateDialog();
+            if (latestVersion != null) {
+                if (lv > cv) {
+                    if (!(context instanceof Dashboard) || !(context instanceof StaffDashboardActivity) || !(context instanceof StudentDashboardActivity)) {
+                        if (!((Activity) context).isFinishing()) {
+                            showForceUpdateDialog();
+                        }
                     }
                 }
             }
-        }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         super.onPostExecute(jsonObject);
