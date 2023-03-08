@@ -22,18 +22,18 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
-import com.digitaldream.winskool.adapters.OnTransactionClickListener
+import com.digitaldream.winskool.adapters.OmItemClickListener
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.achartengine.GraphicalView
 import org.json.JSONObject
 import java.util.*
 
-class ExpenditureHistoryFragment : Fragment(), OnTransactionClickListener {
+class ExpenditureHistoryFragment : Fragment(), OmItemClickListener {
 
     private lateinit var mExpenditureView: NestedScrollView
     private lateinit var mExpenditureChart: LinearLayout
@@ -109,7 +109,7 @@ class ExpenditureHistoryFragment : Fragment(), OnTransactionClickListener {
         val url = "${Login.urlBase}/manageTransactions.php?type=expenditure&&term=$term&&year=$year"
         val hashMap = hashMapOf<String, String>()
 
-        requestFromServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
@@ -243,7 +243,7 @@ class ExpenditureHistoryFragment : Fragment(), OnTransactionClickListener {
 
     }
 
-    override fun onTransactionClick(position: Int) {
+    override fun onItemClick(position: Int) {
 
     }
 

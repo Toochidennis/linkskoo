@@ -13,24 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
-import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.TermFeeAdapter
 import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.TermlyFeeDialog
-import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.TermFeesDataModel
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
-import com.j256.ormlite.dao.Dao
-import com.j256.ormlite.dao.DaoManager
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
 
-class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_setup),
-    OnInputListener {
+class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_setup) {
 
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mTermView: RelativeLayout
@@ -39,7 +34,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     private lateinit var mErrorMessage: TextView
     private lateinit var mTermErrorMessage: TextView
     private lateinit var mFeeTotal: TextView
-    private lateinit var mLevelText: Button
+    private lateinit var mLevelNameBtn: Button
     private lateinit var mSaveBtn: Button
 
     private var mLevel: String? = null
@@ -47,7 +42,6 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     private var mYear: String? = null
     private var mTerm: String? = null
     private var mLevelId: String? = null
-    private var mLevelList = mutableListOf<LevelTable>()
     private val mTermFeesList = mutableListOf<TermFeesDataModel>()
     private lateinit var mAdapter: TermFeeAdapter
 
@@ -63,9 +57,10 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
         mRefreshBtn = findViewById(R.id.refresh_btn)
         mErrorMessage = findViewById(R.id.error_message)
         mTermErrorMessage = findViewById(R.id.term_error_message)
-        mLevelText = findViewById(R.id.level_name)
+        mLevelNameBtn = findViewById(R.id.level_name)
 
-        mLevel = intent.getStringExtra("term_text")
+        mLevel = intent.getStringExtra("level_name")
+        mLevelId = intent.getStringExtra("level_id")
 
         val sharedPreferences =
             getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
@@ -95,9 +90,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                 }
             }
 
-            mLevelText.text = mLevel
-
-            mLevelId = getLevelId(mLevel!!.replace(" ", ""))
+            mLevelNameBtn.text = mLevel
 
             mAdapter = TermFeeAdapter(this, mTermFeesList, mFeeTotal, mSaveBtn, mLevelId!!)
             mRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -134,12 +127,11 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     }
 
     private fun getTermFees(sLevelId: String) {
-
         val url =
             "${Login.urlBase}/manageTermFees.php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
         val hashMap = hashMapOf<String, String>()
 
-        requestFromServer(Request.Method.GET, url, this, hashMap,
+        requestToServer(Request.Method.GET, url, this, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
@@ -191,55 +183,39 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
     }
 
     private fun setLevelName() {
-        mLevelText.text = mLevelName
+        mLevelNameBtn.text = mLevelName
     }
 
     private fun openDialog() {
-        mLevelText.setOnClickListener {
-            val termFeeDialog = TermlyFeeDialog(
+        mLevelNameBtn.setOnClickListener {
+            TermlyFeeDialog(
                 this@TermlyFeeSetupActivity,
-                this@TermlyFeeSetupActivity,
-                mLevelText.text.toString()
-            )
-            termFeeDialog.apply {
+                mLevelNameBtn.text.toString(),
+                "term",
+                object : OnInputListener {
+                    override fun sendInput(input: String) {
+                        mLevelName = input
+                        setLevelName()
+                    }
+
+                    override fun sendLevelId(levelId: String) {
+                        mTermFeesList.clear()
+                        getTermFees(levelId)
+                        mAdapter = TermFeeAdapter(
+                            this@TermlyFeeSetupActivity, mTermFeesList, mFeeTotal, mSaveBtn,
+                            levelId
+                        )
+                        mRecyclerView.adapter = mAdapter
+                    }
+                },
+            ).apply {
                 setCancelable(true)
                 show()
-            }
-
-            val window = termFeeDialog.window
-            window?.setLayout(
+            }.window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-
         }
-    }
-
-    private fun getLevelId(sLevelName: String): String {
-
-        try {
-            val databaseHelper =
-                DatabaseHelper(this)
-            val mDao: Dao<LevelTable, Long> = DaoManager.createDao(
-                databaseHelper
-                    .connectionSource, LevelTable::class.java
-            )
-            mLevelList = mDao.queryBuilder().where().eq("levelName", sLevelName).query()
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return mLevelList[0].levelId
-    }
-
-    override fun sendInput(input: String) {
-        mLevelName = input
-        setLevelName()
-        mLevelId = getLevelId(mLevelName!!.replace(" ", ""))
-        mTermFeesList.clear()
-        getTermFees(mLevelId!!)
-        mAdapter = TermFeeAdapter(this, mTermFeesList, mFeeTotal, mSaveBtn, mLevelId!!)
-        mRecyclerView.adapter = mAdapter
     }
 
 }

@@ -183,4 +183,8 @@ class AccountSetupAdapter(
     override fun sendInput(input: String) {
 
     }
+
+    override fun sendLevelId(levelId: String) {
+
+    }
 }

@@ -127,7 +127,6 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="@dimen/dimen_10"
-                    android:layout_marginBottom="55dp"
                     android:clipToPadding="true" />
 
                 <ImageView

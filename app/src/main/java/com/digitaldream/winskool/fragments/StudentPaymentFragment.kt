@@ -28,9 +28,8 @@ import com.digitaldream.winskool.adapters.StudentPaymentSliderAdapter
 import com.digitaldream.winskool.dialog.OnInputListener
 import com.digitaldream.winskool.dialog.PaymentEmailDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
-import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
@@ -192,11 +191,10 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     }
 
     private fun paymentHistory() {
-
         val url = Login.urlBase + "/manageReceipts.php?list=$mStudentId"
         val hashMap = hashMapOf<String, String>()
 
-        requestFromServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     if (response == "[]") {
@@ -357,6 +355,10 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
             .apply()
 
         requestURL(input, mAmount!!.toLong())
+    }
+
+    override fun sendLevelId(levelId: String) {
+
     }
 
     override fun onResume() {

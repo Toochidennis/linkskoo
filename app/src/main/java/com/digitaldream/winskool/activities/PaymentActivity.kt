@@ -18,6 +18,9 @@ open class PaymentActivity : AppCompatActivity() {
         val amount = intent.getStringExtra("amount")
         val name = intent.getStringExtra("name")
         val levelName = intent.getStringExtra("level_name")
+        val levelId = intent.getStringExtra("levelId")
+        val classId = intent.getStringExtra("classId")
+        val studentId = intent.getStringExtra("studentId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
         val reference = intent.getStringExtra("reference")
@@ -32,8 +35,11 @@ open class PaymentActivity : AppCompatActivity() {
                 R.id.fragment_container, AdminPaymentDashboardFragment()
             ).commit()
 
-            "transactions" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, AdminTransactions()
+            "add_receipt" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, ReceiptsClassNameFragment.newInstance(
+                    levelId!!,
+                    levelName!!,
+                )
             ).commit()
 
             "expenditure" -> supportFragmentManager.beginTransaction().replace(
@@ -102,6 +108,20 @@ open class PaymentActivity : AppCompatActivity() {
             "see_all" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, AdminTransactionHistoryFragment()
             ).commit()
+
+            "receipt_class_name" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, ReceiptStudentNameFragment.newInstance(
+                    classId!!, className!!,
+                )
+            ).commit()
+
+            "receipt_student_name" -> supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container, ReceiptStudentBudgetFragment.newInstance(
+                    levelId!!,
+                    classId!!, studentId!!, regNo!!,
+                )
+            ).commit()
+
         }
 
     }

@@ -20,17 +20,17 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.AdminPaymentDashboardAdapter
-import com.digitaldream.winskool.adapters.OnTransactionClickListener
+import com.digitaldream.winskool.adapters.OmItemClickListener
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import org.json.JSONObject
 import java.util.*
 
 
 class AdminPaymentDashboardFragment : Fragment(),
-    OnTransactionClickListener {
+    OmItemClickListener {
 
     private lateinit var menuHost: MenuHost
     private lateinit var mMainLayout: LinearLayout
@@ -134,7 +134,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         val url = "${Login.urlBase}/manageTransactions.php?dashboard=1&&term=$term&&year=$year"
         val hashMap = hashMapOf<String, String>()
 
-        requestFromServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
 
@@ -253,7 +253,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         setUpMenu()
     }
 
-    override fun onTransactionClick(position: Int) {
+    override fun onItemClick(position: Int) {
         Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
     }
 }

@@ -13,7 +13,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
+import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
+import com.digitaldream.winskool.utils.FunctionUtils.downloadPDF
+import com.digitaldream.winskool.utils.FunctionUtils.sharePDF
 import java.util.*
 
 
@@ -130,11 +133,11 @@ class ReceiptsDetailsFragment : Fragment() {
 
         String.format(
             Locale.getDefault(), "%s%s", getString(R.string.naira),
-            FunctionUtils.currencyFormat(mAmount!!.toDouble())
+            currencyFormat(mAmount!!.toDouble())
         ).also { receiptAmount.text= it }
 
         receiptDate.text = mDate
-        studentName.text = FunctionUtils.capitaliseFirstLetter(mName!!)
+        studentName.text = capitaliseFirstLetter(mName!!)
         studentLevel.text = mLevelName
         studentClass.text = mClassName
         registrationNo.text = mRegNo
@@ -143,11 +146,11 @@ class ReceiptsDetailsFragment : Fragment() {
         referenceNumber.text = mReference
 
         downloadBtn.setOnClickListener {
-            FunctionUtils.downloadPDF(mReceiptCard, requireActivity())
+            downloadPDF(mReceiptCard, requireActivity())
         }
 
         shareBtn.setOnClickListener {
-            FunctionUtils.sharePDF(mReceiptCard, requireActivity())
+            sharePDF(mReceiptCard, requireActivity())
         }
     }
 }

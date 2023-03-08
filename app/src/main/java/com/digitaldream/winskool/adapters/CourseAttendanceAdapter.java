@@ -54,8 +54,6 @@ public class CourseAttendanceAdapter extends RecyclerView.Adapter<CourseAttendan
                 rnd.nextInt(256), rnd.nextInt(256));
         mutate.setColor(currentColor);
         holder.mLinearLayout.setBackground(mutate);
-
-
     }
 
     @Override

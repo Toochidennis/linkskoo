@@ -352,6 +352,10 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
         requestURL(input)
     }
 
+    override fun sendLevelId(levelId: String) {
+
+    }
+
     override fun onResume() {
         super.onResume()
         mFeesList.clear()

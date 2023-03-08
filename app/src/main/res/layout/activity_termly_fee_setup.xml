@@ -22,8 +22,6 @@
             android:id="@+id/level_name"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
@@ -37,15 +35,15 @@
             android:padding="10dp"
             android:textColor="@color/white"
             android:textSize="18sp"
-            app:tint="@color/white"/>
+            app:tint="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
         android:id="@+id/term_view"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/appBar">
 
         <androidx.core.widget.NestedScrollView
@@ -78,22 +76,22 @@
             android:layout_marginEnd="15dp"
             android:fontFamily="@font/montserrat"
             android:lines="2"
-            android:textStyle="bold"
             android:text="@string/contact_developer"
             android:textAlignment="center"
             android:textColor="@color/text_bg_color"
-            android:textSize="14sp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:visibility="gone" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/total_view"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_5"
         android:padding="15dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -158,7 +156,8 @@
         android:text="@string/can_not_retrieve"
         android:textAlignment="center"
         android:textColor="@color/text_bg_color"
-        android:textSize="14sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

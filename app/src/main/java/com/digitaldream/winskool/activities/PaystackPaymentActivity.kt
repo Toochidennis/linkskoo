@@ -20,12 +20,11 @@ import androidx.core.widget.NestedScrollView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.downloadPDF
 import com.digitaldream.winskool.utils.FunctionUtils.getDate
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.FunctionUtils.sharePDF
 import com.digitaldream.winskool.utils.VolleyCallback
 import java.util.*
@@ -140,7 +139,7 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         stringMap["year"] = mYear!!
         stringMap["term"] = mTerm!!
 
-        requestFromServer(Request.Method.POST, url, this, stringMap,
+        requestToServer(Request.Method.POST, url, this, stringMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
 

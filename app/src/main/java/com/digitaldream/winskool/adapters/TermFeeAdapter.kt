@@ -15,7 +15,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.models.TermFeesDataModel
 import com.digitaldream.winskool.utils.FunctionUtils
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import org.json.JSONArray
 import org.json.JSONException
@@ -180,7 +180,7 @@ class TermFeeAdapter(
         hashMap["year"] = year!!
         hashMap["term"] = term!!
 
-        requestFromServer(Request.Method.POST, url, sContext, hashMap,
+        requestToServer(Request.Method.POST, url, sContext, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

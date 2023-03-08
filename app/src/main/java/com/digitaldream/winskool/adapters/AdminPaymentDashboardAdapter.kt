@@ -17,7 +17,7 @@ import java.util.*
 class AdminPaymentDashboardAdapter(
     private val sContext: Context,
     private val sTransactionList: MutableList<AdminPaymentModel>,
-    private val sOnTransactionClickListener: OnTransactionClickListener,
+    private val sOmItemClickListener: OmItemClickListener,
 ) : RecyclerView.Adapter<AdminPaymentDashboardAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -77,7 +77,7 @@ class AdminPaymentDashboardAdapter(
 
         init {
             itemView.setOnClickListener {
-                sOnTransactionClickListener.onTransactionClick(adapterPosition)
+                sOmItemClickListener.onItemClick(adapterPosition)
             }
         }
 
@@ -85,6 +85,6 @@ class AdminPaymentDashboardAdapter(
 
 }
 
-interface OnTransactionClickListener {
-    fun onTransactionClick(position: Int)
+interface OmItemClickListener {
+    fun onItemClick(position: Int)
 }

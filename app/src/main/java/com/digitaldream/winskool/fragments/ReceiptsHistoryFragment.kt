@@ -21,12 +21,13 @@ import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
-import com.digitaldream.winskool.adapters.OnTransactionClickListener
+import com.digitaldream.winskool.adapters.OmItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
+import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
-import com.digitaldream.winskool.utils.FunctionUtils.requestFromServer
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.achartengine.GraphicalView
@@ -34,7 +35,7 @@ import org.json.JSONObject
 import java.util.*
 
 
-class ReceiptsHistoryFragment : Fragment(), OnTransactionClickListener {
+class ReceiptsHistoryFragment : Fragment(), OmItemClickListener {
 
     private lateinit var mReceiptView: NestedScrollView
     private lateinit var mReceiptChart: LinearLayout
@@ -86,6 +87,7 @@ class ReceiptsHistoryFragment : Fragment(), OnTransactionClickListener {
         mRecyclerView.adapter = mAdapter
 
         refreshData()
+        receiptsDialog()
 
         return view
     }
@@ -99,7 +101,7 @@ class ReceiptsHistoryFragment : Fragment(), OnTransactionClickListener {
         val url = "${Login.urlBase}/manageTransactions.php?type=receipts&&term=$term&&year=$year"
         val hashMap = hashMapOf<String, String>()
 
-        requestFromServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
@@ -235,13 +237,29 @@ class ReceiptsHistoryFragment : Fragment(), OnTransactionClickListener {
         }
     }
 
+    private fun receiptsDialog() {
+        mAddReceipt.setOnClickListener {
+            val termFeeDialog = TermFeeDialog(requireContext(), "receipts")
+            termFeeDialog.apply {
+                setCancelable(true)
+                show()
+            }
+            val window = termFeeDialog.window
+            window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+    }
+
     override fun onResume() {
         super.onResume()
         getReceipts()
 
     }
 
-    override fun onTransactionClick(position: Int) {
+    override fun onItemClick(position: Int) {
         val paymentModel = mReceiptList[position]
         val amount = paymentModel.getReceivedAmount()
         val name = paymentModel.getStudentName()

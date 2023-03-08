@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,125 +10,55 @@
     android:paddingBottom="30dp">
 
     <TextView
-        android:id="@+id/debt_fee_title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/back_btn"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:fontFamily="@font/montserrat"
+        android:gravity="center"
         android:text="Select Level"
         android:textColor="@color/text_bg_color"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/jss_1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
+    <ImageView
+        android:id="@+id/back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:contentDescription="@string/todo"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/arrow_left"
+        app:tint="@color/black" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/montserrat"
-        android:text="JSS 1"
-        android:textColor="@color/color_5"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/jss_2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/debt_fee_title" />
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/jss_2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/montserrat"
-        android:text="JSS 2"
-        android:textColor="@color/color_5"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/jss_1"
-        app:layout_constraintTop_toBottomOf="@id/debt_fee_title" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/level_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true" />
 
-    <Button
-        android:id="@+id/jss_3"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/montserrat"
-        android:text="JSS 3"
-        android:textColor="@color/color_5"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/sss_1"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/jss_1" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/class_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/sss_1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/montserrat"
-        android:text="SSS 1"
-        android:textColor="@color/color_5"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/jss_3"
-        app:layout_constraintTop_toBottomOf="@id/jss_2" />
+    </LinearLayout>
 
 
-    <Button
-        android:id="@+id/sss_2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/montserrat"
-        android:text="SSS 2"
-        android:textColor="@color/color_5"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sss_3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/jss_3"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/sss_3"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/montserrat"
-        android:text="SSS 3"
-        android:textColor="@color/color_5"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/sss_2"
-        app:layout_constraintTop_toBottomOf="@id/sss_1"
-        app:layout_constraintVertical_bias="0.0" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

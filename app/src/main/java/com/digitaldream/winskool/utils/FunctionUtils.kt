@@ -347,7 +347,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun requestFromServer(
+    fun requestToServer(
         method: Int,
         url: String,
         context: Context,
