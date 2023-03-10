@@ -14,7 +14,7 @@ import java.util.*
 class ReceiptStudentBudgetAdapter(
     private val sContext: Context,
     private val sBudgetList: MutableList<StudentPaymentModel>,
-    private val sOnBudgetClick: OmItemClickListener,
+    private val sOnBudgetClick: OnItemClickListener,
 ) : RecyclerView.Adapter<ReceiptStudentBudgetAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

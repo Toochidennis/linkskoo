@@ -15,7 +15,7 @@ import java.util.*
 
 class ReceiptStudentNameAdapter(
     private val sStudentList: MutableList<StudentTable>,
-    private val sLevelOnclick: OmItemClickListener,
+    private val sLevelOnclick: OnItemClickListener,
 ) : RecyclerView.Adapter<ReceiptStudentNameAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

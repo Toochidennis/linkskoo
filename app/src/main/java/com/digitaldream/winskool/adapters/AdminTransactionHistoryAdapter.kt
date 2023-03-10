@@ -17,7 +17,7 @@ import java.util.*
 class AdminTransactionHistoryAdapter(
     private val sContext: Context,
     private val sTransactionList: MutableList<AdminPaymentModel>,
-    private val sOmItemClickListener: OmItemClickListener,
+    private val sOnItemClickListener: OnItemClickListener,
 ) : RecyclerView.Adapter<AdminTransactionHistoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -77,7 +77,7 @@ class AdminTransactionHistoryAdapter(
 
         init {
             itemView.setOnClickListener {
-                sOmItemClickListener.onItemClick(adapterPosition)
+                sOnItemClickListener.onItemClick(adapterPosition)
             }
         }
 

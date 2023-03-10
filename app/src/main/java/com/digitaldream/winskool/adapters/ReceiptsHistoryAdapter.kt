@@ -14,7 +14,7 @@ import java.util.*
 class ReceiptsHistoryAdapter(
     private val sContext: Context,
     private val sTransactionList: MutableList<AdminPaymentModel>,
-    private val sOmItemClickListener: OmItemClickListener,
+    private val sOnItemClickListener: OnItemClickListener,
 ) : RecyclerView.Adapter<ReceiptsHistoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,7 +49,7 @@ class ReceiptsHistoryAdapter(
 
         init {
             itemView.setOnClickListener {
-                sOmItemClickListener.onItemClick(adapterPosition)
+                sOnItemClickListener.onItemClick(adapterPosition)
             }
         }
 

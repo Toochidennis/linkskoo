@@ -22,7 +22,7 @@ private const val ARG_PARAM2 = "param2"
 
 
 class VendorFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var param1: String? = null
     private var param2: String? = null
 
@@ -46,7 +46,6 @@ class VendorFragment : Fragment() {
             }
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?, ): View? {
         // Inflate the layout for this fragment
@@ -60,7 +59,6 @@ class VendorFragment : Fragment() {
             setNavigationOnClickListener { requireActivity().onBackPressedDispatcher
                 .onBackPressed() }
         }
-
 
         val addVendorBtn = view.findViewById<FloatingActionButton>(R.id.add_vendor)
 
@@ -80,8 +78,7 @@ class VendorFragment : Fragment() {
                 .putExtra("from", "vendor"))
         }
 
-        val searchBar = view.findViewById<EditText>(R.id.search_bar)
-
+       // val searchBar = view.findViewById<EditText>(R.id.search_bar)
 
         return view;
     }

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.adapters.OmItemClickListener
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.TermFeeDialogAdapter
 import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.models.LevelTable
@@ -23,7 +23,7 @@ class TermlyFeeDialog(
     private val sCurrentText: String,
     private val sFrom: String,
     private var sInputListener: OnInputListener,
-) : Dialog(sContext), OmItemClickListener {
+) : Dialog(sContext), OnItemClickListener {
 
     private lateinit var mLevelList: MutableList<LevelTable>
 

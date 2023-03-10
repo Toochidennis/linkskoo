@@ -20,7 +20,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.AdminPaymentDashboardAdapter
-import com.digitaldream.winskool.adapters.OmItemClickListener
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -30,7 +30,7 @@ import java.util.*
 
 
 class AdminPaymentDashboardFragment : Fragment(),
-    OmItemClickListener {
+    OnItemClickListener {
 
     private lateinit var menuHost: MenuHost
     private lateinit var mMainLayout: LinearLayout

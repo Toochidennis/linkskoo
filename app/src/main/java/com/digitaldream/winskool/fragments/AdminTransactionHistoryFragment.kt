@@ -25,12 +25,12 @@ import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.AdminTransactionHistoryAdapter
-import com.digitaldream.winskool.adapters.OmItemClickListener
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.models.AdminPaymentModel
 import org.json.JSONObject
 
 
-class AdminTransactionHistoryFragment : Fragment(), OmItemClickListener {
+class AdminTransactionHistoryFragment : Fragment(), OnItemClickListener {
 
     private lateinit var mMainLayout: NestedScrollView
     private lateinit var mRecyclerView: RecyclerView

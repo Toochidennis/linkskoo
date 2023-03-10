@@ -22,7 +22,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
-import com.digitaldream.winskool.adapters.OmItemClickListener
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
@@ -33,7 +33,7 @@ import org.achartengine.GraphicalView
 import org.json.JSONObject
 import java.util.*
 
-class ExpenditureHistoryFragment : Fragment(), OmItemClickListener {
+class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
 
     private lateinit var mExpenditureView: NestedScrollView
     private lateinit var mExpenditureChart: LinearLayout

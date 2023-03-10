@@ -35,13 +35,6 @@ open class PaymentActivity : AppCompatActivity() {
                 R.id.fragment_container, AdminPaymentDashboardFragment()
             ).commit()
 
-            "add_receipt" -> supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, ReceiptsClassNameFragment.newInstance(
-                    levelId!!,
-                    levelName!!,
-                )
-            ).commit()
-
             "expenditure" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
                 ExpenditureHistoryFragment()
@@ -111,14 +104,14 @@ open class PaymentActivity : AppCompatActivity() {
 
             "receipt_class_name" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, ReceiptStudentNameFragment.newInstance(
-                    classId!!, className!!,
+                    classId!!, className!!, levelName!!,
                 )
             ).commit()
 
             "receipt_student_name" -> supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container, ReceiptStudentBudgetFragment.newInstance(
                     levelId!!,
-                    classId!!, studentId!!, regNo!!,
+                    classId!!, studentId!!, regNo!!, levelName!!,
                 )
             ).commit()
 

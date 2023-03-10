@@ -21,7 +21,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
-import com.digitaldream.winskool.adapters.OmItemClickListener
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
 import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
@@ -35,7 +35,7 @@ import org.json.JSONObject
 import java.util.*
 
 
-class ReceiptsHistoryFragment : Fragment(), OmItemClickListener {
+class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     private lateinit var mReceiptView: NestedScrollView
     private lateinit var mReceiptChart: LinearLayout

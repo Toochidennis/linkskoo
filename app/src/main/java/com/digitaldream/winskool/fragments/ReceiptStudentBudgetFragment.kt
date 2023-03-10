@@ -1,5 +1,6 @@
 package com.digitaldream.winskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +16,9 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
-import com.digitaldream.winskool.adapters.OmItemClickListener
+import com.digitaldream.winskool.activities.TermlyFeeSetupActivity
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptStudentBudgetAdapter
-import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.VolleyCallback
@@ -29,9 +30,10 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 private const val ARG_PARAM4 = "param4"
+private const val ARG_PARAM5 = "param5"
 
 
-class ReceiptStudentBudgetFragment : Fragment(), OmItemClickListener {
+class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
 
     private lateinit var mMainView: NestedScrollView
     private lateinit var mRecyclerView: RecyclerView
@@ -42,6 +44,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OmItemClickListener {
     private lateinit var mAddBudgetBtn: FloatingActionButton
 
     private var levelId: String? = null
+    private var levelName: String? = null
     private var classId: String? = null
     private var studentId: String? = null
     private var regNo: String? = null
@@ -56,19 +59,24 @@ class ReceiptStudentBudgetFragment : Fragment(), OmItemClickListener {
             classId = it.getString(ARG_PARAM2)
             studentId = it.getString(ARG_PARAM3)
             regNo = it.getString(ARG_PARAM4)
+            levelName = it.getString(ARG_PARAM5)
         }
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance(sLevelId: String, sClassId: String, sStudentId: String, sRegNo: String) =
+        fun newInstance(
+            sLevelId: String, sClassId: String, sStudentId: String, sRegNo: String,
+            sLevelName: String,
+        ) =
             ReceiptStudentBudgetFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, sLevelId)
                     putString(ARG_PARAM2, sClassId)
                     putString(ARG_PARAM3, sStudentId)
                     putString(ARG_PARAM4, sRegNo)
+                    putString(ARG_PARAM5, sLevelName)
                 }
             }
     }
@@ -103,14 +111,11 @@ class ReceiptStudentBudgetFragment : Fragment(), OmItemClickListener {
         mRecyclerView.adapter = mAdapter
 
         mAddBudgetBtn.setOnClickListener {
-            TermFeeDialog(requireContext(), "term")
-                .apply {
-                    setCancelable(true)
-                    show()
-                }.window?.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
+            startActivity(
+                Intent(context, TermlyFeeSetupActivity()::class.java)
+                    .putExtra("level_name", levelName)
+                    .putExtra("level_id", levelId)
+            )
         }
 
         refreshData()
@@ -129,8 +134,10 @@ class ReceiptStudentBudgetFragment : Fragment(), OmItemClickListener {
                         mMainView.isVisible = true
                         mErrorMessage.isVisible = true
                         mAddBudgetBtn.isVisible = true
-                        "Fees not set yet. Use the button below to set!".also { mErrorMessage
-                            .text = it }
+                        "Fees not set yet. Use the button below to set!".also {
+                            mErrorMessage
+                                .text = it
+                        }
                     } else {
                         try {
                             val jsonObject = JSONObject(response)

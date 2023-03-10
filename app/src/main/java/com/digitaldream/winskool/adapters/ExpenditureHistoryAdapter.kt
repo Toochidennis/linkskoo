@@ -15,7 +15,7 @@ import java.util.*
 class ExpenditureHistoryAdapter(
     private val sContext: Context,
     private val sExpenditureList: MutableList<ExpenditureHistoryModel>,
-    private val sOmItemClickListener: OmItemClickListener,
+    private val sOnItemClickListener: OnItemClickListener,
 ) : RecyclerView.Adapter<ExpenditureHistoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -50,7 +50,7 @@ class ExpenditureHistoryAdapter(
 
         init {
             itemView.setOnClickListener {
-                sOmItemClickListener.onItemClick(adapterPosition)
+                sOnItemClickListener.onItemClick(adapterPosition)
             }
         }
 
