@@ -42,71 +42,95 @@
         android:inputType="textPersonName"
         android:paddingStart="5dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:paddingEnd="5dp"
-        android:textSize="14sp" />
+        android:paddingBottom="5dp"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/vendor_card"
-        android:layout_width="0dp"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/vendor_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/search_bar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp">
+        android:visibility="gone">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/color_5"
-            app:cardCornerRadius="40dp"
-            app:cardElevation="0dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/vendor_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:clipToPadding="true" />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
+                android:id="@+id/error_image"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="150dp"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/ic_person"
-                app:tint="@color/icons_color" />
-        </androidx.cardview.widget.CardView>
+                android:src="@drawable/baseline_money_off_24"
+                android:visibility="gone"
+                app:tint="@color/color_7" />
+
+            <TextView
+                android:id="@+id/vendor_error_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="200dp"
+                android:layout_marginEnd="0dp"
+                android:fontFamily="@font/montserrat"
+                android:lines="2"
+                android:text="@string/no_history"
+                android:textAlignment="center"
+                android:textColor="@color/text_bg_color"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="65dp"
             android:fontFamily="@font/montserrat"
-            android:text="Somtochukwu Obi"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:lines="2"
+            android:text="@string/can_not_retrieve"
+            android:textAlignment="center"
+            android:textColor="@color/text_bg_color"
+            android:textSize="14sp" />
 
-        <ImageButton
-            android:id="@+id/back_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|end"
-            android:layout_marginEnd="10dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_arrow_right"
-            app:tint="@color/text_bg_color" />
-
-    </androidx.cardview.widget.CardView>
-
+        <Button
+            android:id="@+id/refresh_btn"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/ripple_effect"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/refresh_layout"
+            android:textColor="@color/color_5"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="wrap_content"
@@ -124,10 +148,10 @@
             android:clickable="true"
             android:contentDescription="@string/todo"
             android:focusable="true"
+            android:visibility="gone"
             android:src="@drawable/ic_person_add"
             app:backgroundTint="@color/color_2"
             app:tint="@color/white" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
 </RelativeLayout>

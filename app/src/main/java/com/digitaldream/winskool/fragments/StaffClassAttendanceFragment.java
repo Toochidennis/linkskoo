@@ -64,9 +64,8 @@ public class StaffClassAttendanceFragment extends Fragment implements StaffClass
 
         mAdapter = new StaffClassAttendanceAdapter(getContext(),
                 mClassNameTableList, this);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setLayoutManager( new LinearLayoutManager(getContext()));
 
         if (!mClassNameTableList.isEmpty()) {
             mRecyclerView.setAdapter(mAdapter);
@@ -76,14 +75,7 @@ public class StaffClassAttendanceFragment extends Fragment implements StaffClass
             mLayout.setVisibility(View.VISIBLE);
         }
 
-
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
     }
 
     @Override
@@ -94,7 +86,6 @@ public class StaffClassAttendanceFragment extends Fragment implements StaffClass
         intent.putExtra("class_name", mClassNameTableList.get(position).getClassName());
         intent.putExtra("from","staff");
         startActivity(intent);
-
 
     }
 }

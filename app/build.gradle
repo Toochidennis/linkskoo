@@ -3,6 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdkVersion 33
+
     defaultConfig {
         applicationId "com.digitaldream.winskool"
         minSdkVersion 21
@@ -80,7 +81,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     //kotlin
-    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation "androidx.fragment:fragment-ktx:1.5.5"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.20-Beta"

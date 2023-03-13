@@ -93,30 +93,30 @@ public class StaffDashboardActivity extends AppCompatActivity {
         if (from != null && from.equals("testupload")) {
             FlashCardList.refresh = true;
             bottomNavigationView.getMenu().findItem(R.id.payment).setChecked(true);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new FlashCardList()).commit();
 
         } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StaffDashboardFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new StaffDashboardFragment()).commit();
             bottomNavigationView.getMenu().findItem(R.id.student_dashboard).setChecked(true);
         }
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.student_dashboard:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StaffDashboardFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new StaffDashboardFragment()).commit();
                     return true;
                 case R.id.student_results:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ResultStaff()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new ResultStaff()).commit();
                     return true;
 
                 case R.id.payment:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FlashCardList()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new FlashCardList()).commit();
                     return true;
                 case R.id.student_library:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExamFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new ExamFragment()).commit();
                     return true;
 
                 case R.id.student_elearning:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StaffELearningFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new StaffELearningFragment()).commit();
                     return true;
             }
             return false;

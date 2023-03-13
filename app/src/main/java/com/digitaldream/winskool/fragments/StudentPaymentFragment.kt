@@ -167,7 +167,6 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                 val objects = jsonObject.getJSONObject("data")
                 val authorizationURL = objects.getString("authorization_url")
                 val reference = objects.getString("reference")
-                println("url: $authorizationURL  $status  $reference")
 
                 when (status) {
                     "true" -> {

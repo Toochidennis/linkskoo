@@ -426,18 +426,18 @@ public class QuestionAccessViewSheet extends BottomSheetDialogFragment {
                         if(StudentDashboard.questionBottomSheet !=null){
                             StudentDashboard.questionBottomSheet.dismiss();
                             StudentDashboard.refresh=true;
-                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,new StudentDashboard()).commit();
+                            getFragmentManager().beginTransaction().replace(R.id.payment_container,new StudentDashboard()).commit();
                         }
                         if(AdminDashboardFragment.questionBottomSheet !=null){
                             AdminDashboardFragment.questionBottomSheet.dismiss();
                             AdminDashboardFragment.refresh=true;
-                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,new AdminDashboardFragment()).commit();
+                            getFragmentManager().beginTransaction().replace(R.id.payment_container,new AdminDashboardFragment()).commit();
 
                         }
                         if(StaffDashboardFragment.questionBottomSheet !=null){
                             StaffDashboardFragment.questionBottomSheet.dismiss();
                             StaffDashboardFragment.refresh=true;
-                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,new StaffDashboardFragment()).commit();
+                            getFragmentManager().beginTransaction().replace(R.id.payment_container,new StaffDashboardFragment()).commit();
                         }
 
 

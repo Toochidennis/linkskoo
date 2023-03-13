@@ -62,9 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener, QAAdapter.OnQuestionClickListener {
     private Boolean exit = false;
     private DatabaseHelper databaseHelper;
@@ -98,14 +96,9 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
     private static String json="";
     public static boolean refresh=false;
 
-
-
-
-
     public StaffDashboardFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

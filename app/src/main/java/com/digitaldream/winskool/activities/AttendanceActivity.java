@@ -25,10 +25,7 @@ import java.util.Locale;
 
 
 public class AttendanceActivity extends AppCompatActivity {
-
-
     String mStudentLevelId, mStudentClassId, mClassName, from;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +48,16 @@ public class AttendanceActivity extends AppCompatActivity {
         mClassName = intent.getStringExtra("className");
         from = intent.getStringExtra("from");
 
-
         TextView name = findViewById(R.id.class_name);
         TextView classYear = findViewById(R.id.class_term);
         TabLayout tabLayout = findViewById(R.id.tabs);
         ViewPager viewPager = findViewById(R.id.container);
-
 
         SharedPreferences sharedPreferences = getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         String term = sharedPreferences.getString("term", "");
         // year = mSettingModels.get(0).getSchoolTerm();
         String year = sharedPreferences.getString("school_year", "");
-        Log.i("term", mStudentLevelId);
 
         try {
             int previousYear = Integer.parseInt(year) - 1;
@@ -118,7 +112,6 @@ public class AttendanceActivity extends AppCompatActivity {
         }
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

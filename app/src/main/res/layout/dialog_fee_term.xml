@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:paddingStart="15dp"
     android:paddingTop="15dp"
@@ -29,11 +29,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:clickable="true"
-        android:visibility="gone"
         android:contentDescription="@string/todo"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/arrow_left"
+        android:visibility="gone"
         app:tint="@color/black" />
 
 
@@ -61,5 +61,18 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/no_data"
+        android:textColor="@color/text_bg_color"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

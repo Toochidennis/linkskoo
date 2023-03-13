@@ -90,7 +90,6 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         // Required empty public constructor
     }
 
-
     public static AdminClassAttendanceFragment newInstance(String param1,
                                                            String param2,
                                                            String param3,

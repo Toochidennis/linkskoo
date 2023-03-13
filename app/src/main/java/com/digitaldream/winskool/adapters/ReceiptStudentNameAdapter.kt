@@ -14,7 +14,7 @@ import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import java.util.*
 
 class ReceiptStudentNameAdapter(
-    private val sStudentList: MutableList<StudentTable>,
+    private var sStudentList: MutableList<StudentTable>,
     private val sLevelOnclick: OnItemClickListener,
 ) : RecyclerView.Adapter<ReceiptStudentNameAdapter.ViewHolder>() {
 
@@ -33,8 +33,9 @@ class ReceiptStudentNameAdapter(
         val middleName = capitaliseFirstLetter(studentTable.studentMiddlename)
         val firstName = capitaliseFirstLetter(studentTable.studentFirstname)
         val name = "$surName $middleName $firstName"
+        studentTable.studentFullName = name
 
-        holder.mStudentName.text = name
+        holder.mStudentName.text = studentTable.studentFullName
 
         val mutate = holder.mStudentView.background.mutate() as GradientDrawable
         val random = Random()
@@ -48,6 +49,7 @@ class ReceiptStudentNameAdapter(
 
     override fun getItemCount() = sStudentList.size
 
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val mStudentView: LinearLayout = itemView.findViewById(R.id.student_view)
         val mStudentName: TextView = itemView.findViewById(R.id.student_name)
@@ -58,5 +60,10 @@ class ReceiptStudentNameAdapter(
             }
         }
 
+    }
+
+    fun filterList(filteredList: MutableList<StudentTable>) {
+        sStudentList = filteredList
+        notifyDataSetChanged()
     }
 }

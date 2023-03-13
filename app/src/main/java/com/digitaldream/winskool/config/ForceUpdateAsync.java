@@ -4,19 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.digitaldream.winskool.activities.Dashboard;
-import com.digitaldream.winskool.activities.StaffDashboardActivity;
-import com.digitaldream.winskool.activities.StudentDashboardActivity;
 import com.digitaldream.winskool.dialog.CustomUpdateDialog;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
-import java.io.IOException;
-
 public class ForceUpdateAsync extends AsyncTask<String, String, JSONObject> {
     private String latestVersion;
-    private String currentVersion;
+    private final String currentVersion;
     private Context context;
 
     public ForceUpdateAsync(String currentVersion, Context context) {
@@ -53,10 +48,8 @@ public class ForceUpdateAsync extends AsyncTask<String, String, JSONObject> {
 
             if (latestVersion != null) {
                 if (lv > cv) {
-                    if (!(context instanceof Dashboard) || !(context instanceof StaffDashboardActivity) || !(context instanceof StudentDashboardActivity)) {
-                        if (!((Activity) context).isFinishing()) {
-                            showForceUpdateDialog();
-                        }
+                    if (!((Activity) context).isFinishing()) {
+                        showForceUpdateDialog();
                     }
                 }
             }

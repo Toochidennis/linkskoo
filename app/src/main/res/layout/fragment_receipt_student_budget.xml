@@ -125,7 +125,7 @@
             android:clickable="true"
             android:contentDescription="@string/todo"
             android:focusable="true"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_setting_white_24dp"
             android:visibility="gone"
             app:backgroundTint="@color/color_10" />
 

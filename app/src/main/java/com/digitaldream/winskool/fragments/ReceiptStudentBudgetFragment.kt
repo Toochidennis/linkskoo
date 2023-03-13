@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -19,8 +22,9 @@ import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.TermlyFeeSetupActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptStudentBudgetAdapter
+import com.digitaldream.winskool.dialog.AddReceiptDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
-import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONObject
@@ -31,6 +35,7 @@ private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 private const val ARG_PARAM4 = "param4"
 private const val ARG_PARAM5 = "param5"
+private const val ARG_PARAM6 = "param6"
 
 
 class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
@@ -45,6 +50,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
 
     private var levelId: String? = null
     private var levelName: String? = null
+    private var studentName: String? = null
     private var classId: String? = null
     private var studentId: String? = null
     private var regNo: String? = null
@@ -60,6 +66,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
             studentId = it.getString(ARG_PARAM3)
             regNo = it.getString(ARG_PARAM4)
             levelName = it.getString(ARG_PARAM5)
+            studentName = it.getString(ARG_PARAM6)
         }
     }
 
@@ -67,8 +74,12 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
 
         @JvmStatic
         fun newInstance(
-            sLevelId: String, sClassId: String, sStudentId: String, sRegNo: String,
+            sLevelId: String,
+            sClassId: String,
+            sStudentId: String,
+            sRegNo: String,
             sLevelName: String,
+            sStudentName: String,
         ) =
             ReceiptStudentBudgetFragment().apply {
                 arguments = Bundle().apply {
@@ -77,6 +88,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
                     putString(ARG_PARAM3, sStudentId)
                     putString(ARG_PARAM4, sRegNo)
                     putString(ARG_PARAM5, sLevelName)
+                    putString(ARG_PARAM6, sStudentName)
                 }
             }
     }
@@ -127,7 +139,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
         val url = Login.urlBase + "/manageReceipts.php?list=$studentId"
         val hashMap = hashMapOf<String, String>()
 
-        FunctionUtils.requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     if (response == "[]") {
@@ -164,6 +176,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
                                     paymentModel.setAmount(amount)
                                     paymentModel.setSession(session)
                                     paymentModel.setTerm(term)
+                                    paymentModel.setYear(year)
                                     mBudgetList.add(paymentModel)
                                 }
 
@@ -176,9 +189,17 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
                                     mErrorView.isVisible = false
                                     mMainView.isVisible = true
                                     mErrorMessage.isVisible = false
-                                    mAddBudgetBtn.isVisible = true
+                                    mAddBudgetBtn.isVisible = false
                                 }
                                 mAdapter.notifyItemChanged(mBudgetList.size - 1)
+                            } else {
+                                mMainView.isVisible = true
+                                mErrorMessage.isVisible = true
+                                mAddBudgetBtn.isVisible = false
+                                "$studentName have paid!".also {
+                                    mErrorMessage
+                                        .text = it
+                                }
                             }
 
                         } catch (e: Exception) {
@@ -209,7 +230,29 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        Toast.makeText(context, ":)", Toast.LENGTH_SHORT).show()
+        val model = mBudgetList[position]
+        val year = model.getYear()
+        val term = model.getTerm()
+        val invoiceId = model.getInvoiceId()
+        val amount = model.getAmount()
+
+        AddReceiptDialog(
+            requireContext(), invoiceId!!,
+            studentId!!,
+            classId!!,
+            levelId!!,
+            regNo!!,
+            studentName!!,
+            amount!!,
+            year!!,
+            term!!,
+        ).apply {
+            setCancelable(true)
+            show()
+        }.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
 }

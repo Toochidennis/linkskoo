@@ -81,14 +81,14 @@ public class StudentDashboardActivity extends AppCompatActivity {
         if (from != null && from.equals("testupload")) {
             FlashCardList.refresh = true;
             getSupportFragmentManager().beginTransaction().replace(
-                    R.id.fragment_container, new FlashCardList()).commit();
+                    R.id.payment_container, new FlashCardList()).commit();
             bottomNavigationView.getMenu().findItem(R.id.payment).setChecked(
                     true);
 
 
         } else {
             getSupportFragmentManager().beginTransaction().replace(
-                    R.id.fragment_container, new StudentDashboard()).commit();
+                    R.id.payment_container, new StudentDashboard()).commit();
             bottomNavigationView.getMenu().findItem(
                     R.id.student_dashboard).setChecked(true);
         }
@@ -97,29 +97,29 @@ public class StudentDashboardActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()) {
                         case R.id.student_dashboard:
                             getSupportFragmentManager().beginTransaction().replace(
-                                    R.id.fragment_container,
+                                    R.id.payment_container,
                                     new StudentDashboard()).commit();
                             return true;
                         case R.id.student_results:
                             getSupportFragmentManager().beginTransaction().replace(
-                                    R.id.fragment_container,
+                                    R.id.payment_container,
                                     new StudentResult()).commit();
                             return true;
 
                         case R.id.payment:
                             getSupportFragmentManager().beginTransaction().replace(
-                                    R.id.fragment_container,
+                                    R.id.payment_container,
                                     new StudentPaymentFragment()).commit();
                             return true;
                         case R.id.student_library:
                             getSupportFragmentManager().beginTransaction().replace(
-                                    R.id.fragment_container,
+                                    R.id.payment_container,
                                     new ELibraryFragment()).commit();
                             return true;
 
                         case R.id.student_elearning:
                             getSupportFragmentManager().beginTransaction().replace(
-                                    R.id.fragment_container,
+                                    R.id.payment_container,
                                     new StudentElearning()).commit();
                             return true;
                     }

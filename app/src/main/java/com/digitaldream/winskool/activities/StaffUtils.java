@@ -32,46 +32,48 @@ public class StaffUtils extends AppCompatActivity {
 
             case "result":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container, new ResultStaff()).commit();
+                        R.id.payment_container, new ResultStaff()).commit();
                 break;
 
             case "student":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container, new ContactsStaff()).commit();
+                        R.id.payment_container, new ContactsStaff()).commit();
                 break;
 
             case "staff":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container,
+                        R.id.payment_container,
                         AdminClassAttendanceFragment.newInstance(classId,
                                 levelId, className, "staff")).commit();
                 break;
 
             case "cbt":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container,
+                        R.id.payment_container,
                         new CBTExamTypeFragment()).commit();
                 break;
 
             case "exam_type":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container,
+                        R.id.payment_container,
                         new CBTCoursesFragment()).commit();
                 break;
+
             case "cbt_course":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container,
+                        R.id.payment_container,
                         CBTYearFragment.newInstance(courseName, "")).commit();
                 break;
 
             case "videos":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container,
+                        R.id.payment_container,
                         new LibraryVideosFragment()).commit();
                 break;
+
             case "games":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.fragment_container,
+                        R.id.payment_container,
                         new LibraryGamesFragment()).commit();
                 break;
         }

@@ -2,6 +2,8 @@ package com.digitaldream.winskool.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +23,7 @@ import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.models.StudentTable
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import java.util.*
 
 
 private const val ARG_PARAM1 = "param1"
@@ -35,6 +38,7 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
     private lateinit var mErrorMessage: TextView
     private lateinit var mSearchBar: EditText
 
+    private lateinit var mAdapter: ReceiptStudentNameAdapter
     private var classId: String? = null
     private var className: String? = null
     private var levelName: String? = null
@@ -83,10 +87,38 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
             }
         }
 
+        mSearchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                filterName(s.toString())
+            }
+        })
 
         getStudentNames()
 
         return view
+    }
+
+    private fun filterName(sName: String) {
+        val filteredList = mutableListOf<StudentTable>()
+
+        mStudentList.forEach { name ->
+            if (name.studentFullName.lowercase(Locale.getDefault())
+                    .contains(sName.lowercase(Locale.getDefault()))
+            ) {
+
+                filteredList.add(name)
+            }
+        }
+
+        mAdapter.filterList(filteredList)
     }
 
     private fun getStudentNames() {
@@ -103,7 +135,7 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
                 mErrorMessage.isVisible = true
                 mSearchBar.isVisible = false
             } else {
-                val mAdapter = ReceiptStudentNameAdapter(mStudentList, this)
+                mAdapter = ReceiptStudentNameAdapter(mStudentList, this)
                 mRecyclerView.hasFixedSize()
                 mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 mRecyclerView.adapter = mAdapter
@@ -121,6 +153,7 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
         val studentTable = mStudentList[position]
         startActivity(
             Intent(context, PaymentActivity::class.java)
+                .putExtra("student_name", studentTable.studentFullName)
                 .putExtra("levelId", studentTable.studentLevel)
                 .putExtra("classId", studentTable.studentClass)
                 .putExtra("studentId", studentTable.studentId)

@@ -18,6 +18,7 @@
         android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
         app:tint="@color/black" />
 
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -30,12 +31,12 @@
         android:layout_toEndOf="@id/back_btn"
         android:fontFamily="@font/montserrat"
         android:gravity="center_vertical"
-        android:text="Add Vendor"
+        android:text="Add Receipt"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/vendor_name_input"
+        android:id="@+id/student_name_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
@@ -51,21 +52,22 @@
         android:ems="10"
         android:focusable="true"
         android:fontFamily="@font/montserrat"
-        android:hint="Name(required)"
+        android:hint="Name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
 
     <EditText
-        android:id="@+id/vendor_email_input"
+        android:id="@+id/amount_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/vendor_name_input"
+        android:layout_below="@id/student_name_input"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
@@ -73,24 +75,23 @@
         android:layout_marginEnd="15dp"
         android:autofillHints="emailAddress"
         android:background="@drawable/edit_text_bg"
-        android:drawableStart="@drawable/email"
-        android:drawableTint="@color/color_5"
         android:ems="10"
         android:fontFamily="@font/montserrat"
-        android:hint="Email(Optional)"
+        android:hint="@string/amount"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/vendor_reference_input"
+        android:id="@+id/reference_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/vendor_email_input"
+        android:layout_below="@id/amount_input"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
@@ -102,20 +103,21 @@
         android:drawableTint="@color/color_5"
         android:ems="10"
         android:fontFamily="@font/montserrat"
-        android:hint="Reference(required)"
+        android:hint="Reference number"
         android:inputType="textPostalAddress"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="5dp"
         android:paddingBottom="10dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/vendor_phone_input"
+        android:id="@+id/date_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/vendor_reference_input"
+        android:layout_below="@id/reference_input"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
@@ -123,50 +125,28 @@
         android:layout_marginEnd="15dp"
         android:autofillHints="phone"
         android:background="@drawable/edit_text_bg"
-        android:drawableStart="@drawable/ic_phone_black"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_date"
         android:drawableTint="@color/color_5"
         android:ems="10"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
         android:fontFamily="@font/montserrat"
-        android:hint="Phone number(required)"
-        android:inputType="phone"
+        android:hint="Date"
+        android:inputType="date|time"
         android:minHeight="48dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="5dp"
         android:paddingBottom="10dp"
-        android:textSize="14sp" />
-
-    <EditText
-        android:id="@+id/vendor_address_input"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/vendor_phone_input"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="15dp"
-        android:autofillHints="postalAddress"
-        android:background="@drawable/edit_text_bg"
-        android:drawableStart="@drawable/ic_location"
-        android:drawableTint="@color/color_5"
-        android:ems="10"
-        android:fontFamily="@font/montserrat"
-        android:gravity="start|top"
-        android:hint="Address(Optional)"
-        android:inputType="textPostalAddress"
-        android:minHeight="48dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="10dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <Button
-        android:id="@+id/add_vendor_btn"
+        android:id="@+id/add_receipt_btn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/vendor_address_input"
+        android:layout_below="@id/date_input"
         android:layout_marginStart="15dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="15dp"

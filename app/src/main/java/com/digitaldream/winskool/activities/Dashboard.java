@@ -196,13 +196,13 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
             bottomNavigationView.getMenu().findItem(R.id.payment).setChecked(
                     true);
             getSupportFragmentManager().beginTransaction().replace(
-                    R.id.fragment_container, new FlashCardList()).commit();
+                    R.id.payment_container, new FlashCardList()).commit();
 
         } else {
             bottomNavigationView.getMenu().findItem(
                     R.id.student_dashboard).setChecked(true);
             getSupportFragmentManager().beginTransaction().replace(
-                    R.id.fragment_container,
+                    R.id.payment_container,
                     new AdminDashboardFragment()).commit();
         }
 
@@ -253,19 +253,19 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                 case R.id.student_dashboard:
 
                     getSupportFragmentManager().beginTransaction().replace(
-                            R.id.fragment_container,
+                            R.id.payment_container,
                             new AdminDashboardFragment()).commit();
                     return true;
 
                 case R.id.student_results:
                     getSupportFragmentManager().beginTransaction().replace(
-                            R.id.fragment_container,
+                            R.id.payment_container,
                             new AdminResultFragment()).commit();
                     return true;
 
                 case R.id.payment:
                     getSupportFragmentManager().beginTransaction().replace(
-                            R.id.fragment_container,
+                            R.id.payment_container,
                             new AdminPaymentDashboardFragment()).commit();
 
                     /*startActivity(new Intent(this, PaymentActivity.class).putExtra("from",
@@ -273,13 +273,13 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                     return true;
                 case R.id.student_library:
                     getSupportFragmentManager().beginTransaction().replace(
-                            R.id.fragment_container,
+                            R.id.payment_container,
                             new ELibraryFragment()).commit();
                     return true;
 
                 case R.id.student_elearning:
                     getSupportFragmentManager().beginTransaction().replace(
-                            R.id.fragment_container,
+                            R.id.payment_container,
                             new AdminELearning()).commit();
                     return true;
             }

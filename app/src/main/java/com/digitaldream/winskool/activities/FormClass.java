@@ -82,8 +82,6 @@ public class FormClass extends AppCompatActivity implements FormClassAdapter.OnF
             e.printStackTrace();
         }
 
-
-
         teacherName = findViewById(R.id.teacherName_profile);
 
         teacherName.setText(name);
@@ -111,40 +109,31 @@ public class FormClass extends AppCompatActivity implements FormClassAdapter.OnF
 
         }
 
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!tch.get(0).getStaffPhone().isEmpty()) {
-                    Intent i = new Intent(android.content.Intent.ACTION_DIAL,
-                            Uri.parse("tel:" + tch.get(0).getStaffPhone()));
-                    startActivity(i);
-                }else{
-                }
+        call.setOnClickListener(view -> {
+            if(!tch.get(0).getStaffPhone().isEmpty()) {
+                Intent i1 = new Intent(Intent.ACTION_DIAL,
+                        Uri.parse("tel:" + tch.get(0).getStaffPhone()));
+                startActivity(i1);
+            }else{
             }
         });
 
-        sms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!tch.get(0).getStaffPhone().isEmpty()) {
-                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setData(Uri.parse("smsto:" + tch.get(0).getStaffPhone()));
-                    startActivity(intent);
-                }else{
-                }
+        sms.setOnClickListener(view -> {
+            if(!tch.get(0).getStaffPhone().isEmpty()) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse("smsto:" + tch.get(0).getStaffPhone()));
+                startActivity(intent);
+            }else{
             }
         });
 
-        whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!tch.get(0).getStaffPhone().isEmpty()) {
-                    Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + "234" + tch.get(0).getStaffPhone() + "&text=" + "");
-                    Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(sendIntent);
-                }else{
-                }
+        whatsapp.setOnClickListener(view -> {
+            if(!tch.get(0).getStaffPhone().isEmpty()) {
+                Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + "234" + tch.get(0).getStaffPhone() + "&text=" + "");
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(sendIntent);
+            }else{
             }
         });
 
@@ -170,10 +159,6 @@ public class FormClass extends AppCompatActivity implements FormClassAdapter.OnF
         });
 
 
-
-
-
-
         recyclerView = findViewById(R.id.form_class_recycler);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -197,10 +182,9 @@ public class FormClass extends AppCompatActivity implements FormClassAdapter.OnF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return false;
     }

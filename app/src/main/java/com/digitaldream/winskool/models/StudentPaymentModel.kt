@@ -8,6 +8,7 @@ class StudentPaymentModel {
     private var mLevelName: String? = null
     private var mClassName: String? = null
     private var mTerm: String? = null
+    private var mYear: String? = null
     private var mDate: String? = null
     private var mSession: String? = null
     private var mAmount: String? = null
@@ -27,6 +28,7 @@ class StudentPaymentModel {
     fun getClassName() = mClassName
 
     fun getTerm() = mTerm
+    fun getYear() = mYear
 
     fun getDate() = mDate
 
@@ -64,6 +66,10 @@ class StudentPaymentModel {
 
     fun setTerm(sTerm: String) {
         mTerm = sTerm
+    }
+
+    fun setYear(sYear: String){
+        mYear = sYear
     }
 
     fun setDate(sDate: String) {

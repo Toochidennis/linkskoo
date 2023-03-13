@@ -836,12 +836,8 @@ public class Login extends AppCompatActivity {
                                             Login.this);
                             builder.setMessage("Invalid Login details");
                             builder.setPositiveButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface,
-                                                            int i) {
+                                    (dialogInterface, i) -> {
 
-                                        }
                                     });
                             builder.show();
                         }
@@ -1109,7 +1105,6 @@ public class Login extends AppCompatActivity {
                                 ct.setLevelName(levelName);
                                 ct.setLevelId(levelId);
                                 courseDao.create(ct);
-
                             }
 
                             JSONArray staffContentArray =
@@ -1169,12 +1164,8 @@ public class Login extends AppCompatActivity {
                                             Login.this);
                             builder.setMessage("Invalid Login details");
                             builder.setPositiveButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface,
-                                                            int i) {
+                                    (dialogInterface, i) -> {
 
-                                        }
                                     });
                             builder.show();
                         }

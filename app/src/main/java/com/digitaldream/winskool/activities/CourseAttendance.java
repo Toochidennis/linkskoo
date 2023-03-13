@@ -236,7 +236,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         }
     }
 
-
     public void getAttendance(String sYear, String sClassId, String sCourseId,
                               String sTerm, String sDb) {
 
@@ -410,7 +409,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     public void onDateSet(DatePicker sDatePicker, int sYear, int sMonth,
                           int sDayOfMonth) {
         int month = sMonth + 1;
-
         String currentDate = sYear + "-" + month + "-" + sDayOfMonth;
         currentDate = currentDate.concat(" 00:00:00");
 
@@ -424,7 +422,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         newIntent.putExtra("course_name", mCourseList.get(0).getCourseName());
         newIntent.putExtra("db", db);
         startActivity(newIntent);
-
 
     }
 

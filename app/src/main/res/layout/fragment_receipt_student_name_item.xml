@@ -28,16 +28,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/student_view"
             android:fontFamily="@font/montserrat"
-            android:textAllCaps="true"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
-
-

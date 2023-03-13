@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.Window
 import android.view.animation.Animation
@@ -46,6 +45,7 @@ class TermFeeDialog(
     private lateinit var mRightToRightAnimation: Animation
     private lateinit var mLeftToRightAnimation: Animation
     private lateinit var mTitle: TextView
+    private lateinit var mErrorMessage: TextView
     private lateinit var mBackBtn: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +59,7 @@ class TermFeeDialog(
         mLevelRecyclerView = findViewById(R.id.level_recycler)
         mClassRecyclerView = findViewById(R.id.class_recycler)
         mTitle = findViewById(R.id.title)
+        mErrorMessage = findViewById(R.id.error_message)
         mBackBtn = findViewById(R.id.back_btn)
 
         mLeftToLeftAnimation = AnimationUtils.loadAnimation(context, R.anim.move_left_left)
@@ -72,7 +73,8 @@ class TermFeeDialog(
             mBackBtn.isVisible = false
             "Select Level".also { mTitle.text = it }
             mLevelRecyclerView.isVisible = true
-           // mClassRecyclerView.isVisible = false
+            mErrorMessage.isVisible = false
+            // mClassRecyclerView.isVisible = false
             mClassRecyclerView.startAnimation(mRightToRightAnimation)
             mLevelRecyclerView.startAnimation(mLeftToRightAnimation)
         }
@@ -88,10 +90,18 @@ class TermFeeDialog(
 
             mLevelList = mDao.queryForAll()
             mLevelList.sortBy { it.levelName }
-            val mAdapter = TermFeeDialogAdapter(context, mLevelList, this)
-            mLevelRecyclerView.hasFixedSize()
-            mLevelRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            mLevelRecyclerView.adapter = mAdapter
+
+            if (mLevelList.isEmpty()) {
+                mErrorMessage.isVisible = true
+                mLevelRecyclerView.isVisible = false
+            } else {
+                val mAdapter = TermFeeDialogAdapter(context, mLevelList, this)
+                mLevelRecyclerView.hasFixedSize()
+                mLevelRecyclerView.layoutManager = GridLayoutManager(context, 2)
+                mLevelRecyclerView.adapter = mAdapter
+                mErrorMessage.isVisible = false
+                mLevelRecyclerView.isVisible = true
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -106,18 +116,25 @@ class TermFeeDialog(
                 databaseHelper.connectionSource, ClassNameTable::class.java
             )
             mClassList = mDao.queryBuilder().where().eq("level", sLevelId).query()
-            Log.d("class", "" + mClassList.size)
 
-            mAdapter = DialogClassNameAdapter(mClassList, this)
-            mClassRecyclerView.hasFixedSize()
-            mClassRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            mClassRecyclerView.adapter = mAdapter
-            mClassRecyclerView.isVisible = true
-            mBackBtn.isVisible = true
-            "Select Class".also { mTitle.text = it }
-            mLevelRecyclerView.startAnimation(mLeftToLeftAnimation)
-            mClassRecyclerView.startAnimation(mRightToLeftAnimation)
-            mLevelRecyclerView.isVisible = false
+            if (mClassList.isEmpty()) {
+                mErrorMessage.isVisible = true
+                mClassRecyclerView.isVisible = false
+                mBackBtn.isVisible = true
+                "Select Class".also { mTitle.text = it }
+            } else {
+                mAdapter = DialogClassNameAdapter(mClassList, this)
+                mClassRecyclerView.hasFixedSize()
+                mClassRecyclerView.layoutManager = GridLayoutManager(context, 2)
+                mClassRecyclerView.adapter = mAdapter
+                mClassRecyclerView.isVisible = true
+                mErrorMessage.isVisible = false
+                mBackBtn.isVisible = true
+                "Select Class".also { mTitle.text = it }
+                mLevelRecyclerView.startAnimation(mLeftToLeftAnimation)
+                mClassRecyclerView.startAnimation(mRightToLeftAnimation)
+                mLevelRecyclerView.isVisible = false
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -138,6 +155,10 @@ class TermFeeDialog(
         } else {
             getClassName(levelTable.levelId)
             mLevelName = levelTable.levelName
+            if (mClassList.isEmpty()){
+                mLevelRecyclerView.isVisible = false
+                mErrorMessage.isVisible = true
+            }
         }
     }
 
