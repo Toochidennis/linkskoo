@@ -71,8 +71,7 @@ class VendorFragment : Fragment() {
             }*/
 
 
-
-        return view;
+        return view
     }
 
 }
