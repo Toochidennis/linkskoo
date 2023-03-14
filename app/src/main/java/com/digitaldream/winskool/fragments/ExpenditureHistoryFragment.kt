@@ -140,6 +140,7 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
 
                                 mGraphAmountList.add(graphAmount)
                                 mGraphDateList.add(graphDate)
+                                mGraphDateList.sort()
                             }
 
                             if (mGraphicalView == null) {
