@@ -45,7 +45,7 @@ class PaymentSettingsFragment : Fragment() {
         }
 
         termBtn.setOnClickListener {
-            TermFeeDialog(requireContext(), "term")
+            TermFeeDialog(requireContext(), "term", null)
                 .apply {
                     setCancelable(true)
                     show()

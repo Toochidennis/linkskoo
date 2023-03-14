@@ -17,10 +17,7 @@ open class PaymentActivity : AppCompatActivity() {
         val amount = intent.getStringExtra("amount")
         val name = intent.getStringExtra("name")
         val levelName = intent.getStringExtra("level_name")
-        val studentName = intent.getStringExtra("student_name")
-        val levelId = intent.getStringExtra("levelId")
         val classId = intent.getStringExtra("classId")
-        val studentId = intent.getStringExtra("studentId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
         val reference = intent.getStringExtra("reference")
@@ -105,17 +102,6 @@ open class PaymentActivity : AppCompatActivity() {
             "receipt_class_name" -> supportFragmentManager.beginTransaction().replace(
                 R.id.payment_container, ReceiptStudentNameFragment.newInstance(
                     classId!!, className!!, levelName!!,
-                )
-            ).commit()
-
-            "receipt_student_name" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, ReceiptStudentBudgetFragment.newInstance(
-                    levelId!!,
-                    classId!!,
-                    studentId!!,
-                    regNo!!,
-                    levelName!!,
-                    studentName!!,
                 )
             ).commit()
 

@@ -133,6 +133,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
                                 mGraphAmountList.add(graphAmount)
                                 mGraphDateList.add(graphDate)
+                                mGraphDateList.sort()
                             }
 
                             if (mGraphicalView == null) {
@@ -239,16 +240,14 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     private fun receiptsDialog() {
         mAddReceipt.setOnClickListener {
-            val termFeeDialog = TermFeeDialog(requireContext(), "receipts")
-            termFeeDialog.apply {
-                setCancelable(true)
-                show()
-            }
-            val window = termFeeDialog.window
-            window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+            TermFeeDialog(requireContext(), "receipts", null)
+                .apply {
+                    setCancelable(true)
+                    show()
+                }.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         }
 
     }

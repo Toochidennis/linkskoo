@@ -192,7 +192,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
         if (input == "refresh") mRefreshBtn.isVisible = true
     }
 
-    override fun sendLevelId(levelId: String) {
+    override fun sendId(levelId: String) {
 
     }
 

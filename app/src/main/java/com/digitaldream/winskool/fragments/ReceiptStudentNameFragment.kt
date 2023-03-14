@@ -7,9 +7,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -17,9 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
+import com.digitaldream.winskool.activities.ReceiptStudentBudgetActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptStudentNameAdapter
 import com.digitaldream.winskool.config.DatabaseHelper
+import com.digitaldream.winskool.dialog.OnInputListener
+import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.StudentTable
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
@@ -36,12 +40,16 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
     private lateinit var mMainView: NestedScrollView
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mErrorMessage: TextView
+    private lateinit var mToolbarText: TextView
+    private lateinit var mBackBtn: ImageView
+    private lateinit var mLevelBtn: Button
     private lateinit var mSearchBar: EditText
 
     private lateinit var mAdapter: ReceiptStudentNameAdapter
     private var classId: String? = null
     private var className: String? = null
     private var levelName: String? = null
+    private var mLevelName: String? = null
     private var mStudentList = mutableListOf<StudentTable>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,18 +81,19 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_receipt_student_name, container, false)
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mMainView = view.findViewById(R.id.student_name_view)
         mRecyclerView = view.findViewById(R.id.student_name_recycler)
         mErrorMessage = view.findViewById(R.id.student_error_message)
         mSearchBar = view.findViewById(R.id.search_bar)
+        mLevelBtn = view.findViewById(R.id.level_name)
+        mToolbarText = view.findViewById(R.id.toolbar_text)
+        mBackBtn = view.findViewById(R.id.back_btn)
 
-        toolbar.apply {
-            title = "Select Student from $className"
-            setNavigationIcon(R.drawable.arrow_left)
-            setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
-            }
+        "Select Student".also { mToolbarText.text = it }
+        mLevelBtn.text = levelName
+
+        mBackBtn.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         mSearchBar.addTextChangedListener(object : TextWatcher {
@@ -101,7 +110,8 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
             }
         })
 
-        getStudentNames()
+        getStudentNames(classId!!)
+        changeLevel()
 
         return view
     }
@@ -121,25 +131,27 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
         mAdapter.filterList(filteredList)
     }
 
-    private fun getStudentNames() {
+    private fun getStudentNames(sClassId: String) {
         try {
             val databaseHelper =
                 DatabaseHelper(requireContext())
             val mDao: Dao<StudentTable, Long> = DaoManager.createDao(
                 databaseHelper.connectionSource, StudentTable::class.java
             )
-            mStudentList = mDao.queryBuilder().where().eq("studentClass", classId).query()
+            mStudentList = mDao.queryBuilder().where().eq("studentClass", sClassId).query()
 
             if (mStudentList.isEmpty()) {
                 mMainView.isVisible = true
                 mErrorMessage.isVisible = true
                 mSearchBar.isVisible = false
+                mRecyclerView.isVisible = false
             } else {
                 mAdapter = ReceiptStudentNameAdapter(mStudentList, this)
                 mRecyclerView.hasFixedSize()
                 mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 mRecyclerView.adapter = mAdapter
                 mMainView.isVisible = true
+                mRecyclerView.isVisible = true
                 mErrorMessage.isVisible = false
                 mSearchBar.isVisible = true
             }
@@ -152,15 +164,44 @@ class ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
     override fun onItemClick(position: Int) {
         val studentTable = mStudentList[position]
         startActivity(
-            Intent(context, PaymentActivity::class.java)
+            Intent(requireContext(), ReceiptStudentBudgetActivity::class.java)
                 .putExtra("student_name", studentTable.studentFullName)
                 .putExtra("levelId", studentTable.studentLevel)
                 .putExtra("classId", studentTable.studentClass)
                 .putExtra("studentId", studentTable.studentId)
                 .putExtra("reg_no", studentTable.studentReg_no)
                 .putExtra("level_name", levelName)
-                .putExtra("from", "receipt_student_name")
         )
 
+    }
+
+    private fun setLevelName() {
+        mLevelBtn.text = mLevelName
+    }
+
+    private fun changeLevel() {
+        mLevelBtn.setOnClickListener {
+            TermFeeDialog(
+                requireContext(),
+                "changeLevel",
+                object : OnInputListener {
+                    override fun sendInput(input: String) {
+                        mLevelName = input
+                        setLevelName()
+                    }
+
+                    override fun sendId(levelId: String) {
+                        mStudentList.clear()
+                        getStudentNames(levelId)
+                    }
+                },
+            ).apply {
+                setCancelable(true)
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
     }
 }

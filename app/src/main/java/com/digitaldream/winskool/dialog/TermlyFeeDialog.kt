@@ -70,7 +70,7 @@ class TermlyFeeDialog(
                 setCancelable(false)
                 setPositiveButton("I have saved my changes") { _, _ ->
                     sInputListener.sendInput(levelTable.levelName)
-                    sInputListener.sendLevelId(levelTable.levelId)
+                    sInputListener.sendId(levelTable.levelId)
                     dismiss()
                 }
                 setNegativeButton("No") { _, _ -> dismiss() }
@@ -78,7 +78,7 @@ class TermlyFeeDialog(
             }
         } else {
             sInputListener.sendInput(levelTable.levelName)
-            sInputListener.sendLevelId(levelTable.levelId)
+            sInputListener.sendId(levelTable.levelId)
             dismiss()
         }
 
@@ -88,6 +88,6 @@ class TermlyFeeDialog(
 
 interface OnInputListener {
     fun sendInput(input: String)
-    fun sendLevelId(levelId: String)
+    fun sendId(levelId: String)
 
 }

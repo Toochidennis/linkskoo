@@ -31,6 +31,7 @@ import com.j256.ormlite.dao.DaoManager
 class TermFeeDialog(
     sContext: Context,
     private val sFrom: String,
+    private val sOnInputListener: OnInputListener?,
 ) : Dialog(sContext), OnItemClickListener, OnClassClickListener {
 
     private var mLevelList = mutableListOf<LevelTable>()
@@ -155,7 +156,7 @@ class TermFeeDialog(
         } else {
             getClassName(levelTable.levelId)
             mLevelName = levelTable.levelName
-            if (mClassList.isEmpty()){
+            if (mClassList.isEmpty()) {
                 mLevelRecyclerView.isVisible = false
                 mErrorMessage.isVisible = true
             }
@@ -165,13 +166,20 @@ class TermFeeDialog(
     override fun onClassClick(position: Int) {
         val classTable = mClassList[position]
 
-        context.startActivity(
-            Intent(context, PaymentActivity().javaClass)
-                .putExtra("classId", classTable.classId)
-                .putExtra("class_name", classTable.className)
-                .putExtra("level_name", mLevelName)
-                .putExtra("from", "receipt_class_name")
-        )
+        if (sFrom == "changeLevel") {
+            sOnInputListener!!.sendInput(mLevelName!!)
+            sOnInputListener.sendId(classTable.classId)
+
+        } else {
+            context.startActivity(
+                Intent(context, PaymentActivity().javaClass)
+                    .putExtra("classId", classTable.classId)
+                    .putExtra("class_name", classTable.className)
+                    .putExtra("level_name", mLevelName)
+                    .putExtra("from", "receipt_class_name")
+            )
+        }
+
         dismiss()
 
     }

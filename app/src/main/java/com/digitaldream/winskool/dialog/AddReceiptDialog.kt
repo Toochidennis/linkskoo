@@ -19,13 +19,14 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import java.util.*
 
 class AddReceiptDialog(
-   private val sContext: Context,
+    private val sContext: Context,
     private val sInvoiceId: String,
     private val sStudentId: String,
     private val sClassId: String,
@@ -35,6 +36,7 @@ class AddReceiptDialog(
     private val sAmount: String,
     private val sYear: String,
     private val sTerm: String,
+    private var sOnItemClickListener: OnItemClickListener,
 ) : Dialog(sContext) {
 
     private lateinit var mStudentNameInput: EditText
@@ -106,6 +108,7 @@ class AddReceiptDialog(
             Toast.makeText(context, "Provide all fields", Toast.LENGTH_SHORT).show()
         } else {
             postReferenceNumber(reference, amount, date, studentName)
+            sOnItemClickListener.onItemClick(0)
             dismiss()
         }
     }
@@ -160,4 +163,5 @@ class AddReceiptDialog(
             ).show()
         }
     }
+
 }

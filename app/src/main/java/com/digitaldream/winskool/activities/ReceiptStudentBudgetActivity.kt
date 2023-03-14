@@ -1,23 +1,20 @@
-package com.digitaldream.winskool.fragments
+package com.digitaldream.winskool.activities
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.os.SystemClock
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
-import com.digitaldream.winskool.activities.TermlyFeeSetupActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptStudentBudgetAdapter
 import com.digitaldream.winskool.adapters.StudentFeesDetailsAdapter
@@ -25,22 +22,16 @@ import com.digitaldream.winskool.dialog.AddReceiptDialog
 import com.digitaldream.winskool.models.StudentPaymentModel
 import com.digitaldream.winskool.models.TermFeesDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.winskool.utils.FunctionUtils.getDate
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-private const val ARG_PARAM3 = "param3"
-private const val ARG_PARAM4 = "param4"
-private const val ARG_PARAM5 = "param5"
-private const val ARG_PARAM6 = "param6"
 
-
-class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
+class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt_student_budget),
+    OnItemClickListener {
 
     private lateinit var mMainView: NestedScrollView
     private lateinit var mRecyclerView: RecyclerView
@@ -59,6 +50,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
     private lateinit var mSchoolName: TextView
     private lateinit var mTitle: TextView
     private lateinit var mPayBtn: Button
+    private lateinit var mBackBtn: ImageView
     private lateinit var mDetailsAdapter: StudentFeesDetailsAdapter
 
     private var levelId: String? = null
@@ -75,110 +67,81 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
 
     private val mBudgetList = mutableListOf<StudentPaymentModel>()
     private val mFeeList = mutableListOf<TermFeesDataModel>()
+    private val dataModel = TermFeesDataModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            levelId = it.getString(ARG_PARAM1)
-            classId = it.getString(ARG_PARAM2)
-            studentId = it.getString(ARG_PARAM3)
-            regNo = it.getString(ARG_PARAM4)
-            levelName = it.getString(ARG_PARAM5)
-            studentName = it.getString(ARG_PARAM6)
-        }
-    }
 
-    companion object {
+        levelId = intent.getStringExtra("levelId")
+        classId = intent.getStringExtra("classId")
+        studentId = intent.getStringExtra("studentId")
+        regNo = intent.getStringExtra("reg_no")
+        levelName = intent.getStringExtra("level_name")
+        studentName = intent.getStringExtra("student_name")
 
-        @JvmStatic
-        fun newInstance(
-            sLevelId: String,
-            sClassId: String,
-            sStudentId: String,
-            sRegNo: String,
-            sLevelName: String,
-            sStudentName: String,
-        ) =
-            ReceiptStudentBudgetFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, sLevelId)
-                    putString(ARG_PARAM2, sClassId)
-                    putString(ARG_PARAM3, sStudentId)
-                    putString(ARG_PARAM4, sRegNo)
-                    putString(ARG_PARAM5, sLevelName)
-                    putString(ARG_PARAM6, sStudentName)
-                }
-            }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_receipt_student_budget, container, false)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        mMainView = findViewById(R.id.main_view)
+        mRecyclerView = findViewById(R.id.budget_recycler)
+        mErrorView = findViewById(R.id.error_view)
+        mErrorMessage = findViewById(R.id.budget_error_message)
+        mRefreshBtn = findViewById(R.id.refresh_btn)
+        mAddBudgetBtn = findViewById(R.id.add_receipt)
+        mErrorImage = findViewById(R.id.error_image)
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        mMainView = view.findViewById(R.id.main_view)
-        mRecyclerView = view.findViewById(R.id.budget_recycler)
-        mErrorView = view.findViewById(R.id.error_view)
-        mErrorMessage = view.findViewById(R.id.budget_error_message)
-        mRefreshBtn = view.findViewById(R.id.refresh_btn)
-        mAddBudgetBtn = view.findViewById(R.id.add_receipt)
-        mErrorImage = view.findViewById(R.id.error_image)
-
-        mDetailsView = view.findViewById(R.id.details_view)
-        mPaymentLayout = view.findViewById(R.id.payment_layout)
-        mDetailsRecyclerView = view.findViewById(R.id.details_recycler)
-        mFeeTotal1 = view.findViewById(R.id.fee_total)
-        mFeeTotal2 = view.findViewById(R.id.total2)
-        mSchoolName = view.findViewById(R.id.school_name)
-        mTitle = view.findViewById(R.id.title)
-        mPayBtn = view.findViewById(R.id.pay_btn)
+        mDetailsView = findViewById(R.id.details_view)
+        mPaymentLayout = findViewById(R.id.payment_layout)
+        mDetailsRecyclerView = findViewById(R.id.details_recycler)
+        mFeeTotal1 = findViewById(R.id.fee_total)
+        mFeeTotal2 = findViewById(R.id.total2)
+        mSchoolName = findViewById(R.id.school_name)
+        mTitle = findViewById(R.id.title)
+        mPayBtn = findViewById(R.id.pay_btn)
+        mBackBtn = findViewById(R.id.back_btn)
 
 
         toolbar.apply {
             title = "Select Term Fee"
             setNavigationIcon(R.drawable.arrow_left)
             setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
             }
         }
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         val mNameSchool = sharedPreferences.getString("school_name", "")
         mSchoolName.text = mNameSchool
 
-        mAdapter = ReceiptStudentBudgetAdapter(requireContext(), mBudgetList, this)
+        mAdapter = ReceiptStudentBudgetAdapter(this, mBudgetList, this)
         mRecyclerView.hasFixedSize()
-        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
 
-        mDetailsAdapter = StudentFeesDetailsAdapter(requireContext(), mFeeList)
+        mDetailsAdapter = StudentFeesDetailsAdapter(this, mFeeList)
         mDetailsRecyclerView.hasFixedSize()
-        mDetailsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        mDetailsRecyclerView.layoutManager = LinearLayoutManager(this)
         mDetailsRecyclerView.adapter = mDetailsAdapter
 
         mAddBudgetBtn.setOnClickListener {
             startActivity(
-                Intent(context, TermlyFeeSetupActivity()::class.java)
+                Intent(this, TermlyFeeSetupActivity()::class.java)
                     .putExtra("level_name", levelName)
                     .putExtra("level_id", levelId)
             )
         }
 
         refreshData()
-
-        return view
+        makePayment()
+        backClick()
     }
+
 
     private fun getFees() {
         val url = Login.urlBase + "/manageReceipts.php?list=$studentId"
         val hashMap = hashMapOf<String, String>()
 
-        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.GET, url, this, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     if (response == "[]") {
@@ -219,6 +182,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
                                     paymentModel.setSession(mSession!!)
                                     paymentModel.setTerm(mTerm!!)
                                     paymentModel.setYear(mYear!!)
+                                    paymentModel.setJson(descriptionArray.toString())
                                     mBudgetList.add(paymentModel)
 
                                     if (invoiceArray.length() == 1) {
@@ -243,14 +207,14 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
                                             mFeeTotal1.text = String.format(
                                                 Locale.getDefault(),
                                                 "%s%s",
-                                                requireActivity().getString(R.string.naira),
+                                                getString(R.string.naira),
                                                 currencyFormat(mAmount!!.toDouble())
                                             )
 
                                             mFeeTotal2.text = String.format(
                                                 Locale.getDefault(),
                                                 "%s%s",
-                                                requireActivity().getString(R.string.naira),
+                                                getString(R.string.naira),
                                                 currencyFormat(mAmount!!.toDouble())
                                             )
 
@@ -265,6 +229,7 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
                                             mDetailsView.isVisible = true
                                             mPaymentLayout.isVisible = true
                                             mMainView.isVisible = false
+                                            mBackBtn.isVisible = false
                                         }
                                         mDetailsAdapter.notifyItemChanged(mFeeList.size - 1)
 
@@ -332,22 +297,102 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        val model = mBudgetList[position]
-        val year = model.getYear()
-        val term = model.getTerm()
-        val invoiceId = model.getInvoiceId()
-        val amount = model.getAmount()
+        val modelList = mBudgetList[position]
+        val term = modelList.getTerm()
+        val jsonArray = JSONArray(modelList.getJson())
+        val amount = modelList.getAmount()
 
+        dataModel.setTerm(term!!)
+        dataModel.setYear(modelList.getYear()!!)
+        dataModel.setAmount(amount!!)
+        dataModel.setInvoiceId(modelList.getInvoiceId()!!)
+
+        mFeeList.clear()
+
+        for (j in 0 until jsonArray.length()) {
+            val descriptionObject = jsonArray.getJSONObject(j)
+            val feeName = descriptionObject.getString("fee_name")
+            val feeAmount = descriptionObject.getString("fee_amount")
+
+            val termText = when (term) {
+                "1" -> "First Term School Fee Charges for"
+                "2" -> "Second Term School Fee Charges for"
+                else -> "Third Term School Fee Charges for"
+            }
+
+            mTitle.text = String.format(
+                Locale.getDefault(),
+                "%s %s %s", termText, mSession, "session"
+            )
+
+            mFeeTotal1.text = String.format(
+                Locale.getDefault(),
+                "%s%s",
+                getString(R.string.naira),
+                currencyFormat(amount.toDouble())
+            )
+
+            mFeeTotal2.text = String.format(
+                Locale.getDefault(),
+                "%s%s",
+                getString(R.string.naira),
+                currencyFormat(amount.toDouble())
+            )
+
+            val termFeesDataModel = TermFeesDataModel()
+            termFeesDataModel.setFeeName(feeName)
+            termFeesDataModel.setFeeAmount(feeAmount)
+            mFeeList.add(termFeesDataModel)
+            mFeeList.sortBy { it.getFeeName() }
+
+        }
+        mDetailsAdapter.notifyItemChanged(mFeeList.size - 1)
+
+        if (mFeeList.isNotEmpty()) {
+            mDetailsView.isVisible = true
+            mPaymentLayout.isVisible = true
+            mMainView.isVisible = false
+        }
+    }
+
+    private fun makePayment() {
+
+        mPayBtn.setOnClickListener {
+            val invoiceId = dataModel.getInvoiceId()
+            val amount = dataModel.getAmount()
+            val term = dataModel.getTerm()
+            val year = dataModel.getYear()
+
+            if (invoiceId != null) {
+                openDialog(invoiceId, amount!!, term!!, year!!)
+            } else {
+                openDialog(mInvoiceId!!, mAmount!!, mTerm!!, mYear!!)
+            }
+        }
+    }
+
+    private fun openDialog(
+        sInvoiceId: String,
+        sAmount: String,
+        sTerm: String,
+        sYear: String,
+    ) {
         AddReceiptDialog(
-            requireContext(), invoiceId!!,
+            this, sInvoiceId,
             studentId!!,
             classId!!,
             levelId!!,
             regNo!!,
             studentName!!,
-            amount!!,
-            year!!,
-            term!!,
+            sAmount,
+            sYear,
+            sTerm,
+            object : OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    SystemClock.sleep(1000)
+                    finish()
+                }
+            }
         ).apply {
             setCancelable(true)
             show()
@@ -357,44 +402,12 @@ class ReceiptStudentBudgetFragment : Fragment(), OnItemClickListener {
         )
     }
 
-    private fun makePayment() {
-        mPayBtn.setOnClickListener {
-
+    private fun backClick() {
+        mBackBtn.setOnClickListener {
+            mBudgetList.clear()
+            mFeeList.clear()
+            getFees()
         }
-    }
-
-    private fun postReferenceNumber(
-        sReference: String,
-        sAmount: String,
-        sDate: String,
-        sName: String,
-    ) {
-        val url = Login.urlBase + "/manageReceipts.php"
-        val stringMap = hashMapOf<String, String>()
-
-        stringMap["invoice_id"] = mInvoiceId!!
-        stringMap["student_id"] = studentId!!
-        stringMap["class"] = classId!!
-        stringMap["level"] = levelId!!
-        stringMap["reg_no"] = regNo!!
-        stringMap["name"] = studentName!!
-        stringMap["amount"] = mAmount!!
-        stringMap["date"] = getDate()
-        stringMap["reference"] = sReference
-        stringMap["year"] = mYear!!
-        stringMap["term"] = mTerm!!
-
-        requestToServer(Request.Method.POST, url, requireContext(), stringMap,
-            object : VolleyCallback {
-                override fun onResponse(response: String) {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onError(error: VolleyError) {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
     }
 
 }

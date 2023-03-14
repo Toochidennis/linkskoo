@@ -353,7 +353,7 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
         requestURL(input)
     }
 
-    override fun sendLevelId(levelId: String) {
+    override fun sendId(levelId: String) {
 
     }
 

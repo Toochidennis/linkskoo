@@ -356,7 +356,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         requestURL(input, mAmount!!.toLong())
     }
 
-    override fun sendLevelId(levelId: String) {
+    override fun sendId(levelId: String) {
 
     }
 

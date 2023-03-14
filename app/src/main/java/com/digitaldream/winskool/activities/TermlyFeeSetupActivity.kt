@@ -198,7 +198,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                         setLevelName()
                     }
 
-                    override fun sendLevelId(levelId: String) {
+                    override fun sendId(levelId: String) {
                         mTermFeesList.clear()
                         getTermFees(levelId)
                         mAdapter = TermFeeAdapter(

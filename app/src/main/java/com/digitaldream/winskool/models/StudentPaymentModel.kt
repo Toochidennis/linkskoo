@@ -14,6 +14,7 @@ class StudentPaymentModel {
     private var mAmount: String? = null
     private var mAmountT: String? = null
     private var mReferenceNumber: String? = null
+    private var mJson: String? = null
 
     fun getId() = mId
 
@@ -39,6 +40,8 @@ class StudentPaymentModel {
     fun getAmountT() = mAmountT
 
     fun getReferenceNumber() = mReferenceNumber
+
+    fun getJson() = mJson
 
     fun setId(sId: Int) {
         mId = sId
@@ -68,7 +71,7 @@ class StudentPaymentModel {
         mTerm = sTerm
     }
 
-    fun setYear(sYear: String){
+    fun setYear(sYear: String) {
         mYear = sYear
     }
 
@@ -90,6 +93,10 @@ class StudentPaymentModel {
 
     fun setReferenceNumber(sReferenceNumber: String) {
         mReferenceNumber = sReferenceNumber
+    }
+
+    fun setJson(sJson: String) {
+        mJson = sJson
     }
 
 }
