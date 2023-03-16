@@ -1,31 +1,50 @@
 package com.digitaldream.winskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.activities.Login
+import com.digitaldream.winskool.activities.PaymentActivity
+import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.VendorFragmentAdapter
 import com.digitaldream.winskool.dialog.VendorDialog
+import com.digitaldream.winskool.models.VendorModel
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.json.JSONArray
+import java.util.*
 
 
-class VendorFragment : Fragment() {
+class VendorFragment : Fragment(), OnItemClickListener {
 
     private lateinit var mView: NestedScrollView
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mErrorView: LinearLayout
     private lateinit var mErrorMessage: TextView
     private lateinit var mAddBtn: FloatingActionButton
+    private lateinit var mRefreshBtn: Button
     private lateinit var mSearchInput: EditText
     private lateinit var mAdapter: VendorFragmentAdapter
+
+    private val mVendorList = mutableListOf<VendorModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +59,7 @@ class VendorFragment : Fragment() {
         mErrorView = view.findViewById(R.id.error_view)
         mErrorMessage = view.findViewById(R.id.vendor_error_message)
         mAddBtn = view.findViewById(R.id.add_vendor)
+        mRefreshBtn = view.findViewById(R.id.refresh_btn)
         mSearchInput = view.findViewById(R.id.search_bar)
 
         toolbar.apply {
@@ -62,16 +82,115 @@ class VendorFragment : Fragment() {
             )
         }
 
+        mAdapter = VendorFragmentAdapter(mVendorList, this)
+        mRecyclerView.hasFixedSize()
+        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        mRecyclerView.adapter = mAdapter
 
-        /*    cardBtn.setOnClickListener {
-                startActivity(
-                    Intent(requireContext(), PaymentActivity().javaClass)
-                        .putExtra("from", "vendor")
-                )
-            }*/
+        mSearchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                filterVendorName(s.toString())
+            }
+        })
+
+        refresh()
 
         return view
+    }
+
+    private fun filterVendorName(sName: String) {
+        val filteredList = mutableListOf<VendorModel>()
+
+        mVendorList.forEach { name ->
+            if (name.customerName.lowercase(Locale.getDefault())
+                    .contains(
+                        sName.lowercase(Locale.getDefault())
+                    )
+            ) {
+                filteredList.add(name)
+            }
+        }
+        mAdapter.filterList(filteredList)
+    }
+
+    private fun getVendor() {
+        mVendorList.clear()
+        val url = "${Login.urlBase}/manageVendor.php?list=2"
+        val hashMap = hashMapOf<String, String>()
+
+        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) = try {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        val jsonObject = jsonArray.getJSONObject(i)
+                        val vendorName = jsonObject.getString("customername")
+                        val telephone = jsonObject.getString("telephone")
+
+                        val vendorModel = VendorModel()
+                        vendorModel.customerName = vendorName
+                        vendorModel.customerPhone = telephone
+
+                        mVendorList.add(vendorModel)
+                        mVendorList.sortBy { it.customerName }
+                    }
+                    mAdapter.notifyItemChanged(mVendorList.size - 1)
+
+                    if (mVendorList.isEmpty()) {
+                        mAddBtn.isVisible = true
+                        mErrorMessage.isVisible = true
+                        mView.isVisible = true
+                        mErrorView.isVisible = false
+                        mSearchInput.isVisible = false
+                    } else {
+                        mAddBtn.isVisible = true
+                        mErrorMessage.isVisible = false
+                        mView.isVisible = true
+                        mErrorView.isVisible = false
+                        mSearchInput.isVisible = true
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                override fun onError(error: VolleyError) {
+                    mAddBtn.isVisible = false
+                    mView.isVisible = false
+                    mErrorView.isVisible = true
+                    mSearchInput.isVisible = false
+                }
+            }
+        )
+    }
+
+    private fun refresh() {
+        mRefreshBtn.setOnClickListener {
+            getVendor()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getVendor()
+    }
+
+    override fun onItemClick(position: Int) {
+        val vendorModel = mVendorList[position]
+
+        startActivity(
+            Intent(requireContext(), PaymentActivity().javaClass)
+                .putExtra("from", "vendor")
+                .putExtra("vendor_name", vendorModel.customerName)
+                .putExtra("vendor_phone", vendorModel.customerPhone)
+        )
     }
 
 }

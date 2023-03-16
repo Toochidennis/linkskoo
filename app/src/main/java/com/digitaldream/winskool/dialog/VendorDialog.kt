@@ -10,9 +10,17 @@ import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.activities.Login
+import com.digitaldream.winskool.adapters.OnItemClickListener
+import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.winskool.utils.VolleyCallback
 
-class VendorDialog(mContext: Context) : Dialog(mContext) {
+class VendorDialog(
+    private val sContext: Context,
+) : Dialog(sContext) {
 
     private lateinit var mVendorName: EditText
     private lateinit var mVendorEmail: EditText
@@ -64,9 +72,41 @@ class VendorDialog(mContext: Context) : Dialog(mContext) {
         } else if (email.isNotEmpty() && !email.matches(regex)) {
             mVendorEmail.error = "Invalid email"
         } else {
-            println("name: $name email: $email ref: $reference phone: $phone address: $address")
+            addVendor(name, reference, email, address, phone)
             dismiss()
+
         }
 
     }
+
+    private fun addVendor(
+        sName: String,
+        sId: String,
+        sEmail: String,
+        sAddress: String,
+        sPhone: String,
+    ) {
+
+        val url = "${Login.urlBase}/manageVendor.php"
+        val hashMap = hashMapOf<String, String>()
+        hashMap["customer_id"] = sId
+        hashMap["customer_name"] = sName
+        hashMap["email"] = sEmail
+        hashMap["address"] = sAddress
+        hashMap["telephone"] = sPhone
+        hashMap["customer_type"] = "2"
+
+        requestToServer(Request.Method.POST, url, sContext, hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    println("Success")
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            }
+        )
+    }
+
 }

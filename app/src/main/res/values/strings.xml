@@ -127,4 +127,5 @@
     <string name="payment_history">Payment History</string>
     <string name="school_fees">School Fees</string>
     <string name="expenditure">Expenditure</string>
+    <string name="refresh">Refresh</string>
 </resources>

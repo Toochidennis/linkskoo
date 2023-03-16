@@ -17,6 +17,8 @@ open class PaymentActivity : AppCompatActivity() {
         val amount = intent.getStringExtra("amount")
         val name = intent.getStringExtra("name")
         val levelName = intent.getStringExtra("level_name")
+        val customerName = intent.getStringExtra("vendor_name")
+        val customerPhone = intent.getStringExtra("vendor_phone")
         val classId = intent.getStringExtra("classId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
@@ -26,85 +28,92 @@ open class PaymentActivity : AppCompatActivity() {
         val term = intent.getStringExtra("term")
         val date = intent.getStringExtra("date")
 
-        when (intent.getStringExtra("from")) {
+        try {
+            when (intent.getStringExtra("from")) {
 
-            "dashboard" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, AdminPaymentDashboardFragment()
-            ).commit()
+                "dashboard" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, AdminPaymentDashboardFragment()
+                ).commit()
 
-            "expenditure" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container,
-                ExpenditureHistoryFragment()
-            ).commit()
+                "expenditure" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container,
+                    ExpenditureHistoryFragment()
+                ).commit()
 
-            "receipt" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container,
-                ReceiptsHistoryFragment()
-            ).commit()
+                "receipt" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container,
+                    ReceiptsHistoryFragment()
+                ).commit()
 
-            "student_receipt" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, StudentTransactionReceiptFragment
-                    .newInstance(
-                        amount!!,
-                        reference!!,
-                        status!!,
-                        session!!,
-                        term!!,
-                        date!!
+                "student_receipt" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, StudentTransactionReceiptFragment
+                        .newInstance(
+                            amount!!,
+                            reference!!,
+                            status!!,
+                            session!!,
+                            term!!,
+                            date!!
+                        )
+                ).commit()
+
+                "admin_receipt" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, ReceiptsDetailsFragment
+                        .newInstance(
+                            amount!!,
+                            name!!,
+                            levelName!!,
+                            className!!,
+                            regNo!!,
+                            reference!!,
+                            session!!,
+                            term!!,
+                            date!!
+                        )
+                ).commit()
+
+                "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, VendorFragment()
+                ).commit()
+
+                "vendor" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, AddExpenditureFragment.newInstance(
+                        customerName!!,
+                        customerPhone!!
                     )
-            ).commit()
+                ).commit()
 
-            "admin_receipt" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, ReceiptsDetailsFragment
-                    .newInstance(
-                        amount!!,
-                        name!!,
-                        levelName!!,
-                        className!!,
-                        regNo!!,
-                        reference!!,
-                        session!!,
-                        term!!,
-                        date!!
+                "fee_details" -> supportFragmentManager.beginTransaction().replace(
+                    /* containerViewId = */
+                    R.id.payment_container, /* fragment = */
+                    StudentFeesDetailsFragment.newInstance(term!!),
+                ).commit()
+
+                "settings" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, PaymentSettingsFragment()
+                ).commit()
+
+                "fee_settings" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, FeeTypeSetupFragment()
+                ).commit()
+
+                "account_settings" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, AccountSetupFragment()
+                ).commit()
+
+                "see_all" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, AdminTransactionHistoryFragment()
+                ).commit()
+
+                "receipt_class_name" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, ReceiptStudentNameFragment.newInstance(
+                        classId!!, className!!, levelName!!,
                     )
-            ).commit()
+                ).commit()
 
-            "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, VendorFragment()
-            ).commit()
-
-            "vendor" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, AddExpenditureFragment()
-            ).commit()
-
-            "fee_details" -> supportFragmentManager.beginTransaction().replace(
-                /* containerViewId = */
-                R.id.payment_container, /* fragment = */
-                StudentFeesDetailsFragment.newInstance(term!!),
-            ).commit()
-
-            "settings" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, PaymentSettingsFragment()
-            ).commit()
-
-            "fee_settings" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, FeeTypeSetupFragment()
-            ).commit()
-
-            "account_settings" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, AccountSetupFragment()
-            ).commit()
-
-            "see_all" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, AdminTransactionHistoryFragment()
-            ).commit()
-
-            "receipt_class_name" -> supportFragmentManager.beginTransaction().replace(
-                R.id.payment_container, ReceiptStudentNameFragment.newInstance(
-                    classId!!, className!!, levelName!!,
-                )
-            ).commit()
-
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
     }

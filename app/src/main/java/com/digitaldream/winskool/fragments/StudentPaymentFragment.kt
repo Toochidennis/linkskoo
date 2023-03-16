@@ -390,13 +390,11 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         if (mStudentEmail!!.isNotBlank()) {
             requestURL(mStudentEmail!!, mAmount!!.toLong())
         } else {
-            val emailDialog = PaymentEmailDialog(requireContext(), this)
+            PaymentEmailDialog(requireContext(), this)
                 .apply {
                     setCancelable(true)
                     show()
-                }
-            val window = emailDialog.window
-            window?.setLayout(
+                }.window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )

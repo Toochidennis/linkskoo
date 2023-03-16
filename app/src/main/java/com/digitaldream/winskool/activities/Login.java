@@ -2,7 +2,6 @@ package com.digitaldream.winskool.activities;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -22,8 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.AssessmentModel;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.CourseOutlineTable;
@@ -62,7 +61,6 @@ public class Login extends AppCompatActivity {
     private Button login;
     private Toolbar toolbar;
     String usernameText, passwordText, pinText;
-    public static final boolean LOGIN_STATUS = false;
     private DatabaseHelper databaseHelper;
     private Dao<StudentTable, Long> studentDao;
     private Dao<TeachersTable, Long> teacherDao;
@@ -74,7 +72,7 @@ public class Login extends AppCompatActivity {
     private List<LevelTable> levelNames;
     private Dao<NewsTable, Long> newsDao;
     private List<NewsTable> newsList;
-    private int counter = 0;
+    private final int counter = 0;
     private Dao<CourseTable, Long> courseDao;
     private List<CourseTable> courseList;
     private Dao<StudentResultDownloadTable, Long> studentResultDao;
@@ -82,7 +80,6 @@ public class Login extends AppCompatActivity {
     private Dao<GradeModel, Long> gradeDao;
     private List<GradeModel> gradeList;
     private Dao<GeneralSettingModel, Long> generalSettingDao;
-    private List<GeneralSettingModel> generalSettingList;
     private Dao<AssessmentModel, Long> assessmentDao;
     private List<AssessmentModel> assessmentList;
     public static String urlBase = "http://linkskool.com/developmentportal/api";
@@ -506,7 +503,7 @@ public class Login extends AppCompatActivity {
                                 }
                             }
                             if (jsonObject.has("courses")) {
-                                JSONObject jsonObject11 = null;
+                                JSONObject jsonObject11;
                                 try {
                                     jsonObject11 = jsonObject.getJSONObject(
                                             "courses");
@@ -1232,20 +1229,13 @@ public class Login extends AppCompatActivity {
                                     String third_term = "";
 
                                     if (termObject.has("1")) {
-                                        first_term = termObject.getString("1");
                                         first_term = "1st";
-
                                     }
                                     if (termObject.has("2")) {
-
-                                        second_term = termObject.getString("2");
                                         second_term = "2nd";
-
                                     }
                                     if (termObject.has("3")) {
-                                        third_term = termObject.getString("3");
                                         third_term = "3rd";
-
                                     }
 
 
