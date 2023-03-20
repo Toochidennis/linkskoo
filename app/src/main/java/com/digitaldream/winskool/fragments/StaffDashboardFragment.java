@@ -119,7 +119,7 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         newsRefresh = v.findViewById(R.id.swipeRefresh_news);
         newsRecylerView = v.findViewById(R.id.news_recycler);
 
-        ((AppCompatActivity)(Objects.requireNonNull(getActivity()))).setSupportActionBar(toolbar);
+        ((AppCompatActivity)(requireActivity())).setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         ActionBar actionBar =  ((AppCompatActivity)(getActivity())).getSupportActionBar();
 
@@ -218,13 +218,17 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
 
         try {
             int previousYear = Integer.parseInt(schoolYear) - 1;
-            if(term.equals("1")){
-                term = term+"st term";
-            }else if(term.equals("2")){
-                term = term+"nd term";
-            }else if(term.equals("3")){
-                term = term+"rd term";
+            switch (term) {
+                case "1":
+                    term = term + "st term";
+                    break;
+                case "2":
+                    term = term + "nd term";
+                    break;
+                case "3":
+                    term = term + "rd term";
 
+                    break;
             }
 
         }catch (NumberFormatException e){
@@ -238,7 +242,6 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         qaRecycler.setLayoutManager(layoutManager);
         list=new ArrayList<>();
-
 
 
 

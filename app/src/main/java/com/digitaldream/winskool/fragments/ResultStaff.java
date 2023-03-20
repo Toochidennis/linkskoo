@@ -5,27 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.StaffEnterResult;
 import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseTable;
-import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.utils.FunctionUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -34,24 +30,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ResultStaff extends Fragment {
     private RecyclerView recyclerView;
     private DatabaseHelper databaseHelper;
     private Dao<CourseTable, Long> courseDao;
     private LinearLayout emptyState;
-    private List<CourseTable> courseList;
-    private Toolbar toolbar;
-    private TextView mTerm;
     private SectionedRecyclerViewAdapter adapter;
 
 
@@ -61,16 +51,12 @@ public class ResultStaff extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_result_staff, container, false);
 
-        setHasOptionsMenu(true);
-
-        toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
-        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Results");
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Results");
         toolbar.setNavigationIcon(R.drawable.arrow_left);
-        toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         String term = sharedPreferences.getString("term", "");
         String year = sharedPreferences.getString("school_year", "");
@@ -89,20 +75,17 @@ public class ResultStaff extends Fragment {
                 break;
         }
 
-        mTerm = view.findViewById(R.id.term);
-        mTerm.setText(String.format("%d/%s %s", previousYear, year,
+        TextView term1 = view.findViewById(R.id.term);
+        term1.setText(String.format(Locale.getDefault(), "%d/%s %s", previousYear, year,
                 termText));
-
 
         databaseHelper = new DatabaseHelper(getContext());
 
         emptyState = view.findViewById(R.id.staff_studentResult_empty_state);
         recyclerView = view.findViewById(R.id.staff_course_results);
         adapter = new SectionedRecyclerViewAdapter();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-
 
         return view;
     }
@@ -113,10 +96,9 @@ public class ResultStaff extends Fragment {
 
         adapter.removeAllSections();
         try {
-            courseDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseTable.class);
-            courseList = courseDao.queryForAll();
-
-
+            courseDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    CourseTable.class);
+            List<CourseTable> courseList = courseDao.queryForAll();
 
             List<String> stringList = new ArrayList<>();
 
@@ -126,26 +108,15 @@ public class ResultStaff extends Fragment {
 
             for (int i = 0; i < courseList.size(); i++) {
 
-                Log.i("course name", courseList.get(i).getCourseName());
-
-                List<CourseTable> courseTable = getCourseTableList(courseList.get(i).getCourseName());
+                List<CourseTable> courseTable = getCourseTableList(
+                        courseList.get(i).getCourseName());
 
                 String courseName = courseList.get(i).getCourseName();
-                String[] strArray = courseName.split(" ");
-                StringBuilder stringBuilder = new StringBuilder();
-                for (String s : strArray) {
-                    try {
-                        String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                        stringBuilder.append(cap).append(" ");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                if (!stringList.contains(courseList.get(i).getCourseName())) {
+                if (!stringList.contains(courseName)) {
                     adapter.addSection(new SectionAdapter(getContext(),
-                            courseTable, stringBuilder.toString()));
-                    stringList.add(courseList.get(i).getCourseName());
+                            courseTable, courseName));
+                    stringList.add(courseName);
                 }
 
             }
@@ -161,7 +132,6 @@ public class ResultStaff extends Fragment {
             e.printStackTrace();
         }
 
-
     }
 
 
@@ -171,13 +141,6 @@ public class ResultStaff extends Fragment {
                 courseDao.queryBuilder();
         queryBuilder.where().eq("courseName", sCourseName);
         return queryBuilder.query();
-
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
 
     }
 
@@ -248,7 +211,8 @@ public class ResultStaff extends Fragment {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
 
             String title =
-                    headerTitle.substring(0, 1).toUpperCase() + "" + headerTitle.substring(1).toLowerCase();
+                    headerTitle.substring(0, 1).toUpperCase() + "" + headerTitle.substring(
+                            1).toLowerCase();
             headerViewHolder.mHeader.setText(title);
         }
 
@@ -265,7 +229,6 @@ public class ResultStaff extends Fragment {
                 courseClass = itemView.findViewById(R.id.staff_course_class);
 
             }
-
 
         }
 

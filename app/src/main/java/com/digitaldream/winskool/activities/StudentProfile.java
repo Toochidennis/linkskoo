@@ -107,7 +107,6 @@ public class StudentProfile extends AppCompatActivity {
             smsIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
             whatsapp.setEnabled(false);
             whatsappIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-
         }
 
         if(st.getGuardianEmail().isEmpty()){
@@ -116,16 +115,13 @@ public class StudentProfile extends AppCompatActivity {
 
         }
 
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!st.getGuardianPhoneNo().isEmpty()) {
-                    Intent i = new Intent(android.content.Intent.ACTION_DIAL,
-                            Uri.parse("tel:" + st.getGuardianPhoneNo()));
-                    startActivity(i);
-                }else{
-                    Toast.makeText(StudentProfile.this,"phone number is not available",Toast.LENGTH_SHORT).show();
-                }
+        call.setOnClickListener(view -> {
+            if(!st.getGuardianPhoneNo().isEmpty()) {
+                Intent i1 = new Intent(Intent.ACTION_DIAL,
+                        Uri.parse("tel:" + st.getGuardianPhoneNo()));
+                startActivity(i1);
+            }else{
+                Toast.makeText(StudentProfile.this,"phone number is not available",Toast.LENGTH_SHORT).show();
             }
         });
         sms.setOnClickListener(new View.OnClickListener() {

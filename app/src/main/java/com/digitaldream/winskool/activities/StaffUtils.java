@@ -10,7 +10,7 @@ import com.digitaldream.winskool.fragments.AdminClassAttendanceFragment;
 import com.digitaldream.winskool.fragments.CBTCoursesFragment;
 import com.digitaldream.winskool.fragments.CBTExamTypeFragment;
 import com.digitaldream.winskool.fragments.CBTYearFragment;
-import com.digitaldream.winskool.fragments.ContactsStaff;
+import com.digitaldream.winskool.fragments.StaffFormClassFragment;
 import com.digitaldream.winskool.fragments.LibraryGamesFragment;
 import com.digitaldream.winskool.fragments.LibraryVideosFragment;
 import com.digitaldream.winskool.fragments.ResultStaff;
@@ -37,7 +37,7 @@ public class StaffUtils extends AppCompatActivity {
 
             case "student":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container, new ContactsStaff()).commit();
+                        R.id.payment_container, new StaffFormClassFragment()).commit();
                 break;
 
             case "staff":

@@ -128,4 +128,7 @@
     <string name="school_fees">School Fees</string>
     <string name="expenditure">Expenditure</string>
     <string name="refresh">Refresh</string>
+    <string name="skills_and_behaviour"><![CDATA[Skills & Behaviour]]></string>
+    <string name="comment">Comment</string>
+    <string name="students">Students</string>
 </resources>

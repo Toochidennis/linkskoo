@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/tab_color"
         android:padding="5dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include
             android:id="@+id/toolbar"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text=""
+            android:fontFamily="@font/montserrat"
             android:textSize="14sp" />
 
     </com.google.android.material.appbar.AppBarLayout>
