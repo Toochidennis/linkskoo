@@ -20,6 +20,7 @@ import com.digitaldream.winskool.utils.VolleyCallback
 
 class VendorDialog(
     private val sContext: Context,
+    private val sNotify: OnItemClickListener?,
 ) : Dialog(sContext) {
 
     private lateinit var mVendorName: EditText
@@ -73,6 +74,7 @@ class VendorDialog(
             mVendorEmail.error = "Invalid email"
         } else {
             addVendor(name, reference, email, address, phone)
+            sNotify!!.onItemClick(0)
             dismiss()
 
         }
@@ -99,7 +101,7 @@ class VendorDialog(
         requestToServer(Request.Method.POST, url, sContext, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
-                    println("Success")
+
                 }
 
                 override fun onError(error: VolleyError) {

@@ -3,6 +3,7 @@ package com.digitaldream.winskool.fragments
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,9 @@ import org.json.JSONObject
 import java.util.*
 
 private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
 
 class AddExpenditureFragment : Fragment() {
@@ -38,24 +41,31 @@ class AddExpenditureFragment : Fragment() {
 
     private var customerName: String? = null
     private var customerPhone: String? = null
-    private var accountReference: String? = null
+    private var customerReference: String? = null
+    private var customerId: String? = null
+    private var accountName: String? = null
+    private var accountId: String? = null
     private var mSpinnerList = mutableListOf<AccountSetupDataModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             customerName = it.getString(ARG_PARAM1)
+            customerReference = it.getString(ARG_PARAM2)
             customerPhone = it.getString(ARG_PARAM3)
+            customerId = it.getString(ARG_PARAM4)
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(name: String, phone: String) =
+        fun newInstance(name: String, reference: String, phone: String, id: String) =
             AddExpenditureFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, name)
+                    putString(ARG_PARAM2, reference)
                     putString(ARG_PARAM3, phone)
+                    putString(ARG_PARAM4, id)
                 }
             }
     }
@@ -122,21 +132,22 @@ class AddExpenditureFragment : Fragment() {
     private fun validateInput() {
         val amount = mExpenditureAmount.text.toString().trim()
         val date = mDate.text.toString().trim()
-        val id = mRefNo.text.toString().trim()
-        // val accountRef = mAccountReference.text.toString().trim()
+        val reference = mRefNo.text.toString().trim()
         val purpose = mPurpose.text.toString().trim()
 
-        if (amount.isEmpty() || date.isEmpty() || id.isEmpty() || purpose.isEmpty()
+        if (amount.isEmpty() || date.isEmpty() || reference.isEmpty() || purpose.isEmpty()
         ) {
             Toast.makeText(requireContext(), "Provide all fields", Toast.LENGTH_SHORT).show()
         } else {
-            println(
-                "name: $customerName phone: $customerPhone amount: $amount " +
-                        "date: $date ref: $accountReference purpose: $purpose"
-            )
+            val jsonObject = JSONObject().apply {
+                put("amount", amount)
+                put("description", purpose)
+            }
+
+            recordExpenditure(reference, date, purpose, jsonObject.toString(), amount)
+            SystemClock.sleep(1000)
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-
     }
 
     private fun getAccountName() {
@@ -164,7 +175,8 @@ class AddExpenditureFragment : Fragment() {
                 position: Int,
                 id: Long,
             ) {
-                accountReference = mSpinnerList[position].getAccountName()
+                accountName = mSpinnerList[position].getAccountName()
+                accountId = mSpinnerList[position].getAccountId()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -183,14 +195,17 @@ class AddExpenditureFragment : Fragment() {
                 for (i in 0 until it.length()) {
                     val jsonObject = it.getJSONObject(i)
                     val accountName = jsonObject.getString("account_name")
+                    val accountId = jsonObject.getString("account_id")
                     val spinnerObject = JSONObject().apply {
                         put("account_name", accountName)
+                        put("account_id", accountId)
                     }
 
                     jsonArray.put(spinnerObject)
 
                     val accountModel = AccountSetupDataModel()
                     accountModel.setAccountName(accountName)
+                    accountModel.setAccountId(accountId)
                     mSpinnerList.add(accountModel)
                     mSpinnerList.sortBy(AccountSetupDataModel::getAccountName)
                 }
@@ -235,6 +250,53 @@ class AddExpenditureFragment : Fragment() {
                 }, year, month, day
             ).show()
         }
+    }
+
+    private fun recordExpenditure(
+        reference: String,
+        date: String,
+        description: String,
+        json: String,
+        amount: String,
+    ) {
+
+        val sharedPreferences =
+            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        val term = sharedPreferences.getString("term", "")
+        val year = sharedPreferences.getString("school_year", "")
+
+        val url = Login.urlBase + "/manageTransactions.php"
+        val hashMap = hashMapOf<String, String>()
+        hashMap.apply {
+            put("transaction_type", "expenditure")
+            put("customer_type", "2")
+            put("customer_id", customerId!!)
+            put("customer_name", customerName!!)
+            put("customer_reference", customerReference!!)
+            put("reference", reference)
+            put("memo", description)
+            put("description", json)
+            put("date", date)
+            put("amount", amount)
+            put("account_name", accountName!!)
+            put("account_number", accountId!!)
+            put("year", year!!)
+            put("term", term!!)
+        }
+
+        requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT)
+                        .show()
+                    print("Success")
+                }
+
+                override fun onError(error: VolleyError) {
+                    Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
 }

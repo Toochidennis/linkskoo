@@ -36,6 +36,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
 import org.achartengine.chart.PointStyle
@@ -49,6 +50,7 @@ import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 object FunctionUtils {
@@ -131,20 +133,19 @@ object FunctionUtils {
 
     @JvmStatic
     fun drawGraph(
-        sAmount: ArrayList<String>,
-        sDate: ArrayList<String>,
+        sValues: ArrayList<ExpenditureHistoryModel>,
         sContext: Context,
         sTitle: String = "",
     ): GraphicalView {
 
-        val graphLength = sAmount.size - 1
+        val graphLength = sValues.size
 
         println("Lent: $graphLength")
 
         val series = XYSeries("Received")
 
         for (i in 0 until graphLength)
-            series.add(i.toDouble(), sAmount[i].toDouble())
+            series.add(i.toDouble(), sValues[i].getAmount()!!.toDouble())
 
         val dataset = XYMultipleSeriesDataset()
         dataset.addSeries(series)
@@ -173,7 +174,7 @@ object FunctionUtils {
         multipleRenderer.addSeriesRenderer(seriesRenderer)
 
         for (i in 0 until graphLength)
-            multipleRenderer.addXTextLabel(i.toDouble(), sDate[i])
+            multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].getDate())
 
         return ChartFactory.getLineChartView(
             sContext, dataset, multipleRenderer,

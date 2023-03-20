@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
@@ -65,8 +66,8 @@ class ReceiptsDetailsFragment : Fragment() {
         fun newInstance(
             amount: String,
             name: String,
-            levelName: String,
-            className: String,
+            levelName: String?,
+            className: String?,
             regNo: String,
             reference: String,
             session: String,
@@ -104,7 +105,12 @@ class ReceiptsDetailsFragment : Fragment() {
         }
 
 
-        receiptDetails(view)
+        if (mLevelName == null)
+            expenditureDetails(view)
+        else
+            receiptDetails(view)
+
+
         return view
     }
 
@@ -134,7 +140,7 @@ class ReceiptsDetailsFragment : Fragment() {
         String.format(
             Locale.getDefault(), "%s%s", getString(R.string.naira),
             currencyFormat(mAmount!!.toDouble())
-        ).also { receiptAmount.text= it }
+        ).also { receiptAmount.text = it }
 
         receiptDate.text = mDate
         studentName.text = capitaliseFirstLetter(mName!!)
@@ -145,12 +151,60 @@ class ReceiptsDetailsFragment : Fragment() {
         term.text = mTerm
         referenceNumber.text = mReference
 
+        mReceiptCard.isVisible = true
+
         downloadBtn.setOnClickListener {
             downloadPDF(mReceiptCard, requireActivity())
         }
 
         shareBtn.setOnClickListener {
             sharePDF(mReceiptCard, requireActivity())
+        }
+    }
+
+    private fun expenditureDetails(sView: View) {
+        val schoolName: TextView = sView.findViewById(R.id.school_name2)
+        val expenditureAmount: TextView = sView.findViewById(R.id.expenditure_amount)
+        val expenditureDate: TextView = sView.findViewById(R.id.expenditure_date)
+        val name: TextView = sView.findViewById(R.id.expenditure_name)
+        val session: TextView = sView.findViewById(R.id.ex_session)
+        val term: TextView = sView.findViewById(R.id.ex_term)
+        val phone: TextView = sView.findViewById(R.id.phone)
+        val referenceNumber: TextView = sView.findViewById(R.id.ex_reference_number)
+        val description: TextView = sView.findViewById(R.id.description)
+        val expenditureCard: CardView = sView.findViewById(R.id.expenditure_card)
+        val downloadBtn: Button = sView.findViewById(R.id.download_receipt)
+        val shareBtn: Button = sView.findViewById(R.id.share_receipt)
+
+        val sharedPreferences = requireContext().getSharedPreferences(
+            "loginDetail", Context
+                .MODE_PRIVATE
+        )
+        val mSchoolName = sharedPreferences.getString("school_name", "")
+
+        schoolName.text = mSchoolName
+
+        String.format(
+            Locale.getDefault(), "%s%s", getString(R.string.naira),
+            currencyFormat(mAmount!!.toDouble())
+        ).also { expenditureAmount.text = it }
+
+        expenditureDate.text = mDate
+        name.text = capitaliseFirstLetter(mName!!)
+        session.text = mSession
+        term.text = mTerm
+        phone.text = mRegNo
+        referenceNumber.text = mReference
+        description.text = mClassName
+
+        expenditureCard.isVisible = true
+
+        downloadBtn.setOnClickListener {
+            downloadPDF(expenditureCard, requireActivity())
+        }
+
+        shareBtn.setOnClickListener {
+            sharePDF(expenditureCard, requireActivity())
         }
     }
 }

@@ -7,6 +7,7 @@ class ExpenditureHistoryModel {
     private var mType: String? = null
     private var mDate: String? = null
     private var mAmount: String? = null
+    private var mPhone: String? = null
     private var mReferenceNumber: String? = null
     private var mTerm: String? = null
     private var mSession: String? = null
@@ -20,6 +21,7 @@ class ExpenditureHistoryModel {
     fun getDate() = mDate
 
     fun getAmount() = mAmount
+    fun getPhone() = mPhone
 
     fun getReferenceNumber() = mReferenceNumber
 
@@ -45,6 +47,9 @@ class ExpenditureHistoryModel {
 
     fun setAmount(sAmount: String) {
         mAmount = sAmount
+    }
+    fun setPhone(sPhone: String){
+        mPhone = sPhone
     }
 
     fun setReferenceNumber(sReferenceNumber: String) {

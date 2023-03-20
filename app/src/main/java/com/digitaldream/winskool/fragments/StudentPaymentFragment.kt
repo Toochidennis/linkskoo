@@ -310,7 +310,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                             mRefreshBtn.isVisible = false
                         }
 
-                        mHistoryAdapter.notifyItemChanged(mHistoryList.size - 1)
+                        mHistoryAdapter.notifyDataSetChanged()
                     }
                 }
 

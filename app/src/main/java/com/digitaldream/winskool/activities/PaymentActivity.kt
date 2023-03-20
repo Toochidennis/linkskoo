@@ -19,6 +19,9 @@ open class PaymentActivity : AppCompatActivity() {
         val levelName = intent.getStringExtra("level_name")
         val customerName = intent.getStringExtra("vendor_name")
         val customerPhone = intent.getStringExtra("vendor_phone")
+        val customerReference = intent.getStringExtra("vendorId")
+        val description = intent.getStringExtra("description")
+        val id = intent.getStringExtra("id")
         val classId = intent.getStringExtra("classId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
@@ -72,6 +75,21 @@ open class PaymentActivity : AppCompatActivity() {
                         )
                 ).commit()
 
+                "admin_expenditure" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, ReceiptsDetailsFragment
+                        .newInstance(
+                            amount!!,
+                            customerName!!,
+                            null,
+                            description!!,
+                            customerPhone!!,
+                            reference!!,
+                            session!!,
+                            term!!,
+                            date!!
+                        )
+                ).commit()
+
                 "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
                     R.id.payment_container, VendorFragment()
                 ).commit()
@@ -79,7 +97,9 @@ open class PaymentActivity : AppCompatActivity() {
                 "vendor" -> supportFragmentManager.beginTransaction().replace(
                     R.id.payment_container, AddExpenditureFragment.newInstance(
                         customerName!!,
-                        customerPhone!!
+                        customerPhone!!,
+                        customerReference!!,
+                        id!!,
                     )
                 ).commit()
 

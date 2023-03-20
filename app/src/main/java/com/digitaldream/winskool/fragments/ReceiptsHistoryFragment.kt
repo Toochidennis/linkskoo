@@ -25,6 +25,7 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
 import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
+import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -50,8 +51,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     private var mGraphicalView: GraphicalView? = null
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
-    private val mGraphAmountList = arrayListOf<String>()
-    private val mGraphDateList = arrayListOf<String>()
+    private val mGraphList = arrayListOf<ExpenditureHistoryModel>()
     private lateinit var mAdapter: ReceiptsHistoryAdapter
 
     override fun onCreateView(
@@ -93,6 +93,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
     }
 
     private fun getReceipts() {
+        mReceiptList.clear()
         val sharedPreferences =
             requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         val term = sharedPreferences.getString("term", "")
@@ -128,18 +129,19 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
                             for (i in 0 until graphArray.length()) {
                                 val graphObject = graphArray.getJSONObject(i)
-                                val graphAmount = graphObject.getString("amount").replace(".00", "")
+                                val graphAmount = graphObject.getString("amount")
                                 val graphDate = graphObject.getString("date")
 
-                                mGraphAmountList.add(graphAmount)
-                                mGraphDateList.add(graphDate)
-                                mGraphDateList.sort()
+                                val model = ExpenditureHistoryModel()
+                                model.setAmount(graphAmount)
+                                model.setDate(graphDate)
+                                mGraphList.add(model)
+                                mGraphList.sortBy { it.getDate() }
                             }
 
                             if (mGraphicalView == null) {
                                 mGraphicalView = drawGraph(
-                                    mGraphAmountList,
-                                    mGraphDateList,
+                                    mGraphList,
                                     requireContext(),
                                     "Month/Year"
                                 )
@@ -149,8 +151,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                             }
                         } else {
                             mGraphicalView = drawGraph(
-                                mGraphAmountList,
-                                mGraphDateList,
+                                mGraphList,
                                 requireContext(),
                                 "Month/Year"
                             )
@@ -219,7 +220,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                         mErrorView.isVisible = false
                         mAddReceipt.isVisible = true
                     }
-                    mAdapter.notifyItemChanged(mReceiptList.size - 1)
+                    mAdapter.notifyDataSetChanged()
                 }
 
                 override fun onError(error: VolleyError) {
@@ -233,7 +234,6 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {
-            mReceiptList.clear()
             getReceipts()
         }
     }

@@ -201,7 +201,7 @@ class AdminPaymentDashboardFragment : Fragment(),
                             mTransactionImage.isVisible = false
                             mErrorView.isVisible = false
                         }
-                        mAdapter.notifyItemChanged(mTransactionList.size - 1)
+                        mAdapter.notifyDataSetChanged()
 
                     } catch (e: Exception) {
                         e.printStackTrace()

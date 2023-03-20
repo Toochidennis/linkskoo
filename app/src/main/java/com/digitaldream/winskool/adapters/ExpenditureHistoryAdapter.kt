@@ -34,7 +34,7 @@ class ExpenditureHistoryAdapter(
         holder.mExpenditureType.text = adminModel.getType()
 
         String.format(
-            Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
+            Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
             currencyFormat(adminModel.getAmount()!!.toDouble())
         ).also { holder.mExpenditureAmount.text = it }
 

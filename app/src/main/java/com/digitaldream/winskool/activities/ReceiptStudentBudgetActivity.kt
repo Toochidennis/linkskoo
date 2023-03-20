@@ -346,7 +346,7 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
             mFeeList.sortBy { it.getFeeName() }
 
         }
-        mDetailsAdapter.notifyItemChanged(mFeeList.size - 1)
+        mDetailsAdapter.notifyDataSetChanged()
 
         if (mFeeList.isNotEmpty()) {
             mDetailsView.isVisible = true

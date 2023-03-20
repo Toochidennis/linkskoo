@@ -39,6 +39,7 @@ class VendorFragment : Fragment(), OnItemClickListener {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mErrorView: LinearLayout
     private lateinit var mErrorMessage: TextView
+    private lateinit var mErrorMessage2: TextView
     private lateinit var mAddBtn: FloatingActionButton
     private lateinit var mRefreshBtn: Button
     private lateinit var mSearchInput: EditText
@@ -58,6 +59,7 @@ class VendorFragment : Fragment(), OnItemClickListener {
         mRecyclerView = view.findViewById(R.id.vendor_recycler)
         mErrorView = view.findViewById(R.id.error_view)
         mErrorMessage = view.findViewById(R.id.vendor_error_message)
+        mErrorMessage2 = view.findViewById(R.id.error_message)
         mAddBtn = view.findViewById(R.id.add_vendor)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
         mSearchInput = view.findViewById(R.id.search_bar)
@@ -73,7 +75,15 @@ class VendorFragment : Fragment(), OnItemClickListener {
 
 
         mAddBtn.setOnClickListener {
-            VendorDialog(requireContext()).apply {
+            VendorDialog(requireContext(),
+                object : OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        if (position == 0) {
+                            mErrorView.isVisible = true
+                            mErrorMessage2.isVisible = false
+                        }
+                    }
+                }).apply {
                 setCancelable(true)
                 show()
             }.window?.setLayout(
@@ -109,13 +119,13 @@ class VendorFragment : Fragment(), OnItemClickListener {
     private fun filterVendorName(sName: String) {
         val filteredList = mutableListOf<VendorModel>()
 
-        mVendorList.forEach { name ->
-            if (name.customerName.lowercase(Locale.getDefault())
+        mVendorList.forEach {
+            if (it.customerName.lowercase(Locale.getDefault())
                     .contains(
                         sName.lowercase(Locale.getDefault())
                     )
             ) {
-                filteredList.add(name)
+                filteredList.add(it)
             }
         }
         mAdapter.filterList(filteredList)
@@ -129,20 +139,27 @@ class VendorFragment : Fragment(), OnItemClickListener {
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) = try {
-                    val jsonArray = JSONArray(response)
-                    for (i in 0 until jsonArray.length()) {
-                        val jsonObject = jsonArray.getJSONObject(i)
-                        val vendorName = jsonObject.getString("customername")
-                        val telephone = jsonObject.getString("telephone")
+                    JSONArray(response).run {
+                        for (i in 0 until length()) {
+                            val jsonObject = getJSONObject(i)
+                            val id = jsonObject.getString("id")
+                            val vendorName = jsonObject.getString("customername")
+                            val vendorId = jsonObject.getString("customerid")
+                            val telephone = jsonObject.getString("telephone")
 
-                        val vendorModel = VendorModel()
-                        vendorModel.customerName = vendorName
-                        vendorModel.customerPhone = telephone
+                            val vendorModel = VendorModel()
+                            vendorModel.customerName = vendorName
+                            vendorModel.customerPhone = telephone
+                            vendorModel.customerId = vendorId
+                            vendorModel.id = id
 
-                        mVendorList.add(vendorModel)
-                        mVendorList.sortBy { it.customerName }
+                            mVendorList.run {
+                                add(vendorModel)
+                                sortBy { it.customerName }
+                            }
+                        }
                     }
-                    mAdapter.notifyItemChanged(mVendorList.size - 1)
+                    mAdapter.notifyDataSetChanged()
 
                     if (mVendorList.isEmpty()) {
                         mAddBtn.isVisible = true
@@ -172,9 +189,7 @@ class VendorFragment : Fragment(), OnItemClickListener {
     }
 
     private fun refresh() {
-        mRefreshBtn.setOnClickListener {
-            getVendor()
-        }
+        mRefreshBtn.setOnClickListener { getVendor() }
     }
 
     override fun onResume() {
@@ -189,7 +204,9 @@ class VendorFragment : Fragment(), OnItemClickListener {
             Intent(requireContext(), PaymentActivity().javaClass)
                 .putExtra("from", "vendor")
                 .putExtra("vendor_name", vendorModel.customerName)
+                .putExtra("vendorId", vendorModel.customerId)
                 .putExtra("vendor_phone", vendorModel.customerPhone)
+                .putExtra("id", vendorModel.id)
         )
     }
 
