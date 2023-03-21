@@ -2,6 +2,7 @@ package com.digitaldream.winskool.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -22,6 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.Login;
+import com.digitaldream.winskool.activities.StaffUtils;
 import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.LevelTable;
@@ -258,120 +259,6 @@ public class StaffFormClassFragment extends Fragment {
     }
 
 
-    /*    public void getStudentByLevel(String a) {
-
-        QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
-        try {
-            queryBuilder.where().eq(StudentTable.STUDENTLEVEL, a);
-            PreparedQuery<StudentTable> preparedQuery = queryBuilder.prepare();
-            mStudentList = studentDao.query(preparedQuery);
-
-
-            if (!mStudentList.isEmpty()) {
-
-                setSpinnerClass(a);
-            } else {
-                empty_state.setVisibility(View.VISIBLE);
-                mRecyclerView.setVisibility(View.GONE);
-                spinnerClassList.clear();
-                spinnerClassList.add("");
-                ArrayAdapter adapterClass = new ArrayAdapter(getContext(),
-                        android.R.layout.simple_spinner_item, spinnerClassList);
-                adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                classes.setAdapter(adapterClass);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }*/
-
- /*   public void setSpinnerClass(String a) throws SQLException {
-        QueryBuilder<ClassNameTable, Long> queryBuilder = classDao.queryBuilder();
-        queryBuilder.where().eq("level", a);
-        mClassList = queryBuilder.query();
-        Collections.reverse(mClassList);
-        if (!mClassList.isEmpty()) {
-            for (int i = 0; i < mClassList.size(); i++) {
-                String classname = mClassList.get(i).getClassName().toUpperCase();
-                spinnerClassList.add(classname);
-            }
-
-            ArrayAdapter adapterClass = new ArrayAdapter(getContext(),
-                    android.R.layout.simple_spinner_item, spinnerClassList);
-            adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            classes.setAdapter(adapterClass);
-            classes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
-                    studentClass = "";
-                    if (mClassList.size() > 0) {
-                        studentClass = mClassList.get(i).getClassId();
-                    }
-
-                    try {
-                        queryBuilder.where().eq("studentLevel", studentLevelId).and().eq(
-                                "studentClass", studentClass);
-                        mStudentList = queryBuilder.query();
-
-                        if (!mStudentList.isEmpty()) {
-                            empty_state.setVisibility(View.GONE);
-                            mRecyclerView.setVisibility(View.VISIBLE);
-                            mAdapter = new StudentContactAdapter(getContext(),
-                                    mStudentList, ContactsStaff.this);
-                            mRecyclerView.setAdapter(mAdapter);
-                            mAdapter.notifyDataSetChanged();
-
-                        } else {
-                            mRecyclerView.setVisibility(View.GONE);
-                            empty_state.setVisibility(View.VISIBLE);
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-        } else {
-
-            spinnerClassList.clear();
-            spinnerClassList.add("");
-            ArrayAdapter adapterClass = new ArrayAdapter(getContext(),
-                    android.R.layout.simple_spinner_item, spinnerClassList);
-            adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            classes.setAdapter(adapterClass);
-
-
-        }
-
-
-          Intent intent = new Intent(getContext(), StudentProfile.class);
-        StudentTable st = new StudentTable();
-        st.setStudentSurname(mStudentList.get(position).getStudentSurname());
-        st.setStudentFirstname(mStudentList.get(position).getStudentFirstname());
-        st.setStudentMiddlename(mStudentList.get(position).getStudentMiddlename());
-        st.setStudentLevel(mStudentList.get(position).getStudentLevel());
-        st.setGuardianName(mStudentList.get(position).getGuardianName());
-        st.setGuardianPhoneNo(mStudentList.get(position).getGuardianPhoneNo());
-        st.setGuardianEmail(mStudentList.get(position).getGuardianEmail());
-        st.setGuardianAddress(mStudentList.get(position).getGuardianAddress());
-        st.setStudentGender(mStudentList.get(position).getStudentGender());
-        st.setStudentReg_no(mStudentList.get(position).getStudentReg_no());
-        st.setStudentLevel(mStudentList.get(position).getStudentLevel());
-        st.setStudentClass(mStudentList.get(position).getStudentClass());
-        st.setState_of_origin(mStudentList.get(position).getState_of_origin());
-        st.setDate_of_birth(mStudentList.get(position).getDate_of_birth());
-        st.setStudentId(mStudentList.get(position).getStudentId());
-        intent.putExtra("studentObject", st);
-        startActivity(intent);
-
-    }*/
-
     public static class SectionAdapter extends Section {
         private final Context mContext;
         private final List<ClassNameTable> mClassNameList;
@@ -380,10 +267,12 @@ public class StaffFormClassFragment extends Fragment {
         public SectionAdapter(Context sContext,
                               List<ClassNameTable> sClassList,
                               String sHeaderTitle) {
+
             super(SectionParameters.builder()
                     .itemResourceId(R.layout.fragment_staff_form_class_item)
                     .headerResourceId(R.layout.head)
                     .build());
+
             mContext = sContext;
             mClassNameList = sClassList;
             headerTitle = sHeaderTitle;
@@ -412,17 +301,23 @@ public class StaffFormClassFragment extends Fragment {
 
             holder.mClassName.setText(classTable.getClassName());
 
-            holder.mViewStudents.setOnClickListener(view -> {
-                Toast.makeText(mContext, "1", Toast.LENGTH_SHORT).show();
-            });
+            holder.mViewStudents.setOnClickListener(view ->
+                    mContext.startActivity(new Intent(mContext, StaffUtils.class)
+                            .putExtra("classId", classTable.getClassId())
+                            .putExtra("from", "form_class"))
+            );
 
-            holder.mComment.setOnClickListener(view -> {
-                Toast.makeText(mContext, "2", Toast.LENGTH_SHORT).show();
-            });
+            holder.mComment.setOnClickListener(view ->
+                    mContext.startActivity(new Intent(mContext, StaffUtils.class)
+                            .putExtra("classId", classTable.getClassId())
+                            .putExtra("from", "staff_comment"))
+            );
 
-            holder.mSkills.setOnClickListener(view -> {
-                Toast.makeText(mContext, "3", Toast.LENGTH_SHORT).show();
-            });
+            holder.mSkills.setOnClickListener(view ->
+                    mContext.startActivity(new Intent(mContext, StaffUtils.class)
+                            .putExtra("classId", classTable.getClassId())
+                            .putExtra("from", "skills_behaviour"))
+            );
 
         }
 

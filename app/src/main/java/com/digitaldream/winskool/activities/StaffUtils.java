@@ -14,6 +14,9 @@ import com.digitaldream.winskool.fragments.StaffFormClassFragment;
 import com.digitaldream.winskool.fragments.LibraryGamesFragment;
 import com.digitaldream.winskool.fragments.LibraryVideosFragment;
 import com.digitaldream.winskool.fragments.ResultStaff;
+import com.digitaldream.winskool.fragments.StaffFormClassStudentsFragment;
+import com.digitaldream.winskool.fragments.StaffResultCommentFragment;
+import com.digitaldream.winskool.fragments.StaffSkillsBehaviourFragment;
 
 public class StaffUtils extends AppCompatActivity {
 
@@ -75,6 +78,24 @@ public class StaffUtils extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(
                         R.id.payment_container,
                         new LibraryGamesFragment()).commit();
+                break;
+
+            case "form_class":
+                getSupportFragmentManager().beginTransaction().replace(
+                        R.id.payment_container,
+                        StaffFormClassStudentsFragment.newInstance(classId)).commit();
+                break;
+
+            case "staff_comment":
+                getSupportFragmentManager().beginTransaction().replace(
+                        R.id.payment_container,
+                        StaffResultCommentFragment.newInstance(classId)).commit();
+                break;
+
+            case "skills_behaviour":
+                getSupportFragmentManager().beginTransaction().replace(
+                        R.id.payment_container,
+                        StaffSkillsBehaviourFragment.newInstance(classId)).commit();
                 break;
         }
 

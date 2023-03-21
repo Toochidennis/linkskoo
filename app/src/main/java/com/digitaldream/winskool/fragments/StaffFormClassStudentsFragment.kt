@@ -7,23 +7,19 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.PaymentActivity
-import com.digitaldream.winskool.activities.ReceiptStudentBudgetActivity
+import com.digitaldream.winskool.activities.StudentProfile
 import com.digitaldream.winskool.adapters.OnItemClickListener
-import com.digitaldream.winskool.adapters.ReceiptStudentNameAdapter
+import com.digitaldream.winskool.adapters.StaffFormClassStudentsAdapter
 import com.digitaldream.winskool.config.DatabaseHelper
-import com.digitaldream.winskool.dialog.OnInputListener
-import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.StudentTable
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
@@ -31,69 +27,56 @@ import java.util.*
 
 
 private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-private const val ARG_PARAM3 = "param3"
 
 
-class  ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
+class StaffFormClassStudentsFragment : Fragment(), OnItemClickListener {
 
     private lateinit var mMainView: NestedScrollView
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mErrorMessage: TextView
-    private lateinit var mToolbarText: TextView
-    private lateinit var mBackBtn: ImageView
-    private lateinit var mLevelBtn: Button
     private lateinit var mSearchBar: EditText
+    private lateinit var mAdapter: StaffFormClassStudentsAdapter
 
-    private lateinit var mAdapter: ReceiptStudentNameAdapter
-    private var classId: String? = null
-    private var className: String? = null
-    private var levelName: String? = null
-    private var mLevelName: String? = null
+    private var mClassId: String? = null
     private var mStudentList = mutableListOf<StudentTable>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            classId = it.getString(ARG_PARAM1)
-            className = it.getString(ARG_PARAM2)
-            levelName = it.getString(ARG_PARAM3)
+            mClassId = it.getString(ARG_PARAM1)
         }
     }
+
 
     companion object {
 
         @JvmStatic
-        fun newInstance(sClassId: String, sClassName: String, sLevelName: String) =
-            ReceiptStudentNameFragment().apply {
+        fun newInstance(sClassId: String) =
+            StaffFormClassStudentsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, sClassId)
-                    putString(ARG_PARAM2, sClassName)
-                    putString(ARG_PARAM3, sLevelName)
                 }
             }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_receipt_student_name, container, false)
+        val view = inflater.inflate(R.layout.fragment_staff_form_class_students, container, false)
 
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mMainView = view.findViewById(R.id.student_name_view)
         mRecyclerView = view.findViewById(R.id.student_name_recycler)
         mErrorMessage = view.findViewById(R.id.student_error_message)
         mSearchBar = view.findViewById(R.id.search_bar)
-        mLevelBtn = view.findViewById(R.id.level_name)
-        mToolbarText = view.findViewById(R.id.toolbar_text)
-        mBackBtn = view.findViewById(R.id.back_btn)
 
-        "Select Student".also { mToolbarText.text = it }
-        mLevelBtn.text = levelName
-
-        mBackBtn.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+        toolbar.apply {
+            setNavigationIcon(R.drawable.arrow_left)
+            toolbar.title = "Students"
+            toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
 
         mSearchBar.addTextChangedListener(object : TextWatcher {
@@ -109,9 +92,6 @@ class  ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
                 filterName(s.toString())
             }
         })
-
-        getStudentNames(classId!!)
-        changeLevel()
 
         return view
     }
@@ -131,14 +111,14 @@ class  ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
         mAdapter.filterList(filteredList)
     }
 
-    private fun getStudentNames(sClassId: String) {
+    private fun getStudentNames() {
         try {
             val databaseHelper =
                 DatabaseHelper(requireContext())
             val mDao: Dao<StudentTable, Long> = DaoManager.createDao(
                 databaseHelper.connectionSource, StudentTable::class.java
             )
-            mStudentList = mDao.queryBuilder().where().eq("studentClass", sClassId).query()
+            mStudentList = mDao.queryBuilder().where().eq("studentClass", mClassId).query()
 
             if (mStudentList.isEmpty()) {
                 mMainView.isVisible = true
@@ -146,7 +126,7 @@ class  ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
                 mSearchBar.isVisible = false
                 mRecyclerView.isVisible = false
             } else {
-                mAdapter = ReceiptStudentNameAdapter(mStudentList, this)
+                mAdapter = StaffFormClassStudentsAdapter(mStudentList, this)
                 mRecyclerView.hasFixedSize()
                 mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 mRecyclerView.adapter = mAdapter
@@ -161,47 +141,34 @@ class  ReceiptStudentNameFragment : Fragment(), OnItemClickListener {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        getStudentNames()
+    }
+
     override fun onItemClick(position: Int) {
-        val studentTable = mStudentList[position]
+
+        val studentTable = StudentTable()
+        studentTable.studentSurname = mStudentList[position].studentSurname
+        studentTable.studentFirstname = mStudentList[position].studentFirstname
+        studentTable.studentMiddlename = mStudentList[position].studentMiddlename
+        studentTable.studentLevel = mStudentList[position].studentLevel
+        studentTable.guardianName = mStudentList[position].guardianName
+        studentTable.guardianPhoneNo = mStudentList[position].guardianPhoneNo
+        studentTable.guardianEmail = mStudentList[position].guardianEmail
+        studentTable.guardianAddress = mStudentList[position].guardianAddress
+        studentTable.studentGender = mStudentList[position].studentGender
+        studentTable.studentReg_no = mStudentList[position].studentReg_no
+        studentTable.studentLevel = mStudentList[position].studentLevel
+        studentTable.studentClass = mStudentList[position].studentClass
+        studentTable.state_of_origin = mStudentList[position].state_of_origin
+        studentTable.date_of_birth = mStudentList[position].date_of_birth
+        studentTable.studentId = mStudentList[position].studentId
+
         startActivity(
-            Intent(requireContext(), ReceiptStudentBudgetActivity::class.java)
-                .putExtra("student_name", studentTable.studentFullName)
-                .putExtra("levelId", studentTable.studentLevel)
-                .putExtra("classId", studentTable.studentClass)
-                .putExtra("studentId", studentTable.studentId)
-                .putExtra("reg_no", studentTable.studentReg_no)
-                .putExtra("level_name", levelName)
+            Intent(requireContext(), StudentProfile::class.java)
+                .putExtra("studentObject", studentTable)
         )
 
-    }
-
-    private fun setLevelName() {
-        mLevelBtn.text = mLevelName
-    }
-
-    private fun changeLevel() {
-        mLevelBtn.setOnClickListener {
-            TermFeeDialog(
-                requireContext(),
-                "changeLevel",
-                object : OnInputListener {
-                    override fun sendInput(input: String) {
-                        mLevelName = input
-                        setLevelName()
-                    }
-
-                    override fun sendId(levelId: String) {
-                        mStudentList.clear()
-                        getStudentNames(levelId)
-                    }
-                },
-            ).apply {
-                setCancelable(true)
-                show()
-            }.window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
     }
 }
