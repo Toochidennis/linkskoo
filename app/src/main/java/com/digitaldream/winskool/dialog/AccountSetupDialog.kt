@@ -16,7 +16,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.Login
-import org.json.JSONException
 import org.json.JSONObject
 
 class AccountSetupDialog(

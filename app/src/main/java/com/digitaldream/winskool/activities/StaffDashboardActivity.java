@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.config.ForceUpdateAsync;
 import com.digitaldream.winskool.fragments.ELibraryFragment;
-import com.digitaldream.winskool.fragments.ExamFragment;
 import com.digitaldream.winskool.fragments.FlashCardList;
 import com.digitaldream.winskool.fragments.ResultStaff;
 import com.digitaldream.winskool.fragments.StaffDashboardFragment;

@@ -7,7 +7,6 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ClassNameTable
-import com.digitaldream.winskool.utils.FunctionUtils
 import java.util.*
 
 class DialogClassNameAdapter(

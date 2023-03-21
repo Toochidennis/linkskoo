@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
   -dontwarn okhttp3.internal.platform.*
+  -dontwarn android.net.http.*
   -printconfiguration app/build/tmp/full-r8-config.txt
 
   ## Conscrypt

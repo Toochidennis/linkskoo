@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.activities.ReceiptStudentBudgetActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptStudentNameAdapter

@@ -60,7 +60,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener, QAAdapter.OnQuestionClickListener {

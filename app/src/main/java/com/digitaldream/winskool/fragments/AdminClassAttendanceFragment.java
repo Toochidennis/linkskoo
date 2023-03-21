@@ -32,7 +32,6 @@ import com.digitaldream.winskool.activities.AdminClassAttendance;
 import com.digitaldream.winskool.activities.AttendanceDetails;
 import com.digitaldream.winskool.activities.Login;
 import com.digitaldream.winskool.adapters.AttendanceAdapter;
-import com.digitaldream.winskool.models.FeeTypeModel;
 import com.digitaldream.winskool.models.StudentTable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

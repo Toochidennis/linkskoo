@@ -17,7 +17,6 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.BooksActivity;
 import com.digitaldream.winskool.activities.StaffUtils;
-import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;

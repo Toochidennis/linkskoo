@@ -21,7 +21,6 @@ import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.activities.StaffEnterResult;
 import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.CourseTable;
-import com.digitaldream.winskool.utils.FunctionUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
