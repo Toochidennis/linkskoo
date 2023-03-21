@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
         }, SPLASH_DISPLAY_LENGTH);
 
         ImageView linkskool = findViewById(R.id.logo);
-        long startTimev = 100;
+        long startTime = 100;
+
+        inFromBottomAnimation(linkskool, startTime);
 
     }
 
@@ -90,16 +92,35 @@ public class MainActivity extends AppCompatActivity {
         return inFromLeft;
     }
 
-    private Animation inFromBottomAnimation(ImaVLong startTime) {
-        Animation inFromLeft = new TranslateAnimation(
+    private void inFromBottomAnimation(ImageView sImageView, Long startTime) {
+        Animation inFromBottom = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, +1.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromLeft.setDuration(1500);
-        inFromLeft.setStartOffset(startTime);
-        inFromLeft.setInterpolator(new AccelerateInterpolator());
-        return inFromLeft;
+        inFromBottom.setDuration(1500);
+        inFromBottom.setStartOffset(startTime);
+        inFromBottom.setInterpolator(new AccelerateInterpolator());
+
+        sImageView.startAnimation(inFromBottom);
+        inFromBottom.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                final Animation in = new AlphaAnimation(0.0f, 1.0f);
+                in.setDuration(1000);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 }
 
