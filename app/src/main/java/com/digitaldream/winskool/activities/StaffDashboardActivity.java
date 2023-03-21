@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.config.ForceUpdateAsync;
+import com.digitaldream.winskool.fragments.ELibraryFragment;
 import com.digitaldream.winskool.fragments.ExamFragment;
 import com.digitaldream.winskool.fragments.FlashCardList;
 import com.digitaldream.winskool.fragments.ResultStaff;
@@ -109,10 +110,12 @@ public class StaffDashboardActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.payment:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new FlashCardList()).commit();
+                   // getSupportFragmentManager().beginTransaction().replace(R.id
+                    // .payment_container, new FlashCardList()).commit();
                     return true;
                 case R.id.student_library:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container, new ExamFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.payment_container
+                            , new ELibraryFragment()).commit();
                     return true;
 
                 case R.id.student_elearning:
