@@ -51,7 +51,7 @@
 
             <Button
                 android:id="@+id/level_name"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"

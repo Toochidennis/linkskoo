@@ -67,7 +67,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         val actionBar = (activity as AppCompatActivity).supportActionBar
         menuHost = requireActivity()
 
-        // setUpMenu()
+         setUpMenu()
 
         actionBar!!.apply {
             setHomeButtonEnabled(true)
