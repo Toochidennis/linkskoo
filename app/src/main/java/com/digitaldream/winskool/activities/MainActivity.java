@@ -38,24 +38,19 @@ public class MainActivity extends AppCompatActivity {
             boolean isLogged = sharedPreferences.getBoolean("loginStatus", false);
             String who = sharedPreferences.getString("who", "");
             if (databaseHelper.getWritableDatabase() == null) {
-                Intent intent = new Intent(MainActivity.this, Login.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, Login.class));
                 finish();
             } else if (isLogged && who.equals("admin")) {
-                Intent intent = new Intent(MainActivity.this, Dashboard.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, Dashboard.class));
                 finish();
             } else if (isLogged && who.equals("staff")) {
-                Intent intent = new Intent(MainActivity.this, StaffDashboardActivity.class);
-                startActivity(intent);
+                startActivity( new Intent(MainActivity.this, StaffDashboardActivity.class));
                 finish();
             } else if (isLogged && who.equals("student")) {
-                Intent intent = new Intent(MainActivity.this, StudentDashboardActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, StudentDashboardActivity.class));
                 finish();
             } else {
-                Intent intent = new Intent(MainActivity.this, Login.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, Login.class));
                 finish();
             }
         }, SPLASH_DISPLAY_LENGTH);
