@@ -100,8 +100,7 @@ public class Login extends AppCompatActivity {
         pin = findViewById(R.id.pin);
         login = findViewById(R.id.login);
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(" Login");
+        toolbar.setTitle("Login");
 
         databaseHelper = new DatabaseHelper(this);
         try {
@@ -191,12 +190,12 @@ public class Login extends AppCompatActivity {
             parseJSON(response, dialog1);
         }, error -> {
             dialog1.dismiss();
-            //Log.i("error_login",error.printStackTrace().);
+
             error.printStackTrace();
             Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", pinText);
                 params.put("username", usernameText);
@@ -204,12 +203,9 @@ public class Login extends AppCompatActivity {
                 return params;
             }
         };
-        //stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
-        // DefaultRetryPolicy.DEFAULT_MAX_RETRIES,DefaultRetryPolicy
-        // .DEFAULT_BACKOFF_MULT));
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-
 
     }
 
