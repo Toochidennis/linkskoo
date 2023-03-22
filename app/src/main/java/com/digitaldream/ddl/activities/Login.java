@@ -71,7 +71,6 @@ public class Login extends AppCompatActivity {
     private List<LevelTable> levelNames;
     private Dao<NewsTable, Long> newsDao;
     private List<NewsTable> newsList;
-    private final int counter = 0;
     private Dao<CourseTable, Long> courseDao;
     private List<CourseTable> courseList;
     private Dao<StudentResultDownloadTable, Long> studentResultDao;

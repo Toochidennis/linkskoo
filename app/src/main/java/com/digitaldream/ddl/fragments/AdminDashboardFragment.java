@@ -184,7 +184,6 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         school_name = generalSettingsList.get(0).getSchoolName().toLowerCase();
-        Log.d("school_name", school_name);
         userId = sharedPreferences.getString("user_id", "");
         String user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");

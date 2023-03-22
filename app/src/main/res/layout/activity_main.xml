@@ -8,27 +8,30 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/logo_holder"
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="180dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ddl_logo" />
+
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="50dp">
-
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ddl_logo" />
-
-
-    </RelativeLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center_horizontal"
+        android:text="Powered by DDL Juniorate"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
 
     <!--  <TextView
@@ -41,29 +44,6 @@
           android:text="@string/linkskool"
           android:textSize="50dp"
           android:textStyle="bold" />-->
-
-    <RelativeLayout
-        android:id="@+id/power_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:fontFamily="@font/lato"
-            android:gravity="center_horizontal"
-            android:text="Powered by DDL Juniorate"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-
-    </RelativeLayout>
 
 
 </RelativeLayout>
