@@ -19,9 +19,6 @@ android {
         buildConfigField("String", "PSTK_SECRET_KEY", PSTK_SECRET_KEY)
     }
 
-    buildFeatures{
-        buildConfig = true
-    }
 
     buildTypes {
         release {
@@ -53,7 +50,7 @@ android {
         checkReleaseBuilds false
     }
 
-    namespace 'com.digitaldream.winskool'
+    namespace 'com.digitaldream.ddl'
 
     packagingOptions {
         resources {
