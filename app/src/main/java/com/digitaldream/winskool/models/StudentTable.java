@@ -1,10 +1,13 @@
 package com.digitaldream.winskool.models;
 
+import androidx.annotation.Keep;
+
 import com.j256.ormlite.field.DatabaseField;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Keep
 public class StudentTable implements Serializable {
     public static final String STUDENTLEVEL = "studentLevel";
     @DatabaseField(generatedId = true)

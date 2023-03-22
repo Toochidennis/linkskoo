@@ -22,6 +22,14 @@
 
   -dontwarn okhttp3.internal.platform.*
   -dontwarn android.net.http.*
+  -keep class com.digitaldream.winskool.models.*
+  -keep class com.digitaldream.winskool.utils.*
+  -dontwarn org.ietf.jgss.GSSContext
+  -dontwarn org.ietf.jgss.GSSCredential
+  -dontwarn org.ietf.jgss.GSSException
+  -dontwarn org.ietf.jgss.GSSManager
+  -dontwarn org.ietf.jgss.GSSName
+  -dontwarn org.ietf.jgss.Oid
   -printconfiguration app/build/tmp/full-r8-config.txt
 
   ## Conscrypt

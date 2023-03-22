@@ -20,7 +20,7 @@ import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.config.ForceUpdateAsync;
 
 public class MainActivity extends AppCompatActivity {
-    private final String url = "http://www.linkskool.com/newportal/api/mobile.php";
+    //private final String url = "http://www.linkskool.com/newportal/api/mobile.php";
     private DatabaseHelper databaseHelper;
 
     @Override
