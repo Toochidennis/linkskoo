@@ -5,17 +5,22 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.digitaldream.winskool"
+        applicationId "com.digitaldream.ddl"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 41
-        versionName "27.6"
+        versionCode 32
+        versionName "27.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
+
         buildConfigField("String", "PSTK_PUBLIC_KEY", PSTK_PUBLIC_KEY)
         buildConfigField("String", "PSTK_SECRET_KEY", PSTK_SECRET_KEY)
+    }
+
+    buildFeatures{
+        buildConfig = true
     }
 
     buildTypes {
@@ -38,18 +43,26 @@ android {
         sourceCompatibility = "11"
         targetCompatibility = "11"
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     lint {
         abortOnError false
         checkReleaseBuilds false
     }
+
     namespace 'com.digitaldream.winskool'
+
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1,DEPENDENCIES}'
         }
+    }
+
+    sourceSets {
+        getByName("main")
     }
 }
 

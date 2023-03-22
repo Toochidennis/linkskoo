@@ -41,8 +41,7 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="0dp"
                 android:contentDescription="@string/todo"
-                android:scaleType="centerCrop"
-                android:src="@drawable/winschool" />
+                android:src="@drawable/ddl_logo" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username_wrapper"

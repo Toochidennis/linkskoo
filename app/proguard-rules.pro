@@ -22,8 +22,8 @@
 
   -dontwarn okhttp3.internal.platform.*
   -dontwarn android.net.http.*
-  -keep class com.digitaldream.winskool.models.*
-  -keep class com.digitaldream.winskool.utils.*
+  -keep class com.digitaldream.ddl.models.*
+  -keep class com.digitaldream.ddl.utils.*
   -dontwarn org.ietf.jgss.GSSContext
   -dontwarn org.ietf.jgss.GSSCredential
   -dontwarn org.ietf.jgss.GSSException
