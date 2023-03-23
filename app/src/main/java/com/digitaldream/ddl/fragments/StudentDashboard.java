@@ -111,19 +111,17 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         SharedPreferences sharedPreferences =
                 requireActivity().getSharedPreferences(
                         "loginDetail", Context.MODE_PRIVATE);
-        String schoolName = sharedPreferences.getString("school_name", "");
         String studentClass = sharedPreferences.getString("student_class", "");
         level = sharedPreferences.getString("level", "");
         db = sharedPreferences.getString("db", "");
         student_class.setText(studentClass.toUpperCase());
-        String capSchoolName = FunctionUtils.capitaliseFirstLetter(schoolName);
 
         String user = sharedPreferences.getString("user", "");
         String capUser = FunctionUtils.capitaliseFirstLetter(user);
 
         username.setText(capUser);
         assert actionBar != null;
-        actionBar.setTitle(capSchoolName);
+        actionBar.setTitle(getString(R.string.app_name));
         String student_initial = user.substring(0, 1).toUpperCase();
         studentInitials.setText(student_initial);
 

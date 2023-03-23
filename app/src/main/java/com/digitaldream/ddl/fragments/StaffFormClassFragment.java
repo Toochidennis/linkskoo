@@ -36,6 +36,7 @@ import com.j256.ormlite.table.TableUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -228,7 +229,7 @@ public class StaffFormClassFragment extends Fragment {
         mAdapter.removeAllSections();
 
         try {
-            List<ClassNameTable> classList = null;
+            List<ClassNameTable> classList = new ArrayList<>();
             List<LevelTable> levelList = levelDao.queryForAll();
 
             Collections.sort(levelList, (s1, s2) ->
@@ -243,7 +244,6 @@ public class StaffFormClassFragment extends Fragment {
                 mAdapter.addSection(new SectionAdapter(requireContext(), classList, levelName));
             }
 
-            assert classList != null;
             if (!classList.isEmpty()) {
                 mRecyclerView.setAdapter(mAdapter);
                 mLinearLayout.setVisibility(View.VISIBLE);
