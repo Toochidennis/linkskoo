@@ -62,28 +62,29 @@ import java.util.List;
 import java.util.Map;
 
 
-public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener, QAAdapter.OnQuestionClickListener {
+public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener,
+        QAAdapter.OnQuestionClickListener {
     private Boolean exit = false;
     private DatabaseHelper databaseHelper;
-    private LinearLayout studentContactsLink,resultLink,staffCoursesLink,
-    eLearning, staffAttendance;
+    private LinearLayout studentContactsLink, resultLink, staffCoursesLink,
+            eLearning, staffAttendance;
     private List<CourseTable> courseList;
-    private Dao<CourseTable,Long> courseDao;
-    private Dao<StudentTable,Long> studentDao;
+    private Dao<CourseTable, Long> courseDao;
+    private Dao<StudentTable, Long> studentDao;
     private List<StudentTable> studentList;
-    private Dao<NewsTable,Long> newsDao;
+    private Dao<NewsTable, Long> newsDao;
     private List<NewsTable> newsTitleList;
-    private Dao<ClassNameTable,Long> classDao;
+    private Dao<ClassNameTable, Long> classDao;
     private List<ClassNameTable> classList;
-    private TextView studentCount,courseCount,user,userInitials,schoolSession
-    ,termTextview, errorMessage;
+    private TextView studentCount, courseCount, user, userInitials, schoolSession, termTextview,
+            errorMessage;
     private Toolbar toolbar;
     private LinearLayout newsContainer;
     private SwipeRefreshLayout newsRefresh;
     private RecyclerView newsRecylerView;
     private String db;
     private boolean fromLogin;
-    private boolean isFirstTime =false;
+    private boolean isFirstTime = false;
     private NewsAdapter newsAdapter;
     RecyclerView qaRecycler;
     private JSONArray arr;
@@ -91,9 +92,9 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
     private LinearLayout emptyState;
     private QAAdapter.QAObject feed;
     List<QAAdapter.QAObject> list;
-    public static QuestionBottomSheet questionBottomSheet=null;
-    private static String json="";
-    public static boolean refresh=false;
+    public static QuestionBottomSheet questionBottomSheet = null;
+    private static String json = "";
+    public static boolean refresh = false;
 
     public StaffDashboardFragment() {
         // Required empty public constructor
@@ -103,7 +104,7 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_staff_dashboard, container, false);
+        View v = inflater.inflate(R.layout.fragment_staff_dashboard, container, false);
         emptyState = v.findViewById(R.id.qa_empty_state);
         errorMessage = v.findViewById(R.id.error_message);
 
@@ -118,22 +119,25 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         newsRefresh = v.findViewById(R.id.swipeRefresh_news);
         newsRecylerView = v.findViewById(R.id.news_recycler);
 
-        ((AppCompatActivity)(requireActivity())).setSupportActionBar(toolbar);
+        ((AppCompatActivity) (requireActivity())).setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        ActionBar actionBar =  ((AppCompatActivity)(getActivity())).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) (getActivity())).getSupportActionBar();
 
 
-        fromLogin = getActivity().getIntent().getBooleanExtra("isFromLogin",false);
-        if(fromLogin==true){
+        fromLogin = getActivity().getIntent().getBooleanExtra("isFromLogin", false);
+        if (fromLogin == true) {
             isFirstTime = true;
         }
 
         try {
             databaseHelper = new DatabaseHelper(getContext());
-            studentDao = DaoManager.createDao(databaseHelper.getConnectionSource(), StudentTable.class);
+            studentDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    StudentTable.class);
             newsDao = DaoManager.createDao(databaseHelper.getConnectionSource(), NewsTable.class);
-            courseDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseTable.class);
-            classDao = DaoManager.createDao(databaseHelper.getConnectionSource(), ClassNameTable.class);
+            courseDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    CourseTable.class);
+            classDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    ClassNameTable.class);
             studentList = studentDao.queryForAll();
             newsTitleList = newsDao.queryForAll();
             courseList = courseDao.queryForAll();
@@ -146,48 +150,50 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         }
 
         user = v.findViewById(R.id.userID_display);
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-        String user_name = sharedPreferences.getString("user","");
-        String schoolYear = sharedPreferences.getString("school_year","");
-        db = sharedPreferences.getString("db","");
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
+        String user_name = sharedPreferences.getString("user", "");
+        String schoolYear = sharedPreferences.getString("school_year", "");
+        db = sharedPreferences.getString("db", "");
         String[] strArray = user_name.toLowerCase().split(" ");
-        String school_name = sharedPreferences.getString("school_name","");
-        String term = sharedPreferences.getString("term","");
+        String school_name = sharedPreferences.getString("school_name", "");
+        String term = sharedPreferences.getString("term", "");
         String[] strArray1 = school_name.split(" ");
         StringBuilder builder = new StringBuilder();
-        for(String s : strArray){
+        for (String s : strArray) {
             try {
                 //s.toLowerCase();
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
                 builder.append(cap).append(" ");
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         StringBuilder builder1 = new StringBuilder();
-        for(String s : strArray1){
+        for (String s : strArray1) {
             try {
                 String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
                 builder1.append(cap).append(" ");
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        user.setText( builder.toString());
-        actionBar.setTitle(builder1.toString());
-        String initials = user_name.substring(0,1).toUpperCase();
+        user.setText(builder.toString());
+        assert actionBar != null;
+        actionBar.setTitle(getString(R.string.app_name));
+        String initials = user_name.substring(0, 1).toUpperCase();
         userInitials.setText(initials);
 
         arr = new JSONArray();
-        for(int a=0;a<courseList.size();a++){
+        for (int a = 0; a < courseList.size(); a++) {
             JSONObject staffObj = new JSONObject();
             try {
-                staffObj.put("course",courseList.get(a).getCourseId());
-                staffObj.put("course_name",courseList.get(a).getCourseName());
-                staffObj.put("level",courseList.get(a).getLevelId());
-                staffObj.put("level_name",courseList.get(a).getLevelName());
+                staffObj.put("course", courseList.get(a).getCourseId());
+                staffObj.put("course_name", courseList.get(a).getCourseName());
+                staffObj.put("level", courseList.get(a).getLevelId());
+                staffObj.put("level_name", courseList.get(a).getLevelName());
                 arr.put(staffObj);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -201,8 +207,8 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         });
 
         studentContactsLink.setOnClickListener(v12 -> {
-            Intent intent = new Intent(getContext(),StaffUtils.class);
-            intent.putExtra("from","student");
+            Intent intent = new Intent(getContext(), StaffUtils.class);
+            intent.putExtra("from", "student");
             startActivity(intent);
         });
 
@@ -212,7 +218,6 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
             intent.putExtra("from", "staff");
             startActivity(intent);
         });
-
 
 
         try {
@@ -230,7 +235,7 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
                     break;
             }
 
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
@@ -240,16 +245,15 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         qaRecycler.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         qaRecycler.setLayoutManager(layoutManager);
-        list=new ArrayList<>();
+        list = new ArrayList<>();
 
 
-
-        adapter = new QAAdapter(getContext(),list,this);
+        adapter = new QAAdapter(getContext(), list, this);
         qaRecycler.setAdapter(adapter);
         LinearLayout emptyState = v.findViewById(R.id.qa_empty_state);
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             emptyState.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             emptyState.setVisibility(View.GONE);
         }
 
@@ -268,12 +272,12 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
     @Override
     public void onResume() {
         super.onResume();
-        if(json.isEmpty()){
+        if (json.isEmpty()) {
             getFeed();
-        }else{
-            if(refresh){
+        } else {
+            if (refresh) {
                 getFeed();
-            }else {
+            } else {
                 parseJSON(json);
             }
         }
@@ -287,15 +291,15 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
     @Override
     public void onQuestionClick(int position) {
         QAAdapter.QAObject object = list.get(position);
-        if(object.getFeedType().equals("20")) {
+        if (object.getFeedType().equals("20")) {
             Intent intent = new Intent(getContext(), QuestionView.class);
-            intent.putExtra("feed",object);
+            intent.putExtra("feed", object);
             startActivity(intent);
-        }else if(object.getFeedType().equals("21")){
+        } else if (object.getFeedType().equals("21")) {
             Intent intent = new Intent(getContext(), AnswerView.class);
             intent.putExtra("feed", object);
             startActivity(intent);
-        }else{
+        } else {
             Intent intent = new Intent(getContext(), NewsView.class);
             intent.putExtra("feed", object);
             startActivity(intent);
@@ -303,32 +307,32 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
     }
 
 
-
-    private void getFeed(){
+    private void getFeed() {
         CustomDialog dialog = new CustomDialog(getActivity());
         dialog.show();
-        String url = Login.urlBase+"/getFeed.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                dialog.dismiss();
-                json =response;
-                parseJSON(response);
+        String url = Login.urlBase + "/getFeed.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        dialog.dismiss();
+                        json = response;
+                        parseJSON(response);
 
-            }
-        }, error -> {
+                    }
+                }, error -> {
             dialog.dismiss();
             Toast.makeText(getContext(), "Something went wrong!",
                     Toast.LENGTH_SHORT).show();
 //            newsRecylerView.setVisibility(View.GONE);
             emptyState.setVisibility(View.VISIBLE);
             errorMessage.setText("Failed to load News, please try again!");
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String,String> params = new HashMap<>();
-                params.put("id",arr.toString());
-                params.put("_db",db);
+                Map<String, String> params = new HashMap<>();
+                params.put("id", arr.toString());
+                params.put("_db", db);
                 return params;
             }
         };
@@ -337,7 +341,7 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
         requestQueue.add(stringRequest);
     }
 
-    private void parseJSON(String response){
+    private void parseJSON(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
             for (int a = 0; a < jsonArray.length(); a++) {
@@ -358,43 +362,43 @@ public class StaffDashboardFragment extends Fragment implements NewsAdapter.OnNe
 
                 feed = new QAAdapter.QAObject();
                 feed.setUser(user);
-                    feed.setQuestionId(id);
-                    feed.setId(id);
-                if(title==null || title.isEmpty()){
+                feed.setQuestionId(id);
+                feed.setId(id);
+                if (title == null || title.isEmpty()) {
                     feed.setQuestion(desc);
 
-                }else {
+                } else {
                     feed.setQuestion(title);
                 }
                 feed.setAnswer("");
-                    feed.setPicUrl("");
-                    feed.setAnswerId(id);
-                    if (!body.isEmpty()) {
+                feed.setPicUrl("");
+                feed.setAnswerId(id);
+                if (!body.isEmpty()) {
 
-                        Object json = new JSONTokener(body).nextValue();
+                    Object json = new JSONTokener(body).nextValue();
 
-                        if (json instanceof JSONArray) {
-                            JSONArray answer = new JSONArray(body);
-                            boolean checktext = true;
-                            boolean checkImage = true;
-                            for (int c = 0; c < answer.length(); c++) {
-                                JSONObject object1 = answer.optJSONObject(c);
-                                String type = object1.optString("type").trim();
+                    if (json instanceof JSONArray) {
+                        JSONArray answer = new JSONArray(body);
+                        boolean checktext = true;
+                        boolean checkImage = true;
+                        for (int c = 0; c < answer.length(); c++) {
+                            JSONObject object1 = answer.optJSONObject(c);
+                            String type = object1.optString("type").trim();
 
-                                if (type.equalsIgnoreCase("text") && checktext) {
-                                    String content = object1.optString("content");
+                            if (type.equalsIgnoreCase("text") && checktext) {
+                                String content = object1.optString("content");
 
-                                    feed.setPreText(content);
-                                    checktext = false;
-                                }
-                                if (type.equalsIgnoreCase("image") && checkImage) {
-                                    String content = object1.optString("src");
-                                    feed.setPicUrl(content);
-                                    checkImage = false;
-                                }
+                                feed.setPreText(content);
+                                checktext = false;
+                            }
+                            if (type.equalsIgnoreCase("image") && checkImage) {
+                                String content = object1.optString("src");
+                                feed.setPicUrl(content);
+                                checkImage = false;
                             }
                         }
-                        feed.setAnswer(body);
+                    }
+                    feed.setAnswer(body);
 
                     //feed.setQuestion(desc);
                 }

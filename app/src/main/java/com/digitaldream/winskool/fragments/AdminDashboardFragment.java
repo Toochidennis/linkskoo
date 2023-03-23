@@ -75,11 +75,9 @@ import java.util.Objects;
 
 public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener,
         QAAdapter.OnQuestionClickListener {
-    private TextView newsHeader;
     private TextView userName;
     private TextView school_Name;
     private TextView classesCount;
-    private TextView schoolSession;
     private List<NewsTable> newsTitleList;
     private Dao<NewsTable, Long> newsDao;
     private DatabaseHelper databaseHelper;
@@ -184,10 +182,13 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
         school_name = generalSettingsList.get(0).getSchoolName().toLowerCase();
-        Log.d("school_name", school_name);
         userId = sharedPreferences.getString("user_id", "");
         String user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");
+        SharedPreferences.Editor editor =
+                sharedPreferences.edit();
+        editor.putString("school_name", school_name);
+        editor.apply();
 
 /*        String session = generalSettingsList.get(0).getSchoolYear();
         String term = generalSettingsList.get(0).getSchoolTerm();
@@ -197,7 +198,6 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
             term = term + "nd term";
         } else if (term.equals("3")) {
             term = term + "rd term";
-
         }*/
 
      /*   if (!user_name.equals("null")) {
@@ -347,18 +347,12 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
 
         String url = Login.urlBase + "/getFeed.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("response", "cn" + response);
-                dialog.dismiss();
-                if (progressBar != null) {
+                url, response -> {
+            Log.i("response", "cn" + response);
+            dialog.dismiss();
+            json = response;
+            parseJSON(response);
 
-                }
-                json = response;
-                parseJSON(response);
-
-            }
         }, error -> {
             dialog.dismiss();
            /* Toast.makeText(getContext(), "Something went wrong!",
@@ -377,7 +371,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }
 
@@ -398,7 +392,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
                 String desc = object.getString("description");
                 String type1 = object.getString("type");
 
-                String body = "";
+                String body;
                 body = object.optString("body");
 
 
@@ -407,7 +401,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
                 feed.setId(id);
 
                 feed.setQuestionId(id);
-                if (title == null || title.isEmpty()) {
+                if (title.isEmpty()) {
                     feed.setQuestion(desc);
 
                 } else {

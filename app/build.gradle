@@ -8,8 +8,8 @@ android {
         applicationId "com.digitaldream.winskool"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 41
-        versionName "27.6"
+        versionCode 42
+        versionName "27.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
