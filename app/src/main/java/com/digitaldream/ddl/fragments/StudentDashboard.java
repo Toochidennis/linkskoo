@@ -11,38 +11,32 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.digitaldream.ddl.config.DatabaseHelper;
 import com.digitaldream.ddl.R;
 import com.digitaldream.ddl.activities.AnswerView;
 import com.digitaldream.ddl.activities.Login;
 import com.digitaldream.ddl.activities.NewsView;
 import com.digitaldream.ddl.activities.QuestionView;
 import com.digitaldream.ddl.adapters.QAAdapter;
+import com.digitaldream.ddl.config.DatabaseHelper;
 import com.digitaldream.ddl.models.NewsTable;
 import com.digitaldream.ddl.models.StudentCourses;
-import com.digitaldream.ddl.dialog.CustomDialog;
+import com.digitaldream.ddl.utils.FunctionUtils;
 import com.digitaldream.ddl.utils.QuestionAccessViewSheet;
 import com.digitaldream.ddl.utils.QuestionBottomSheet;
+import com.digitaldream.ddl.utils.VolleyCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 
@@ -56,24 +50,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionClickListener,
         QuestionAccessViewSheet.OnQuestionSubmitListener {
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+
     private Toolbar toolbar;
-    private TextView schoolname, username, student_class, studentInitials;
-    private RecyclerView qaRecycler, courseRecycler;
+    private TextView username, student_class, studentInitials;
+    private RecyclerView qaRecycler;
     private Dao<NewsTable, Long> newsDao;
     private List<NewsTable> newsTitleList = new ArrayList<>();
     private DatabaseHelper databaseHelper;
-    private LinearLayout news_empty_state;
     private Dao<StudentCourses, Long> studentCoursesDao;
     private List<StudentCourses> studentCourses;
 
@@ -85,7 +72,6 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
     public static QuestionBottomSheet questionBottomSheet = null;
     private static String json = "";
     private boolean showDialog = true;
-    CustomDialog dialog = null;
     private boolean allowRefresh = false;
     public static boolean refresh = false;
 
@@ -107,92 +93,59 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         toolbar = view.findViewById(R.id.toolbar);
-        drawerLayout = view.findViewById(R.id.drawer_layout);
-        navigationView = view.findViewById(R.id.navigation_view);
         qaRecycler = view.findViewById(R.id.qa_recycler);
         student_class = view.findViewById(R.id.student_class);
         studentInitials = view.findViewById(R.id.initials_student);
         emptyState = view.findViewById(R.id.qa_empty_state);
+        username = view.findViewById(R.id.student_user);
 
         qaRecycler.setNestedScrollingEnabled(false);
 
-
         ((AppCompatActivity) (requireActivity())).setSupportActionBar(toolbar);
         ActionBar actionBar =
-                ((AppCompatActivity) (getActivity())).getSupportActionBar();
+                ((AppCompatActivity) (requireActivity())).getSupportActionBar();
 
-        schoolname = view.findViewById(R.id.school_name);
-        username = view.findViewById(R.id.student_user);
-        news_empty_state = view.findViewById(R.id.news_empty_state);
+
         SharedPreferences sharedPreferences =
-                getActivity().getSharedPreferences(
+                requireActivity().getSharedPreferences(
                         "loginDetail", Context.MODE_PRIVATE);
         String schoolName = sharedPreferences.getString("school_name", "");
         String studentClass = sharedPreferences.getString("student_class", "");
         level = sharedPreferences.getString("level", "");
         db = sharedPreferences.getString("db", "");
         student_class.setText(studentClass.toUpperCase());
-        String[] strArr = schoolName.split(" ");
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String s : strArr) {
-            try {
-                String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                stringBuilder.append(cap).append(" ");
+        String capSchoolName = FunctionUtils.capitaliseFirstLetter(schoolName);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         String user = sharedPreferences.getString("user", "");
-        String[] strArr1 = user.split(" ");
-        StringBuilder stringBuilder1 = new StringBuilder();
-        for (String s : strArr1) {
-            try {
-                String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                stringBuilder1.append(cap).append(" ");
+        String capUser = FunctionUtils.capitaliseFirstLetter(user);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        username.setText(stringBuilder1.toString());
-        actionBar.setTitle(stringBuilder.toString());
+        username.setText(capUser);
+        assert actionBar != null;
+        actionBar.setTitle(capSchoolName);
         String student_initial = user.substring(0, 1).toUpperCase();
         studentInitials.setText(student_initial);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
-                getContext());
-        qaRecycler.setLayoutManager(layoutManager);
         list = new ArrayList<>();
-
+        qaRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new QAAdapter(getContext(), list, this);
         qaRecycler.setAdapter(adapter);
 
 
         FloatingActionButton addQuestionBtn = view.findViewById(
                 R.id.add_question);
-        addQuestionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction =
-                        ((FragmentActivity) getContext())
-                                .getSupportFragmentManager()
-                                .beginTransaction();
-                questionBottomSheet = new QuestionBottomSheet();
-                questionBottomSheet.show(transaction, "questionBottomSheet");
+        addQuestionBtn.setOnClickListener(v -> {
+            FragmentTransaction transaction =
+                    ((FragmentActivity) requireContext())
+                            .getSupportFragmentManager()
+                            .beginTransaction();
+            questionBottomSheet = new QuestionBottomSheet();
+            questionBottomSheet.show(transaction, "questionBottomSheet");
 
-
-            }
         });
 
-        QuestionAccessViewSheet q = QuestionAccessViewSheet.newInstance();
-        q.setOnQuestionSubmittListener(
-                new QuestionAccessViewSheet.OnQuestionSubmitListener() {
-                    @Override
-                    public void onSubmit() {
-                    }
-                });
+
 
         return view;
     }
@@ -239,37 +192,24 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
 
     public void getFeed(String levelId) {
 
-        dialog = new CustomDialog(getActivity());
-        dialog.show();
-
         String url = Login.urlBase + "/getFeed.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                dialog.dismiss();
-                json = response;
-                list.clear();
-                buildJSON(response);
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("id", levelId);
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                dialog.dismiss();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("id", levelId);
-                params.put("_db", db);
-                return params;
-            }
-        };
+        FunctionUtils.requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+                new VolleyCallback() {
+                    @Override
+                    public void onResponse(@NonNull String response) {
+                        json = response;
+                        list.clear();
+                        buildJSON(response);
+                    }
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
+                    @Override
+                    public void onError(@NonNull VolleyError error) {
+
+                    }
+                });
     }
 
     private void buildJSON(String response) {
@@ -294,7 +234,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
                 feed.setUser(user);
 
                 feed.setQuestionId(id);
-                if (title == null || title.isEmpty()) {
+                if (title.isEmpty()) {
                     feed.setQuestion(desc);
 
                 } else {
