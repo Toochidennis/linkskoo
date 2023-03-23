@@ -187,6 +187,10 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
         userId = sharedPreferences.getString("user_id", "");
         String user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");
+        SharedPreferences.Editor editor =
+                sharedPreferences.edit();
+        editor.putString("school_name", school_name);
+        editor.apply();
 
 /*        String session = generalSettingsList.get(0).getSchoolYear();
         String term = generalSettingsList.get(0).getSchoolTerm();

@@ -57,6 +57,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -75,7 +76,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
     private LinearLayout news_empty_state;
     private Dao<StudentCourses, Long> studentCoursesDao;
     private List<StudentCourses> studentCourses;
-    private CardView courseList_empty_state;
+
     public static String level, db;
     List<QAAdapter.QAObject> list;
     private QAAdapter adapter;
@@ -117,7 +118,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         qaRecycler.setNestedScrollingEnabled(false);
 
 
-        ((AppCompatActivity) (getActivity())).setSupportActionBar(toolbar);
+        ((AppCompatActivity) (requireActivity())).setSupportActionBar(toolbar);
         ActionBar actionBar =
                 ((AppCompatActivity) (getActivity())).getSupportActionBar();
 
