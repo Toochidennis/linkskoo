@@ -8,8 +8,8 @@ android {
         applicationId "com.digitaldream.ddl"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 35
-        versionName "27.5"
+        versionCode 36
+        versionName "27.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true

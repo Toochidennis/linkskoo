@@ -1,25 +1,20 @@
 package com.digitaldream.ddl.activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.android.volley.VolleyError;
+import com.digitaldream.ddl.R;
 import com.digitaldream.ddl.config.DatabaseHelper;
 import com.digitaldream.ddl.models.AssessmentModel;
 import com.digitaldream.ddl.models.ClassNameTable;
@@ -36,7 +31,9 @@ import com.digitaldream.ddl.models.StudentResultDownloadTable;
 import com.digitaldream.ddl.models.StudentTable;
 import com.digitaldream.ddl.models.TeacherCourseModel;
 import com.digitaldream.ddl.models.TeachersTable;
-import com.digitaldream.ddl.R;
+import com.digitaldream.ddl.utils.FunctionUtils;
+import com.digitaldream.ddl.utils.VolleyCallback;
+import com.google.android.material.textfield.TextInputLayout;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -50,15 +47,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import cc.cloudist.acplibrary.ACProgressConstant;
-import cc.cloudist.acplibrary.ACProgressFlower;
+import java.util.Objects;
 
 public class Login extends AppCompatActivity {
-    private EditText username, password, pin;
+    private TextInputLayout username, password;
     private Button login;
-    private Toolbar toolbar;
     String usernameText, passwordText, pinText;
     private DatabaseHelper databaseHelper;
     private Dao<StudentTable, Long> studentDao;
@@ -93,12 +86,9 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
-        pin = findViewById(R.id.pin);
+        username = findViewById(R.id.username_layout);
+        password = findViewById(R.id.password_layout);
         login = findViewById(R.id.login);
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Login");
 
         databaseHelper = new DatabaseHelper(this);
         try {
@@ -146,64 +136,48 @@ public class Login extends AppCompatActivity {
             if (validateLoginForm()) {
                 loginApiCall();
             }
-           /*Intent intent = new Intent(Login.this,StudentDashboardActivity
-           .class);
-            startActivity(intent);
-            finish();*/
+
         });
     }
 
     private boolean validateLoginForm() {
-        usernameText = username.getText().toString().trim();
-        passwordText = password.getText().toString().trim();
+        usernameText = Objects.requireNonNull(username.getEditText()).getText().toString().trim();
+        passwordText = Objects.requireNonNull(password.getEditText()).getText().toString().trim();
         pinText = "2271";// pin.getText().toString().trim();"7755" 5416 2271
         // 9814
 
-        if (usernameText.isEmpty() || passwordText.isEmpty()) {
-            final Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.login_validate_alert);
-            dialog.setCanceledOnTouchOutside(false);
-            Button dialogBtn = dialog.findViewById(R.id.dialogueBtn);
-            dialogBtn.setOnClickListener(view -> dialog.dismiss());
-            dialog.show();
+        if (usernameText.isEmpty()) {
+            username.getEditText().setError("Required");
+            return false;
+        } else if (passwordText.isEmpty()) {
+            password.getEditText().setError("Required");
             return false;
         } else {
+            username.getEditText().setError(null);
+            password.getEditText().setError(null);
             return true;
         }
-
     }
 
     private void loginApiCall() {
-        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(
-                Login.this)
-                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
-                .textMarginTop(10)
-                .fadeColor(Color.DKGRAY).build();
-        dialog1.setCanceledOnTouchOutside(false);
-        dialog1.show();
-        String login_url = urlBase + "/login.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                login_url, response -> {
-            Log.i("response", "response " + response);
-            parseJSON(response, dialog1);
-        }, error -> {
-            dialog1.dismiss();
+        String url = urlBase + "/login.php";
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("token", pinText);
+        hashMap.put("username", usernameText);
+        hashMap.put("password", passwordText);
+        FunctionUtils.requestToServer(Request.Method.POST, url, this, hashMap,
+                new VolleyCallback() {
+                    @Override
+                    public void onResponse(@NonNull String response) {
+                        parseJSON(response);
+                    }
 
-            error.printStackTrace();
-            Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("token", pinText);
-                params.put("username", usernameText);
-                params.put("password", passwordText);
-                return params;
-            }
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+                    @Override
+                    public void onError(@NonNull VolleyError error) {
+                        Toast.makeText(Login.this, "Something went wrong, " +
+                                "Please try again", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -223,21 +197,16 @@ public class Login extends AppCompatActivity {
         return columnList.indexOf(field);
     }
 
-    private void parseJSON(String response, final ACProgressFlower dialog1) {
+    private void parseJSON(String response) {
         if (!response.isEmpty()) {
-
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getString("status").equals(
-                        "failed") || jsonObject.getString("status").equals(
-                        "error")) {
-                    dialog1.dismiss();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(
-                            Login.this);
-                    builder.setMessage("Invalid Login details");
-                    builder.setPositiveButton("OK", (dialogInterface, i) -> {
-                    });
-                    builder.show();
+                        "failed") || jsonObject.getString("status")
+                        .equals("error")) {
+                    Toast.makeText(Login.this, "Invalid Login details",
+                            Toast.LENGTH_SHORT).show();
+
                 } else if (jsonObject.getString("status").equals("success")) {
                     if (jsonObject.getJSONObject("profile").getString(
                             "access_level").equals("2")) {
@@ -498,52 +467,48 @@ public class Login extends AppCompatActivity {
                             }
                             if (jsonObject.has("courses")) {
                                 JSONObject jsonObject11;
-                                try {
-                                    jsonObject11 = jsonObject.getJSONObject(
-                                            "courses");
-                                    Log.i("response", jsonObject11.toString());
-                                    JSONArray jsonArray11 =
-                                            jsonObject11.getJSONArray(
-                                                    "rows");
-                                    JSONArray columnArr5 =
-                                            jsonObject11.getJSONArray(
-                                                    "columns");
 
-                                    for (int b = 0; b < jsonArray11.length(); b++) {
-                                        JSONArray coursesArray =
-                                                jsonArray11.getJSONArray(
-                                                        b);
-                                        String courseId =
-                                                coursesArray.getString(
-                                                        getIndex(columnArr5, "id"));
-                                        String courseName =
-                                                coursesArray.getString(
-                                                        getIndex(columnArr5,
-                                                                "course_name"));
-                                        String courseCode =
-                                                coursesArray.getString(
-                                                        getIndex(columnArr5,
-                                                                "course_code"));
+                                jsonObject11 = jsonObject.getJSONObject(
+                                        "courses");
+                                Log.i("response", jsonObject11.toString());
+                                JSONArray jsonArray11 =
+                                        jsonObject11.getJSONArray(
+                                                "rows");
+                                JSONArray columnArr5 =
+                                        jsonObject11.getJSONArray(
+                                                "columns");
 
-                                        //String levelId = coursesArray
-                                        // .getString(3);
-                                        QueryBuilder<CourseTable, Long> queryBuilder =
-                                                courseDao.queryBuilder();
-                                        queryBuilder.where().eq("courseId",
-                                                courseId);
-                                        courseList = queryBuilder.query();
-                                        if (courseList.isEmpty()) {
-                                            CourseTable ct = new CourseTable();
-                                            ct.setCourseId(courseId);
-                                            ct.setCourseName(courseName);
-                                            ct.setCourseCode(courseCode);
-                                            courseDao.create(ct);
-                                        }
+                                for (int b = 0; b < jsonArray11.length(); b++) {
+                                    JSONArray coursesArray =
+                                            jsonArray11.getJSONArray(
+                                                    b);
+                                    String courseId =
+                                            coursesArray.getString(
+                                                    getIndex(columnArr5, "id"));
+                                    String courseName =
+                                            coursesArray.getString(
+                                                    getIndex(columnArr5,
+                                                            "course_name"));
+                                    String courseCode =
+                                            coursesArray.getString(
+                                                    getIndex(columnArr5,
+                                                            "course_code"));
 
+                                    QueryBuilder<CourseTable, Long> queryBuilder =
+                                            courseDao.queryBuilder();
+                                    queryBuilder.where().eq("courseId",
+                                            courseId);
+                                    courseList = queryBuilder.query();
+                                    if (courseList.isEmpty()) {
+                                        CourseTable ct = new CourseTable();
+                                        ct.setCourseId(courseId);
+                                        ct.setCourseName(courseName);
+                                        ct.setCourseCode(courseCode);
+                                        courseDao.create(ct);
                                     }
-                                } catch (JSONException | SQLException e) {
-                                    e.printStackTrace();
+
                                 }
+
                             }
 
 
@@ -811,27 +776,16 @@ public class Login extends AppCompatActivity {
                             editor.putString("who", "admin");
                             editor.putString("term", term);
                             editor.putString("db", db);
-                            Log.i("responsedb", db);
+                            Log.i("response_db", db);
                             editor.apply();
-                            dialog1.dismiss();
                             Intent intent = new Intent(Login.this,
                                     Dashboard.class);
                             intent.putExtra("isFromLogin", true);
                             startActivity(intent);
                             finish();
 
-                        } else {
-                            dialog1.dismiss();
-                            AlertDialog.Builder builder =
-                                    new AlertDialog.Builder(
-                                            Login.this);
-                            builder.setMessage("Invalid Login details");
-                            builder.setPositiveButton("OK",
-                                    (dialogInterface, i) -> {
-
-                                    });
-                            builder.show();
                         }
+
                     } else if (jsonObject.getJSONObject("profile").getString(
                             "access_level").equals(
                             "3") || jsonObject.getJSONObject(
@@ -856,7 +810,7 @@ public class Login extends AppCompatActivity {
                                                         "first_name"));
                                 String studentMiddlename = jsonArray1.getString(
                                         getIndex(columnArr11, "middle"));
-                                String studentGender = null;
+                                String studentGender;
                                 if (jsonArray1.getString(
                                         getIndex(columnArr11, "sex")).equals(
                                         "m")) {
@@ -1141,28 +1095,16 @@ public class Login extends AppCompatActivity {
                                 courseOutlineDao.create(cot);
 
                             }
-                            dialog1.dismiss();
                             Intent intent = new Intent(Login.this,
                                     StaffDashboardActivity.class);
                             intent.putExtra("isFromLogin", true);
                             startActivity(intent);
                             finish();
 
-                        } else {
-                            dialog1.dismiss();
-                            AlertDialog.Builder builder =
-                                    new AlertDialog.Builder(
-                                            Login.this);
-                            builder.setMessage("Invalid Login details");
-                            builder.setPositiveButton("OK",
-                                    (dialogInterface, i) -> {
-
-                                    });
-                            builder.show();
                         }
+
                     } else if (jsonObject.getJSONObject("profile").getString(
                             "access_level").equals("-1")) {
-                        dialog1.dismiss();
                         JSONObject jsonObject1 = jsonObject.getJSONObject(
                                 "profile");
                         String user = jsonObject1.getString("name");
@@ -1177,7 +1119,7 @@ public class Login extends AppCompatActivity {
                         String level = jsonObject1.getString("level");
                         String classId1 = jsonObject1.getString("student_class");
                         String studentRegNo = jsonObject1.getString("registration_no");
-                        String studentEmail = jsonObject.optString("guardian_email","");
+                        String studentEmail = jsonObject.optString("guardian_email", "");
 
                         Log.i("responseDb", db);
 
@@ -1207,7 +1149,6 @@ public class Login extends AppCompatActivity {
                             Iterator<String> keys = jsonObject2.keys();
                             while (keys.hasNext()) {
                                 String key = keys.next();
-                                String schoolYear = key;
                                 if (jsonObject2.get(
                                         key) instanceof JSONObject) {
                                     // do something with jsonObject here
@@ -1241,7 +1182,7 @@ public class Login extends AppCompatActivity {
                                     st.setLevel(levelID);
                                     st.setStudentId(userId);
                                     st.setLevelName(className);
-                                    st.setSchoolYear(schoolYear);
+                                    st.setSchoolYear(key);
                                     studentResultDao.create(st);
                                 }
                             }
@@ -1358,15 +1299,10 @@ public class Login extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                dialog1.dismiss();
                 Toast.makeText(Login.this, "Error fetching data from server",
                         Toast.LENGTH_SHORT).show();
             }
 
-        } else {
-            dialog1.dismiss();
-            Toast.makeText(Login.this, "Error fetching data from server",
-                    Toast.LENGTH_SHORT).show();
         }
     }
 }

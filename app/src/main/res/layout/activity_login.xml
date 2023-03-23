@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
     tools:context=".activities.Login">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tab_color"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"
-            android:fitsSystemWindows="true" />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -33,99 +16,79 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/color_2"
             android:orientation="vertical">
 
-            <ImageView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="0dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ddl_logo" />
+                android:layout_height="400dp"
+                android:background="@drawable/login_bg"
+                android:backgroundTint="@color/white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="80dp"
+                    android:layout_marginBottom="0dp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/ddl_logo" />
+
+            </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_wrapper"
+                android:id="@+id/username_layout"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:textColorHint="@color/gray">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="15dp"
+                android:autofillHints="username"
+                android:hint="Username/Registration no"
+                android:textColorHint="@color/white"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/white">
 
-                <EditText
-                    android:id="@+id/username"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/borderline"
+                    android:layout_height="48dp"
+                    android:background="@drawable/login_input_bg"
                     android:drawableStart="@drawable/ic_person"
                     android:drawablePadding="5dp"
-                    android:hint="Username or Registration. No"
+                    android:drawableTint="@color/white"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="10dp"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_wrapper"
+                android:id="@+id/password_layout"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:textColorHint="@color/gray"
-                app:passwordToggleEnabled="true">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:hint="Password"
+                android:textColorHint="@color/white"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/white"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/white">
 
-                <EditText
-                    android:id="@+id/password"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/borderline"
+                    android:layout_height="48dp"
+                    android:background="@drawable/login_input_bg"
                     android:drawableStart="@drawable/password"
                     android:drawablePadding="5dp"
-                    android:hint="Password or PIN"
+                    android:drawableTint="@color/white"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:padding="10dp"
-                    android:textColor="@color/gray"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/pin_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:textColorHint="@color/gray"
-                android:visibility="gone"
-                app:passwordToggleEnabled="true">
-
-                <EditText
-
-                    android:id="@+id/pin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/borderline"
-                    android:drawableStart="@drawable/password"
-                    android:drawablePadding="5dp"
-                    android:hint="School code"
-                    android:inputType="numberPassword"
-                    android:maxLines="1"
-                    android:padding="10dp"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,15 +96,17 @@
                 android:id="@+id/login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/tab_color"
-                android:fontFamily="@font/roboto"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/ripple_effect3"
+                android:fontFamily="@font/montserrat"
                 android:text="Login"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_16" />
+
         </LinearLayout>
-    </ScrollView>
 
+    </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</RelativeLayout>
