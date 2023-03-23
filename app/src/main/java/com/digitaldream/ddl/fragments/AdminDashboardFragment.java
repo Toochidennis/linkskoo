@@ -75,11 +75,9 @@ import java.util.Objects;
 
 public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNewsClickListener,
         QAAdapter.OnQuestionClickListener {
-    private TextView newsHeader;
     private TextView userName;
     private TextView school_Name;
     private TextView classesCount;
-    private TextView schoolSession;
     private List<NewsTable> newsTitleList;
     private Dao<NewsTable, Long> newsDao;
     private DatabaseHelper databaseHelper;
@@ -350,19 +348,13 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
 
         String url = Login.urlBase + "/getFeed.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("response", "cn" + response);
-                dialog.dismiss();
-                if (progressBar != null) {
+                url, response -> {
+                    Log.i("response", "cn" + response);
+                    dialog.dismiss();
+                    json = response;
+                    parseJSON(response);
 
-                }
-                json = response;
-                parseJSON(response);
-
-            }
-        }, error -> {
+                }, error -> {
             dialog.dismiss();
            /* Toast.makeText(getContext(), "Something went wrong!",
                     Toast.LENGTH_SHORT).show();*/
@@ -380,7 +372,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }
 
@@ -401,7 +393,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
                 String desc = object.getString("description");
                 String type1 = object.getString("type");
 
-                String body = "";
+                String body;
                 body = object.optString("body");
 
 
@@ -410,7 +402,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
                 feed.setId(id);
 
                 feed.setQuestionId(id);
-                if (title == null || title.isEmpty()) {
+                if (title.isEmpty()) {
                     feed.setQuestion(desc);
 
                 } else {
