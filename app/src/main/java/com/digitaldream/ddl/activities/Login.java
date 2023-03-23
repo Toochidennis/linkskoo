@@ -165,6 +165,7 @@ public class Login extends AppCompatActivity {
         hashMap.put("token", pinText);
         hashMap.put("username", usernameText);
         hashMap.put("password", passwordText);
+
         FunctionUtils.requestToServer(Request.Method.POST, url, this, hashMap,
                 new VolleyCallback() {
                     @Override
