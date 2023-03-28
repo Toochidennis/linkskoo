@@ -200,8 +200,8 @@
 -keep class com.digitaldream.winskool.activities.AttendanceDetails { <init>(); }
 -keep class com.digitaldream.winskool.activities.BooksActivity { <init>(); }
 -keep class com.digitaldream.winskool.activities.ClassListUtil { <init>(); }
--keep class com.digitaldream.winskool.activities.ClassResultDetails { <init>(); }
--keep class com.digitaldream.winskool.activities.ClassResultDownload { <init>(); }
+-keep class com.digitaldream.winskool.activities.AdminResultDashboardActivity { <init>(); }
+-keep class com.digitaldream.winskool.activities.CourseResultActivity { <init>(); }
 -keep class com.digitaldream.winskool.activities.ContactUs { <init>(); }
 -keep class com.digitaldream.winskool.activities.Contacts { <init>(); }
 -keep class com.digitaldream.winskool.activities.ContentDownload { <init>(); }

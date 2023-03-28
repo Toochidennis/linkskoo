@@ -23,6 +23,7 @@ import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
+import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
@@ -48,7 +49,7 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
 
     private var mGraphicalView: GraphicalView? = null
     private val mExpenditureList = mutableListOf<ExpenditureHistoryModel>()
-    private val mGraphList = arrayListOf<ExpenditureHistoryModel>()
+    private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ExpenditureHistoryAdapter
 
     override fun onCreateView(
@@ -136,18 +137,15 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
                             val graphAmount = graphObject.getString("amount")
                             val graphDate = graphObject.getString("date")
 
-                            val model = ExpenditureHistoryModel()
-                            model.setAmount(graphAmount)
-                            model.setDate(graphDate)
-
-                            mGraphList.add(model)
-                            mGraphList.sortBy { it.getDate() }
+                            mGraphList.add(ChartModel(graphAmount, graphDate))
+                            mGraphList.sortBy { it.horizontalValues }
                         }
 
                         if (mGraphicalView == null) {
                             mGraphicalView = drawGraph(
                                 mGraphList,
                                 requireContext(),
+                                "Received",
                                 "Month/Year",
                             )
                             mExpenditureChart.addView(mGraphicalView)
@@ -158,6 +156,7 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
                         mGraphicalView = drawGraph(
                             mGraphList,
                             requireContext(),
+                            "Received",
                             "Month/Year",
                         )
                         mExpenditureChart.addView(mGraphicalView)

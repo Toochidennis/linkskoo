@@ -117,7 +117,7 @@ public class Courses extends AppCompatActivity implements CoursesAdapter.OnCours
             String firstname = s.getStudentFirstname();
             String surname = s.getStudentSurname();
             String middleName = s.getStudentMiddlename();
-            desc.setText(ClassResultDetails.class_name);
+        //    desc.setText(AdminResultDashboardActivity.class_name);
             String st=s.getStudentId();
             JSONObject jsonObject = new JSONObject();
             try {
@@ -143,7 +143,7 @@ public class Courses extends AppCompatActivity implements CoursesAdapter.OnCours
 
         }else{
             students = i.getStringExtra("student");
-            title.setText(ClassResultDetails.class_name);
+//            title.setText(AdminResultDashboardActivity.class_name);
             desc.setText("Bulk Registration");
 
         }

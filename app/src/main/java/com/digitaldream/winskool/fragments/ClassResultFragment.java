@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.digitaldream.winskool.activities.AdminResultDashboardActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.fragment.app.Fragment;
@@ -26,11 +27,9 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.digitaldream.winskool.activities.AddClass;
-import com.digitaldream.winskool.activities.ClassResultDetails;
 import com.digitaldream.winskool.adapters.ClassResultAdapter;
 import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.models.LevelTable;
@@ -200,7 +199,7 @@ public class ClassResultFragment extends Fragment implements ClassResultAdapter.
 
     @Override
     public void onClassResultClick(int position) {
-        Intent intent = new Intent(getContext(), ClassResultDetails.class);
+        Intent intent = new Intent(getContext(), AdminResultDashboardActivity.class);
         intent.putExtra("class_id", classList.get(position).getClassId());
         intent.putExtra("class_name", classList.get(position).getClassName());
         intent.putExtra("levelId", levelId);
@@ -256,54 +255,51 @@ public class ClassResultFragment extends Fragment implements ClassResultAdapter.
         String login_url = Login.urlBase + "/allClass.php?_db=" + db;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, login_url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("response", response);
-                        JSONObject jsonObject = null;
-                        try {
-                            jsonObject = new JSONObject(response);
-                            JSONObject jsonObject3 = jsonObject.getJSONObject("allClass");
-                            JSONArray jsonArray4 = jsonObject3.getJSONArray("rows");
-                            if (jsonArray4.length() > 0) {
-                                TableUtils.clearTable(databaseHelper.getConnectionSource(),
-                                        ClassNameTable.class);
+                response -> {
+                    Log.i("response", response);
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(response);
+                        JSONObject jsonObject3 = jsonObject.getJSONObject("allClass");
+                        JSONArray jsonArray4 = jsonObject3.getJSONArray("rows");
+                        if (jsonArray4.length() > 0) {
+                            TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                                    ClassNameTable.class);
 
-                                for (int i = 0; i < jsonArray4.length(); i++) {
-                                    JSONArray jsonArray5 = jsonArray4.getJSONArray(i);
-                                    String classId = jsonArray5.getString(0);
-                                    String className = jsonArray5.getString(1);
-                                    String level = jsonArray5.getString(2);
-                                    QueryBuilder<ClassNameTable, Long> queryBuilder =
-                                            classDao.queryBuilder();
-                                    queryBuilder.where().eq("classId", classId);
-                                    classList = queryBuilder.query();
-                                    if (classList.isEmpty()) {
-                                        ClassNameTable cn = new ClassNameTable();
-                                        cn.setClassId(classId);
-                                        cn.setClassName(className);
-                                        cn.setLevel(level);
-                                        classDao.create(cn);
-                                    }
-
-                                }
+                            for (int i = 0; i < jsonArray4.length(); i++) {
+                                JSONArray jsonArray5 = jsonArray4.getJSONArray(i);
+                                String classId = jsonArray5.getString(0);
+                                String className = jsonArray5.getString(1);
+                                String level = jsonArray5.getString(2);
                                 QueryBuilder<ClassNameTable, Long> queryBuilder =
                                         classDao.queryBuilder();
-                                queryBuilder.where().eq("level", levelId);
+                                queryBuilder.where().eq("classId", classId);
                                 classList = queryBuilder.query();
-                                classResultAdapter = new ClassResultAdapter(getContext(), classList,
-                                        ClassResultFragment.this);
-                                classResultAdapter.notifyDataSetChanged();
-                                recyclerView.setAdapter(classResultAdapter);
-                            }
-                        } catch (JSONException | SQLException e) {
-                            e.printStackTrace();
-                        }
+                                if (classList.isEmpty()) {
+                                    ClassNameTable cn = new ClassNameTable();
+                                    cn.setClassId(classId);
+                                    cn.setClassName(className);
+                                    cn.setLevel(level);
+                                    classDao.create(cn);
+                                }
 
-                        Toast.makeText(getContext(), "List updated", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                        swipeRefreshLayout2.setRefreshing(false);
+                            }
+                            QueryBuilder<ClassNameTable, Long> queryBuilder =
+                                    classDao.queryBuilder();
+                            queryBuilder.where().eq("level", levelId);
+                            classList = queryBuilder.query();
+                            classResultAdapter = new ClassResultAdapter(getContext(), classList,
+                                    ClassResultFragment.this);
+                            classResultAdapter.notifyDataSetChanged();
+                            recyclerView.setAdapter(classResultAdapter);
+                        }
+                    } catch (JSONException | SQLException e) {
+                        e.printStackTrace();
                     }
+
+                    Toast.makeText(getContext(), "List updated", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout2.setRefreshing(false);
                 }, error -> swipeRefreshLayout.setRefreshing(false));
 
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());

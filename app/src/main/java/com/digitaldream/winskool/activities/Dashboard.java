@@ -26,6 +26,7 @@ import com.digitaldream.winskool.config.DatabaseHelper;
 import com.digitaldream.winskool.config.ForceUpdateAsync;
 import com.digitaldream.winskool.adapters.NewsAdapter;
 import com.digitaldream.winskool.R;
+import com.digitaldream.winskool.dialog.AdminResultDialog;
 import com.digitaldream.winskool.fragments.AdminDashboardFragment;
 import com.digitaldream.winskool.fragments.AdminELearning;
 import com.digitaldream.winskool.fragments.AdminPaymentDashboardFragment;
@@ -222,10 +223,13 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                 case R.id.view_result:
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
+
                     Intent intent2 = new Intent(Dashboard.this,
                             ViewResult.class);
                     startActivity(intent2);
+
                     return true;
+
                 case R.id.teachers_contacts:
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
@@ -258,9 +262,17 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                     return true;
 
                 case R.id.student_results:
-                    getSupportFragmentManager().beginTransaction().replace(
+                    /* getSupportFragmentManager().beginTransaction().replace(
                             R.id.payment_container,
-                            new AdminResultFragment()).commit();
+                            new AdminResultFragment()).commit();*/
+
+                    AdminResultDialog adminResultDialog = new AdminResultDialog(this, "dashboard",
+                            null);
+                    adminResultDialog.setCancelable(true);
+                    adminResultDialog.show();
+                    Window window = adminResultDialog.getWindow();
+                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
                     return true;
 
                 case R.id.payment:

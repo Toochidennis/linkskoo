@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -107,9 +108,11 @@ public class StudentDashboardActivity extends AppCompatActivity {
                             return true;
 
                         case R.id.payment:
-                            getSupportFragmentManager().beginTransaction().replace(
-                                    R.id.payment_container,
-                                    new StudentPaymentFragment()).commit();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                getSupportFragmentManager().beginTransaction().replace(
+                                        R.id.payment_container,
+                                        new StudentPaymentFragment()).commit();
+                            }
                             return true;
                         case R.id.student_library:
                             getSupportFragmentManager().beginTransaction().replace(

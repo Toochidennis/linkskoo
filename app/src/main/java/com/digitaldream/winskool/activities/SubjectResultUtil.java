@@ -1,13 +1,18 @@
 package com.digitaldream.winskool.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -23,6 +28,7 @@ public class SubjectResultUtil extends AppCompatActivity {
     private WebView mWebview;
     private Toolbar toolbar;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +37,7 @@ public class SubjectResultUtil extends AppCompatActivity {
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle("View Result");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -39,9 +46,10 @@ public class SubjectResultUtil extends AppCompatActivity {
         Intent i = getIntent();
 
         String courseId = i.getStringExtra("courseId");
-        String classId = i.getStringExtra("class_id");
-        String status = i.getStringExtra("status");
-
+        String classId = i.getStringExtra("classId");
+        String from = i.getStringExtra("from");
+        String term = i.getStringExtra("term");
+        String year = i.getStringExtra("year");
 
 
         mWebview = findViewById(R.id.webview_view_result_subject);
@@ -52,23 +60,27 @@ public class SubjectResultUtil extends AppCompatActivity {
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
 
-
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-        String db = sharedPreferences.getString("db","");
-        if(status.equals("view")) {
-            mWebview.loadUrl(Login.urlBase+"/adminViewResult.php?class=" + classId + "&course=" + courseId + "&_db=" + db+"&year="+ ClassResultDownload.schoolYear+"&term="+ClassResultDownload.term);
-        }else if(status.equals("edit")) {
-            mWebview.loadUrl(Login.urlBase+"/adminAddResult.php?class=" + classId + "&course=" + courseId + "&_db=" + db+"&year="+ClassResultDownload.schoolYear+"&term="+ClassResultDownload.term);
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
+        String db = sharedPreferences.getString("db", "");
+        if (from.equals("view")) {
+            mWebview.loadUrl(
+                    Login.urlBase + "/adminViewResult.php?class=" + classId + "&course=" + courseId
+                            + "&_db=" + db + "&year=" + year + "&term=" + term);
+        } else if (from.equals("edit")) {
+            mWebview.loadUrl(
+                    Login.urlBase + "/adminAddResult.php?class=" + classId + "&course=" + courseId
+                            + "&_db=" + db + "&year=" + year + "&term=" + term);
         }
 
 
         mWebview.getSettings().setJavaScriptEnabled(true);
         mWebview.setWebViewClient(new WebViewClient());
-        mWebview.setWebChromeClient(new WebChromeClient(){
+        mWebview.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                if(newProgress==100){
+                if (newProgress == 100) {
                     dialog1.dismiss();
                     mWebview.setVisibility(View.VISIBLE);
                 }
@@ -80,7 +92,7 @@ public class SubjectResultUtil extends AppCompatActivity {
                 super.onReceivedTitle(view, title);
             }
         });
-        if (mWebview.canGoBack()){
+        if (mWebview.canGoBack()) {
             mWebview.goBack();
         }
 
@@ -88,10 +100,8 @@ public class SubjectResultUtil extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -25,7 +25,7 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
 import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
-import com.digitaldream.winskool.models.ExpenditureHistoryModel
+import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -51,7 +51,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     private var mGraphicalView: GraphicalView? = null
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
-    private val mGraphList = arrayListOf<ExpenditureHistoryModel>()
+    private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ReceiptsHistoryAdapter
 
     override fun onCreateView(
@@ -132,17 +132,15 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                                 val graphAmount = graphObject.getString("amount")
                                 val graphDate = graphObject.getString("date")
 
-                                val model = ExpenditureHistoryModel()
-                                model.setAmount(graphAmount)
-                                model.setDate(graphDate)
-                                mGraphList.add(model)
-                                mGraphList.sortBy { it.getDate() }
+                                mGraphList.add(ChartModel(graphAmount, graphDate))
+                                mGraphList.sortBy { it.horizontalValues }
                             }
 
                             if (mGraphicalView == null) {
                                 mGraphicalView = drawGraph(
                                     mGraphList,
                                     requireContext(),
+                                    "Received",
                                     "Month/Year"
                                 )
                                 mReceiptChart.addView(mGraphicalView)
@@ -153,6 +151,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                             mGraphicalView = drawGraph(
                                 mGraphList,
                                 requireContext(),
+                                "Received",
                                 "Month/Year"
                             )
                             mReceiptChart.addView(mGraphicalView)

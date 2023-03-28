@@ -89,7 +89,7 @@ public class RegYearList extends AppCompatActivity implements PrevYrsAdapter.OnY
         });
 
         TextView className = findViewById(R.id.class_name);
-        className.setText(ClassResultDetails.class_name);
+//        className.setText(AdminResultDashboardActivity.class_name);
 
         RelativeLayout rl = findViewById(R.id.course_registration);
         rl.setOnClickListener(v -> {

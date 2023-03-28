@@ -2,15 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="35dp"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="15dp">
 
     <TextView
         android:id="@+id/course_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:fontFamily="@font/montserrat"
-        android:textStyle="bold"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_bold"
         android:textColor="@android:color/black"
         android:layout_marginStart="10dp"/>
 

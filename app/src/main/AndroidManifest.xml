@@ -149,7 +149,7 @@
         <activity android:name="com.digitaldream.winskool.activities.Settings" />
         <activity android:name="com.digitaldream.winskool.activities.ClassListUtil" />
         <activity android:name="com.digitaldream.winskool.activities.ViewClassResultWebview" />
-        <activity android:name="com.digitaldream.winskool.activities.ClassResultDetails" />
+        <activity android:name="com.digitaldream.winskool.activities.AdminResultDashboardActivity" />
         <activity android:name="com.digitaldream.winskool.activities.SubjectResultUtil" />
         <activity
             android:name="com.digitaldream.winskool.activities.YoutubePlayerActivity"
@@ -171,7 +171,7 @@
             android:name="com.digitaldream.winskool.activities.StudentResultDownload"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.winskool.activities.ClassResultDownload"
+            android:name="com.digitaldream.winskool.activities.CourseResultActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.digitaldream.winskool.activities.NewsPage"

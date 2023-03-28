@@ -83,7 +83,7 @@ public class CourseRegistrationDetails extends AppCompatActivity implements Cour
         TextView className = findViewById(R.id.debt_fee_title);
         TextView desc = findViewById(R.id.desc);
 
-        className.setText(ClassResultDetails.class_name);
+//        className.setText(AdminResultDashboardActivity.class_name);
         String currentYear = pr.getYear();
         String name = pr.getName();
         term = pr.getTerm();

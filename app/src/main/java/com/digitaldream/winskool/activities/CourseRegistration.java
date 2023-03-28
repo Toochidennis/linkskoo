@@ -90,7 +90,7 @@ public class CourseRegistration extends AppCompatActivity implements CourseRegAd
             e.printStackTrace();
         }
         TextView className = findViewById(R.id.class_name);
-        className.setText(ClassResultDetails.class_name);
+//        className.setText(AdminResultDashboardActivity.class_name);
         TextView yearTxt = findViewById(R.id.year);
 
 

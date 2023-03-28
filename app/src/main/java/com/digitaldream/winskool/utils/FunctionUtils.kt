@@ -36,7 +36,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.models.ExpenditureHistoryModel
+import com.digitaldream.winskool.models.ChartModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
 import org.achartengine.chart.PointStyle
@@ -133,19 +133,18 @@ object FunctionUtils {
 
     @JvmStatic
     fun drawGraph(
-        sValues: ArrayList<ExpenditureHistoryModel>,
+        sValues: ArrayList<ChartModel>,
         sContext: Context,
-        sTitle: String = "",
+        sVerticalTitle: String?,
+        sHorizontalTitle: String?,
     ): GraphicalView {
 
         val graphLength = sValues.size
 
-        println("Lent: $graphLength")
-
-        val series = XYSeries("Received")
+        val series = XYSeries(sVerticalTitle)
 
         for (i in 0 until graphLength)
-            series.add(i.toDouble(), sValues[i].getAmount()!!.toDouble())
+            series.add(i.toDouble(), sValues[i].verticalValues.toDouble())
 
         val dataset = XYMultipleSeriesDataset()
         dataset.addSeries(series)
@@ -163,18 +162,18 @@ object FunctionUtils {
         multipleRenderer.xLabels = 0
         multipleRenderer.yLabels = 0
         multipleRenderer.margins = intArrayOf(20, 30, 15, 0)
-        multipleRenderer.xTitle = sTitle
+        multipleRenderer.xTitle = sHorizontalTitle
         multipleRenderer.isPanEnabled = false
-        multipleRenderer.marginsColor = Color.parseColor("#130C6B")
+        multipleRenderer.marginsColor = Color.parseColor("#191F91")
         multipleRenderer.isZoomEnabled = false
-        multipleRenderer.backgroundColor = Color.parseColor("#130C6B")
+        multipleRenderer.backgroundColor = Color.parseColor("#191F91")
         multipleRenderer.isApplyBackgroundColor = true
         multipleRenderer.labelsColor = Color.WHITE
         multipleRenderer.labelsTextSize = 20f
         multipleRenderer.addSeriesRenderer(seriesRenderer)
 
         for (i in 0 until graphLength)
-            multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].getDate())
+            multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
 
         return ChartFactory.getLineChartView(
             sContext, dataset, multipleRenderer,

@@ -37,8 +37,9 @@ class AdminPaymentDashboardFragment : Fragment(),
     private lateinit var mExpectedAmount: TextView
     private lateinit var mReceivedAmount: TextView
     private lateinit var mDebtAmount: TextView
-    private lateinit var mReceiptBtn: Button
-    private lateinit var mExpenditureBtn: Button
+    private lateinit var mReceiptBtn: CardView
+    private lateinit var mExpenditureBtn: CardView
+    private lateinit var mRecyclerLayout: CardView
     private lateinit var mSeeAllBtn: CardView
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mTransactionMessage: TextView
@@ -88,6 +89,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         mTransactionMessage = view.findViewById(R.id.transaction_error_message)
         mExpenditureBtn = view.findViewById(R.id.expenditure_btn)
         mReceiptBtn = view.findViewById(R.id.receipt_btn)
+        mRecyclerLayout = view.findViewById(R.id.recycler_layout)
         mExpectedAmount = view.findViewById(R.id.expected_revenue)
         mSeeAllBtn = view.findViewById(R.id.see_all_btn)
         mErrorView = view.findViewById(R.id.error_view)
@@ -136,76 +138,75 @@ class AdminPaymentDashboardFragment : Fragment(),
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
-                override fun onResponse(response: String) {
+                override fun onResponse(response: String) = try {
+                    val jsonObject = JSONObject(response)
+                    val receiptsArray = jsonObject.getJSONArray("receipts")
+                    val invoiceArray = jsonObject.getJSONArray("invoice")
+                    val transactionsArray = jsonObject.getJSONArray("transactions")
 
-                    try {
-                        val jsonObject = JSONObject(response)
-                        val receiptsArray = jsonObject.getJSONArray("receipts")
-                        val invoiceArray = jsonObject.getJSONArray("invoice")
-                        val transactionsArray = jsonObject.getJSONArray("transactions")
+                    val receiptsObject = receiptsArray.getJSONObject(0)
+                    val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
 
-                        val receiptsObject = receiptsArray.getJSONObject(0)
-                        val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
+                    val invoiceObject = invoiceArray.getJSONObject(0)
+                    val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
 
-                        val invoiceObject = invoiceArray.getJSONObject(0)
-                        val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
+                    if (receiptsSum == "null" && invoiceSum == "null") {
+                        mReceivedAmount.text = getString(R.string.zero_balance)
+                        mExpectedAmount.text = getString(R.string.zero_balance)
+                        mDebtAmount.text = getString(R.string.zero_balance)
+                    } else {
+                        String.format(
+                            Locale.getDefault(), "%s%s", getString(R.string.naira),
+                            FunctionUtils.currencyFormat(receiptsSum.toDouble())
+                        ).also { mReceivedAmount.text = it }
 
-                        if (receiptsSum == "null" && invoiceSum == "null") {
-                            mReceivedAmount.text = getString(R.string.zero_balance)
-                            mExpectedAmount.text = getString(R.string.zero_balance)
-                            mDebtAmount.text = getString(R.string.zero_balance)
-                        } else {
-                            String.format(
-                                Locale.getDefault(), "%s%s", getString(R.string.naira),
-                                FunctionUtils.currencyFormat(receiptsSum.toDouble())
-                            ).also { mReceivedAmount.text = it }
+                        String.format(
+                            Locale.getDefault(), "%s%s", getString(R.string.naira),
+                            FunctionUtils.currencyFormat(invoiceSum.toDouble())
+                        ).also { mExpectedAmount.text = it }
 
-                            String.format(
-                                Locale.getDefault(), "%s%s", getString(R.string.naira),
-                                FunctionUtils.currencyFormat(invoiceSum.toDouble())
-                            ).also { mExpectedAmount.text = it }
+                        val debtSum = invoiceSum.toLong() - receiptsSum.toLong()
 
-                            val debtSum = invoiceSum.toLong() - receiptsSum.toLong()
-
-                            String.format(
-                                Locale.getDefault(), "%s%s", getString(R.string.naira),
-                                FunctionUtils.currencyFormat(debtSum.toDouble())
-                            ).also { mDebtAmount.text = it }
-                        }
-
-                        for (i in 0 until transactionsArray.length()) {
-                            val transactionsObject = transactionsArray.getJSONObject(i)
-                            val transactionType = transactionsObject.getString("trans_type")
-                            val reference = transactionsObject.getString("reference")
-                            val description = transactionsObject.getString("description")
-                            val amount = transactionsObject.getString("amount")
-                            val date = transactionsObject.getString("date")
-
-                            val adminModel = AdminPaymentModel()
-                            adminModel.setTransactionName(transactionType)
-                            adminModel.setDescription(description)
-                            adminModel.setReceivedAmount(amount)
-                            adminModel.setTransactionDate(date)
-                            mTransactionList.add(adminModel)
-                            mTransactionList.sortByDescending { it.getTransactionDate() }
-                        }
-
-                        if (mTransactionList.isEmpty()) {
-                            mMainLayout.isVisible = true
-                            mTransactionMessage.isVisible = true
-                            mTransactionImage.isVisible = true
-                            mErrorView.isVisible = false
-                        } else {
-                            mMainLayout.isVisible = true
-                            mTransactionMessage.isVisible = false
-                            mTransactionImage.isVisible = false
-                            mErrorView.isVisible = false
-                        }
-                        mAdapter.notifyDataSetChanged()
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                        String.format(
+                            Locale.getDefault(), "%s%s", getString(R.string.naira),
+                            FunctionUtils.currencyFormat(debtSum.toDouble())
+                        ).also { mDebtAmount.text = it }
                     }
+
+                    for (i in 0 until transactionsArray.length()) {
+                        val transactionsObject = transactionsArray.getJSONObject(i)
+                        val transactionType = transactionsObject.getString("trans_type")
+                        val reference = transactionsObject.getString("reference")
+                        val description = transactionsObject.getString("description")
+                        val amount = transactionsObject.getString("amount")
+                        val date = transactionsObject.getString("date")
+
+                        val adminModel = AdminPaymentModel()
+                        adminModel.setTransactionName(transactionType)
+                        adminModel.setDescription(description)
+                        adminModel.setReceivedAmount(amount)
+                        adminModel.setTransactionDate(date)
+                        mTransactionList.add(adminModel)
+                        mTransactionList.sortByDescending { it.getTransactionDate() }
+                    }
+
+                    if (mTransactionList.isEmpty()) {
+                        mMainLayout.isVisible = true
+                        mTransactionMessage.isVisible = true
+                        mTransactionImage.isVisible = true
+                        mErrorView.isVisible = false
+                        mRecyclerLayout.isVisible = false
+                    } else {
+                        mMainLayout.isVisible = true
+                        mTransactionMessage.isVisible = false
+                        mTransactionImage.isVisible = false
+                        mErrorView.isVisible = false
+                        mRecyclerLayout.isVisible = true
+                    }
+                    mAdapter.notifyDataSetChanged()
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
                 override fun onError(error: VolleyError) {

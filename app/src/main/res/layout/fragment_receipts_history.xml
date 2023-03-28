@@ -12,16 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#130C6B"
+        android:background="@color/tab_color"
         android:elevation="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <androidx.appcompat.widget.Toolbar
+        <include
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#130C6B"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            layout="@layout/toolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -40,7 +37,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#130C6B"
+                android:background="@color/tab_color"
                 android:orientation="vertical">
 
                 <LinearLayout

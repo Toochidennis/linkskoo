@@ -70,7 +70,7 @@ public class StudentRegistrationDetails extends AppCompatActivity implements Cou
                 break;
         }
         desc1.setText(prevYear+"/"+CourseRegistrationDetails.year+" "+termText);
-        description.setText(ClassResultDetails.class_name);
+//        description.setText(AdminResultDashboardActivity.class_name);
         title.setText(name);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

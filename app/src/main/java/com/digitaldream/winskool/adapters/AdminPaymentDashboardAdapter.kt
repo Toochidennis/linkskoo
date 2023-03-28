@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.AdminPaymentModel
-import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import java.util.*
 
 class AdminPaymentDashboardAdapter(
@@ -22,8 +22,7 @@ class AdminPaymentDashboardAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout
-                .fragment_admin_payment_dashboard_item, parent, false
+            R.layout.fragment_admin_payment_dashboard_item, parent, false
         )
 
         return ViewHolder(view)
@@ -33,37 +32,37 @@ class AdminPaymentDashboardAdapter(
         val adminModel = sTransactionList[position]
         holder.mTransactionDate.text = adminModel.getTransactionDate()
 
-        when (adminModel.getTransactionName()) {
-            "receipts" -> {
-                holder.mTransactionCard.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        sContext, R
-                            .color.color_4
-                    )
+        if (adminModel.getTransactionName() == "receipts") {
+            holder.mTransactionCard.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    sContext, R.color.color_4
                 )
-                holder.mTransactionType.setImageResource(R.drawable.ic_receipt)
-                holder.mDescription.text = adminModel.getDescription()
-                String.format(
-                    Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
-                    FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
-                ).also { holder.mTransactionAmount.text = it }
-
-            }
-            else -> {
-                holder.mTransactionCard.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        sContext, R
-                            .color.redH
-                    )
+            )
+            holder.mTransactionType.setImageResource(R.drawable.ic_receipt)
+            holder.mDescription.text = adminModel.getDescription()
+            String.format(
+                Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
+                currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+            ).also { holder.mTransactionAmount.text = it }
+        } else {
+            holder.mTransactionCard.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    sContext, R.color.test_color_3
                 )
-                holder.mTransactionType.setImageResource(R.drawable.ic_expenditure)
-                holder.mDescription.text = adminModel.getDescription()
-                String.format(
-                    Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
-                    FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
-                ).also { holder.mTransactionAmount.text = it }
-            }
+            )
+            holder.mTransactionType.setImageResource(R.drawable.ic_expenditure)
+            holder.mDescription.text = adminModel.getDescription()
+            String.format(
+                Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
+                currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+            ).also { holder.mTransactionAmount.text = it }
+            holder.mTransactionAmount.setTextColor(
+                ContextCompat.getColor(
+                    sContext, R.color.test_color_3
+                )
+            )
         }
+
     }
 
     override fun getItemCount() = sTransactionList.size
@@ -88,3 +87,4 @@ class AdminPaymentDashboardAdapter(
 interface OnItemClickListener {
     fun onItemClick(position: Int)
 }
+
