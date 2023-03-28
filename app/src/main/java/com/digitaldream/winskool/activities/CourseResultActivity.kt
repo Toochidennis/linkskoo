@@ -64,8 +64,6 @@ class CourseResultActivity : AppCompatActivity(R.layout.activity_course_result),
         mYear = intent.getStringExtra("session")
         mTerm = intent.getStringExtra("term")
 
-        println("term $mTerm")
-
         val previousYear = mYear!!.toInt() - 1
         val session = String.format(Locale.getDefault(), "%d/%s", previousYear, mYear)
 
