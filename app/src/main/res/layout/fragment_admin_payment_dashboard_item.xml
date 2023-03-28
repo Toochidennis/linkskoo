@@ -49,9 +49,8 @@
             android:layout_toEndOf="@id/transaction_card"
             android:fontFamily="@font/montserrat"
             android:lines="2"
-            android:text="description and blah blah blah"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/transaction_date"
@@ -63,7 +62,6 @@
             android:layout_toEndOf="@id/transaction_card"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/gray"
-            android:text="description and blah blah blah"
             android:textSize="12sp" />
 
         <TextView
