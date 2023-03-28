@@ -242,6 +242,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
     override fun onItemClick(position: Int) {
         val model = mTermList[position - 1]
 
+
         TermResultDialog(this, mClassId!!, null, model.session, model.term, "")
             .apply {
                 setCancelable(true)

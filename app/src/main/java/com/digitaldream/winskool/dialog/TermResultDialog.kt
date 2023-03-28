@@ -41,7 +41,7 @@ class TermResultDialog(
             "First Term".lowercase() -> "1"
             "Second Term".lowercase() -> "2"
             "Third Term".lowercase() -> "3"
-            else -> throw Exception("Term is empty")
+            else -> ""
         }
 
         if (sFrom == "course") {
