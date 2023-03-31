@@ -44,17 +44,14 @@ public class StudentResultDownloadAdapter extends RecyclerView.Adapter<StudentRe
             studentResultDownloadViewHolder.btn1.setVisibility(View.GONE);
 
         }else{
-            studentResultDownloadViewHolder.btn1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ViewResultWebView.class);
-                    intent.putExtra("level",model.getLevel());
-                    intent.putExtra("term","1");
-                    intent.putExtra("studentId",model.getStudentId());
-                    intent.putExtra("year",model.getSchoolYear());
-                    intent.putExtra("classId",model.getClassId());
-                    context.startActivity(intent);
-                }
+            studentResultDownloadViewHolder.btn1.setOnClickListener(view -> {
+                Intent intent = new Intent(context, ViewResultWebView.class);
+                intent.putExtra("level",model.getLevel());
+                intent.putExtra("term","1");
+                intent.putExtra("studentId",model.getStudentId());
+                intent.putExtra("year",model.getSchoolYear());
+                intent.putExtra("classId",model.getClassId());
+                context.startActivity(intent);
             });
 
         }

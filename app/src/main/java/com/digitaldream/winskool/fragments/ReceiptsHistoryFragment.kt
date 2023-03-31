@@ -27,7 +27,7 @@ import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.utils.FunctionUtils
-import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
+import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -137,7 +137,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                             }
 
                             if (mGraphicalView == null) {
-                                mGraphicalView = drawGraph(
+                                mGraphicalView = plotLineChart(
                                     mGraphList,
                                     requireContext(),
                                     "Received",
@@ -148,7 +148,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                                 mGraphicalView!!.repaint()
                             }
                         } else {
-                            mGraphicalView = drawGraph(
+                            mGraphicalView = plotLineChart(
                                 mGraphList,
                                 requireContext(),
                                 "Received",

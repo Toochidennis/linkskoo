@@ -39,6 +39,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ChartModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
+import org.achartengine.chart.BarChart
 import org.achartengine.chart.PointStyle
 import org.achartengine.model.XYMultipleSeriesDataset
 import org.achartengine.model.XYSeries
@@ -89,7 +90,7 @@ object FunctionUtils {
     fun setColor(): Int {
         val random = Random()
         return Color.argb(
-            255, random.nextInt(256), random.nextInt(256),
+            255, random.nextInt(206), random.nextInt(256),
             random.nextInt(256)
         )
     }
@@ -118,6 +119,7 @@ object FunctionUtils {
         };
 
     }*/
+
     @JvmStatic
     fun animateObject(sProgressBar: ProgressBar, sTextView: TextView, sI: Int) {
         ObjectAnimator.ofInt(sProgressBar, "progress", sI)
@@ -132,7 +134,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun drawGraph(
+    fun plotLineChart(
         sValues: ArrayList<ChartModel>,
         sContext: Context,
         sVerticalTitle: String?,
@@ -177,6 +179,57 @@ object FunctionUtils {
 
         return ChartFactory.getLineChartView(
             sContext, dataset, multipleRenderer,
+        )
+    }
+
+    @JvmStatic
+    fun plotLineChart2(
+        sContext: Context,
+        sValues: ArrayList<ChartModel>,
+        sVerticalTitle: String?,
+        sHorizontalTitle: String?,
+    ): GraphicalView {
+
+        val graphLength = sValues.size
+
+        val series = XYSeries(sVerticalTitle)
+
+        for (i in 0 until graphLength)
+            series.add(i.toDouble(), sValues[i].verticalValues.toDouble())
+
+        val dataset = XYMultipleSeriesDataset()
+        dataset.addSeries(series)
+
+        val seriesRenderer = XYSeriesRenderer()
+        seriesRenderer.color = Color.WHITE
+        seriesRenderer.isFillPoints = true
+        seriesRenderer.lineWidth = 4f
+        seriesRenderer.pointStyle = PointStyle.CIRCLE
+        seriesRenderer.isDisplayChartValues = true
+        seriesRenderer.chartValuesTextSize = 30f
+
+        val multipleRenderer = XYMultipleSeriesRenderer()
+        multipleRenderer.xLabels = 0
+        multipleRenderer.yLabels = 0
+        multipleRenderer.xTitle = sHorizontalTitle
+        multipleRenderer.margins = intArrayOf(20, 30, 15, 0)
+        multipleRenderer.isPanEnabled = false
+        multipleRenderer.xAxisColor = Color.parseColor("#2C62FF")
+        multipleRenderer.yAxisColor = Color.parseColor("#2C62FF")
+        multipleRenderer.marginsColor = Color.parseColor("#2C62FF")
+        multipleRenderer.isZoomEnabled = false
+        multipleRenderer.backgroundColor = Color.parseColor("#2C62FF")
+        multipleRenderer.isApplyBackgroundColor = true
+        multipleRenderer.labelsColor = Color.WHITE
+        multipleRenderer.labelsTextSize = 25f
+        multipleRenderer.axisTitleTextSize = 25f
+        multipleRenderer.addSeriesRenderer(seriesRenderer)
+
+        for (i in 0 until graphLength)
+            multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
+
+        return ChartFactory.getLineChartView(
+            sContext, dataset, multipleRenderer
         )
     }
 
@@ -394,7 +447,7 @@ object FunctionUtils {
             }
         }
 
-         Volley.newRequestQueue(context).add(stringRequest)
+        Volley.newRequestQueue(context).add(stringRequest)
     }
 
     @JvmStatic

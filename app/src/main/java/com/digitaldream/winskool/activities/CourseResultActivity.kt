@@ -80,7 +80,7 @@ class CourseResultActivity : AppCompatActivity(R.layout.activity_course_result),
         }
 
         if (mGraphicalView == null) {
-            mGraphicalView = FunctionUtils.drawGraph(
+            mGraphicalView = FunctionUtils.plotLineChart(
                 mGraphList,
                 this,
                 "Average",

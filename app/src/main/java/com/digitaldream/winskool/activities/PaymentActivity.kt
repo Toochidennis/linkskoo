@@ -23,6 +23,7 @@ open class PaymentActivity : AppCompatActivity() {
         val description = intent.getStringExtra("description")
         val id = intent.getStringExtra("id")
         val classId = intent.getStringExtra("classId")
+        val studentId = intent.getStringExtra("studentId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
         val reference = intent.getStringExtra("reference")
@@ -129,6 +130,10 @@ open class PaymentActivity : AppCompatActivity() {
                     R.id.payment_container, ReceiptStudentNameFragment.newInstance(
                         classId!!, className!!, levelName!!,
                     )
+                ).commit()
+
+                "st" -> supportFragmentManager.beginTransaction().replace(
+                    R.id.payment_container, AdminStudentResultFragment.newInstance(studentId!!)
                 ).commit()
 
             }

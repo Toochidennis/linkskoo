@@ -26,7 +26,7 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
+import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -142,7 +142,7 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
                         }
 
                         if (mGraphicalView == null) {
-                            mGraphicalView = drawGraph(
+                            mGraphicalView = plotLineChart(
                                 mGraphList,
                                 requireContext(),
                                 "Received",
@@ -153,7 +153,7 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
                             mGraphicalView!!.repaint()
                         }
                     } else {
-                        mGraphicalView = drawGraph(
+                        mGraphicalView = plotLineChart(
                             mGraphList,
                             requireContext(),
                             "Received",

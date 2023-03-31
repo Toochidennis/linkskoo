@@ -19,11 +19,12 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.AdminResultDashboardAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.dialog.AdminResultDialog
+import com.digitaldream.winskool.dialog.AdminResultStudentNamesDialog
 import com.digitaldream.winskool.dialog.TermResultDialog
 import com.digitaldream.winskool.interfaces.ResultListener
 import com.digitaldream.winskool.models.AdminResultDashboardModel
 import com.digitaldream.winskool.models.ChartModel
-import com.digitaldream.winskool.utils.FunctionUtils.drawGraph
+import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
@@ -98,7 +99,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
         getTerms(mClassId!!)
 
         if (mGraphicalView == null) {
-            mGraphicalView = drawGraph(
+            mGraphicalView = plotLineChart(
                 mGraphList,
                 this,
                 "Average",
@@ -128,6 +129,16 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
                 Intent(this, RegYearList::class.java)
                     .putExtra("levelId", mLevelId)
                     .putExtra("classId", mClassId)
+            )
+        }
+
+        mStudentResult.setOnClickListener {
+            AdminResultStudentNamesDialog(this, mClassId!!).apply {
+                setCancelable(true)
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
 
@@ -241,7 +252,6 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
 
     override fun onItemClick(position: Int) {
         val model = mTermList[position - 1]
-
 
         TermResultDialog(this, mClassId!!, null, model.session, model.term, "")
             .apply {
