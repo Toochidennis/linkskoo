@@ -11,16 +11,67 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_alignParentTop="true">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@drawable/background_gradient_color"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:contentDescription="@string/todo"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/arrow_left" />
+
+            <TextView
+                android:id="@+id/toolbar_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/student_name_btn"
+                android:layout_toEndOf="@id/back_btn"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/student_name_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/ripple_effect4"
+                android:clickable="true"
+                android:contentDescription="@string/todo"
+                android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
+                android:drawableTint="@color/white"
+                android:focusable="true"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:tint="@color/white" />
+
+        </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/student_view"
@@ -57,16 +108,16 @@
                     <RelativeLayout
                         android:layout_width="126dp"
                         android:layout_height="126dp"
-                        android:background="@drawable/image_border"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:background="@drawable/image_border">
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="120dp"
                             android:layout_height="120dp"
-                            android:layout_gravity="center"
-                            app:cardCornerRadius="120dp"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            app:cardCornerRadius="120dp"
                             app:cardElevation="0dp">
 
                             <ImageView
@@ -75,8 +126,8 @@
                                 android:layout_height="120dp"
                                 android:layout_gravity="center"
                                 android:contentDescription="@string/todo"
-                                android:src="@drawable/ic_profile_pic"
-                                android:rotation="-15"/>
+                                android:rotation="-15"
+                                android:src="@drawable/ic_profile_pic" />
 
                         </androidx.cardview.widget.CardView>
 
@@ -89,8 +140,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
                     android:layout_marginStart="15dp"
+                    android:layout_marginTop="50dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="15dp"
                     android:backgroundTint="@color/white"
@@ -111,7 +162,6 @@
                             android:layout_marginTop="80dp"
                             android:fontFamily="@font/poppins_bold"
                             android:lines="1"
-                            android:text="Toochukwu Samuel Dennis"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -123,7 +173,6 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/poppins_medium"
-                            android:text="DDLT67253"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -185,7 +234,6 @@
                             android:layout_toEndOf="@id/student_gender"
                             android:fontFamily="@font/poppins_medium"
                             android:gravity="center"
-                            android:text="SSS3 Blue"
                             android:textColor="@color/black"
                             android:textSize="12sp" />
 
@@ -264,48 +312,25 @@
                     android:textSize="14sp"
                     android:visibility="gone" />
 
+                <Button
+                    android:id="@+id/refresh_btn"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ripple_effect"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:focusable="true"
+                    android:text="@string/refresh_layout"
+                    android:textColor="@color/color_5"
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-
-    <LinearLayout
-        android:id="@+id/error_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="15dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/error_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/poppins_regular"
-            android:lines="2"
-            android:text="@string/no_internet"
-            android:textAlignment="center"
-            android:textColor="@color/text_bg_color"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/refresh_btn"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/ripple_effect"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/refresh_layout"
-            android:textColor="@color/color_5"
-            android:textSize="14sp" />
-
-    </LinearLayout>
 
 
 </RelativeLayout>

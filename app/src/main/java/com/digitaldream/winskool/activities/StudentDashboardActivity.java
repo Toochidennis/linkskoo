@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,6 +44,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 public class StudentDashboardActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
@@ -86,7 +88,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
             bottomNavigationView.getMenu().findItem(R.id.payment).setChecked(
                     true);
 
-
         } else {
             getSupportFragmentManager().beginTransaction().replace(
                     R.id.payment_container, new StudentDashboard()).commit();
@@ -108,12 +109,11 @@ public class StudentDashboardActivity extends AppCompatActivity {
                             return true;
 
                         case R.id.payment:
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                getSupportFragmentManager().beginTransaction().replace(
-                                        R.id.payment_container,
-                                        new StudentPaymentFragment()).commit();
-                            }
+                            getSupportFragmentManager().beginTransaction().replace(
+                                    R.id.payment_container,
+                                    new StudentPaymentFragment()).commit();
                             return true;
+
                         case R.id.student_library:
                             getSupportFragmentManager().beginTransaction().replace(
                                     R.id.payment_container,

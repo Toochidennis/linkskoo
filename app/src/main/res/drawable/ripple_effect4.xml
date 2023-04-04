@@ -7,8 +7,11 @@
             <stroke
                 android:width=".5dp"
                 android:color="@android:color/white" />
-            <solid android:color="@color/test_color_1"/>
             <corners android:radius="10dp" />
+            <gradient
+                android:endColor="@color/tab_color"
+                android:startColor="@color/test_color_1"
+                android:type="linear"/>
         </shape>
     </item>
 

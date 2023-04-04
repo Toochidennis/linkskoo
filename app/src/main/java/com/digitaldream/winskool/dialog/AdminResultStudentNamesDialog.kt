@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.Window
 import android.widget.EditText
@@ -22,14 +23,17 @@ import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.AdminResultStudentNamesAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.config.DatabaseHelper
+import com.digitaldream.winskool.fragments.AdminStudentResultFragment
 import com.digitaldream.winskool.models.StudentTable
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import java.util.*
 
 class AdminResultStudentNamesDialog(
-    sContext: Context,
+    private val sContext: Context,
     private val sClassId: String,
+    private val sFrom: String,
+    private val sOnInputListener: OnInputListener?,
 ) : Dialog(sContext), OnItemClickListener {
 
     private lateinit var mAdapter: AdminResultStudentNamesAdapter
@@ -65,8 +69,6 @@ class AdminResultStudentNamesDialog(
             }
         })
 
-        println("class $sClassId")
-
         getStudent()
     }
 
@@ -82,7 +84,6 @@ class AdminResultStudentNamesDialog(
             )
 
             mStudentList = mDao.queryBuilder().where().eq("studentClass", sClassId).query()
-            println("data ${mStudentList.size}")
 
             if (mStudentList.isEmpty()) {
                 mSearchBar.isVisible = false
@@ -124,11 +125,17 @@ class AdminResultStudentNamesDialog(
     override fun onItemClick(position: Int) {
         val model = mStudentList[position]
 
-        context.startActivity(
-            Intent(context, PaymentActivity::class.java)
-                .putExtra("from", "st")
-                .putExtra("studentId", model.studentId)
-        )
+        if (sFrom == "student_result") {
+            sOnInputListener?.sendInput(model.studentId)
+        } else {
+
+            context.startActivity(
+                Intent(context, PaymentActivity::class.java)
+                    .putExtra("from", "st")
+                    .putExtra("studentId", model.studentId)
+                    .putExtra("classId", model.studentClass)
+            )
+        }
 
         dismiss()
     }

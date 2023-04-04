@@ -6,12 +6,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.AdminResultDashboardModel
+import com.digitaldream.winskool.models.AdminStudentResultFragmentModel
 import com.digitaldream.winskool.utils.FunctionUtils.animateObject
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters
 
 class AdminStudentResultAdapter(
-    private val sResultList: MutableList<AdminResultDashboardModel>,
+    private val sResultList: MutableList<AdminStudentResultFragmentModel>,
     private val sHeaderTitle: String,
     private val sOnItemClickListener: OnItemClickListener,
 ) : Section(
@@ -20,7 +21,6 @@ class AdminStudentResultAdapter(
         .headerResourceId(R.layout.head)
         .build()
 ) {
-
 
     override fun getHeaderViewHolder(view: View): RecyclerView.ViewHolder {
         return HeaderViewHolder(view)

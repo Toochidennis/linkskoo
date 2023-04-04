@@ -133,7 +133,8 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
         }
 
         mStudentResult.setOnClickListener {
-            AdminResultStudentNamesDialog(this, mClassId!!).apply {
+            AdminResultStudentNamesDialog(this, mClassId!!, "",
+                null).apply {
                 setCancelable(true)
                 show()
             }.window?.setLayout(

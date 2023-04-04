@@ -4,15 +4,17 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.fragments.*
 
-open class PaymentActivity : AppCompatActivity() {
+
+open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_payment)
 
         val amount = intent.getStringExtra("amount")
         val name = intent.getStringExtra("name")
@@ -33,6 +35,7 @@ open class PaymentActivity : AppCompatActivity() {
         val date = intent.getStringExtra("date")
 
         try {
+
             when (intent.getStringExtra("from")) {
 
                 "dashboard" -> supportFragmentManager.beginTransaction().replace(
@@ -126,22 +129,30 @@ open class PaymentActivity : AppCompatActivity() {
                     R.id.payment_container, AdminTransactionHistoryFragment()
                 ).commit()
 
-                "receipt_class_name" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, ReceiptStudentNameFragment.newInstance(
-                        classId!!, className!!, levelName!!,
+                "receipt_class_name" -> supportFragmentManager.commit {
+                    replace(
+                        R.id.payment_container, ReceiptStudentNameFragment.newInstance(
+                            classId!!, className!!, levelName!!,
+                        )
                     )
-                ).commit()
+                }
 
-                "st" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, AdminStudentResultFragment.newInstance(studentId!!)
-                ).commit()
-
+                "st" -> supportFragmentManager.commit {
+                    replace(
+                        R.id.payment_container, AdminStudentResultFragment.newInstance(
+                            studentId!!,
+                            classId!!
+                        )
+                    )
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
+
 
 }
 

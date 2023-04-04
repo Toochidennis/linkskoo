@@ -29,6 +29,7 @@
         android:theme="@style/AppTheme"
         tools:targetApi="n">
 
+
         <activity
             android:name="com.digitaldream.winskool.activities.ReceiptStudentBudgetActivity"
             android:exported="false"
