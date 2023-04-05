@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -42,6 +41,7 @@ import java.util.*
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ASSET_PATH = "file:///android_asset/"
 
 class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
@@ -326,9 +326,8 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
   */
 
     private fun graph(sView: View) {
-        val layout: LinearLayout = sView.findViewById(R.id.chart)
+        val graph: BarGraph = sView.findViewById(R.id.chart)
 
-        val graph = BarGraph(requireContext(), 400, 250)
         val points = arrayListOf<DataPoint>()
         points.add(DataPoint("First Term", 60.89f, Color.parseColor("#2C62FF")))
         points.add(DataPoint("Second Term", 67.02f, Color.parseColor("#2C62FF")))
@@ -340,8 +339,6 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         graph.isHovered = true
 
         graph.setLabelTextSize(20)
-
-        layout.addView(graph)
 
     }
 
