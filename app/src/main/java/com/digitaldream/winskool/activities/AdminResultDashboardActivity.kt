@@ -110,6 +110,8 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
             mGraphicalView!!.repaint()
         }
 
+        refresh()
+
     }
 
     private fun onCardClick() {
@@ -233,6 +235,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
                             } else {
                                 mTermErrorView.isVisible = true
                                 mRecyclerView.isVisible = false
+                                mErrorView.isVisible = false
                             }
 
                         }
@@ -250,6 +253,13 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
             })
 
     }
+
+    private fun refresh(){
+        mRefreshBtn.setOnClickListener {
+            getTerms(mClassId!!)
+        }
+    }
+
 
     override fun onItemClick(position: Int) {
         val model = mTermList[position - 1]

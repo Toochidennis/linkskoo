@@ -262,7 +262,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:backgroundTint="@color/test_color_1"
                 android:padding="10dp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp">
@@ -270,8 +269,8 @@
                 <LinearLayout
                     android:id="@+id/chart"
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:layout_height="250dp"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -285,7 +284,7 @@
                     android:id="@+id/term_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/dimen_16"
+                    android:layout_marginBottom="@dimen/dimen_32"
                     android:clipToPadding="true"
                     android:visibility="gone" />
 

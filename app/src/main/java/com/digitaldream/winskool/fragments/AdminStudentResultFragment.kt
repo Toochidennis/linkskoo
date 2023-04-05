@@ -1,10 +1,15 @@
 package com.digitaldream.winskool.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,12 +28,14 @@ import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ClassNameTable
 import com.digitaldream.winskool.models.StudentTable
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
-import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart2
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import com.mdgiitr.suyash.graphkit.BarGraph
+import com.mdgiitr.suyash.graphkit.DataPoint
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
+import org.achartengine.GraphicalView
 import org.json.JSONObject
 import java.util.*
 
@@ -47,6 +54,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
     private var mTermList = mutableListOf<AdminStudentResultFragmentModel>()
     private var mStudentId: String? = null
     private var mClassId: String? = null
+    private var graphicalView: GraphicalView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +86,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         val backBtn: ImageView = view.findViewById(R.id.back_btn)
         val title: TextView = view.findViewById(R.id.toolbar_text)
         mStudentNameBtn = view.findViewById(R.id.student_name_btn)
+        mRefreshBtn = view.findViewById(R.id.refresh_btn)
 
         "Student Result".also { title.text = it }
 
@@ -92,7 +101,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         changeStudent(view)
 
         refresh(view)
-
+        graph(view)
         return view
     }
 
@@ -154,6 +163,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
             getTerms(sView, sStudentId)
 
+
         } catch (sE: java.lang.Exception) {
             sE.printStackTrace()
         }
@@ -173,10 +183,10 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
+                        val graphList = arrayListOf<ChartModel>()
                         mAdapter.removeAllSections()
                         mTermList.clear()
-
-                        val graphList = arrayListOf<ChartModel>()
+                        graphList.clear()
 
                         JSONObject(response).also {
 
@@ -221,7 +231,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
                             }
 
-                            plotGraph(sView, graphList)
+                            //plotGraph(sView, graphList)
 
                             recyclerView.apply {
                                 hasFixedSize()
@@ -258,16 +268,81 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
     }
 
-    private fun plotGraph(sView: View, graphValues: ArrayList<ChartModel>) {
-        val graph: LinearLayout = sView.findViewById(R.id.chart)
+    /*    private fun plotGraph(sView: View, graphValues: ArrayList<ChartModel>) {
+            val graph: LinearLayout = sView.findViewById(R.id.chart)
 
-        val graphicalView =
-            plotLineChart2(
-                requireContext(), graphValues,
-                "Average", "Terms"
-            )
+            if (graphicalView == null){
+                graphicalView =
+                    plotLineChart2(
+                        requireContext(), graphValues,
+                        "Average", "Terms"
+                    )
+            }else{
+                graphicalView!!.repaint()
+                graph.removeView(graphicalView)
+            }
 
-        graph.addView(graphicalView)
+            graph.addView(graphicalView)
+        }
+        */
+
+    /*  @SuppressLint("SetJavaScriptEnabled")
+      private fun testWebChart(
+          sView: View,
+      ) {
+          val webView: WebView = sView.findViewById(R.id.chart)
+
+          webView.settings.apply {
+              javaScriptEnabled = true
+              javaScriptCanOpenWindowsAutomatically = true
+              domStorageEnabled = true
+          }
+
+          val assetManager = requireActivity().assets
+          val inputStream = assetManager.open("linkskool_chart.html")
+          val bytes: ByteArray = readHtmlFile(inputStream)
+          val content = String(bytes, Charset.forName("UTF-8"))
+
+         // val formattedContent = String.format("%s, %d, %d, %d", content, 50, 60, 55)
+          webView.loadDataWithBaseURL(
+              ASSET_PATH, content, "text/html", "utf-8",
+              null
+          )
+          // webView.loadUrl("file:///android_asset/linkskool_chart.html")
+          webView.requestFocusFromTouch()
+
+      }
+
+
+      private fun readHtmlFile(inputStream: InputStream): ByteArray {
+          val out = ByteArrayOutputStream()
+          val buffer = ByteArray(1024)
+          var count: Int
+          while (inputStream.read(buffer).also { count = it } != -1) {
+              out.write(buffer, 0, count)
+          }
+          return out.toByteArray()
+      }
+  */
+
+    private fun graph(sView: View) {
+        val layout: LinearLayout = sView.findViewById(R.id.chart)
+
+        val graph = BarGraph(requireContext(), 400, 250)
+        val points = arrayListOf<DataPoint>()
+        points.add(DataPoint("First Term", 60.89f, Color.parseColor("#2C62FF")))
+        points.add(DataPoint("Second Term", 67.02f, Color.parseColor("#2C62FF")))
+        points.add(DataPoint("Third Term", 55.56f, Color.parseColor("#2C62FF")))
+        graph.setPoints(points)
+        graph.thickness = 1
+        graph.setSpace(10)
+        graph.animate()
+        graph.isHovered = true
+
+        graph.setLabelTextSize(20)
+
+        layout.addView(graph)
+
     }
 
     private fun refresh(sView: View) {

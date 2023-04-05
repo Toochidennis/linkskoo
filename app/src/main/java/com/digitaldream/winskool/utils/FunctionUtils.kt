@@ -203,14 +203,14 @@ object FunctionUtils {
         val seriesRenderer = XYSeriesRenderer()
         seriesRenderer.color = Color.WHITE
         seriesRenderer.isFillPoints = true
-        seriesRenderer.lineWidth = 4f
-        seriesRenderer.pointStyle = PointStyle.CIRCLE
         seriesRenderer.isDisplayChartValues = true
         seriesRenderer.chartValuesTextSize = 30f
 
         val multipleRenderer = XYMultipleSeriesRenderer()
         multipleRenderer.xLabels = 0
         multipleRenderer.yLabels = 0
+        multipleRenderer.xAxisMin = 0.5
+        multipleRenderer.xAxisMax = 10.5
         multipleRenderer.xTitle = sHorizontalTitle
         multipleRenderer.margins = intArrayOf(20, 30, 15, 0)
         multipleRenderer.isPanEnabled = false
@@ -221,6 +221,7 @@ object FunctionUtils {
         multipleRenderer.backgroundColor = Color.parseColor("#2C62FF")
         multipleRenderer.isApplyBackgroundColor = true
         multipleRenderer.labelsColor = Color.WHITE
+        multipleRenderer.barSpacing = 0.5
         multipleRenderer.labelsTextSize = 25f
         multipleRenderer.axisTitleTextSize = 25f
         multipleRenderer.addSeriesRenderer(seriesRenderer)
@@ -228,8 +229,8 @@ object FunctionUtils {
         for (i in 0 until graphLength)
             multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
 
-        return ChartFactory.getLineChartView(
-            sContext, dataset, multipleRenderer
+        return ChartFactory.getBarChartView(
+            sContext, dataset, multipleRenderer, BarChart.Type.DEFAULT
         )
     }
 

@@ -5,7 +5,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.models.AdminResultDashboardModel
 import com.digitaldream.winskool.models.AdminStudentResultFragmentModel
 import com.digitaldream.winskool.utils.FunctionUtils.animateObject
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section
@@ -43,7 +42,11 @@ class AdminStudentResultAdapter(
 
         viewHolder.mTerm.text = model.term
 
-        animateObject(viewHolder.mProgressBar, viewHolder.mProgressText, 52)
+        animateObject(
+            viewHolder.mProgressBar,
+            viewHolder.mProgressText,
+            model.average.toDouble().toInt()
+        )
     }
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
