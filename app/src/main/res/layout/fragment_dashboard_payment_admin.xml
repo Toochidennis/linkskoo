@@ -320,12 +320,12 @@
             android:id="@+id/error_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
+            android:fontFamily="@font/poppins_medium"
             android:lines="2"
             android:text="@string/can_not_retrieve"
             android:textAlignment="center"
-            android:textColor="@color/text_bg_color"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/refresh_btn"

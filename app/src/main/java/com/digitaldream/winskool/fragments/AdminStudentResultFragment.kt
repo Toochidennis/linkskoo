@@ -1,6 +1,5 @@
 package com.digitaldream.winskool.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,32 +15,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.AdminStudentResultAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.dialog.AdminResultStudentNamesDialog
 import com.digitaldream.winskool.dialog.OnInputListener
-import com.digitaldream.winskool.models.AdminStudentResultFragmentModel
-import com.digitaldream.winskool.models.ChartModel
-import com.digitaldream.winskool.models.ClassNameTable
-import com.digitaldream.winskool.models.StudentTable
+import com.digitaldream.winskool.models.*
+import com.digitaldream.winskool.utils.ColumnChart
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
-import com.mdgiitr.suyash.graphkit.BarGraph
-import com.mdgiitr.suyash.graphkit.DataPoint
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
-import org.achartengine.GraphicalView
 import org.json.JSONObject
 import java.util.*
 
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-private const val ASSET_PATH = "file:///android_asset/"
 
 class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
@@ -54,7 +46,6 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
     private var mTermList = mutableListOf<AdminStudentResultFragmentModel>()
     private var mStudentId: String? = null
     private var mClassId: String? = null
-    private var graphicalView: GraphicalView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,7 +166,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         val errorMessage: TextView = sView.findViewById(R.id.term_error_message)
         val errorImage: ImageView = sView.findViewById(R.id.error_image)
 
-        val url = "${Login.urlBase}/studentTerms.php"
+        val url = "${getString(R.string.base_url)}/studentTerms.php"
         val hashMap = hashMapOf<String, String>()
         hashMap["id"] = sStudentId
 
@@ -268,7 +259,36 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
     }
 
-    /*    private fun plotGraph(sView: View, graphValues: ArrayList<ChartModel>) {
+    private fun graph(sView: View) {
+        val graphView: ColumnChart = sView.findViewById(R.id.chart)
+
+        val value = arrayListOf<ChartValue>()
+        value.add(ChartValue("First Term", 40.78))
+        value.add(ChartValue("Second Term", 70.78))
+        value.add(ChartValue("Third Term", 50.78))
+
+        graphView.apply {
+            setChartData(value)
+            setYAxisTitle("Average")
+            loadChart()
+        }
+
+    }
+
+    private fun refresh(sView: View) {
+        mRefreshBtn.setOnClickListener {
+            studentProfile(sView, mStudentId!!)
+        }
+    }
+
+
+    override fun onItemClick(position: Int) {
+        Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
+    }
+
+}
+
+/*    private fun plotGraph(sView: View, graphValues: ArrayList<ChartModel>) {
             val graph: LinearLayout = sView.findViewById(R.id.chart)
 
             if (graphicalView == null){
@@ -286,71 +306,41 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         }
         */
 
-    /*  @SuppressLint("SetJavaScriptEnabled")
-      private fun testWebChart(
-          sView: View,
-      ) {
-          val webView: WebView = sView.findViewById(R.id.chart)
+/*  @SuppressLint("SetJavaScriptEnabled")
+  private fun testWebChart(
+      sView: View,
+  ) {
+      val webView: WebView = sView.findViewById(R.id.chart)
 
-          webView.settings.apply {
-              javaScriptEnabled = true
-              javaScriptCanOpenWindowsAutomatically = true
-              domStorageEnabled = true
-          }
-
-          val assetManager = requireActivity().assets
-          val inputStream = assetManager.open("linkskool_chart.html")
-          val bytes: ByteArray = readHtmlFile(inputStream)
-          val content = String(bytes, Charset.forName("UTF-8"))
-
-         // val formattedContent = String.format("%s, %d, %d, %d", content, 50, 60, 55)
-          webView.loadDataWithBaseURL(
-              ASSET_PATH, content, "text/html", "utf-8",
-              null
-          )
-          // webView.loadUrl("file:///android_asset/linkskool_chart.html")
-          webView.requestFocusFromTouch()
-
+      webView.settings.apply {
+          javaScriptEnabled = true
+          javaScriptCanOpenWindowsAutomatically = true
+          domStorageEnabled = true
       }
 
+      val assetManager = requireActivity().assets
+      val inputStream = assetManager.open("linkskool_chart.html")
+      val bytes: ByteArray = readHtmlFile(inputStream)
+      val content = String(bytes, Charset.forName("UTF-8"))
 
-      private fun readHtmlFile(inputStream: InputStream): ByteArray {
-          val out = ByteArrayOutputStream()
-          val buffer = ByteArray(1024)
-          var count: Int
-          while (inputStream.read(buffer).also { count = it } != -1) {
-              out.write(buffer, 0, count)
-          }
-          return out.toByteArray()
+     // val formattedContent = String.format("%s, %d, %d, %d", content, 50, 60, 55)
+      webView.loadDataWithBaseURL(
+          ASSET_PATH, content, "text/html", "utf-8",
+          null
+      )
+      // webView.loadUrl("file:///android_asset/linkskool_chart.html")
+      webView.requestFocusFromTouch()
+
+  }
+
+
+  private fun readHtmlFile(inputStream: InputStream): ByteArray {
+      val out = ByteArrayOutputStream()
+      val buffer = ByteArray(1024)
+      var count: Int
+      while (inputStream.read(buffer).also { count = it } != -1) {
+          out.write(buffer, 0, count)
       }
-  */
-
-    private fun graph(sView: View) {
-        val graph: BarGraph = sView.findViewById(R.id.chart)
-
-        val points = arrayListOf<DataPoint>()
-        points.add(DataPoint("First Term", 60.89f, Color.parseColor("#2C62FF")))
-        points.add(DataPoint("Second Term", 67.02f, Color.parseColor("#2C62FF")))
-        points.add(DataPoint("Third Term", 55.56f, Color.parseColor("#2C62FF")))
-        graph.setPoints(points)
-        graph.thickness = 1
-        graph.setSpace(10)
-        graph.animate()
-        graph.isHovered = true
-
-        graph.setLabelTextSize(20)
-
-    }
-
-    private fun refresh(sView: View) {
-        mRefreshBtn.setOnClickListener {
-            studentProfile(sView, mStudentId!!)
-        }
-    }
-
-
-    override fun onItemClick(position: Int) {
-        Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
-    }
-
-}
+      return out.toByteArray()
+  }
+*/

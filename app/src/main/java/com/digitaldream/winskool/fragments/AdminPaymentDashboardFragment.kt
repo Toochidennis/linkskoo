@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.AdminPaymentDashboardAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
@@ -43,6 +42,7 @@ class AdminPaymentDashboardFragment : Fragment(),
     private lateinit var mSeeAllBtn: CardView
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mTransactionMessage: TextView
+    private lateinit var mErrorMessage: TextView
     private lateinit var mTransactionImage: ImageView
     private lateinit var mErrorView: LinearLayout
     private lateinit var mRefreshBtn: Button
@@ -68,7 +68,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         val actionBar = (activity as AppCompatActivity).supportActionBar
         menuHost = requireActivity()
 
-         setUpMenu()
+        setUpMenu()
 
         actionBar!!.apply {
             setHomeButtonEnabled(true)
@@ -87,6 +87,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         mDebtAmount = view.findViewById(R.id.debt_balance)
         mTransactionImage = view.findViewById(R.id.error_image)
         mTransactionMessage = view.findViewById(R.id.transaction_error_message)
+        mErrorMessage = view.findViewById(R.id.error_message)
         mExpenditureBtn = view.findViewById(R.id.expenditure_btn)
         mReceiptBtn = view.findViewById(R.id.receipt_btn)
         mRecyclerLayout = view.findViewById(R.id.recycler_layout)
@@ -133,80 +134,90 @@ class AdminPaymentDashboardFragment : Fragment(),
         val term = sharedPreferences.getString("term", "")
         val year = sharedPreferences.getString("school_year", "")
 
-        val url = "${Login.urlBase}/manageTransactions.php?dashboard=1&&term=$term&&year=$year"
+        val url = "${getString(R.string.base_url)}/manageTransactions" +
+                ".php?dashboard=1&&term=$term&&year=$year"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
-                override fun onResponse(response: String) = try {
-                    val jsonObject = JSONObject(response)
-                    val receiptsArray = jsonObject.getJSONArray("receipts")
-                    val invoiceArray = jsonObject.getJSONArray("invoice")
-                    val transactionsArray = jsonObject.getJSONArray("transactions")
+                override fun onResponse(response: String) {
+                    try {
+                        val jsonObject = JSONObject(response)
+                        val receiptsArray = jsonObject.getJSONArray("receipts")
+                        val invoiceArray = jsonObject.getJSONArray("invoice")
+                        val transactionsArray = jsonObject.getJSONArray("transactions")
 
-                    val receiptsObject = receiptsArray.getJSONObject(0)
-                    val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
+                        val receiptsObject = receiptsArray.getJSONObject(0)
+                        val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
 
-                    val invoiceObject = invoiceArray.getJSONObject(0)
-                    val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
+                        val invoiceObject = invoiceArray.getJSONObject(0)
+                        val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
 
-                    if (receiptsSum == "null" && invoiceSum == "null") {
-                        mReceivedAmount.text = getString(R.string.zero_balance)
-                        mExpectedAmount.text = getString(R.string.zero_balance)
-                        mDebtAmount.text = getString(R.string.zero_balance)
-                    } else {
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            FunctionUtils.currencyFormat(receiptsSum.toDouble())
-                        ).also { mReceivedAmount.text = it }
+                        if (receiptsSum == "null" && invoiceSum == "null") {
+                            mReceivedAmount.text = getString(R.string.zero_balance)
+                            mExpectedAmount.text = getString(R.string.zero_balance)
+                            mDebtAmount.text = getString(R.string.zero_balance)
+                        } else {
+                            String.format(
+                                Locale.getDefault(), "%s%s", getString(R.string.naira),
+                                FunctionUtils.currencyFormat(receiptsSum.toDouble())
+                            ).also { mReceivedAmount.text = it }
 
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            FunctionUtils.currencyFormat(invoiceSum.toDouble())
-                        ).also { mExpectedAmount.text = it }
+                            String.format(
+                                Locale.getDefault(), "%s%s", getString(R.string.naira),
+                                FunctionUtils.currencyFormat(invoiceSum.toDouble())
+                            ).also { mExpectedAmount.text = it }
 
-                        val debtSum = invoiceSum.toLong() - receiptsSum.toLong()
+                            val debtSum = invoiceSum.toLong() - receiptsSum.toLong()
 
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            FunctionUtils.currencyFormat(debtSum.toDouble())
-                        ).also { mDebtAmount.text = it }
+                            String.format(
+                                Locale.getDefault(), "%s%s", getString(R.string.naira),
+                                FunctionUtils.currencyFormat(debtSum.toDouble())
+                            ).also { mDebtAmount.text = it }
+                        }
+
+                        for (i in 0 until transactionsArray.length()) {
+                            val transactionsObject = transactionsArray.getJSONObject(i)
+                            val transactionType = transactionsObject.getString("trans_type")
+                            val reference = transactionsObject.getString("reference")
+                            val description = transactionsObject.getString("description")
+                            val amount = transactionsObject.getString("amount")
+                            val date = transactionsObject.getString("date")
+
+                            val adminModel = AdminPaymentModel()
+                            adminModel.setTransactionName(transactionType)
+                            adminModel.setDescription(description)
+                            adminModel.setReceivedAmount(amount)
+                            adminModel.setTransactionDate(date)
+                            mTransactionList.add(adminModel)
+                            mTransactionList.sortByDescending { it.getTransactionDate() }
+                        }
+
+                        if (mTransactionList.isEmpty()) {
+                            mMainLayout.isVisible = true
+                            mTransactionMessage.isVisible = true
+                            mTransactionImage.isVisible = true
+                            mErrorView.isVisible = false
+                            mRecyclerLayout.isVisible = false
+                        } else {
+                            mMainLayout.isVisible = true
+                            mTransactionMessage.isVisible = false
+                            mTransactionImage.isVisible = false
+                            mErrorView.isVisible = false
+                            mRecyclerLayout.isVisible = true
+                        }
+                        mAdapter.notifyDataSetChanged()
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        mMainLayout.isVisible = false
+                        mErrorView.isVisible = true
+                        mRefreshBtn.isVisible = false
+                        "An error occurred, please contact your developer for more info".also {
+                            mErrorMessage.text = it
+                        }
+
                     }
-
-                    for (i in 0 until transactionsArray.length()) {
-                        val transactionsObject = transactionsArray.getJSONObject(i)
-                        val transactionType = transactionsObject.getString("trans_type")
-                        val reference = transactionsObject.getString("reference")
-                        val description = transactionsObject.getString("description")
-                        val amount = transactionsObject.getString("amount")
-                        val date = transactionsObject.getString("date")
-
-                        val adminModel = AdminPaymentModel()
-                        adminModel.setTransactionName(transactionType)
-                        adminModel.setDescription(description)
-                        adminModel.setReceivedAmount(amount)
-                        adminModel.setTransactionDate(date)
-                        mTransactionList.add(adminModel)
-                        mTransactionList.sortByDescending { it.getTransactionDate() }
-                    }
-
-                    if (mTransactionList.isEmpty()) {
-                        mMainLayout.isVisible = true
-                        mTransactionMessage.isVisible = true
-                        mTransactionImage.isVisible = true
-                        mErrorView.isVisible = false
-                        mRecyclerLayout.isVisible = false
-                    } else {
-                        mMainLayout.isVisible = true
-                        mTransactionMessage.isVisible = false
-                        mTransactionImage.isVisible = false
-                        mErrorView.isVisible = false
-                        mRecyclerLayout.isVisible = true
-                    }
-                    mAdapter.notifyDataSetChanged()
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
 
                 override fun onError(error: VolleyError) {

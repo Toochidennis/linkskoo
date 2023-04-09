@@ -266,10 +266,11 @@
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp">
 
-                <com.mdgiitr.suyash.graphkit.BarGraph
+                <com.digitaldream.winskool.utils.ColumnChart
                     android:id="@+id/chart"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    app:chartTitle="Session Average"/>
 
             </androidx.cardview.widget.CardView>
 

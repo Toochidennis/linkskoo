@@ -180,7 +180,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
     }
 
     private fun getTerms(sClassId: String) {
-        val url = "${Login.urlBase}/jsonTerms.php?class=$sClassId"
+        val url = "${getString(R.string.base_url)}/jsonTerms.php?class=$sClassId"
         val hashMap = HashMap<String, String>()
 
         requestToServer(Request.Method.GET, url, this, hashMap,

@@ -411,7 +411,6 @@ object FunctionUtils {
         val sharedPreferences =
             context.getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         val db = sharedPreferences.getString("db", "")
-
         val progressFlower = ACProgressFlower.Builder(context)
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)
             .textMarginTop(10)
@@ -425,7 +424,7 @@ object FunctionUtils {
             method,
             url,
             { response: String ->
-                Log.i("response", response)
+                Log.d("response", response)
                 volleyCallback.onResponse(response)
                 progressFlower.dismiss()
 
