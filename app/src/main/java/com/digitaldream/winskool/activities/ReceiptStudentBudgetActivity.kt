@@ -138,7 +138,7 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
 
 
     private fun getFees() {
-        val url = Login.urlBase + "/manageReceipts.php?list=$studentId"
+        val url = getString(R.string.base_url)+ "/manageReceipts.php?list=$studentId"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, this, hashMap,

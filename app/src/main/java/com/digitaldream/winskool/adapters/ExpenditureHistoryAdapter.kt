@@ -29,7 +29,7 @@ class ExpenditureHistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sExpenditureList[position]
 
-        holder.mExpenditureName.text = capitaliseFirstLetter(adminModel.getVendorName()!!)
+      //  holder.mExpenditureName.text = capitaliseFirstLetter(adminModel.getVendorName()!!)
         holder.mExpenditureDate.text = adminModel.getDate()
         holder.mExpenditureType.text = adminModel.getType()
 
@@ -43,7 +43,7 @@ class ExpenditureHistoryAdapter(
     override fun getItemCount() = sExpenditureList.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mExpenditureName: TextView = itemView.findViewById(R.id.expenditure_name)
+//        val mExpenditureName: TextView = itemView.findViewById(R.id.expenditure_name)
         val mExpenditureDate: TextView = itemView.findViewById(R.id.expenditure_date)
         val mExpenditureAmount: TextView = itemView.findViewById(R.id.expenditure_amount)
         val mExpenditureType: TextView = itemView.findViewById(R.id.expenditure_type)

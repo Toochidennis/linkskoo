@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.models.TermFeesDataModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -166,45 +165,52 @@ class TermFeeAdapter(
 
     private fun setTermFees() {
 
-        val sharedPreferences = sContext.getSharedPreferences(
-            "loginDetail",
-            Context.MODE_PRIVATE
-        )
-        val year = sharedPreferences.getString("school_year", "")
-        val term = sharedPreferences.getString("term", "")
 
-        val url = Login.urlBase + "/manageTermFees.php"
-        val hashMap = hashMapOf<String, String>()
-        hashMap["fees"] = getTermFeeDataFromEditText().toString()
-        hashMap["level"] = sLevelId
-        hashMap["year"] = year!!
-        hashMap["term"] = term!!
+        if (getTermFeeDataFromEditText().toString() != "[]") {
+            val sharedPreferences = sContext.getSharedPreferences(
+                "loginDetail",
+                Context.MODE_PRIVATE
+            )
+            val year = sharedPreferences.getString("school_year", "")
+            val term = sharedPreferences.getString("term", "")
 
-        requestToServer(Request.Method.POST, url, sContext, hashMap,
-            object : VolleyCallback {
-                override fun onResponse(response: String) {
-                    try {
-                        val jsonObject = JSONObject(response)
-                        when (jsonObject.getString("status")) {
-                            "success" -> {
-                                Toast.makeText(
-                                    sContext, "Saved successfully", Toast
-                                        .LENGTH_SHORT
-                                ).show()
+            val url = sContext.getString(R.string.base_url) + "/manageTermFees.php"
+            val hashMap = hashMapOf<String, String>()
+            hashMap["fees"] = getTermFeeDataFromEditText().toString()
+            hashMap["level"] = sLevelId
+            hashMap["year"] = year!!
+            hashMap["term"] = term!!
+
+            requestToServer(Request.Method.POST, url, sContext, hashMap,
+                object : VolleyCallback {
+                    override fun onResponse(response: String) {
+                        try {
+                            val jsonObject = JSONObject(response)
+                            when (jsonObject.getString("status")) {
+                                "success" -> {
+                                    Toast.makeText(
+                                        sContext, "Saved successfully", Toast
+                                            .LENGTH_SHORT
+                                    ).show()
+                                }
+                                else -> Toast.makeText(sContext, "Failed", Toast.LENGTH_SHORT)
+                                    .show()
                             }
-                            else -> Toast.makeText(sContext, "Failed", Toast.LENGTH_SHORT).show()
-                        }
 
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    }
+
+                    override fun onError(error: VolleyError) {
+
                     }
                 }
+            )
+        } else {
+            Toast.makeText(sContext, "Provide at least 1 value", Toast.LENGTH_SHORT).show()
+        }
 
-                override fun onError(error: VolleyError) {
-
-                }
-            }
-        )
     }
 
 }

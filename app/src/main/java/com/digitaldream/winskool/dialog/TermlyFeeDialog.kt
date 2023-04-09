@@ -21,7 +21,6 @@ import com.j256.ormlite.dao.DaoManager
 class TermlyFeeDialog(
     private val sContext: Context,
     private val sCurrentText: String,
-    private val sFrom: String,
     private var sInputListener: OnInputListener,
 ) : Dialog(sContext), OnItemClickListener {
 
@@ -63,23 +62,17 @@ class TermlyFeeDialog(
 
     override fun onItemClick(position: Int) {
         val levelTable = mLevelList[position]
-        if (sFrom == "term") {
-            AlertDialog.Builder(sContext).apply {
-                setTitle("Warning!")
-                setMessage("Your unsaved changes will be lost if you change level")
-                setCancelable(false)
-                setPositiveButton("I have saved my changes") { _, _ ->
-                    sInputListener.sendInput(levelTable.levelName)
-                    sInputListener.sendId(levelTable.levelId)
-                    dismiss()
-                }
-                setNegativeButton("No") { _, _ -> dismiss() }
-                show()
+        AlertDialog.Builder(sContext).apply {
+            setTitle("Warning!")
+            setMessage("Your unsaved changes will be lost if you change level")
+            setCancelable(false)
+            setPositiveButton("I have saved my changes") { _, _ ->
+                sInputListener.sendInput(levelTable.levelName)
+                sInputListener.sendId(levelTable.levelId)
+                dismiss()
             }
-        } else {
-            sInputListener.sendInput(levelTable.levelName)
-            sInputListener.sendId(levelTable.levelId)
-            dismiss()
+            setNegativeButton("No") { _, _ -> dismiss() }
+            show()
         }
 
     }

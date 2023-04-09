@@ -128,7 +128,8 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
 
     private fun getTermFees(sLevelId: String) {
         val url =
-            "${Login.urlBase}/manageTermFees.php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
+            "${getString(R.string.base_url)}/manageTermFees" +
+                    ".php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, this, hashMap,
@@ -191,7 +192,6 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
             TermlyFeeDialog(
                 this@TermlyFeeSetupActivity,
                 mLevelNameBtn.text.toString(),
-                "term",
                 object : OnInputListener {
                     override fun sendInput(input: String) {
                         mLevelName = input

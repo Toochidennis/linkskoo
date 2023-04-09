@@ -111,7 +111,7 @@ class AccountSetupDialog(
 
     private fun setAccount() {
 
-        val url = Login.urlBase + "/manageAccount.php"
+        val url = context.getString(R.string.base_url) + "/manageAccount.php"
         val stringRequest: StringRequest = object : StringRequest(
             Method.POST, url,
             { response: String ->

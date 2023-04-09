@@ -35,66 +35,66 @@ public class StaffUtils extends AppCompatActivity {
 
             case "result":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container, new ResultStaff()).commit();
+                        R.id.fragment_container, new ResultStaff()).commit();
                 break;
 
             case "student":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container, new StaffFormClassFragment()).commit();
+                        R.id.fragment_container, new StaffFormClassFragment()).commit();
                 break;
 
             case "staff":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         AdminClassAttendanceFragment.newInstance(classId,
                                 levelId, className, "staff")).commit();
                 break;
 
             case "cbt":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         new CBTExamTypeFragment()).commit();
                 break;
 
             case "exam_type":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         new CBTCoursesFragment()).commit();
                 break;
 
             case "cbt_course":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         CBTYearFragment.newInstance(courseName, "")).commit();
                 break;
 
             case "videos":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         new LibraryVideosFragment()).commit();
                 break;
 
             case "games":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         new LibraryGamesFragment()).commit();
                 break;
 
             case "form_class":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         StaffFormClassStudentsFragment.newInstance(classId)).commit();
                 break;
 
             case "staff_comment":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         StaffResultCommentFragment.newInstance(classId)).commit();
                 break;
 
             case "skills_behaviour":
                 getSupportFragmentManager().beginTransaction().replace(
-                        R.id.payment_container,
+                        R.id.fragment_container,
                         StaffSkillsBehaviourFragment.newInstance(classId)).commit();
                 break;
         }

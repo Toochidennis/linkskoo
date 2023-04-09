@@ -3,24 +3,21 @@ package com.digitaldream.winskool.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
+import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ChartValue
 
+const val ASSET_PATH = "file:///android_asset/"
 @SuppressLint("SetJavaScriptEnabled")
 class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     WebView(context, attrs) {
 
-    private lateinit var colorsArray: IntArray
-    private var xAxisTitle: String? = null
-    private var yAxisTitle: String? = null
+
     private var chartTitle: String? = null
     private var chartData: String? = null
-    private val jsPath = "file:///android_asset/jsapi.js"
-
 
     init {
         val typedArray = context.obtainStyledAttributes(
@@ -29,7 +26,7 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
         try {
             chartTitle = typedArray.getString(R.styleable.ColumnChart_chartTitle)
-            
+
             /*colorsArray = intArrayOf(
                 typedArray.getColor(
                     R.styleable.GraphView_gradientStartColor,
@@ -48,73 +45,85 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
         }
     }
 
-
-    fun setXAxisTitle(title: String) {
-        xAxisTitle = title
-    }
-
-    fun setYAxisTitle(title: String) {
-        yAxisTitle = title
-    }
-
-    private fun getXAxisTitle() = xAxisTitle
-
-    private fun getYAxisTitle() = yAxisTitle
-
     fun setChartData(chartValues: ArrayList<ChartValue>) {
         val builder = StringBuilder()
         for (item in chartValues) {
             builder.append("[")
-            builder.append(item.x).append(", ")
-            builder.append(item.y)
+            builder.append("'${item.y}'").append(", ")
+            builder.append(item.x)
             builder.append("],\n")
         }
-        Log.d("data", builder.toString())
-        chartData = builder.toString()
+        chartData = if (builder.isNotEmpty()) {
+            builder.deleteCharAt(builder.lastIndexOf(",")).toString()
+        } else {
+            ""
+        }
+
+        init()
+
     }
 
 
     private fun init() {
-        val content = " <html>\n" +
+
+        val content = "<html>\n" +
                 "<head>\n" +
-                "    <script type=\"text/javascript\" src=\"$jsPath\"></script>\n" +
+                "    <!--Load the AJAX API-->\n" +
+                "    <script type=\"text/javascript\" src=\"$ASSET_PATH.jsapi.js\"></script>\n" +
                 "    <script type=\"text/javascript\">\n" +
-                "      google.charts.load('current', {'packages':['corechart']});\n" +
+                "\n" +
+                "      // Load the Visualization API and the corechart package.\n" +
+                "      google.load('current', {'packages':['corechart']});\n" +
+                "\n" +
+                "      // Set a callback to run when the Google Visualization API is loaded.\n" +
                 "      google.charts.setOnLoadCallback(drawChart);\n" +
                 "\n" +
+                "      // Callback that creates and populates a data table,\n" +
+                "      // instantiates the pie chart, passes in the data and\n" +
+                "      // draws it.\n" +
                 "      function drawChart() {\n" +
+                "\n" +
+                "        // Create the data table.\n" +
                 "        var data = new google.visualization.DataTable();\n" +
                 "        data.addColumn('string', 'Topping');\n" +
                 "        data.addColumn('number', 'Slices');\n" +
                 "        data.addRows([\n" +
-                "        $chartData"
-        "        ]);\n" +
+                "           $chartData \n" +
+                "        ]);\n" +
                 "\n" +
-                "         var options = {\n" +
-                "        title: \"$chartTitle\",\n" +
-                "        hAxis: \"${getYAxisTitle()}\",\n"
-        "        width: 600,\n" +
-                "        height: 400,\n" +
-                "        bar: {groupWidth: \"35%\"},\n" +
-                "        legend: { position: \"none\" },\n" +
-                "      };\n" +
-                "      var chart = new google.visualization.ColumnChart(document.getElementById(\"columnchart_values\"));\n" +
-                "      chart.draw(view, options);\n" +
+                "        // Set chart options\n" +
+                "        var options = {'title':'$chartTitle',\n" +
+                "                       'width':500,\n" +
+                "                       'height':250,\n" +
+                "                       'bar': {groupWidth: \"35%\"},\n" +
+                "                       'legend': {position: \"none\"}\n" +
+                "                       };\n" +
+                "\n" +
+                "        // Instantiate and draw our chart, passing in some options.\n" +
+                "        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));\n" +
+                "        chart.draw(data, options);\n" +
+                "      }\n" +
                 "    </script>\n" +
                 "</head>\n" +
+                "\n" +
                 "<body>\n" +
-                "<div id=\"columnchart_values\" style=\"width: 600px; height: 400px;\"></div>\n" +
+                "<!--Div that will hold the pie chart-->\n" +
+                "<div id=\"chart_div\" style=\"width: 500px; height: 250px;\"></div>\n" +
                 "</body>\n" +
-                "</html>\n"
+                "</html>"
+
 
         settings.apply {
             domStorageEnabled = true
             javaScriptEnabled = true
             javaScriptCanOpenWindowsAutomatically = true
         }
+
+        loadDataWithBaseURL(ASSET_PATH, content, "text/html", "UTF-8", null)
+
         requestFocusFromTouch()
 
-        webViewClient = object : WebViewClient() {
+        webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
             }
@@ -123,17 +132,16 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 view: WebView?,
                 request: WebResourceRequest?,
             ): Boolean {
-                view?.loadUrl(request?.url.toString())
                 return false
             }
         }
 
-        loadDataWithBaseURL("file:///android_asset/", content, "text/html", "utf-8", null)
-
     }
 
-    fun loadChart() {
-        init()
+    override fun destroy() {
+        val parent = parent as ViewGroup
+        parent.removeView(this)
+        super.destroy()
     }
 
 }

@@ -90,6 +90,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         studentProfile(view, mStudentId!!)
 
         changeStudent(view)
+        //testWebChart(view)
 
         refresh(view)
         graph(view)
@@ -259,21 +260,30 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
     }
 
+
     private fun graph(sView: View) {
-        val graphView: ColumnChart = sView.findViewById(R.id.chart)
+        val webView: ColumnChart = sView.findViewById(R.id.chart)
 
-        val value = arrayListOf<ChartValue>()
-        value.add(ChartValue("First Term", 40.78))
-        value.add(ChartValue("Second Term", 70.78))
-        value.add(ChartValue("Third Term", 50.78))
+        val data = arrayListOf<ChartValue>()
+        data.add(ChartValue("First Term", 49))
+        data.add(ChartValue("Fi Term", 39))
+        data.add(ChartValue("Fs Term", 59))
+        data.add(ChartValue("Firs Term", 59))
+        data.add(ChartValue("Fir Term", 29))
+        data.add(ChartValue("Fis Term", 69))
+        data.add(ChartValue("irs Term", 79))
+        data.add(ChartValue("Frs Term", 59))
+        data.add(ChartValue("Frs Term", 59))
+        data.add(ChartValue("Frs Term", 59))
+        data.add(ChartValue("Frs Term", 59))
+        data.add(ChartValue("Frs Term", 59))
+        data.add(ChartValue("Frs Term", 59))
+        data.add(ChartValue("Frs Term", 59))
 
-        graphView.apply {
-            setChartData(value)
-            setYAxisTitle("Average")
-            loadChart()
-        }
+        webView.setChartData(data)
 
     }
+
 
     private fun refresh(sView: View) {
         mRefreshBtn.setOnClickListener {
@@ -288,59 +298,43 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
 }
 
-/*    private fun plotGraph(sView: View, graphValues: ArrayList<ChartModel>) {
-            val graph: LinearLayout = sView.findViewById(R.id.chart)
-
-            if (graphicalView == null){
-                graphicalView =
-                    plotLineChart2(
-                        requireContext(), graphValues,
-                        "Average", "Terms"
-                    )
-            }else{
-                graphicalView!!.repaint()
-                graph.removeView(graphicalView)
-            }
-
-            graph.addView(graphicalView)
-        }
-        */
 
 /*  @SuppressLint("SetJavaScriptEnabled")
-  private fun testWebChart(
-      sView: View,
-  ) {
-      val webView: WebView = sView.findViewById(R.id.chart)
+    private fun testWebChart(
+        sView: View,
+    ) {
+        val webView: WebView = sView.findViewById(R.id.chart)
 
-      webView.settings.apply {
-          javaScriptEnabled = true
-          javaScriptCanOpenWindowsAutomatically = true
-          domStorageEnabled = true
-      }
+        webView.settings.apply {
+            javaScriptEnabled = true
+            javaScriptCanOpenWindowsAutomatically = true
+            domStorageEnabled = true
+        }
 
-      val assetManager = requireActivity().assets
-      val inputStream = assetManager.open("linkskool_chart.html")
-      val bytes: ByteArray = readHtmlFile(inputStream)
-      val content = String(bytes, Charset.forName("UTF-8"))
+        val assetManager = requireActivity().assets
+        val inputStream = assetManager.open("linksool.html")
+        val bytes: ByteArray = readHtmlFile(inputStream)
+        val content = String(bytes, Charset.forName("UTF-8"))
 
-     // val formattedContent = String.format("%s, %d, %d, %d", content, 50, 60, 55)
-      webView.loadDataWithBaseURL(
-          ASSET_PATH, content, "text/html", "utf-8",
-          null
-      )
-      // webView.loadUrl("file:///android_asset/linkskool_chart.html")
-      webView.requestFocusFromTouch()
+        // val formattedContent = String.format("%s, %d, %d, %d", content, 50, 60, 55)
+        webView.loadDataWithBaseURL(
+            ASSET_PATH, content, "text/html", "utf-8",
+            null
+        )
+        // webView.loadUrl("file:///android_asset/linkskool_chart.html")
+        webView.requestFocusFromTouch()
 
-  }
+    }
 
 
-  private fun readHtmlFile(inputStream: InputStream): ByteArray {
-      val out = ByteArrayOutputStream()
-      val buffer = ByteArray(1024)
-      var count: Int
-      while (inputStream.read(buffer).also { count = it } != -1) {
-          out.write(buffer, 0, count)
-      }
-      return out.toByteArray()
-  }
+    private fun readHtmlFile(inputStream: InputStream): ByteArray {
+        val out = ByteArrayOutputStream()
+        val buffer = ByteArray(1024)
+        var count: Int
+        while (inputStream.read(buffer).also { count = it } != -1) {
+            out.write(buffer, 0, count)
+        }
+        return out.toByteArray()
+    }
+
 */

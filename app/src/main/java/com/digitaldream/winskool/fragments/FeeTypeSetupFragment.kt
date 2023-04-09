@@ -128,7 +128,7 @@ class FeeTypeSetupFragment : Fragment() {
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
-        val url = Login.urlBase + "/manageFees.php?list=1"
+        val url = getString(R.string.base_url) + "/manageFees.php?list=1"
         val stringRequest: StringRequest = object : StringRequest(Method.GET,
             url,
             { response: String ->

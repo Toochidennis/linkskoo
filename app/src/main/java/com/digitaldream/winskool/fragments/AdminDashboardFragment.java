@@ -345,7 +345,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
         CustomDialog dialog = new CustomDialog(getActivity());
         dialog.show();
 
-        String url = Login.urlBase + "/getFeed.php";
+        String url = getString(R.string.base_url) + "/getFeed.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url, response -> {
             Log.i("response", "cn" + response);
