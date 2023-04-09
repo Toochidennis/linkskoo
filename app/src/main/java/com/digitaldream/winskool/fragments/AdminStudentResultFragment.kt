@@ -30,6 +30,7 @@ import com.j256.ormlite.dao.DaoManager
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val ARG_PARAM1 = "param1"
@@ -90,10 +91,8 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         studentProfile(view, mStudentId!!)
 
         changeStudent(view)
-        //testWebChart(view)
-
         refresh(view)
-        graph(view)
+
         return view
     }
 
@@ -175,7 +174,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
-                        val graphList = arrayListOf<ChartModel>()
+                        val graphList = arrayListOf<ChartValue>()
                         mAdapter.removeAllSections()
                         mTermList.clear()
                         graphList.clear()
@@ -208,11 +207,16 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
                                         )
                                     )
 
-                                    graphList.add(ChartModel(sessionObject.getString(i), term))
+                                    graphList.add(
+                                        ChartValue(
+                                            term,
+                                            sessionObject.getString(i).toDouble()
+                                        )
+                                    )
                                 }
 
                                 mTermList.sortBy { t -> t.term }
-                                graphList.sortBy { v -> v.horizontalValues }
+                                graphList.sortBy { v -> v.y }
 
                                 mAdapter.addSection(
                                     AdminStudentResultAdapter(
@@ -220,6 +224,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
                                         "$session Session", this@AdminStudentResultFragment
                                     )
                                 )
+                                graph(sView, graphList)
 
                             }
 
@@ -261,27 +266,9 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
     }
 
 
-    private fun graph(sView: View) {
+    private fun graph(sView: View, data: ArrayList<ChartValue>) {
         val webView: ColumnChart = sView.findViewById(R.id.chart)
-
-        val data = arrayListOf<ChartValue>()
-        data.add(ChartValue("First Term", 49))
-        data.add(ChartValue("Fi Term", 39))
-        data.add(ChartValue("Fs Term", 59))
-        data.add(ChartValue("Firs Term", 59))
-        data.add(ChartValue("Fir Term", 29))
-        data.add(ChartValue("Fis Term", 69))
-        data.add(ChartValue("irs Term", 79))
-        data.add(ChartValue("Frs Term", 59))
-        data.add(ChartValue("Frs Term", 59))
-        data.add(ChartValue("Frs Term", 59))
-        data.add(ChartValue("Frs Term", 59))
-        data.add(ChartValue("Frs Term", 59))
-        data.add(ChartValue("Frs Term", 59))
-        data.add(ChartValue("Frs Term", 59))
-
         webView.setChartData(data)
-
     }
 
 
