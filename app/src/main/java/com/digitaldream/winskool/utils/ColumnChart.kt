@@ -69,11 +69,11 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
         val content = "<html>\n" +
                 "<head>\n" +
                 "    <!--Load the AJAX API-->\n" +
-                "    <script type=\"text/javascript\" src=\"$ASSET_PATH.jsapi.js\"></script>\n" +
+                "    <script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>\n" +
                 "    <script type=\"text/javascript\">\n" +
                 "\n" +
                 "      // Load the Visualization API and the corechart package.\n" +
-                "      google.load('current', {'packages':['corechart']});\n" +
+                "      google.charts.load('current', {'packages':['corechart']});\n" +
                 "\n" +
                 "      // Set a callback to run when the Google Visualization API is loaded.\n" +
                 "      google.charts.setOnLoadCallback(drawChart);\n" +
