@@ -2,11 +2,14 @@ package com.digitaldream.winskool.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.content.ContextCompat
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ChartValue
 
@@ -23,6 +26,7 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
         val typedArray = context.obtainStyledAttributes(
             attrs, R.styleable.ColumnChart
         )
+        setBackgroundColor(ContextCompat.getColor(context, R.color.white))
 
         try {
             chartTitle = typedArray.getString(R.styleable.ColumnChart_chartTitle)
@@ -93,7 +97,7 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 "\n" +
                 "        // Set chart options\n" +
                 "        var options = {'title':'$chartTitle',\n" +
-                "                       'width':500,\n" +
+                "                       'width':450,\n" +
                 "                       'height':250,\n" +
                 "                       'bar': {groupWidth: \"35%\"},\n" +
                 "                       'legend': {position: \"none\"}\n" +
@@ -108,7 +112,7 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 "\n" +
                 "<body>\n" +
                 "<!--Div that will hold the pie chart-->\n" +
-                "<div id=\"chart_div\" style=\"width: 500px; height: 250px;\"></div>\n" +
+                "<div id=\"chart_div\" style=\"width: 450px; height: 250px;\"></div>\n" +
                 "</body>\n" +
                 "</html>"
 

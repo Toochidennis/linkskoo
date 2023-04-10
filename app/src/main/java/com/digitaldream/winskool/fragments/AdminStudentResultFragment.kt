@@ -20,7 +20,10 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.dialog.AdminResultStudentNamesDialog
 import com.digitaldream.winskool.dialog.OnInputListener
-import com.digitaldream.winskool.models.*
+import com.digitaldream.winskool.models.AdminStudentResultFragmentModel
+import com.digitaldream.winskool.models.ChartValue
+import com.digitaldream.winskool.models.ClassNameTable
+import com.digitaldream.winskool.models.StudentTable
 import com.digitaldream.winskool.utils.ColumnChart
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -37,7 +40,6 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class AdminStudentResultFragment : Fragment(), OnItemClickListener {
-
 
     private lateinit var mRefreshBtn: Button
     private lateinit var mStudentNameBtn: Button
@@ -92,6 +94,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
         changeStudent(view)
         refresh(view)
+
 
         return view
     }
@@ -224,11 +227,11 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
                                         "$session Session", this@AdminStudentResultFragment
                                     )
                                 )
-                                graph(sView, graphList)
 
                             }
 
-                            //plotGraph(sView, graphList)
+                            graph(sView, graphList)
+
 
                             recyclerView.apply {
                                 hasFixedSize()
@@ -311,6 +314,17 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         // webView.loadUrl("file:///android_asset/linkskool_chart.html")
         webView.requestFocusFromTouch()
 
+    }
+
+     private fun Date.convertCurrentDateToChartDate(dataFormat:String): String {
+        var day: String
+        Calendar.getInstance().apply {
+            time = this@convertCurrentDateToChartDate
+            day = SimpleDateFormat(dataFormat, Locale.ENGLISH).apply {
+                timeZone = TimeZone.getDefault()
+            }.format(time)
+        }
+        return day
     }
 
 
