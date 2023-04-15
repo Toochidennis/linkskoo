@@ -158,7 +158,7 @@
         <activity android:name="com.digitaldream.winskool.activities.StudentDashboardActivity" />
         <activity android:name="com.digitaldream.winskool.activities.AddResult" />
         <activity android:name="com.digitaldream.winskool.activities.StaffDashboardActivity" />
-        <activity android:name="com.digitaldream.winskool.activities.ViewResultWebView" />
+        <activity android:name="com.digitaldream.winskool.activities.ViewStudentResultActivity" />
         <activity android:name="com.digitaldream.winskool.activities.TeacherProfileEdit" />
         <activity android:name="com.digitaldream.winskool.activities.AddTeacher" />
         <activity

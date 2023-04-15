@@ -13,7 +13,6 @@ import android.widget.ImageView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
@@ -89,7 +88,7 @@ class VendorDialog(
         sPhone: String,
     ) {
 
-        val url = "${Login.urlBase}/manageVendor.php"
+        val url = "${context.getString(R.string.base_url)}/manageVendor.php"
         val hashMap = hashMapOf<String, String>()
         hashMap["customer_id"] = sId
         hashMap["customer_name"] = sName

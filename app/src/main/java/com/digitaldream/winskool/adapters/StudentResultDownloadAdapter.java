@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.digitaldream.winskool.activities.ViewStudentResultActivity;
 import com.digitaldream.winskool.models.StudentResultDownloadTable;
 import com.digitaldream.winskool.R;
-import com.digitaldream.winskool.activities.ViewResultWebView;
 
 import java.util.List;
 
@@ -45,9 +45,9 @@ public class StudentResultDownloadAdapter extends RecyclerView.Adapter<StudentRe
 
         }else{
             studentResultDownloadViewHolder.btn1.setOnClickListener(view -> {
-                Intent intent = new Intent(context, ViewResultWebView.class);
+                Intent intent = new Intent(context, ViewStudentResultActivity.class);
                 intent.putExtra("level",model.getLevel());
-                intent.putExtra("term","1");
+                intent.putExtra("term","First Term");
                 intent.putExtra("studentId",model.getStudentId());
                 intent.putExtra("year",model.getSchoolYear());
                 intent.putExtra("classId",model.getClassId());
@@ -59,34 +59,28 @@ public class StudentResultDownloadAdapter extends RecyclerView.Adapter<StudentRe
             studentResultDownloadViewHolder.btn2.setVisibility(View.GONE);
 
         }else{
-            studentResultDownloadViewHolder.btn2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context,ViewResultWebView.class);
-                    intent.putExtra("level",model.getLevel());
-                    intent.putExtra("term","2");
-                    intent.putExtra("studentId",model.getStudentId());
-                    intent.putExtra("year",model.getSchoolYear());
-                    intent.putExtra("classId",model.getClassId());
-                    context.startActivity(intent);
-                }
+            studentResultDownloadViewHolder.btn2.setOnClickListener(view -> {
+                Intent intent = new Intent(context, ViewStudentResultActivity.class);
+                intent.putExtra("level",model.getLevel());
+                intent.putExtra("term","Second Term");
+                intent.putExtra("studentId",model.getStudentId());
+                intent.putExtra("year",model.getSchoolYear());
+                intent.putExtra("classId",model.getClassId());
+                context.startActivity(intent);
             });
 
         }
         if(model.getThirdTerm().equals("")){
             studentResultDownloadViewHolder.btn3.setVisibility(View.GONE);
         }else{
-            studentResultDownloadViewHolder.btn3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context,ViewResultWebView.class);
-                    intent.putExtra("level",model.getLevel());
-                    intent.putExtra("term","3");
-                    intent.putExtra("studentId",model.getStudentId());
-                    intent.putExtra("year",model.getSchoolYear());
-                    intent.putExtra("classId",model.getClassId());
-                    context.startActivity(intent);
-                }
+            studentResultDownloadViewHolder.btn3.setOnClickListener(view -> {
+                Intent intent = new Intent(context, ViewStudentResultActivity.class);
+                intent.putExtra("level",model.getLevel());
+                intent.putExtra("term","Third Term");
+                intent.putExtra("studentId",model.getStudentId());
+                intent.putExtra("year",model.getSchoolYear());
+                intent.putExtra("classId",model.getClassId());
+                context.startActivity(intent);
             });
 
         }

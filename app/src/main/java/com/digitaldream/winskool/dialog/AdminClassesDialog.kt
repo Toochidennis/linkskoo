@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.AdminResultDashboardActivity
+import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.DialogClassNameAdapter
 import com.digitaldream.winskool.adapters.OnClassClickListener
 import com.digitaldream.winskool.adapters.OnItemClickListener
@@ -28,9 +29,10 @@ import com.digitaldream.winskool.models.LevelTable
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 
-class AdminResultDialog(
+class AdminClassesDialog(
     sContext: Context,
     private val sFrom: String,
+    private val sType: String?,
     private val sResulClick: ResultListener?,
 ) : Dialog(sContext), OnItemClickListener, OnClassClickListener {
 
@@ -159,19 +161,37 @@ class AdminResultDialog(
     override fun onClassClick(position: Int) {
         val classTable = mClassList[position]
 
-        if (sFrom == "changeLevel") {
-            sResulClick!!.sendClassName(classTable.className)
-            sResulClick.sendClassId(classTable.classId)
-            sResulClick.sendLevelId(classTable.level)
+        if (sFrom == "result"){
+            if (sType == "changeLevel") {
+                sResulClick!!.sendClassName(classTable.className)
+                sResulClick.sendClassId(classTable.classId)
+                sResulClick.sendLevelId(classTable.level)
 
-        } else {
-            context.startActivity(
-                Intent(context, AdminResultDashboardActivity().javaClass)
-                    .putExtra("class_id", classTable.classId)
-                    .putExtra("class_name", classTable.className)
-                    .putExtra("level_Id", mLevelId)
-            )
-        }
+            } else {
+                context.startActivity(
+                    Intent(context, AdminResultDashboardActivity().javaClass)
+                        .putExtra("class_id", classTable.classId)
+                        .putExtra("class_name", classTable.className)
+                        .putExtra("level_Id", mLevelId)
+                )
+            }
+        }/*else{
+            if (sType == "changeLevel") {
+                sResulClick!!.sendClassName(classTable.className)
+                sResulClick.sendClassId(classTable.classId)
+                sResulClick.sendLevelId(classTable.level)
+
+            } else {
+                context.startActivity(
+                    Intent(context, PaymentActivity().javaClass)
+                        .putExtra("class_id", classTable.classId)
+                        .putExtra("class_name", classTable.className)
+                        .putExtra("level_Id", mLevelId)
+                )
+            }
+        }*/
+
+
 
         dismiss()
 

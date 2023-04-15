@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
@@ -151,7 +150,7 @@ class AddExpenditureFragment : Fragment() {
     }
 
     private fun getAccountName() {
-        val url = Login.urlBase + "/manageAccount.php?list=1"
+        val url = getString(R.string.base_url)+ "/manageAccount.php?list=1"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(
@@ -265,7 +264,7 @@ class AddExpenditureFragment : Fragment() {
         val term = sharedPreferences.getString("term", "")
         val year = sharedPreferences.getString("school_year", "")
 
-        val url = Login.urlBase + "/manageTransactions.php"
+        val url = getString(R.string.base_url)+ "/manageTransactions.php"
         val hashMap = hashMapOf<String, String>()
         hashMap.apply {
             put("transaction_type", "expenditure")
@@ -289,7 +288,6 @@ class AddExpenditureFragment : Fragment() {
                 override fun onResponse(response: String) {
                     Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT)
                         .show()
-                    print("Success")
                 }
 
                 override fun onError(error: VolleyError) {

@@ -14,23 +14,21 @@ import com.digitaldream.winskool.adapters.SettingListAdapter;
 import java.util.Objects;
 
 public class Settings extends AppCompatActivity {
-    private String[] settingsTitle = {"General settings", "Level", "Courses",
-            "Grade", "Assessment"};
-    private ListView listView;
-    private Toolbar toolbar;
+    private final String[] settingsTitle = {"General settings", "Level", "Courses",
+            "Grade", "Assessment", "Class"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
-        listView = findViewById(R.id.settings_list);
+        ListView listView = findViewById(R.id.settings_list);
 
         SettingListAdapter adapter = new SettingListAdapter(this,
                 settingsTitle);
@@ -38,40 +36,32 @@ public class Settings extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
-                    Intent intent = new Intent(Settings.this,
-                            GeneralSettings.class);
-                    startActivity(intent);
+                    startActivity(new Intent(this, GeneralSettings.class));
                     break;
                 case 1:
-                    Intent intent0 = new Intent(Settings.this,
-                            LevelSettings.class);
-                    startActivity(intent0);
+                    startActivity(new Intent(this, LevelSettings.class));
                     break;
                 case 2:
-                    Intent intent1 = new Intent(Settings.this,
-                            CourseSettings.class);
-                    startActivity(intent1);
+                    startActivity(new Intent(this, CourseSettings.class));
                     break;
                 case 3:
-                    Intent intent2 = new Intent(Settings.this,
-                            GradeSettings.class);
-                    startActivity(intent2);
+                    startActivity(new Intent(this, GradeSettings.class));
                     break;
                 case 4:
-                    Intent intent3 = new Intent(Settings.this,
-                            AssessmentSetting.class);
-                    startActivity(intent3);
+                    startActivity(new Intent(this, AssessmentSetting.class));
                     break;
+/*
+                case 5:
+                    startActivity(new Intent(this, AddClass.class));
+                    break;*/
             }
         });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return false;
     }

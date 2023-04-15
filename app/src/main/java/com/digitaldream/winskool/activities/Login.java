@@ -778,6 +778,7 @@ public class Login extends AppCompatActivity {
                             editor.putString("access_level", accessLevel);
                             editor.putString("who", "admin");
                             editor.putString("term", term);
+                            editor.putBoolean("hide", false);
                             editor.putString("db", db);
                             Log.i("response_db", db);
                             editor.apply();

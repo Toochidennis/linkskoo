@@ -261,7 +261,7 @@
 -keep class com.digitaldream.winskool.activities.ViewClassResultWebview { <init>(); }
 -keep class com.digitaldream.winskool.activities.ViewResponses { <init>(); }
 -keep class com.digitaldream.winskool.activities.ViewResult { <init>(); }
--keep class com.digitaldream.winskool.activities.ViewResultWebView { <init>(); }
+-keep class com.digitaldream.winskool.activities.ViewStudentResultActivity { <init>(); }
 -keep class com.digitaldream.winskool.activities.WifiActivity { <init>(); }
 -keep class com.digitaldream.winskool.activities.YoutubePlayerActivity { <init>(); }
 -keep class com.digitaldream.winskool.utils.NotificationUtils { <init>(); }

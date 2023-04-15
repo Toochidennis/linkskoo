@@ -18,7 +18,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.AdminResultDashboardAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
-import com.digitaldream.winskool.dialog.AdminResultDialog
+import com.digitaldream.winskool.dialog.AdminClassesDialog
 import com.digitaldream.winskool.dialog.AdminResultStudentNamesDialog
 import com.digitaldream.winskool.dialog.TermResultDialog
 import com.digitaldream.winskool.interfaces.ResultListener
@@ -153,7 +153,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
 
     private fun changeClass() {
         mClassBtn.setOnClickListener {
-            AdminResultDialog(this, "changeLevel",
+            AdminClassesDialog(this, "result","changeLevel",
                 object : ResultListener {
                     override fun sendClassName(sName: String) {
                         mClassName = sName

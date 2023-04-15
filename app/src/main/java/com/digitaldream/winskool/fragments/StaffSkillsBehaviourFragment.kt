@@ -3,14 +3,14 @@ package com.digitaldream.winskool.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
+import com.digitaldream.winskool.utils.FunctionUtils.webViewProgress
 
 
 private const val ARG_PARAM1 = "param1"
@@ -71,7 +71,7 @@ class StaffSkillsBehaviourFragment : Fragment() {
         val staffId = sharedPreferences.getString("user_id", "")
         val db = sharedPreferences.getString("db", "")
 
-        val url = "${Login.urlBase}/addSkill.php?staff_id=$staffId&&class=$mClassId&&_db=$db"
+        val url = "${getString(R.string.base_url)}/addSkill.php?staff_id=$staffId&&class=$mClassId&&_db=$db"
 
         webView.settings.apply {
             javaScriptEnabled = true
@@ -80,5 +80,9 @@ class StaffSkillsBehaviourFragment : Fragment() {
         }
 
         webView.loadUrl(url)
+
+        webViewProgress(requireContext(), webView)
     }
+
+
 }

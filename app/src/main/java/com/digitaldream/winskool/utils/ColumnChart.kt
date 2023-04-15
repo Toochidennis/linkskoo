@@ -12,8 +12,10 @@ import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ChartValue
+import com.digitaldream.winskool.utils.FunctionUtils.webViewProgress
 
 const val ASSET_PATH = "file:///android_asset/"
+
 @SuppressLint("SetJavaScriptEnabled")
 class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     WebView(context, attrs) {
@@ -127,7 +129,7 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
         requestFocusFromTouch()
 
-        webViewClient = object: WebViewClient(){
+        webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
             }
@@ -139,6 +141,8 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 return false
             }
         }
+
+        webViewProgress(context, this)
 
     }
 

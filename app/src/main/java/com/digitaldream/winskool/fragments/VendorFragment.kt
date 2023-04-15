@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.VendorFragmentAdapter
@@ -111,6 +110,8 @@ class VendorFragment : Fragment(), OnItemClickListener {
             }
         })
 
+        getVendor()
+
         refresh()
 
         return view
@@ -133,7 +134,7 @@ class VendorFragment : Fragment(), OnItemClickListener {
 
     private fun getVendor() {
         mVendorList.clear()
-        val url = "${Login.urlBase}/manageVendor.php?list=2"
+        val url = "${getString(R.string.base_url)}/manageVendor.php?list=2"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
@@ -190,11 +191,6 @@ class VendorFragment : Fragment(), OnItemClickListener {
 
     private fun refresh() {
         mRefreshBtn.setOnClickListener { getVendor() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getVendor()
     }
 
     override fun onItemClick(position: Int) {

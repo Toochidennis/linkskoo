@@ -142,56 +142,44 @@ public class StudentResultDownload extends AppCompatActivity implements StudentR
             email.setEnabled(false);
             emailIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
         }
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!phoneNumber.isEmpty()) {
-                    Intent i = new Intent(android.content.Intent.ACTION_DIAL,
-                            Uri.parse("tel:" + phoneNumber));
-                    startActivity(i);
-                }else{
-                    Toast.makeText(StudentResultDownload.this,"phone number is not available",Toast.LENGTH_SHORT).show();
-                }
+        call.setOnClickListener(v -> {
+            if(!phoneNumber.isEmpty()) {
+                Intent i1 = new Intent(Intent.ACTION_DIAL,
+                        Uri.parse("tel:" + phoneNumber));
+                startActivity(i1);
+            }else{
+                Toast.makeText(StudentResultDownload.this,"phone number is not available",Toast.LENGTH_SHORT).show();
             }
         });
-        sms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!phoneNumber.isEmpty()) {
-                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setData(Uri.parse("smsto:" + phoneNumber));
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(StudentResultDownload.this,"phone number is not available",Toast.LENGTH_SHORT).show();
-                }
+        sms.setOnClickListener(v -> {
+            if(!phoneNumber.isEmpty()) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse("smsto:" + phoneNumber));
+                startActivity(intent);
+            }else{
+                Toast.makeText(StudentResultDownload.this,"phone number is not available",Toast.LENGTH_SHORT).show();
             }
         });
 
-        whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!phoneNumber.isEmpty()) {
-                    Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + "234" + phoneNumber + "&text=" + "");
-                    Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+        whatsapp.setOnClickListener(v -> {
+            if(!phoneNumber.isEmpty()) {
+                Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + "234" + phoneNumber + "&text=" + "");
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
 
-                    startActivity(sendIntent);
-                }else{
-                    Toast.makeText(StudentResultDownload.this,"phone number is not available",Toast.LENGTH_SHORT).show();
-                }
+                startActivity(sendIntent);
+            }else{
+                Toast.makeText(StudentResultDownload.this,"phone number is not available",Toast.LENGTH_SHORT).show();
             }
         });
-        email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!emailAddress.isEmpty()) {
-                    Intent emailIntent = new Intent(Intent.ACTION_VIEW);
-                    Uri data = Uri.parse("mailto:?subject=" + "subject text" + "&body=" + "body text " + "&to=" + emailAddress);
-                    emailIntent.setData(data);
-                    startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                }else{
-                    Toast.makeText(StudentResultDownload.this,"email is not available",Toast.LENGTH_SHORT).show();
-                }
+        email.setOnClickListener(v -> {
+            if(!emailAddress.isEmpty()) {
+                Intent emailIntent = new Intent(Intent.ACTION_VIEW);
+                Uri data = Uri.parse("mailto:?subject=" + "subject text" + "&body=" + "body text " + "&to=" + emailAddress);
+                emailIntent.setData(data);
+                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            }else{
+                Toast.makeText(StudentResultDownload.this,"email is not available",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -203,10 +191,9 @@ public class StudentResultDownload extends AppCompatActivity implements StudentR
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -221,92 +208,84 @@ public class StudentResultDownload extends AppCompatActivity implements StudentR
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         String db = sharedPreferences.getString("db","");
         String url = Login.urlBase+"/jsonResult.php?id="+id+"&_db="+db;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                dialog1.dismiss();
-                Log.i("result",response);
-                student_name.setText(builder.toString());
-                emptyState.setVisibility(View.VISIBLE);
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                        JSONObject object = jsonArray.getJSONObject(0);
-                    Iterator<String> keys = object.keys();
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        String schoolYear = key;
-                        if (object.get(key) instanceof JSONObject) {
-                            // do something with jsonObject here
-                            JSONObject object1 = object.getJSONObject(key);
-                            String className = object1.getString("class_name");
-                            String levelID = object1.getString("level");
-                            String classId = object1.getString("class_id");
-                            JSONObject termObject = object1.getJSONObject("terms");
-                            String first_term = "";
-                            String second_term = "";
-                            String third_term = "";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            dialog1.dismiss();
+            Log.i("result",response);
+            student_name.setText(builder.toString());
+            emptyState.setVisibility(View.VISIBLE);
+            try {
+                JSONArray jsonArray = new JSONArray(response);
+                    JSONObject object = jsonArray.getJSONObject(0);
+                Iterator<String> keys = object.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String schoolYear = key;
+                    if (object.get(key) instanceof JSONObject) {
+                        // do something with jsonObject here
+                        JSONObject object1 = object.getJSONObject(key);
+                        String className = object1.getString("class_name");
+                        String levelID = object1.getString("level");
+                        String classId = object1.getString("class_id");
+                        JSONObject termObject = object1.getJSONObject("terms");
+                        String first_term = "";
+                        String second_term = "";
+                        String third_term = "";
 
-                            if (termObject.has("1")) {
-                                first_term = termObject.getString("1");
-                                first_term = "1st";
+                        if (termObject.has("1")) {
+                            first_term = termObject.getString("1");
+                            first_term = "1st";
 
-                            }
-                            if (termObject.has("2")) {
+                        }
+                        if (termObject.has("2")) {
 
-                                second_term = termObject.getString("2");
-                                second_term = "2nd";
+                            second_term = termObject.getString("2");
+                            second_term = "2nd";
 
-                            }
-                            if (termObject.has("3")) {
-                                third_term = termObject.getString("3");
-                                third_term = "3rd";
+                        }
+                        if (termObject.has("3")) {
+                            third_term = termObject.getString("3");
+                            third_term = "3rd";
 
-                            }
-                                QueryBuilder<StudentResultDownloadTable, Long> queryBuilder = studentResultDao.queryBuilder();
-                                queryBuilder.where().eq("level", levelID);
-                                List<StudentResultDownloadTable> levelList = queryBuilder.query();
-                                if(levelList.isEmpty()) {
+                        }
+                            QueryBuilder<StudentResultDownloadTable, Long> queryBuilder = studentResultDao.queryBuilder();
+                            queryBuilder.where().eq("level", levelID);
+                            List<StudentResultDownloadTable> levelList = queryBuilder.query();
+                            if(levelList.isEmpty()) {
 
-                                    StudentResultDownloadTable st = new StudentResultDownloadTable();
+                                StudentResultDownloadTable st = new StudentResultDownloadTable();
 
-                                    st.setFirstTerm(first_term);
-                                    st.setSecondTerm(second_term);
-                                    st.setThirdTerm(third_term);
-                                    st.setLevel(levelID);
-                                    st.setStudentId(studentId);
-                                    //st.setLevelName(levelList.get(0).getLevelName());
-                                    st.setLevelName(className);
-                                    st.setSchoolYear(schoolYear);
-                                    st.setClassId(classId);
+                                st.setFirstTerm(first_term);
+                                st.setSecondTerm(second_term);
+                                st.setThirdTerm(third_term);
+                                st.setLevel(levelID);
+                                st.setStudentId(studentId);
+                                //st.setLevelName(levelList.get(0).getLevelName());
+                                st.setLevelName(className);
+                                st.setSchoolYear(schoolYear);
+                                st.setClassId(classId);
 
-                                    studentResultDao.create(st);
-                                }
-
+                                studentResultDao.create(st);
                             }
 
-                    }
+                        }
 
-                    studentResultDownloadList = studentResultDao.queryForAll();
-                    if (!studentResultDownloadList.isEmpty()) {
-                        emptyState.setVisibility(View.GONE);
-                        unemptyState.setVisibility(View.VISIBLE);
-                        StudentResultDownloadAdapter studentResultDownloadAdapter = new StudentResultDownloadAdapter(StudentResultDownload.this, studentResultDownloadList, StudentResultDownload.this);
-                        recyclerView.setAdapter(studentResultDownloadAdapter);
-                    }
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }catch (SQLException e){
-                    e.printStackTrace();
                 }
+
+                studentResultDownloadList = studentResultDao.queryForAll();
+                if (!studentResultDownloadList.isEmpty()) {
+                    emptyState.setVisibility(View.GONE);
+                    unemptyState.setVisibility(View.VISIBLE);
+                    StudentResultDownloadAdapter studentResultDownloadAdapter = new StudentResultDownloadAdapter(StudentResultDownload.this, studentResultDownloadList, StudentResultDownload.this);
+                    recyclerView.setAdapter(studentResultDownloadAdapter);
+                }
+
+
+            } catch (JSONException | SQLException e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                dialog1.dismiss();
-                Toast.makeText(StudentResultDownload.this,"something went wrong",Toast.LENGTH_SHORT).show();
-            }
+        }, error -> {
+            dialog1.dismiss();
+            Toast.makeText(StudentResultDownload.this,"something went wrong",Toast.LENGTH_SHORT).show();
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);

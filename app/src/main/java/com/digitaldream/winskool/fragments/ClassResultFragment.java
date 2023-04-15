@@ -252,12 +252,12 @@ public class ClassResultFragment extends Fragment implements ClassResultAdapter.
 
     private void refreshClassList() {
 
-        String login_url = Login.urlBase + "/allClass.php?_db=" + db;
+        String login_url = getString(R.string.base_url) + "/allClass.php?_db=" + db;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, login_url,
                 response -> {
                     Log.i("response", response);
-                    JSONObject jsonObject = null;
+                    JSONObject jsonObject;
                     try {
                         jsonObject = new JSONObject(response);
                         JSONObject jsonObject3 = jsonObject.getJSONObject("allClass");

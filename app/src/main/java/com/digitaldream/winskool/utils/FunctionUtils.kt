@@ -19,6 +19,9 @@ import android.os.SystemClock
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -182,57 +185,6 @@ object FunctionUtils {
         )
     }
 
-    @JvmStatic
-    fun plotLineChart2(
-        sContext: Context,
-        sValues: ArrayList<ChartModel>,
-        sVerticalTitle: String?,
-        sHorizontalTitle: String?,
-    ): GraphicalView {
-
-        val graphLength = sValues.size
-
-        val series = XYSeries(sVerticalTitle)
-
-        for (i in 0 until graphLength)
-            series.add(i.toDouble(), sValues[i].verticalValues.toDouble())
-
-        val dataset = XYMultipleSeriesDataset()
-        dataset.addSeries(series)
-
-        val seriesRenderer = XYSeriesRenderer()
-        seriesRenderer.color = Color.WHITE
-        seriesRenderer.isFillPoints = true
-        seriesRenderer.isDisplayChartValues = true
-        seriesRenderer.chartValuesTextSize = 30f
-
-        val multipleRenderer = XYMultipleSeriesRenderer()
-        multipleRenderer.xLabels = 0
-        multipleRenderer.yLabels = 0
-        multipleRenderer.xAxisMin = 0.5
-        multipleRenderer.xAxisMax = 10.5
-        multipleRenderer.xTitle = sHorizontalTitle
-        multipleRenderer.margins = intArrayOf(20, 30, 15, 0)
-        multipleRenderer.isPanEnabled = false
-        multipleRenderer.xAxisColor = Color.parseColor("#2C62FF")
-        multipleRenderer.yAxisColor = Color.parseColor("#2C62FF")
-        multipleRenderer.marginsColor = Color.parseColor("#2C62FF")
-        multipleRenderer.isZoomEnabled = false
-        multipleRenderer.backgroundColor = Color.parseColor("#2C62FF")
-        multipleRenderer.isApplyBackgroundColor = true
-        multipleRenderer.labelsColor = Color.WHITE
-        multipleRenderer.barSpacing = 0.5
-        multipleRenderer.labelsTextSize = 25f
-        multipleRenderer.axisTitleTextSize = 25f
-        multipleRenderer.addSeriesRenderer(seriesRenderer)
-
-        for (i in 0 until graphLength)
-            multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
-
-        return ChartFactory.getBarChartView(
-            sContext, dataset, multipleRenderer, BarChart.Type.DEFAULT
-        )
-    }
 
     @JvmStatic
     fun currencyFormat(number: Double): String {
@@ -457,6 +409,26 @@ object FunctionUtils {
         val month = (calendar[Calendar.MONTH] + 1).toString()
         val dayOfMonth = calendar[Calendar.DAY_OF_MONTH].toString()
         return "$year-$month-$dayOfMonth"
+    }
+
+    @JvmStatic
+    fun webViewProgress(context: Context, webView: WebView) {
+        val progressFlower = ACProgressFlower.Builder(context)
+            .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+            .textMarginTop(5)
+            .fadeColor(ContextCompat.getColor((context as AppCompatActivity), R.color.color_5))
+            .build()
+        progressFlower.setCancelable(false)
+        progressFlower.setCanceledOnTouchOutside(false)
+        progressFlower.show()
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                if (newProgress == 100)
+                    progressFlower.dismiss()
+            }
+        }
+
     }
 
 }

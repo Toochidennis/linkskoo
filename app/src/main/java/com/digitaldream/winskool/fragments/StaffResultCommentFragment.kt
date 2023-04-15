@@ -10,7 +10,7 @@ import android.webkit.WebView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
+import com.digitaldream.winskool.utils.FunctionUtils.webViewProgress
 
 
 private const val ARG_PARAM1 = "param1"
@@ -69,9 +69,10 @@ class StaffResultCommentFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val staffId = sharedPreferences.getString("user_id", "")
-        val db = sharedPreferences.getString("db","")
+        val db = sharedPreferences.getString("db", "")
 
-        val url = "${Login.urlBase}/addComment.php?staff_id=$staffId&&class=$mClassId&&_db=$db"
+        val url = "${getString(R.string.base_url)}/addComment" +
+                ".php?staff_id=$staffId&&class=$mClassId&&_db=$db"
 
         webView.settings.apply {
             javaScriptEnabled = true
@@ -80,5 +81,7 @@ class StaffResultCommentFragment : Fragment() {
         }
 
         webView.loadUrl(url)
+
+        webViewProgress(requireContext(), webView)
     }
 }

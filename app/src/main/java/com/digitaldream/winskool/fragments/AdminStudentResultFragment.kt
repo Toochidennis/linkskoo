@@ -1,5 +1,6 @@
 package com.digitaldream.winskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.activities.ViewStudentResultActivity
 import com.digitaldream.winskool.adapters.AdminStudentResultAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.config.DatabaseHelper
@@ -33,7 +34,6 @@ import com.j256.ormlite.dao.DaoManager
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val ARG_PARAM1 = "param1"
@@ -283,7 +283,17 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
 
     override fun onItemClick(position: Int) {
-        Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
+        val studentList = mStudentList[0]
+        val termList = mTermList[position-1]
+
+        startActivity(
+            Intent(requireContext(), ViewStudentResultActivity::class.java)
+                .putExtra("level", studentList.studentLevel)
+                .putExtra("term", termList.term)
+                .putExtra("studentId", studentList.studentId)
+                .putExtra("year", termList.year)
+                .putExtra("classId", studentList.studentClass)
+        )
     }
 
 }
