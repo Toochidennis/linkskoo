@@ -28,4 +28,7 @@
     <dimen name="dimen_32">32dp</dimen>
     <dimen name="dimen_64">64sp</dimen>
     <dimen name="image_height">420dp</dimen>
+
+    <dimen name="chart_line_thickness">2dp</dimen>
+    <dimen name="chart_point_radius">5dp</dimen>
 </resources>

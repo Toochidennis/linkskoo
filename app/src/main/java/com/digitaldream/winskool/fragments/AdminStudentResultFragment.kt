@@ -95,7 +95,6 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         changeStudent(view)
         refresh(view)
 
-
         return view
     }
 
@@ -284,7 +283,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val studentList = mStudentList[0]
-        val termList = mTermList[position-1]
+        val termList = mTermList[position - 1]
 
         startActivity(
             Intent(requireContext(), ViewStudentResultActivity::class.java)

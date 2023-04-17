@@ -58,5 +58,9 @@
 
     <color name="pathColor">#30d6af</color>
 
+    <color name="chart_line">@color/test_color_2</color>
+    <color name="chart_text">@color/black</color>
+    <color name="chart_point">@color/test_color_5</color>
+
 
 </resources>
