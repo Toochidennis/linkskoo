@@ -133,4 +133,5 @@
     <string name="skills_and_behaviour"><![CDATA[Skills & Behaviour]]></string>
     <string name="comment">Comment</string>
     <string name="students">Students</string>
+    <string name="no_result_yet">No result yet!</string>
 </resources>

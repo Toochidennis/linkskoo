@@ -92,7 +92,7 @@ class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 "        // Create the data table.\n" +
                 "        var data = new google.visualization.DataTable();\n" +
                 "        data.addColumn('string', 'Topping');\n" +
-                "        data.addColumn('number', 'Slices');\n" +
+                "        data.addColumn('number', 'Average');\n" +
                 "        data.addRows([\n" +
                 "           $chartData \n" +
                 "        ]);\n" +

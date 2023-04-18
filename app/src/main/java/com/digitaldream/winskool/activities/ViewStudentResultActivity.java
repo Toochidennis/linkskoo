@@ -50,8 +50,6 @@ public class ViewStudentResultActivity extends AppCompatActivity {
 
         }
 
-        Log.i("response", studentId + " " + level + " " + termValue + " " + year);
-
         WebView webView = findViewById(R.id.webview_view_result);
 
         SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
