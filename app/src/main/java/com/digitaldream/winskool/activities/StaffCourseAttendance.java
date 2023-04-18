@@ -84,7 +84,7 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         responseId = intent.getStringExtra("responseId");
         String className = intent.getStringExtra("class_name");
         String courseName = intent.getStringExtra("course_name");
-        // Log.i("responseIdId", responseId);
+
 
         SharedPreferences sharedPreferences = getSharedPreferences(
                 "loginDetail", Context.MODE_PRIVATE);
@@ -136,7 +136,6 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
             } catch (JSONException sE) {
                 sE.printStackTrace();
             }
-
 
         });
 
@@ -256,7 +255,7 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
-        String url = Login.urlBase + "/setAttendance.php";
+        String url = getString(R.string.base_url)+ "/setAttendance.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
@@ -318,7 +317,7 @@ public class StaffCourseAttendance extends AppCompatActivity implements StaffCou
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
-        String url = Login.urlBase + "/getCourseRegistration.php";
+        String url = getString(R.string.base_url) + "/getCourseRegistration.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
                 response -> {

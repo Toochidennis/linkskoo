@@ -33,7 +33,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@color/tab_color">
+                android:background="@drawable/background_gradient_color">
 
                 <TextView
                     android:id="@+id/user_name"

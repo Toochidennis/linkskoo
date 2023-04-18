@@ -86,9 +86,9 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.attendance_course);
+        setContentView(R.layout.activity_attendance_course);
 
-        Toolbar toolbar = findViewById(R.id.tool_bar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -209,7 +209,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
         });
 
-
     }
 
     public void onFabAnimation(FloatingActionButton sAttend,
@@ -246,7 +245,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
-        String url = Login.urlBase + "/getAttendanceList.php";
+        String url = getString(R.string.base_url) + "/getAttendanceList.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url, response -> {
             Log.i("response", response);
@@ -259,7 +258,6 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
                     String count = jsonObject.getString("count");
 
                     String dateConverted = dateConverter(date);
-                    Log.i("date", dateConverted);
 
                     StudentTable studentTable = new StudentTable();
                     studentTable.setDate(dateConverted);
@@ -314,7 +312,7 @@ public class CourseAttendance extends AppCompatActivity implements CourseAttenda
 
     public void getPreviousCourseRegistration() {
 
-        String url = Login.urlBase + "/getCourseRegistration.php";
+        String url = getString(R.string.base_url) + "/getCourseRegistration.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
                 response -> {

@@ -11,9 +11,9 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#191F91"
+        android:background="@drawable/background_gradient_color"
         android:padding="5dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
      <include layout="@layout/toolbar"
          android:id="@+id/course_tool_bar"/>
@@ -23,6 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
+            android:fontFamily="@font/montserrat"
+            android:layout_marginTop="15dp"
             android:layout_gravity="center_horizontal"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
@@ -32,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
+            android:fontFamily="@font/montserrat"
             android:textSize="14sp"
             android:layout_gravity="center_horizontal"/>
 

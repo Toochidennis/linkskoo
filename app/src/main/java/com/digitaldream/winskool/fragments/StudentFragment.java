@@ -21,7 +21,6 @@ import com.digitaldream.winskool.models.ClassNameTable;
 import com.digitaldream.winskool.models.LevelTable;
 import com.digitaldream.winskool.R;
 import com.digitaldream.winskool.adapters.StudentResultAdapter;
-import com.digitaldream.winskool.activities.StudentResultDownload;
 import com.digitaldream.winskool.models.StudentTable;
 import com.digitaldream.winskool.utils.RefreshListener;
 import com.j256.ormlite.dao.Dao;
@@ -172,7 +171,7 @@ public class StudentFragment extends Fragment implements StudentResultAdapter.On
 
     @Override
     public void onStudentResultClick(int position) {
-        Intent intent = new Intent(getContext(), StudentResultDownload.class);
+        Intent intent = new Intent(getContext(), StudentResultDownloadFragment.class);
         intent.putExtra("student_id",studentResultList.get(position).getStudentId());
         intent.putExtra("phone_number",studentResultList.get(position).getGuardianPhoneNo());
         intent.putExtra("email",studentResultList.get(position).getGuardianEmail());

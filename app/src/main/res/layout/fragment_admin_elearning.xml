@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.AdminELearning"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".fragments.AdminELearning">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:id="@+id/toolbar"
-        android:background="@color/tab_color"
+        android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    </androidx.appcompat.widget.Toolbar>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -25,31 +26,31 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/t"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="vertical"
-        android:background="@color/tab_color">
+            <LinearLayout
+                android:id="@+id/t"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/background_gradient_color"
+                android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Level"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/montserrat"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="5dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Select Level"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/e_learning_level_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/e_learning_level_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp" />
 
         </LinearLayout>
 

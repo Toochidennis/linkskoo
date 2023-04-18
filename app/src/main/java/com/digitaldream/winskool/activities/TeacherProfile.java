@@ -59,7 +59,8 @@ public class TeacherProfile extends AppCompatActivity {
     private ListView listView;
     private List<String> teacherInfoList;
     private RelativeLayout call, sms, email, whatsapp, courses, formclass;
-    private TextView teacherName, staff_number, staff_phone_number, staff_address, staff_birthday, staff_gender;
+    private TextView teacherName, staff_number, staff_phone_number, staff_address, staff_birthday
+            , staff_gender;
     TeachersTable tch;
     private DatabaseHelper databaseHelper;
     private Dao<TeachersTable, Long> teacherDao;
@@ -88,12 +89,14 @@ public class TeacherProfile extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
         accessLevel = sharedPreferences.getString("access_level", "");
 
         databaseHelper = new DatabaseHelper(this);
         try {
-            teacherDao = DaoManager.createDao(databaseHelper.getConnectionSource(), TeachersTable.class);
+            teacherDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    TeachersTable.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -106,7 +109,8 @@ public class TeacherProfile extends AppCompatActivity {
 
         teacherName = findViewById(R.id.teacherName_profile);
 
-        teacherName.setText(tch.getStaffSurname().toUpperCase() + " " + tch.getStaffFirstname().toUpperCase());
+        teacherName.setText(
+                tch.getStaffSurname().toUpperCase() + " " + tch.getStaffFirstname().toUpperCase());
 
         call = findViewById(R.id.call_teacher_profile);
         sms = findViewById(R.id.sms_teacher_profile);
@@ -121,89 +125,87 @@ public class TeacherProfile extends AppCompatActivity {
         staff_gender = findViewById(R.id.staff_gender);
         if (tch.getStaffEmail().isEmpty()) {
             email.setEnabled(false);
-            emailIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            emailIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
 
         if (tch.getStaffPhone().isEmpty()) {
             call.setEnabled(false);
-            callIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            callIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
             sms.setEnabled(false);
-            smsIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            smsIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
             whatsapp.setEnabled(false);
-            whatsappIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            whatsappIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
 
         }
 
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!tch.getStaffPhone().isEmpty()) {
-                    Intent i = new Intent(android.content.Intent.ACTION_DIAL,
-                            Uri.parse("tel:" + tch.getStaffPhone()));
-                    startActivity(i);
-                } else {
-                    Toast.makeText(TeacherProfile.this, "phone no is not available", Toast.LENGTH_SHORT).show();
-                }
+        call.setOnClickListener(view -> {
+            if (!tch.getStaffPhone().isEmpty()) {
+                Intent i1 = new Intent(Intent.ACTION_DIAL,
+                        Uri.parse("tel:" + tch.getStaffPhone()));
+                startActivity(i1);
+            } else {
+                Toast.makeText(TeacherProfile.this, "phone no is not available",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
-        sms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!tch.getStaffPhone().isEmpty()) {
-                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setData(Uri.parse("smsto:" + tch.getStaffPhone()));
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(TeacherProfile.this, "phone number is not available", Toast.LENGTH_SHORT).show();
-                }
+        sms.setOnClickListener(view -> {
+            if (!tch.getStaffPhone().isEmpty()) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse("smsto:" + tch.getStaffPhone()));
+                startActivity(intent);
+            } else {
+                Toast.makeText(TeacherProfile.this, "phone number is not available",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
-        whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!tch.getStaffPhone().isEmpty()) {
-                    Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + "234" + tch.getStaffPhone() + "&text=" + "");
-                    Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(sendIntent);
-                } else {
-                    Toast.makeText(TeacherProfile.this, "phone number is not available", Toast.LENGTH_SHORT).show();
-                }
+        whatsapp.setOnClickListener(view -> {
+            if (!tch.getStaffPhone().isEmpty()) {
+                Uri uri = Uri.parse(
+                        "https://api.whatsapp.com/send?phone=" + "234" + tch.getStaffPhone() +
+                                "&text=" + "");
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(sendIntent);
+            } else {
+                Toast.makeText(TeacherProfile.this, "phone number is not available",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
-        email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!tch.getStaffEmail().isEmpty()) {
-                    Intent emailIntent = new Intent(Intent.ACTION_VIEW);
-                    Uri data = Uri.parse("mailto:?subject=" + "subject text" + "&body=" + "body text " + "&to=" + tch.getStaffEmail());
-                    emailIntent.setData(data);
-                    startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                } else {
-                    Toast.makeText(TeacherProfile.this, "Email address is not available", Toast.LENGTH_SHORT).show();
-                }
+        email.setOnClickListener(view -> {
+            if (!tch.getStaffEmail().isEmpty()) {
+                Intent emailIntent = new Intent(Intent.ACTION_VIEW);
+                Uri data = Uri.parse(
+                        "mailto:?subject=" + "subject text" + "&body=" + "body text " + "&to=" + tch.getStaffEmail());
+                emailIntent.setData(data);
+                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            } else {
+                Toast.makeText(TeacherProfile.this, "Email address is not available",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
         formclass.setOnClickListener(v -> {
             Intent intent = new Intent(TeacherProfile.this, FormClass.class);
             intent.putExtra("staffId", staffId);
-            intent.putExtra("name", tch.getStaffSurname().toUpperCase() + " " + tch.getStaffFirstname().toUpperCase());
+            intent.putExtra("name",
+                    tch.getStaffSurname().toUpperCase() + " " + tch.getStaffFirstname().toUpperCase());
             startActivity(intent);
         });
 
-        courses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TeacherProfile.this, CoursesAssigned.class);
-                intent.putExtra("staffId", staffId);
-                intent.putExtra("name", tch.getStaffSurname().toUpperCase() + " " + tch.getStaffFirstname().toUpperCase());
-                startActivity(intent);
-            }
+        courses.setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherProfile.this, CoursesAssigned.class);
+            intent.putExtra("staffId", staffId);
+            intent.putExtra("name",
+                    tch.getStaffSurname().toUpperCase() + " " + tch.getStaffFirstname().toUpperCase());
+            startActivity(intent);
         });
 
 
@@ -312,32 +314,36 @@ public class TeacherProfile extends AppCompatActivity {
                 .fadeColor(Color.DKGRAY).build();
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
         String db = sharedPreferences.getString("db", "");
         String deleteUrl = Login.urlBase + "/deleteTeacher.php?id=" + id + "&_db=" + db;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, deleteUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("delete", response);
-                dialog1.dismiss();
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    String status = jsonObject.getString("status");
-                    if (status.equals("success")) {
-                        DeleteBuilder<TeachersTable, Long> deleteBuilder = teacherDao.deleteBuilder();
-                        deleteBuilder.where().eq("staffId", id);
-                        deleteBuilder.delete();
-                        Intent intent = new Intent(TeacherProfile.this, TeacherContacts.class);
-                        startActivity(intent);
-                        finish();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, deleteUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("delete", response);
+                        dialog1.dismiss();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String status = jsonObject.getString("status");
+                            if (status.equals("success")) {
+                                DeleteBuilder<TeachersTable, Long> deleteBuilder =
+                                        teacherDao.deleteBuilder();
+                                deleteBuilder.where().eq("staffId", id);
+                                deleteBuilder.delete();
+                                Intent intent = new Intent(TeacherProfile.this,
+                                        TeacherContacts.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -364,7 +370,8 @@ public class TeacherProfile extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        teacherName.setText(staffList.get(0).getStaffSurname().toUpperCase() + " " + staffList.get(0).getStaffFirstname().toUpperCase());
+        teacherName.setText(staffList.get(0).getStaffSurname().toUpperCase() + " " + staffList.get(
+                0).getStaffFirstname().toUpperCase());
 
         if (!staffList.get(0).getStaffNo().isEmpty()) {
             staff_number.setText(staffList.get(0).getStaffNo().toUpperCase());
@@ -373,7 +380,8 @@ public class TeacherProfile extends AppCompatActivity {
             staff_number.setTextColor(Color.parseColor("#FF0000"));
 
         }
-        if (!staffList.get(0).getStaffAddress().isEmpty() && !staffList.get(0).getStaffAddress().equals("null")) {
+        if (!staffList.get(0).getStaffAddress().isEmpty() && !staffList.get(
+                0).getStaffAddress().equals("null")) {
             staff_address.setText(staffList.get(0).getStaffAddress().toUpperCase());
         } else {
             staff_address.setText("Not Available");

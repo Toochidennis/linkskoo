@@ -1,7 +1,7 @@
 package com.digitaldream.winskool.fragments
 
-import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,59 +22,95 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.ViewStudentResultActivity
 import com.digitaldream.winskool.adapters.AdminStudentResultAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
+import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.models.AdminStudentResultFragmentModel
 import com.digitaldream.winskool.models.ChartValue
+import com.digitaldream.winskool.models.ClassNameTable
 import com.digitaldream.winskool.utils.ColumnChart
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
+import com.j256.ormlite.dao.Dao
+import com.j256.ormlite.dao.DaoManager
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import org.json.JSONObject
 import java.util.*
 
-class StudentResult : Fragment(), OnItemClickListener {
+private const val ARG_PARAM1 = "name"
+private const val ARG_PARAM2 = "studentId"
+private const val ARG_PARAM3 = "levelId"
+private const val ARG_PARAM4 = "classId"
+private const val ARG_PARAM5 = "reg_number"
+
+
+class StudentResultDownloadFragment() : Fragment(), OnItemClickListener {
 
     //declare variables
     private lateinit var mRefreshBtn: Button
     private lateinit var mAdapter: SectionedRecyclerViewAdapter
     private val mTermList = mutableListOf<AdminStudentResultFragmentModel>()
 
+
+    // initialise variables
     private var mStudentId: String? = null
     private var mRegistrationNumber: String? = null
     private var mStudentName: String? = null
-    private var mClassName: String? = null
     private var mClassId: String? = null
     private var mLevelId: String? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // get arguments
+        arguments?.let {
+            mStudentName = it.getString(ARG_PARAM1)
+            mStudentId = it.getString(ARG_PARAM2)
+            mLevelId = it.getString(ARG_PARAM3)
+            mClassId = it.getString(ARG_PARAM4)
+            mRegistrationNumber = it.getString(ARG_PARAM5)
+        }
+    }
+
+    companion object {
+
+        // static constructor instance
+        @JvmStatic
+        fun newInstance(
+            studentName: String,
+            studentId: String,
+            levelId: String,
+            classId: String,
+            regNo: String,
+        ) = StudentResultDownloadFragment().apply {
+
+            // set arguments
+            arguments = Bundle().apply {
+                putString(ARG_PARAM1, studentName)
+                putString(ARG_PARAM2, studentId)
+                putString(ARG_PARAM3, levelId)
+                putString(ARG_PARAM4, classId)
+                putString(ARG_PARAM5, regNo)
+            }
+        }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-
-        val view = inflater.inflate(R.layout.fragment_student_result, container, false)
+        val view = inflater.inflate(R.layout.fragment_student_result_download, container, false)
 
         view.findViewById<Toolbar?>(R.id.toolbar).apply {
             title = "Result"
             setNavigationIcon(R.drawable.arrow_left)
             setNavigationOnClickListener {
-                requireActivity().onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+            setTitleTextColor(Color.WHITE)
         }
+
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
-
-
-        val sharedPreferences = requireActivity().getSharedPreferences(
-            "loginDetail", Context.MODE_PRIVATE
-        )
-        mStudentId = sharedPreferences.getString("user_id", "")
-        mRegistrationNumber = sharedPreferences.getString("student_reg_no", "")
-        mStudentName = sharedPreferences.getString("user", "")
-        mClassName = sharedPreferences.getString("student_class", "")
-        mClassId = sharedPreferences.getString("classId", "")
-        mLevelId = sharedPreferences.getString("level", "")
-
 
         //refresh recyclerview
         refresh(view)
@@ -85,9 +121,9 @@ class StudentResult : Fragment(), OnItemClickListener {
         //initialise adapter
         mAdapter = SectionedRecyclerViewAdapter()
 
+
         return view
     }
-
 
     private fun studentProfile(sView: View) {
         val profileImage = sView.findViewById<ImageView>(R.id.profile_image)
@@ -95,11 +131,24 @@ class StudentResult : Fragment(), OnItemClickListener {
         val studentClass = sView.findViewById<TextView>(R.id.student_class)
         val studentReg = sView.findViewById<TextView>(R.id.student_id)
 
-        studentName.text = capitaliseFirstLetter(mStudentName!!)
-        studentClass.text = mClassName
-        studentReg.text = mRegistrationNumber
+        try {
+            val databaseHelper = DatabaseHelper(requireContext())
+            val classDao: Dao<ClassNameTable, Long> = DaoManager.createDao(
+                databaseHelper.connectionSource, ClassNameTable::class.java
+            )
+            val classList = classDao.queryBuilder().where().eq(
+                "classId", mClassId!!
+            ).query()
 
-        getTerms(sView)
+            studentName.text = capitaliseFirstLetter(mStudentName!!)
+            studentClass.text = classList[0].className
+            studentReg.text = mRegistrationNumber
+
+            getTerms(sView)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -176,7 +225,7 @@ class StudentResult : Fragment(), OnItemClickListener {
                                 mAdapter.addSection(
                                     AdminStudentResultAdapter(
                                         mTermList,
-                                        "$session Session", this@StudentResult
+                                        "$session Session", this@StudentResultDownloadFragment
                                     )
                                 )
 
@@ -232,7 +281,6 @@ class StudentResult : Fragment(), OnItemClickListener {
         webView.setChartData(data)
     }
 
-
     private fun refresh(sView: View) {
         mRefreshBtn.setOnClickListener {
             studentProfile(sView)
@@ -242,7 +290,6 @@ class StudentResult : Fragment(), OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val termList = mTermList[position - 1]
-
 
         //view result on termClick
         startActivity(
@@ -255,3 +302,99 @@ class StudentResult : Fragment(), OnItemClickListener {
         )
     }
 }
+
+
+/*  private void getStudentPreviousResult(final String id){
+        final ACProgressFlower dialog1 = new ACProgressFlower.Builder(StudentResultDownload.this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .textMarginTop(10)
+                .fadeColor(Color.DKGRAY).build();
+        dialog1.setCanceledOnTouchOutside(false);
+        dialog1.show();
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
+        String db = sharedPreferences.getString("db","");
+        String url = Login.urlBase+"/jsonResult.php?id="+id+"&_db="+db;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            dialog1.dismiss();
+            Log.i("result",response);
+            student_name.setText(builder.toString());
+            emptyState.setVisibility(View.VISIBLE);
+            try {
+                JSONArray jsonArray = new JSONArray(response);
+                    JSONObject object = jsonArray.getJSONObject(0);
+                Iterator<String> keys = object.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String schoolYear = key;
+                    if (object.get(key) instanceof JSONObject) {
+                        // do something with jsonObject here
+                        JSONObject object1 = object.getJSONObject(key);
+                        String className = object1.getString("class_name");
+                        String levelID = object1.getString("level");
+                        String classId = object1.getString("class_id");
+                        JSONObject termObject = object1.getJSONObject("terms");
+                        String first_term = "";
+                        String second_term = "";
+                        String third_term = "";
+
+                        if (termObject.has("1")) {
+                            first_term = termObject.getString("1");
+                            first_term = "1st";
+
+                        }
+                        if (termObject.has("2")) {
+
+                            second_term = termObject.getString("2");
+                            second_term = "2nd";
+
+                        }
+                        if (termObject.has("3")) {
+                            third_term = termObject.getString("3");
+                            third_term = "3rd";
+
+                        }
+                            QueryBuilder<StudentResultDownloadTable, Long> queryBuilder = studentResultDao.queryBuilder();
+                            queryBuilder.where().eq("level", levelID);
+                            List<StudentResultDownloadTable> levelList = queryBuilder.query();
+                            if(levelList.isEmpty()) {
+
+                                StudentResultDownloadTable st = new StudentResultDownloadTable();
+
+                                st.setFirstTerm(first_term);
+                                st.setSecondTerm(second_term);
+                                st.setThirdTerm(third_term);
+                                st.setLevel(levelID);
+                                st.setStudentId(studentId);
+                                //st.setLevelName(levelList.get(0).getLevelName());
+                                st.setLevelName(className);
+                                st.setSchoolYear(schoolYear);
+                                st.setClassId(classId);
+
+                                studentResultDao.create(st);
+                            }
+
+                        }
+
+                }
+
+                studentResultDownloadList = studentResultDao.queryForAll();
+                if (!studentResultDownloadList.isEmpty()) {
+                    emptyState.setVisibility(View.GONE);
+                    unemptyState.setVisibility(View.VISIBLE);
+                    StudentResultDownloadAdapter studentResultDownloadAdapter = new StudentResultDownloadAdapter(StudentResultDownload.this, studentResultDownloadList, StudentResultDownload.this);
+                    recyclerView.setAdapter(studentResultDownloadAdapter);
+                }
+
+
+            } catch (JSONException | SQLException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            dialog1.dismiss();
+            Toast.makeText(StudentResultDownload.this,"something went wrong",Toast.LENGTH_SHORT).show();
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+*/

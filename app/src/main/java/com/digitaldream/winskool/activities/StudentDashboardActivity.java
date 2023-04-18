@@ -26,7 +26,7 @@ import com.digitaldream.winskool.fragments.FlashCardList;
 import com.digitaldream.winskool.fragments.StudentDashboard;
 import com.digitaldream.winskool.fragments.StudentElearning;
 import com.digitaldream.winskool.fragments.StudentPaymentFragment;
-import com.digitaldream.winskool.fragments.StudentResult;
+import com.digitaldream.winskool.fragments.StudentResultFragment;
 import com.digitaldream.winskool.models.CourseOutlineTable;
 import com.digitaldream.winskool.models.CourseTable;
 import com.digitaldream.winskool.models.ExamType;
@@ -105,7 +105,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
                         case R.id.student_results:
                             getSupportFragmentManager().beginTransaction().replace(
                                     R.id.payment_container,
-                                    new StudentResult()).commit();
+                                    new StudentResultFragment()).commit();
                             return true;
 
                         case R.id.payment:

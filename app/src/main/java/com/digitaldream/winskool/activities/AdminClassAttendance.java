@@ -74,7 +74,7 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.admin_attendance_class);
+        setContentView(R.layout.activity_admin_attendance_class);
 
         Intent intent = getIntent();
         String studentLevelId = intent.getStringExtra("levelId");
@@ -189,8 +189,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
                         jsonArray.put(studentObject);
 
-                        Log.i("value", jsonArray.toString());
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -204,9 +202,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         });
 
         getPreviousAttendance(mStudentClassId, courseId, getDate(), db);
-
-
-        //  Log.i("responseId", getResponseId());
 
     }
 
@@ -340,7 +335,7 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
-        String url = Login.urlBase + "/setAttendance.php";
+        String url = getString(R.string.base_url) + "/setAttendance.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
@@ -399,7 +394,7 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                                       String sDate
             , String sDb) {
 
-        String url = Login.urlBase + "/getAttendance.php";
+        String url = getString(R.string.base_url) + "/getAttendance.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
                 response -> {

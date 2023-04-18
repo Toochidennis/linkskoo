@@ -17,10 +17,13 @@ import com.digitaldream.winskool.utils.FunctionUtils.webViewProgress
 const val ASSET_PATH = "file:///android_asset/"
 
 @SuppressLint("SetJavaScriptEnabled")
-class ColumnChart @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
-    WebView(context, attrs) {
+class ColumnChart @JvmOverloads
+constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : WebView(context, attrs) {
 
-
+    // chart attributes
     private var chartTitle: String? = null
     private var chartData: String? = null
 

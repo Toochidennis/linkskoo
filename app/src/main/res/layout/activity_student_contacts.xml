@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="@color/tab_color">
+        android:background="@drawable/background_gradient_color">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:background="@android:color/transparent"
                             android:gravity="center"
                             android:spinnerMode="dropdown" />
@@ -86,9 +86,11 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:src="@drawable/drop" />
+                            android:src="@drawable/drop"
+                            android:contentDescription="drop down box" />
 
                     </RelativeLayout>
+
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -109,7 +111,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:background="@android:color/transparent"
                             android:gravity="center"
                             android:spinnerMode="dropdown" />
@@ -123,6 +125,7 @@
                             android:src="@drawable/drop" />
 
                     </RelativeLayout>
+
                 </androidx.cardview.widget.CardView>
 
 
@@ -162,8 +165,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="20dp"
-            android:backgroundTint="@color/tab_color"
-            android:src="@drawable/ic_add" />
+            android:backgroundTint="@color/test_color_2"
+            android:src="@drawable/ic_add"
+            android:contentDescription="add student" />
     </FrameLayout>
 
     <FrameLayout
@@ -209,8 +213,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="20dp"
-            android:backgroundTint="@color/blue"
-            android:src="@drawable/ic_add" />
+            android:backgroundTint="@color/test_color_2"
+            android:src="@drawable/ic_add"
+            android:contentDescription="add new student" />
     </FrameLayout>
 
 

@@ -57,7 +57,7 @@ public class AttendanceDetails extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.details_attendance);
+        setContentView(R.layout.activity_details_attendance);
 
         Toolbar toolbar = findViewById(R.id.bar_tool);
         setSupportActionBar(toolbar);
@@ -78,9 +78,6 @@ public class AttendanceDetails extends AppCompatActivity {
         String className = intent.getStringExtra("class_name");
         String courseName = intent.getStringExtra("course_name");
 
-        // Log.i("name", courseName);
-        Log.i("from", from);
-        Log.i("date", date);
 
         TextView name = findViewById(R.id.details_title);
         detailsDate = findViewById(R.id.details_date);

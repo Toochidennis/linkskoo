@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".activities.CourseAttendance">
 
@@ -12,25 +12,20 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#191F91"
+        android:background="@drawable/background_gradient_color"
         android:padding="2dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#191F91"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.AppBarOverlay">
-
-        </androidx.appcompat.widget.Toolbar>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
 
         <TextView
             android:id="@+id/course_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
             android:text=""
             android:textColor="@color/white"
             android:textSize="20sp" />
@@ -49,9 +44,7 @@
         android:id="@+id/course_details_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appBar">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@id/appBar"/>
 
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -93,7 +86,6 @@
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_filter"
             android:visibility="gone" />
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

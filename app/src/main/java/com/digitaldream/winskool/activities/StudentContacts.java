@@ -4,13 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,28 +58,28 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private List<StudentTable> studentContactList;
-    private Spinner level,classes;
-    private List<String> spinnerLevelList,spinnerClassList;
+    private Spinner level, classes;
+    private List<String> spinnerLevelList, spinnerClassList;
     private Button viewResult;
-    private Dao<StudentTable,Long> studentDao;
+    private Dao<StudentTable, Long> studentDao;
     private DatabaseHelper databaseHelper;
     StudentContactAdapter studentContactAdapter;
     private List<ClassNameTable> classnames;
     private List<LevelTable> levelNames;
-    private Dao<ClassNameTable,Long> classDao;
-    private Dao<LevelTable,Long> levelDao;
+    private Dao<ClassNameTable, Long> classDao;
+    private Dao<LevelTable, Long> levelDao;
     public static String studentLevelId;
-    private FloatingActionButton addStudent,addStudent1;
-    private SwipeRefreshLayout swipeRefreshLayout,swipeRefreshLayout2;
-    private FrameLayout layout,empty_state;
+    private FloatingActionButton addStudent, addStudent1;
+    private SwipeRefreshLayout swipeRefreshLayout, swipeRefreshLayout2;
+    private FrameLayout layout, empty_state;
     private List<StudentTable> student;
     private Menu myMenu;
     private String accessLevel;
-    private TextView studentTotal,studentText;
+    private TextView studentTotal, studentText;
     private String db;
     public static String studentClass;
     public static String levelName;
-    public static String className,from;
+    public static String className, from;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +88,10 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         toolbar = findViewById(R.id.toolbar);
         databaseHelper = new DatabaseHelper(this);
         try {
-            studentDao = DaoManager.createDao(databaseHelper.getConnectionSource(),StudentTable.class);
-            classDao = DaoManager.createDao(databaseHelper.getConnectionSource(),ClassNameTable.class);
+            studentDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    StudentTable.class);
+            classDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    ClassNameTable.class);
             levelDao = DaoManager.createDao(databaseHelper.getConnectionSource(), LevelTable.class);
             studentContactList = studentDao.queryForAll();
             classnames = classDao.queryForAll();
@@ -99,9 +106,10 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
-        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
-        db = sharedPreferences.getString("db","");
-        accessLevel = sharedPreferences.getString("access_level","");
+        SharedPreferences sharedPreferences = getSharedPreferences("loginDetail",
+                Context.MODE_PRIVATE);
+        db = sharedPreferences.getString("db", "");
+        accessLevel = sharedPreferences.getString("access_level", "");
         empty_state = findViewById(R.id.studentContact_empty_state);
         layout = findViewById(R.id.framelayout_container);
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
@@ -112,7 +120,7 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-              refreshStudentList();
+                refreshStudentList();
             }
         });
         swipeRefreshLayout2.setColorSchemeColors(getResources().getColor(R.color.ligth_blue));
@@ -124,23 +132,22 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         });
 
 
-
         addStudent = findViewById(R.id.fab_student);
         addStudent1 = findViewById(R.id.fab_student1);
         addStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                    Intent intent = new Intent(StudentContacts.this, AddStudent.class);
-                    startActivity(intent);
+                Intent intent = new Intent(StudentContacts.this, AddStudent.class);
+                startActivity(intent);
 
             }
         });
         addStudent1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Intent intent = new Intent(StudentContacts.this, AddStudent.class);
-                    startActivity(intent);
+                Intent intent = new Intent(StudentContacts.this, AddStudent.class);
+                startActivity(intent);
 
             }
         });
@@ -154,41 +161,40 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         studentClass = i.getStringExtra("classId");
         from = i.getStringExtra("class_detail");
         String levelValue = "";
-        Log.i("response","level "+studentLevelId+" class "+studentClass);
-        for(int a=0; a<levelNames.size();a++){
+        Log.i("response", "level " + studentLevelId + " class " + studentClass);
+        for (int a = 0; a < levelNames.size(); a++) {
             try {
                 String level = levelNames.get(a).getLevelName().toUpperCase();
                 String levelId = levelNames.get(a).getLevelId();
-                if(levelId.equals(studentLevelId)){
+                if (levelId.equals(studentLevelId)) {
                     levelValue = level;
                 }
                 spinnerLevelList.add(level);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-       }
-        Log.i("response","level "+levelValue);
-
-
+        }
+        Log.i("response", "level " + levelValue);
 
 
         recyclerView = findViewById(R.id.student_contact_recycler);
 
 
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, spinnerLevelList);
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item,
+                spinnerLevelList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         level.setAdapter(adapter);
         level.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 spinnerClassList.clear();
-                if(from!=null && from.equals("class_detail")){
+                if (from != null && from.equals("class_detail")) {
                     try {
                         setSpinnerClass(studentLevelId);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
 
                     String levelSelected = adapterView.getItemAtPosition(i).toString();
                     studentLevelId = levelNames.get(i).getLevelId();
@@ -202,8 +208,6 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
                 //getStudentByLevel(studentLevelId);
 
 
-
-
             }
 
             @Override
@@ -212,38 +216,41 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
             }
         });
 
-        level.setSelection(getIndex(level,levelValue.trim()));
+        level.setSelection(getIndex(level, levelValue.trim()));
 
-        ArrayAdapter adapterClass = new ArrayAdapter(this,android.R.layout.simple_spinner_item, spinnerClassList);
+        ArrayAdapter adapterClass = new ArrayAdapter(this, android.R.layout.simple_spinner_item,
+                spinnerClassList);
         adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         classes.setAdapter(adapterClass);
 
         classes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                QueryBuilder<StudentTable,Long> queryBuilder = studentDao.queryBuilder();
-                studentClass="";
-                if(classnames.size()>0) {
+                QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
+                studentClass = "";
+                if (classnames.size() > 0) {
                     studentClass = classnames.get(i).getClassId();
                     className = classnames.get(i).getClassName();
                 }
 
                 try {
-                    queryBuilder.where().eq("studentLevel",studentLevelId).and().eq("studentClass",studentClass);
+                    queryBuilder.where().eq("studentLevel", studentLevelId).and().eq("studentClass",
+                            studentClass);
                     studentContactList = queryBuilder.query();
                     layout.setVisibility(View.VISIBLE);
                     empty_state.setVisibility(View.GONE);
-                    if(!studentContactList.isEmpty()) {
-                        studentContactAdapter = new StudentContactAdapter(StudentContacts.this, studentContactList, StudentContacts.this);
+                    if (!studentContactList.isEmpty()) {
+                        studentContactAdapter = new StudentContactAdapter(StudentContacts.this,
+                                studentContactList, StudentContacts.this);
                         recyclerView.setAdapter(studentContactAdapter);
                         studentContactAdapter.notifyDataSetChanged();
                         studentTotal.setText(String.valueOf(studentContactList.size()));
                         studentText.setText("Students");
-                        if(studentContactList.size()<2) {
+                        if (studentContactList.size() < 2) {
                             studentText.setText("Student");
                         }
 
-                    }else{
+                    } else {
                         studentTotal.setText(String.valueOf(studentContactList.size()));
                         studentText.setText("Student");
                         layout.setVisibility(View.GONE);
@@ -261,7 +268,7 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
 
         });
 
-        for (int a=0;a<spinnerClassList.size();a++){
+        for (int a = 0; a < spinnerClassList.size(); a++) {
 
         }
 
@@ -284,18 +291,16 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         myMenu = menu;
-        if(studentContactList.size()==StudentContactAdapter.guardianPhones.size()){
+        if (studentContactList.size() == StudentContactAdapter.guardianPhones.size()) {
             getMenuInflater().inflate(R.menu.selection_menu, menu);
             menu.findItem(R.id.select_all).setVisible(false);
 
-        }
-        else if(StudentContactAdapter.guardianPhones.size()>0) {
+        } else if (StudentContactAdapter.guardianPhones.size() > 0) {
             getMenuInflater().inflate(R.menu.selection_menu, menu);
-        }
-        else {
+        } else {
             getSupportActionBar().setTitle("Student Contacts");
         }
-            return true;
+        return true;
 
     }
 
@@ -303,24 +308,26 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
     protected void onResume() {
         super.onResume();
 
-        QueryBuilder<StudentTable,Long> queryBuilder = studentDao.queryBuilder();
+        QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
 
         try {
-            queryBuilder.where().eq("studentLevel",studentLevelId).and().eq("studentClass",studentClass);
+            queryBuilder.where().eq("studentLevel", studentLevelId).and().eq("studentClass",
+                    studentClass);
             studentContactList = queryBuilder.query();
             layout.setVisibility(View.VISIBLE);
             empty_state.setVisibility(View.GONE);
-            if(!studentContactList.isEmpty()) {
-                studentContactAdapter = new StudentContactAdapter(StudentContacts.this, studentContactList, StudentContacts.this);
+            if (!studentContactList.isEmpty()) {
+                studentContactAdapter = new StudentContactAdapter(StudentContacts.this,
+                        studentContactList, StudentContacts.this);
                 recyclerView.setAdapter(studentContactAdapter);
                 studentContactAdapter.notifyDataSetChanged();
                 studentTotal.setText(String.valueOf(studentContactList.size()));
                 studentText.setText("Students");
-                if(studentContactList.size()<2) {
+                if (studentContactList.size() < 2) {
                     studentText.setText("Student");
                 }
 
-            }else{
+            } else {
                 studentTotal.setText(String.valueOf(studentContactList.size()));
                 studentText.setText("Student");
                 layout.setVisibility(View.GONE);
@@ -335,13 +342,13 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String emails = "";
-        String phoneNumbers ="";
-        switch (item.getItemId()){
+        String phoneNumbers = "";
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
             case R.id.email_selection:
-                if(!StudentContactAdapter.guardianEmails.isEmpty()) {
+                if (!StudentContactAdapter.guardianEmails.isEmpty()) {
                     Intent emailIntent = new Intent(Intent.ACTION_VIEW);
 
                     for (int i = 0; i < StudentContactAdapter.guardianEmails.size(); i++) {
@@ -352,42 +359,48 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
                     }
                     try {
                         emails = emails.substring(0, emails.length() - 1);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Uri data = Uri.parse("mailto:?subject=" + "subject text" + "&body=" + "body text " + "&to=" + emails);
+                    Uri data = Uri.parse(
+                            "mailto:?subject=" + "subject text" + "&body=" + "body text " + "&to" +
+                                    "=" + emails);
                     emailIntent.setData(data);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                }else{
-                    Toast.makeText(StudentContacts.this, "There are no email address available", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(StudentContacts.this, "There are no email address available",
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.sms_selection:
-                if(!StudentContactAdapter.guardianPhones.isEmpty()) {
+                if (!StudentContactAdapter.guardianPhones.isEmpty()) {
                     Intent intent = new Intent(Intent.ACTION_SENDTO);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     for (int i = 0; i < StudentContactAdapter.guardianPhones.size(); i++) {
                         if (StudentContactAdapter.guardianPhones.get(i).isEmpty()) {
                             continue;
                         }
-                        phoneNumbers = phoneNumbers + "" + StudentContactAdapter.guardianPhones.get(i) + ",";
+                        phoneNumbers = phoneNumbers + "" + StudentContactAdapter.guardianPhones.get(
+                                i) + ",";
                     }
                     try {
                         phoneNumbers = phoneNumbers.substring(0, phoneNumbers.length() - 1);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     intent.setData(Uri.parse("smsto:" + phoneNumbers));
                     startActivity(intent);
-                }else{
-                    Toast.makeText(StudentContacts.this,"There are no phone numbers available",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(StudentContacts.this, "There are no phone numbers available",
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.select_all:
                 StudentContactAdapter.flagValue = true;
 
                 myMenu.findItem(R.id.select_all).setVisible(false);
-                studentContactAdapter = new StudentContactAdapter(StudentContacts.this, studentContactList, StudentContacts.this);
+                studentContactAdapter = new StudentContactAdapter(StudentContacts.this,
+                        studentContactList, StudentContacts.this);
                 recyclerView.setAdapter(studentContactAdapter);
                 studentContactAdapter.notifyDataSetChanged();
                 break;
@@ -416,92 +429,94 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         st.setState_of_origin(studentContactList.get(position).getState_of_origin());
         st.setDate_of_birth(studentContactList.get(position).getDate_of_birth());
         st.setStudentId(studentContactList.get(position).getStudentId());
-        intent.putExtra("studentObject",st);
+        intent.putExtra("studentObject", st);
         startActivity(intent);
     }
 
 
     public void setSpinnerClass(String a) throws SQLException {
         String classNameValue = null;
-        QueryBuilder<ClassNameTable,Long> queryBuilder = classDao.queryBuilder();
-        queryBuilder.where().eq("level",a);
+        QueryBuilder<ClassNameTable, Long> queryBuilder = classDao.queryBuilder();
+        queryBuilder.where().eq("level", a);
         classnames = queryBuilder.query();
         Collections.reverse(classnames);
-        if(!classnames.isEmpty()) {
-        for (int i =0;i<classnames.size();i++){
-            try {
-                String classname = classnames.get(i).getClassName().toUpperCase();
-                spinnerClassList.add(classname);
-                if(classnames.get(i).getClassId().equals(studentClass)){
-                    classNameValue = classnames.get(i).getClassName();
+        if (!classnames.isEmpty()) {
+            for (int i = 0; i < classnames.size(); i++) {
+                try {
+                    String classname = classnames.get(i).getClassName().toUpperCase();
+                    spinnerClassList.add(classname);
+                    if (classnames.get(i).getClassId().equals(studentClass)) {
+                        classNameValue = classnames.get(i).getClassName();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
-        }
 
-            ArrayAdapter adapterClass = new ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerClassList);
+            ArrayAdapter adapterClass = new ArrayAdapter(this, android.R.layout.simple_spinner_item,
+                    spinnerClassList);
             adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             classes.setAdapter(adapterClass);
-        }else {
+        } else {
 
             spinnerClassList.clear();
             spinnerClassList.add("");
-            ArrayAdapter adapterClass = new ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerClassList);
+            ArrayAdapter adapterClass = new ArrayAdapter(this, android.R.layout.simple_spinner_item,
+                    spinnerClassList);
             adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             classes.setAdapter(adapterClass);
 
         }
-        if(classNameValue!=null && !classNameValue.isEmpty()){
-            classes.setSelection(getIndex(classes,classNameValue));
+        if (classNameValue != null && !classNameValue.isEmpty()) {
+            classes.setSelection(getIndex(classes, classNameValue));
         }
 
     }
 
     @Override
     public void onBackPressed() {
-        if(StudentContactAdapter.flagValue){
+        if (StudentContactAdapter.flagValue) {
             StudentContactAdapter.guardianPhones.clear();
             StudentContactAdapter.guardianEmails.clear();
             studentContactAdapter.notifyDataSetChanged();
             invalidateOptionsMenu();
-            StudentContactAdapter.flagValue =false;
+            StudentContactAdapter.flagValue = false;
 
-        }else if(StudentContactAdapter.selectedCounter>0){
+        } else if (StudentContactAdapter.selectedCounter > 0) {
             StudentContactAdapter.guardianPhones.clear();
             StudentContactAdapter.guardianEmails.clear();
             studentContactAdapter.notifyDataSetChanged();
-            StudentContactAdapter.selectedCounter=0;
+            StudentContactAdapter.selectedCounter = 0;
             invalidateOptionsMenu();
-            StudentContactAdapter.selectedCounter=0;
-        }
-        else {
+            StudentContactAdapter.selectedCounter = 0;
+        } else {
             super.onBackPressed();
         }
 
     }
 
 
+    private void refreshStudentList() {
 
-    private void refreshStudentList(){
+        String login_url = getString(R.string.base_url) + "/allStudents.php?_db=" + db;
 
-        String login_url = Login.urlBase+"/allStudents.php?_db="+db;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, login_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("response", response);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, login_url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("response",response);
+                        try {
 
-                try {
-
-                    JSONObject jsonObject = new JSONObject(response.toLowerCase());
+                            JSONObject jsonObject = new JSONObject(response.toLowerCase());
 
                             if (jsonObject.has("allstudentrecords")) {
 
                                 JSONObject object = jsonObject.getJSONObject("allstudentrecords");
                                 JSONArray jsonArray = object.getJSONArray("rows");
                                 if (jsonArray.length() > 0) {
-                                    TableUtils.clearTable(databaseHelper.getConnectionSource(),StudentTable.class);
+                                    TableUtils.clearTable(databaseHelper.getConnectionSource(),
+                                            StudentTable.class);
 
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONArray jsonArray1 = jsonArray.getJSONArray(i);
@@ -530,7 +545,8 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
                                         String nationality = jsonArray1.getString(20);
                                         String date_admitted = jsonArray1.getString(22);
                                         String class_name = jsonArray1.getString(28);
-                                        QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
+                                        QueryBuilder<StudentTable, Long> queryBuilder =
+                                                studentDao.queryBuilder();
                                         queryBuilder.where().eq("studentId", id);
                                         student = queryBuilder.query();
 
@@ -556,42 +572,54 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
                                             studentDao.create(st);
                                         }
                                     }
-                                    QueryBuilder<StudentTable,Long> queryBuilder = studentDao.queryBuilder();
-                                    queryBuilder.where().eq("studentLevel",studentLevelId).and().eq("studentClass",studentClass);
+                                    QueryBuilder<StudentTable, Long> queryBuilder =
+                                            studentDao.queryBuilder();
+                                    queryBuilder.where().eq("studentLevel",
+                                            studentLevelId).and().eq("studentClass", studentClass);
                                     studentContactList = queryBuilder.query();
                                     layout.setVisibility(View.VISIBLE);
                                     empty_state.setVisibility(View.GONE);
-                                    if(!studentContactList.isEmpty()) {
-                                        studentContactAdapter = new StudentContactAdapter(StudentContacts.this, studentContactList, StudentContacts.this);
+
+                                    if (!studentContactList.isEmpty()) {
+                                        studentContactAdapter = new StudentContactAdapter(
+                                                StudentContacts.this, studentContactList,
+                                                StudentContacts.this);
+
                                         recyclerView.setAdapter(studentContactAdapter);
                                         studentContactAdapter.notifyDataSetChanged();
-                                        studentTotal.setText(String.valueOf(studentContactList.size()));
+
+                                        studentTotal.setText(
+                                                String.valueOf(studentContactList.size()));
+
                                         studentText.setText("Students");
-                                        if(studentContactList.size()<2) {
+
+                                        if (studentContactList.size() < 2) {
                                             studentText.setText("Student");
                                         }
 
-                                    }else{
-                                        studentTotal.setText(String.valueOf(studentContactList.size()));
+                                    } else {
+                                        studentTotal.setText(
+                                                String.valueOf(studentContactList.size()));
                                         studentText.setText("Student");
                                         layout.setVisibility(View.GONE);
                                         empty_state.setVisibility(View.VISIBLE);
                                     }
-                                    Toast.makeText(StudentContacts.this, "List updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(StudentContacts.this, "List updated",
+                                            Toast.LENGTH_SHORT).show();
 
                                 }
                             }
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                swipeRefreshLayout2.setRefreshing(false);
-            }
-        }, new Response.ErrorListener() {
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                        swipeRefreshLayout2.setRefreshing(false);
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -602,7 +630,7 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
         requestQueue.add(stringRequest);
     }
 
-    private void setClassSpinner(){
+    private void setClassSpinner() {
 
 
     }
