@@ -31,7 +31,7 @@ constructor(
         val typedArray = context.obtainStyledAttributes(
             attrs, R.styleable.ColumnChart
         )
-        setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+        setBackgroundColor(Color.WHITE)
 
         try {
             chartTitle = typedArray.getString(R.styleable.ColumnChart_chartTitle)
@@ -116,7 +116,7 @@ constructor(
                 "</head>\n" +
                 "\n" +
                 "<body>\n" +
-                "<!--Div that will hold the pie chart-->\n" +
+                "<!--Div that will hold the column chart-->\n" +
                 "<div id=\"chart_div\" style=\"width: 450px; height: 250px;\"></div>\n" +
                 "</body>\n" +
                 "</html>"

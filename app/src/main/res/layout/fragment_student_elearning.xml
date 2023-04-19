@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/tab_color"
+        android:background="@drawable/background_gradient_color"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     </androidx.appcompat.widget.Toolbar>
@@ -30,7 +30,7 @@
                 android:id="@+id/t"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/tab_color"
+                android:background="@drawable/background_gradient_color"
                 android:orientation="vertical">
 
                 <TextView

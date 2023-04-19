@@ -19,12 +19,14 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
         val amount = intent.getStringExtra("amount")
         val name = intent.getStringExtra("name")
         val levelName = intent.getStringExtra("level_name")
+        val studentName = intent.getStringExtra("student_name")
         val customerName = intent.getStringExtra("vendor_name")
         val customerPhone = intent.getStringExtra("vendor_phone")
         val customerReference = intent.getStringExtra("vendorId")
         val description = intent.getStringExtra("description")
         val id = intent.getStringExtra("id")
         val classId = intent.getStringExtra("classId")
+        val levelId = intent.getStringExtra("levelId")
         val studentId = intent.getStringExtra("studentId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
@@ -125,9 +127,11 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                     R.id.payment_container, AccountSetupFragment()
                 ).commit()
 
+
                 "see_all" -> supportFragmentManager.beginTransaction().replace(
                     R.id.payment_container, AdminTransactionHistoryFragment()
                 ).commit()
+
 
                 "receipt_class_name" -> supportFragmentManager.commit {
                     replace(
@@ -145,6 +149,20 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                         )
                     )
                 }
+
+                "student_profile" -> supportFragmentManager.commit {
+                    replace(
+                        R.id.payment_container,
+                        StudentResultDownloadFragment.newInstance(
+                            studentName!!,
+                            studentId!!,
+                            levelId!!,
+                            classId!!,
+                            regNo!!
+                        )
+                    )
+                }
+
             }
 
         } catch (e: Exception) {
@@ -152,7 +170,6 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
         }
 
     }
-
 
 }
 

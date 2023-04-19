@@ -63,8 +63,6 @@ public class StudentProfile extends AppCompatActivity {
     private TextView initialsDisplay;
     public static String initials;
     private ImageView callIcon, smsIcon, emailIcon, whatsappIcon;
-    private ScrollView mScrollView;
-    private FrameLayout mFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +73,6 @@ public class StudentProfile extends AppCompatActivity {
         emailIcon = findViewById(R.id.email_icon);
         whatsappIcon = findViewById(R.id.whatsapp_icon);
         toolbar = findViewById(R.id.toolbar);
-        mScrollView = findViewById(R.id.main_view);
-        mFrameLayout = findViewById(R.id.result_container);
 
         setSupportActionBar(toolbar);
 
@@ -178,35 +174,16 @@ public class StudentProfile extends AppCompatActivity {
 
         viewResult = findViewById(R.id.view_result_student_profile);
 
-        viewResult.setOnClickListener(view -> {
+        viewResult.setOnClickListener(view ->
+                startActivity(new Intent(StudentProfile.this, PaymentActivity.class)
+                        .putExtra("studentId", st.getStudentId())
+                        .putExtra("student_name", studentName.getText().toString())
+                        .putExtra("levelId", st.getStudentLevel())
+                        .putExtra("classId", st.getStudentClass())
+                        .putExtra("reg_no", st.getStudentReg_no())
+                        .putExtra("from", "student_profile")
+                ));
 
-            getSupportFragmentManager().beginTransaction()
-                    .addToBackStack("result")
-                    .add(
-                    R.id.result_container,
-                    StudentResultDownloadFragment.newInstance(
-                            studentName.getText().toString(),
-                            st.getStudentId(),
-                            st.getStudentLevel(),
-                            st.getStudentClass(),
-                            st.getStudentReg_no()
-                    ),
-                    "Student Result Fragment"
-            ).commit();
-
-            mFrameLayout.setVisibility(View.VISIBLE);
-            mScrollView.setVisibility(View.GONE);
-            getSupportActionBar().hide();
-
-
-
-//            Intent intent = new Intent(StudentProfile.this, StudentResultDownloadFragment.class);
-//            intent.putExtra("student_id", st.getStudentId());
-//            intent.putExtra("student_name", studentName.getText().toString());
-//            intent.putExtra("phone_number", st.getGuardianPhoneNo());
-//            intent.putExtra("email", st.getGuardianEmail());
-//            startActivity(intent);
-        });
 
         if (!st.getGuardianName().equals("") && !st.getGuardianName().equals("null")) {
             String guardianName1 = st.getGuardianName().toLowerCase();
@@ -333,8 +310,6 @@ public class StudentProfile extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -349,102 +324,92 @@ public class StudentProfile extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
-
         try {
+
+            QueryBuilder<StudentTable, Long> queryBuilder = studentDao.queryBuilder();
             queryBuilder.where().eq("studentId", st.getStudentId());
             student = queryBuilder.query();
+
+            if (student.get(0).getGuardianPhoneNo().isEmpty()) {
+                call.setEnabled(false);
+                callIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                        android.graphics.PorterDuff.Mode.SRC_IN);
+                sms.setEnabled(false);
+                smsIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                        android.graphics.PorterDuff.Mode.SRC_IN);
+                whatsapp.setEnabled(false);
+                whatsappIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                        android.graphics.PorterDuff.Mode.SRC_IN);
+
+            }
+
+            if (student.get(0).getGuardianEmail().isEmpty()) {
+                email.setEnabled(false);
+                emailIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
+                        android.graphics.PorterDuff.Mode.SRC_IN);
+
+            }
+
+            if (!student.get(0).getGuardianName().equals("") && !st.getGuardianName().equals(
+                    "null")) {
+                String guardianName1 = student.get(0).getGuardianName().toLowerCase();
+                if (guardianName1.length() > 0) {
+                    guardianName1 = guardianName1.substring(0,
+                            1).toUpperCase() + guardianName1.substring(1);
+                    guardianName.setText(guardianName1);
+
+                }
+            } else {
+                guardianName.setText("Not Available");
+                guardianName.setTextColor(Color.parseColor("#FF0000"));
+
+            }
+            if (!student.get(0).getGuardianAddress().equals("") && !student.get(
+                    0).getGuardianAddress().equals("null")) {
+                String guardianAddress1 = student.get(0).getGuardianAddress().toLowerCase();
+                guardianAddress1 = guardianAddress1.substring(0,
+                        1).toUpperCase() + guardianAddress1.substring(1);
+                guardianAddress.setText(guardianAddress1);
+            } else {
+                guardianAddress.setText("Not Available");
+                guardianAddress.setTextColor(Color.parseColor("#FF0000"));
+
+            }
+            if (!student.get(0).getGuardianPhoneNo().equals("") && !student.get(
+                    0).getGuardianPhoneNo().equals("null")) {
+                guardianPhone.setText(student.get(0).getGuardianPhoneNo());
+            } else {
+                guardianPhone.setText("Not Available");
+                guardianPhone.setTextColor(Color.parseColor("#FF0000"));
+
+            }
+            if (!student.get(0).getGuardianEmail().isEmpty() && !student.get(
+                    0).getGuardianEmail().equals("null")) {
+                String guardianEmail = student.get(0).getGuardianEmail().toLowerCase();
+                guardianEmail = guardianEmail.substring(0,
+                        1).toUpperCase() + guardianEmail.substring(
+                        1);
+
+            }
+
+            studentName = findViewById(R.id.studentName_profile);
+            studentName.setText(
+                    st.getStudentSurname().toUpperCase() + " " +
+                            st.getStudentMiddlename().toUpperCase() + " " +
+                            st.getStudentFirstname().toUpperCase()
+            );
+
+            initialsDisplay = findViewById(R.id.initials_student);
+            String studentName = student.get(0).getStudentSurname();
+            initials = studentName.substring(0, 1).toUpperCase();
+            initialsDisplay.setText(initials);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        if (student.get(0).getGuardianPhoneNo().isEmpty()) {
-            call.setEnabled(false);
-            callIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
-                    android.graphics.PorterDuff.Mode.SRC_IN);
-            sms.setEnabled(false);
-            smsIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
-                    android.graphics.PorterDuff.Mode.SRC_IN);
-            whatsapp.setEnabled(false);
-            whatsappIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
-                    android.graphics.PorterDuff.Mode.SRC_IN);
-
-        }
-
-        if (student.get(0).getGuardianEmail().isEmpty()) {
-            email.setEnabled(false);
-            emailIcon.setColorFilter(ContextCompat.getColor(this, R.color.light_gray),
-                    android.graphics.PorterDuff.Mode.SRC_IN);
-
-        }
-
-        if (!student.get(0).getGuardianName().equals("") && !st.getGuardianName().equals("null")) {
-            String guardianName1 = student.get(0).getGuardianName().toLowerCase();
-            if (guardianName1.length() > 0) {
-                guardianName1 = guardianName1.substring(0,
-                        1).toUpperCase() + guardianName1.substring(1);
-                guardianName.setText(guardianName1);
-
-            }
-        } else {
-            guardianName.setText("Not Available");
-            guardianName.setTextColor(Color.parseColor("#FF0000"));
-
-        }
-        if (!student.get(0).getGuardianAddress().equals("") && !student.get(
-                0).getGuardianAddress().equals("null")) {
-            String guardianAddress1 = student.get(0).getGuardianAddress().toLowerCase();
-            guardianAddress1 = guardianAddress1.substring(0,
-                    1).toUpperCase() + guardianAddress1.substring(1);
-            guardianAddress.setText(guardianAddress1);
-        } else {
-            guardianAddress.setText("Not Available");
-            guardianAddress.setTextColor(Color.parseColor("#FF0000"));
-
-        }
-        if (!student.get(0).getGuardianPhoneNo().equals("") && !student.get(
-                0).getGuardianPhoneNo().equals("null")) {
-            guardianPhone.setText(student.get(0).getGuardianPhoneNo());
-        } else {
-            guardianPhone.setText("Not Available");
-            guardianPhone.setTextColor(Color.parseColor("#FF0000"));
-
-        }
-        if (!student.get(0).getGuardianEmail().isEmpty() && !student.get(
-                0).getGuardianEmail().equals("null")) {
-            String guardianEmail = student.get(0).getGuardianEmail().toLowerCase();
-            guardianEmail = guardianEmail.substring(0, 1).toUpperCase() + guardianEmail.substring(
-                    1);
-
-        }
-
-
-        studentName = findViewById(R.id.studentName_profile);
-        studentName.setText(
-                st.getStudentSurname().toUpperCase() + " " +
-                        st.getStudentMiddlename().toUpperCase() + " " +
-                        st.getStudentFirstname().toUpperCase()
-        );
-
-
-        initialsDisplay = findViewById(R.id.initials_student);
-        String studentName = student.get(0).getStudentSurname();
-        initials = studentName.substring(0, 1).toUpperCase();
-        initialsDisplay.setText(initials);
 
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        int count = getSupportFragmentManager().getBackStackEntryCount();
-//        if (count == 0){
-//            super.onBackPressed();
-//        }else{
-//            getSupportFragmentManager().popBackStack();
-//            mFrameLayout.setVisibility(View.GONE);
-//            mScrollView.setVisibility(View.VISIBLE);
-//            Objects.requireNonNull(getSupportActionBar()).show();
-//        }
-//    }
+
 }

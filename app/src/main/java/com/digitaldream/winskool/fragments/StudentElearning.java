@@ -3,11 +3,13 @@ package com.digitaldream.winskool.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +34,7 @@ public class StudentElearning extends Fragment implements StudentLevelAdapter.On
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private DatabaseHelper databaseHelper;
-    private Dao<CourseOutlineTable,Long> courseOutlineDao;
+    private Dao<CourseOutlineTable, Long> courseOutlineDao;
     private List<CourseOutlineTable> list;
 
 
@@ -46,11 +48,11 @@ public class StudentElearning extends Fragment implements StudentLevelAdapter.On
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_student_elearning, container, false);
-        setHasOptionsMenu(true);
 
         databaseHelper = new DatabaseHelper(getContext());
         try {
-            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(),CourseOutlineTable.class);
+            courseOutlineDao = DaoManager.createDao(databaseHelper.getConnectionSource(),
+                    CourseOutlineTable.class);
             list = courseOutlineDao.queryBuilder().groupBy("levelId").query();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,9 +70,10 @@ public class StudentElearning extends Fragment implements StudentLevelAdapter.On
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        StudentLevelAdapter adapter = new StudentLevelAdapter(getContext(),list,this);
+        StudentLevelAdapter adapter = new StudentLevelAdapter(getContext(), list, this);
         recyclerView.setAdapter(adapter);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+        // DividerItemDecoration.VERTICAL));
 
         return view;
     }
@@ -78,14 +81,9 @@ public class StudentElearning extends Fragment implements StudentLevelAdapter.On
     @Override
     public void onLevelClick(int position) {
         Intent intent = new Intent(getContext(), StudentElearningCourses.class);
-        intent.putExtra("levelName",list.get(position).getLevelName());
-        intent.putExtra("levelId",list.get(position).getLevelId());
+        intent.putExtra("levelName", list.get(position).getLevelName());
+        intent.putExtra("levelId", list.get(position).getLevelId());
         startActivity(intent);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-    }
 }

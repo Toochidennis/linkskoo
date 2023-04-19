@@ -60,7 +60,6 @@ public class StudentContacts extends AppCompatActivity implements StudentContact
     private List<StudentTable> studentContactList;
     private Spinner level, classes;
     private List<String> spinnerLevelList, spinnerClassList;
-    private Button viewResult;
     private Dao<StudentTable, Long> studentDao;
     private DatabaseHelper databaseHelper;
     StudentContactAdapter studentContactAdapter;

@@ -99,6 +99,7 @@ class StudentResultDownloadFragment() : Fragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        // inflate layout view required
         val view = inflater.inflate(R.layout.fragment_student_result_download, container, false)
 
         view.findViewById<Toolbar?>(R.id.toolbar).apply {

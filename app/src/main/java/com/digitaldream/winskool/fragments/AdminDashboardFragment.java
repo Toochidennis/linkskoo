@@ -259,8 +259,8 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
                     requireActivity()
                             .getSupportFragmentManager()
                             .beginTransaction();
-            AddNewsBottomSheet addNewsBottomSheet =
-                    new AddNewsBottomSheet();
+
+            AddNewsBottomSheet addNewsBottomSheet = new AddNewsBottomSheet();
             addNewsBottomSheet.show(transaction, "newsBottomSheet");
             //Intent intent = new Intent(getContext(), AddNews.class);
             //startActivity(intent);

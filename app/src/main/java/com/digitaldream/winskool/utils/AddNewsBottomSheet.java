@@ -107,100 +107,79 @@ public class AddNewsBottomSheet extends BottomSheetDialogFragment {
         //gallery.setAdapter(new ImageAdapter(getActivity()));
         layoutInflater = LayoutInflater.from(getContext());
         //itemPosition = editorContainer.getChildCount();
-        gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gallery.setOnItemClickListener((arg0, arg1, position, arg3) -> {
 
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1,
-                                    int position, long arg3) {
-
-                itemPosition = editorContainer.getChildCount();
-                CharSequence cursorToEnd = "";
-                for (int a = 0; a < editorContainer.getChildCount(); a++) {
-                    View v = editorContainer.getChildAt(a);
-                    if (editorContainer.getFocusedChild() == v) {
-                        EditText edt = v.findViewById(R.id.editT);
-                        int cursorPosition = edt.getSelectionStart();
-                        CharSequence enteredText = edt.getText().toString();
-                        cursorToEnd = enteredText.subSequence(cursorPosition, enteredText.length());
-                        CharSequence beforeCursor = enteredText.subSequence(0, cursorPosition);
-                        edt.setText(beforeCursor);
-                        itemPosition = a + 1;
-                    }
-
+            itemPosition = editorContainer.getChildCount();
+            CharSequence cursorToEnd = "";
+            for (int a = 0; a < editorContainer.getChildCount(); a++) {
+                View v = editorContainer.getChildAt(a);
+                if (editorContainer.getFocusedChild() == v) {
+                    EditText edt = v.findViewById(R.id.editT);
+                    int cursorPosition = edt.getSelectionStart();
+                    CharSequence enteredText = edt.getText().toString();
+                    cursorToEnd = enteredText.subSequence(cursorPosition, enteredText.length());
+                    CharSequence beforeCursor = enteredText.subSequence(0, cursorPosition);
+                    edt.setText(beforeCursor);
+                    itemPosition = a + 1;
                 }
-                if (null != images && !images.isEmpty()) {
-                    View view1 = layoutInflater.inflate(R.layout.image_view_item, editorContainer,
-                            false);
-                    ImageView image = view1.findViewById(R.id.img_v);
-                    EditText editText = view1.findViewById(R.id.editT);
-                    editText.setText(cursorToEnd);
-                    editText.requestFocus();
-                    image.setImageURI(Uri.parse(images.get(position)));
-                    //editorContainer.addView(view1);
-                    editorContainer.addView(view1, itemPosition);
-                    image1.add(images.get(position));
-                }
-
 
             }
+            if (null != images && !images.isEmpty()) {
+                View view1 = layoutInflater.inflate(R.layout.image_view_item, editorContainer,
+                        false);
+                ImageView image = view1.findViewById(R.id.img_v);
+                EditText editText = view1.findViewById(R.id.editT);
+                editText.setText(cursorToEnd);
+                editText.requestFocus();
+                image.setImageURI(Uri.parse(images.get(position)));
+                //editorContainer.addView(view1);
+                editorContainer.addView(view1, itemPosition);
+                image1.add(images.get(position));
+            }
+
+
         });
 
         editorContainer = view.findViewById(R.id.editor_container);
-        editorContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gallery.setVisibility(View.GONE);
+        editorContainer.setOnClickListener(v -> gallery.setVisibility(View.GONE));
+
+        submitBtn.setOnClickListener(v -> {
+            if (titleEDT.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "News Title is empty", Toast.LENGTH_SHORT).show();
+            } else {
+                buildAnswerJson(view);
             }
+
         });
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (titleEDT.getText().toString().isEmpty()) {
-                    Toast.makeText(getContext(), "News Title is empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    buildAnswerJson(view);
-                }
-
-            }
-        });
-
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        closeBtn.setOnClickListener(v -> dismiss());
 
         ImageView selectImgBtn = view.findViewById(R.id.select_img);
-        selectImgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ((ContextCompat.checkSelfPermission(getContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
-                        getContext(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-                    if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(
-                            getActivity(),
-                            Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                                REQUEST_PERMISSIONS);
+        selectImgBtn.setOnClickListener(v -> {
+            if ((ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
+                    getContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(
+                        getActivity(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_PERMISSIONS);
 
-                    } else {
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                                REQUEST_PERMISSIONS);
-                    }
                 } else {
-                    gallery.setAdapter(new ImageAdapter(getActivity()));
-                    gallery.setVisibility(View.VISIBLE);
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_PERMISSIONS);
                 }
-
+            } else {
+                gallery.setAdapter(new ImageAdapter(getActivity()));
+                gallery.setVisibility(View.VISIBLE);
             }
+
         });
         return view;
     }
@@ -211,17 +190,14 @@ public class AddNewsBottomSheet extends BottomSheetDialogFragment {
         super.onCreateDialog(savedInstanceState);
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
+        dialog.setOnShowListener(dialog1 -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog1;
 
-                FrameLayout bottomSheet = (FrameLayout) d.findViewById(
-                        com.google.android.material.R.id.design_bottom_sheet);
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-                BottomSheetBehavior behaviour = BottomSheetBehavior.from(bottomSheet);
+            FrameLayout bottomSheet = (FrameLayout) d.findViewById(
+                    com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+            BottomSheetBehavior behaviour = BottomSheetBehavior.from(bottomSheet);
 
-            }
         });
 
         return dialog;
@@ -384,28 +360,25 @@ public class AddNewsBottomSheet extends BottomSheetDialogFragment {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        String url = Login.urlBase + "/addNews.php";
+        String url = getString(R.string.base_url) + "/addNews.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        dialog.dismiss();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String status = jsonObject.getString("status");
-                            if (status.equals("success")) {
-                                AdminDashboardFragment.json = "";
-                                Intent intent = new Intent(getContext(), Dashboard.class);
-                                startActivity(intent);
-                                dismiss();
-                            } else {
-                                Toast.makeText(getContext(), "Something went wrong",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                response -> {
+                    dialog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String status = jsonObject.getString("status");
+                        if (status.equals("success")) {
+                            AdminDashboardFragment.json = "";
+                            Intent intent = new Intent(getContext(), Dashboard.class);
+                            startActivity(intent);
+                            dismiss();
+                        } else {
+                            Toast.makeText(getContext(), "Something went wrong",
+                                    Toast.LENGTH_SHORT).show();
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }, new Response.ErrorListener() {
             @Override

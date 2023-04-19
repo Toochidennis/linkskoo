@@ -2,6 +2,7 @@ package com.digitaldream.winskool.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,6 +62,7 @@ class StudentResultFragment : Fragment(), OnItemClickListener {
             setNavigationOnClickListener {
                 requireActivity().onBackPressed()
             }
+            setTitleTextColor(Color.WHITE)
         }
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
 
