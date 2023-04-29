@@ -34,6 +34,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
         val status = intent.getStringExtra("status")
         val session = intent.getStringExtra("session")
         val term = intent.getStringExtra("term")
+        val type = intent.getStringExtra("type")
         val date = intent.getStringExtra("date")
 
         try {
@@ -159,6 +160,17 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                             levelId!!,
                             classId!!,
                             regNo!!
+                        )
+                    )
+                }
+
+                "debt_received" -> supportFragmentManager.commit {
+                    replace(
+                        R.id.payment_container,
+                        DebtReceivedFragment.newInstance(
+                            className!!,
+                            classId!!,
+                            type!!
                         )
                     )
                 }

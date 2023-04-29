@@ -24,6 +24,7 @@ import com.digitaldream.winskool.dialog.AdminClassesDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.winskool.utils.RequestManager.get
 import com.digitaldream.winskool.utils.VolleyCallback
 import org.json.JSONObject
 import java.util.*
@@ -112,6 +113,7 @@ class AdminPaymentDashboardFragment : Fragment(),
 
         buttonsCLick()
 
+
         return view
     }
 
@@ -140,7 +142,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         }
 
         mReceivedBtn.setOnClickListener {
-            AdminClassesDialog(requireContext(), "payment", "", null)
+            AdminClassesDialog(requireContext(), "received", "", null)
                 .apply {
                     setCancelable(true)
                     show()
@@ -151,7 +153,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         }
 
         mDebtBtn.setOnClickListener {
-            AdminClassesDialog(requireContext(), "payment", "", null)
+            AdminClassesDialog(requireContext(), "debt", "", null)
                 .apply {
                     setCancelable(true)
                     show()
@@ -243,6 +245,7 @@ class AdminPaymentDashboardFragment : Fragment(),
             }
         )
     }
+
 
     private fun hideAndShowBalance(isHide: Boolean, balance: String, paid: String) {
 

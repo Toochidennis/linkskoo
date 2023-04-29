@@ -55,8 +55,6 @@ android {
 
 dependencies {
 
-
-
     def supportVersion = '1.0.0-beta01'
     def glideVersion = "4.9.0"
     implementation fileTree(include: ['*.jar'], dir: 'libs')

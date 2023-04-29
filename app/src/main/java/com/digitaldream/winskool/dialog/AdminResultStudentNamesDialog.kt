@@ -30,7 +30,7 @@ import com.j256.ormlite.dao.DaoManager
 import java.util.*
 
 class AdminResultStudentNamesDialog(
-    private val sContext: Context,
+    sContext: Context,
     private val sClassId: String,
     private val sFrom: String,
     private val sOnInputListener: OnInputListener?,

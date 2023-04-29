@@ -50,7 +50,6 @@ class StudentResultDownloadFragment() : Fragment(), OnItemClickListener {
     private lateinit var mAdapter: SectionedRecyclerViewAdapter
     private val mTermList = mutableListOf<AdminStudentResultFragmentModel>()
 
-
     // initialise variables
     private var mStudentId: String? = null
     private var mRegistrationNumber: String? = null

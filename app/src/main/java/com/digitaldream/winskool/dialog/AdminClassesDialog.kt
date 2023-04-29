@@ -161,7 +161,7 @@ class AdminClassesDialog(
     override fun onClassClick(position: Int) {
         val classTable = mClassList[position]
 
-        if (sFrom == "result"){
+        if (sFrom == "result") {
             if (sType == "changeLevel") {
                 sResulClick!!.sendClassName(classTable.className)
                 sResulClick.sendClassId(classTable.classId)
@@ -175,23 +175,29 @@ class AdminClassesDialog(
                         .putExtra("level_Id", mLevelId)
                 )
             }
-        }/*else{
+        } else {
             if (sType == "changeLevel") {
                 sResulClick!!.sendClassName(classTable.className)
                 sResulClick.sendClassId(classTable.classId)
-                sResulClick.sendLevelId(classTable.level)
+                sResulClick.sendClassName(classTable.className)
 
             } else {
                 context.startActivity(
-                    Intent(context, PaymentActivity().javaClass)
-                        .putExtra("class_id", classTable.classId)
-                        .putExtra("class_name", classTable.className)
-                        .putExtra("level_Id", mLevelId)
+                    if (sFrom == "debt")
+                        Intent(context, PaymentActivity().javaClass)
+                            .putExtra("classId", classTable.classId)
+                            .putExtra("class_name", classTable.className)
+                            .putExtra("from", "debt_received")
+                            .putExtra("type", "debt")
+                    else
+                        Intent(context, PaymentActivity().javaClass)
+                            .putExtra("classId", classTable.classId)
+                            .putExtra("class_name", classTable.className)
+                            .putExtra("from", "debt_received")
+                            .putExtra("type", "received")
                 )
             }
-        }*/
-
-
+        }
 
         dismiss()
 
