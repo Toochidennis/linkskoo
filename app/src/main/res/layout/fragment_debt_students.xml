@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".fragments.DebtReceivedFragment">
+    android:background="@color/white"
+    tools:context=".fragments.StudentsPaidFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -25,7 +26,6 @@
                 android:layout_height="38dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp"
                 android:clickable="true"
                 android:contentDescription="@string/todo"
@@ -55,7 +55,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:background="@drawable/ripple_effect4"
                 android:clickable="true"
                 android:contentDescription="@string/todo"

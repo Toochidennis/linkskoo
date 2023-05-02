@@ -93,19 +93,21 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
     }
 
     private fun getReceipts() {
-        mReceiptList.clear()
+
         val sharedPreferences =
             requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         val term = sharedPreferences.getString("term", "")
         val year = sharedPreferences.getString("school_year", "")
 
-        val url = "${Login.urlBase}/manageTransactions.php?type=receipts&&term=$term&&year=$year"
+        val url = "${getString(R.string.base_url)}/manageTransactions" +
+                ".php?type=receipts&&term=$term&&year=$year"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
+                        mReceiptList.clear()
                         val jsonObject = JSONObject(response)
                         val receiptsArray = jsonObject.getJSONArray("receipts")
 

@@ -1,24 +1,25 @@
 package com.digitaldream.winskool.models
 
 class AdminPaymentModel {
+
     private var mId: Int = 0
     private var mInvoice: String? = null
+    private var mStudentId: String? = null
     private var mTransactionName: String? = null
     private var mStudentName: String? = null
     private var mLevelName: String? = null
     private var mClassName: String? = null
-    private var mTransactionTerm: String? = null
     private var mTransactionDate: String? = null
-    private var mTransactionSession: String? = null
-    private var mExpenditureAmount: String? = null
     private var mReceivedAmount: String? = null
     private var mReferenceNumber: String? = null
     private var mRegistrationNumber: String? = null
     private var mDescription: String? = null
     private var mTerm: String? = null
     private var mSession: String? = null
+    private var mJson: String? = null
 
     fun getId() = mId
+    fun getStudentId() = mStudentId
 
     fun getInvoice() = mInvoice
 
@@ -28,14 +29,6 @@ class AdminPaymentModel {
     fun getLevelName() = mLevelName
 
     fun getClassName() = mClassName
-
-    fun getTransactionTerm() = mTransactionTerm
-
-    fun getTransactionDate() = mTransactionDate
-
-    fun getTransactionSession() = mTransactionSession
-
-    fun getExpenditureAmount() = mExpenditureAmount
 
     fun getReceivedAmount() = mReceivedAmount
 
@@ -47,8 +40,16 @@ class AdminPaymentModel {
     fun getTerm() = mTerm
     fun getSession() = mSession
 
+    fun getJson() = mJson
+    fun getTransactionDate() = mTransactionDate
+
+
     fun setId(sId: Int) {
         mId = sId
+    }
+
+    fun setStudentId(sStudentId: String){
+        mStudentId = sStudentId
     }
 
     fun setInvoice(sInvoice: String) {
@@ -72,21 +73,11 @@ class AdminPaymentModel {
         mClassName = sClassName
     }
 
-    fun setTransactionTerm(sTransactionTerm: String) {
-        mTransactionTerm = sTransactionTerm
-    }
 
     fun setTransactionDate(sTransactionDate: String) {
         mTransactionDate = sTransactionDate
     }
 
-    fun setTransactionSession(sTransactionSession: String) {
-        mTransactionSession = sTransactionSession
-    }
-
-    fun setExpenditureAmount(sExpenditureAmount: String) {
-        mExpenditureAmount = sExpenditureAmount
-    }
 
     fun setReceivedAmount(sReceivedAmount: String) {
         mReceivedAmount = sReceivedAmount
@@ -110,6 +101,14 @@ class AdminPaymentModel {
 
     fun setSession(sSession: String) {
         mSession = sSession
+    }
+
+    fun setJson(sJson: String) {
+        mJson = sJson
+    }
+
+    fun setDate(sTransactionDate: String){
+        mTransactionDate = sTransactionDate
     }
 
 }

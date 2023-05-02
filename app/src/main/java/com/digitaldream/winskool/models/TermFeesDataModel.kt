@@ -13,6 +13,7 @@ class TermFeesDataModel {
     private var mInvoiceId: String? = null
 
 
+
     fun getFeeId() = mFeedId
 
     fun getFeeName() = mFeeName
@@ -27,8 +28,8 @@ class TermFeesDataModel {
 
     fun getDate() = mDate
 
-
     fun getAmount() = mAmount
+
 
     fun setFeeName(sFeeName: String) {
         mFeeName = sFeeName
@@ -66,4 +67,5 @@ class TermFeesDataModel {
     fun setAmount(sAmount: String) {
         mAmount = sAmount
     }
+
 }

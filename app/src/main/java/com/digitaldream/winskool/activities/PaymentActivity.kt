@@ -28,14 +28,16 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
         val classId = intent.getStringExtra("classId")
         val levelId = intent.getStringExtra("levelId")
         val studentId = intent.getStringExtra("studentId")
+        val invoiceId = intent.getStringExtra("invoiceId")
         val className = intent.getStringExtra("class_name")
         val regNo = intent.getStringExtra("reg_no")
         val reference = intent.getStringExtra("reference")
         val status = intent.getStringExtra("status")
         val session = intent.getStringExtra("session")
         val term = intent.getStringExtra("term")
-        val type = intent.getStringExtra("type")
+        val year = intent.getStringExtra("year")
         val date = intent.getStringExtra("date")
+        val json = intent.getStringExtra("json")
 
         try {
 
@@ -164,13 +166,41 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                     )
                 }
 
-                "debt_received" -> supportFragmentManager.commit {
+                "paid" -> supportFragmentManager.commit {
                     replace(
                         R.id.payment_container,
-                        DebtReceivedFragment.newInstance(
+                        StudentsPaidFragment.newInstance(
                             className!!,
+                            classId!!
+                        )
+                    )
+                }
+
+                "debt" -> supportFragmentManager.commit {
+                    replace(
+                        R.id.payment_container,
+                        DebtStudentsFragment.newInstance(
                             classId!!,
-                            type!!
+                            className!!
+                        )
+                    )
+                }
+
+                "debt_details" -> supportFragmentManager.commit {
+                    replace(
+                        R.id.payment_container,
+                        DebtStudentsDetailsFragment.newInstance(
+                            studentName!!,
+                            studentId!!,
+                            invoiceId!!,
+                            levelId!!,
+                            classId!!,
+                            year!!,
+                            term!!,
+                            regNo!!,
+                            amount!!,
+                            json!!
+
                         )
                     )
                 }

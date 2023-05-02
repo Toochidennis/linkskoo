@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
+import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import java.util.*
 
 class ReceiptsHistoryAdapter(
@@ -28,13 +30,13 @@ class ReceiptsHistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sTransactionList[position]
 
-        holder.mStudentName.text = FunctionUtils.capitaliseFirstLetter(adminModel.getStudentName()!!)
+        holder.mStudentName.text = capitaliseFirstLetter(adminModel.getStudentName()!!)
         holder.mReceiptDate.text = adminModel.getTransactionDate()
         holder.mStudentClass.text = adminModel.getClassName()
 
         String.format(
             Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
-            FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+            currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
         ).also { holder.mReceiptAmount.text = it }
 
     }

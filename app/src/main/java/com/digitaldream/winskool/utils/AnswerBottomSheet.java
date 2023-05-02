@@ -214,55 +214,35 @@ public class AnswerBottomSheet extends BottomSheetDialogFragment {
         });
 
         editorContainer = view.findViewById(R.id.editor_container);
-        editorContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gallery.setVisibility(View.GONE);
-            }
-        });
+        editorContainer.setOnClickListener(v -> gallery.setVisibility(View.GONE));
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        submitBtn.setOnClickListener(v -> buildAnswerJson(view));
 
-                    buildAnswerJson(view);
-
-            }
-        });
-
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        closeBtn.setOnClickListener(v -> dismiss());
 
         ImageView selectImgBtn = view.findViewById(R.id.select_img);
-        selectImgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ((ContextCompat.checkSelfPermission(getContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getContext(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-                    if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                            Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                                REQUEST_PERMISSIONS);
+        selectImgBtn.setOnClickListener(v -> {
+            if ((ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_PERMISSIONS);
 
-                    } else {
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                                REQUEST_PERMISSIONS);
-                    }
-                }else {
-                    gallery.setAdapter(new ImageAdapter(getActivity()));
-                    gallery.setVisibility(View.VISIBLE);
-                    open = true;
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_PERMISSIONS);
                 }
-
+            }else {
+                gallery.setAdapter(new ImageAdapter(getActivity()));
+                gallery.setVisibility(View.VISIBLE);
+                open = true;
             }
+
         });
 
         return view;
@@ -286,16 +266,13 @@ public class AnswerBottomSheet extends BottomSheetDialogFragment {
 
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
+        dialog.setOnShowListener(dialog1 -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog1;
 
-                FrameLayout bottomSheet = (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-                BottomSheetBehavior behaviour = BottomSheetBehavior.from(bottomSheet);
+            FrameLayout bottomSheet = (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+            BottomSheetBehavior behaviour = BottomSheetBehavior.from(bottomSheet);
 
-            }
         });
 
        return dialog;

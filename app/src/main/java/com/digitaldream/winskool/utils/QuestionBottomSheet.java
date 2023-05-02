@@ -33,7 +33,6 @@ public class QuestionBottomSheet extends BottomSheetDialogFragment {
     public static String viewAccess,question,user_name,user_id;
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -105,14 +104,11 @@ public class QuestionBottomSheet extends BottomSheetDialogFragment {
         super.onCreateDialog(savedInstanceState);
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
+        dialog.setOnShowListener(dialog1 -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog1;
 
-                FrameLayout bottomSheet = (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
         return dialog;
     }

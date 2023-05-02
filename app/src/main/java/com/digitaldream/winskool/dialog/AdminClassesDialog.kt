@@ -179,7 +179,6 @@ class AdminClassesDialog(
             if (sType == "changeLevel") {
                 sResulClick!!.sendClassName(classTable.className)
                 sResulClick.sendClassId(classTable.classId)
-                sResulClick.sendClassName(classTable.className)
 
             } else {
                 context.startActivity(
@@ -187,14 +186,12 @@ class AdminClassesDialog(
                         Intent(context, PaymentActivity().javaClass)
                             .putExtra("classId", classTable.classId)
                             .putExtra("class_name", classTable.className)
-                            .putExtra("from", "debt_received")
-                            .putExtra("type", "debt")
+                            .putExtra("from", "debt")
                     else
                         Intent(context, PaymentActivity().javaClass)
                             .putExtra("classId", classTable.classId)
                             .putExtra("class_name", classTable.className)
-                            .putExtra("from", "debt_received")
-                            .putExtra("type", "received")
+                            .putExtra("from", "paid")
                 )
             }
         }

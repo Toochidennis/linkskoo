@@ -98,9 +98,11 @@ class AddReceiptDialog(
 
     private fun validateInput() {
         val studentName = mStudentNameInput.text.toString().trim()
-        val amount = mAmountInput.text.toString().trim().replace(
-            context.getString(R.string.naira), ""
-        ).replace(",", "")
+
+        val amount = mAmountInput.text.toString().trim()
+            .replace(context.getString(R.string.naira), "")
+            .replace(",", "")
+
         val reference = mReferenceNumberInput.text.toString().trim()
         val date = mDateInput.text.toString().trim()
 
@@ -108,7 +110,6 @@ class AddReceiptDialog(
             Toast.makeText(context, "Provide all fields", Toast.LENGTH_SHORT).show()
         } else {
             postReferenceNumber(reference, amount, date, studentName)
-            sOnItemClickListener.onItemClick(0)
             dismiss()
         }
     }
@@ -119,7 +120,7 @@ class AddReceiptDialog(
         sDate: String,
         sName: String,
     ) {
-        val url = Login.urlBase + "/manageReceipts.php"
+        val url = sContext.getString(R.string.base_url) + "/manageReceipts.php"
         val stringMap = hashMapOf<String, String>()
         stringMap["invoice_id"] = sInvoiceId
         stringMap["student_id"] = sStudentId
@@ -137,12 +138,14 @@ class AddReceiptDialog(
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    sOnItemClickListener.onItemClick(0)
                 }
 
                 override fun onError(error: VolleyError) {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
+        )
     }
 
     private fun setDate() {
@@ -159,6 +162,7 @@ class AddReceiptDialog(
                     val mont = sMonth + 1
                     val currentDate = "$sYear-$mont-$sDayOfMonth"
                     mDateInput.setText(currentDate)
+
                 }, year, month, day
             ).show()
         }
