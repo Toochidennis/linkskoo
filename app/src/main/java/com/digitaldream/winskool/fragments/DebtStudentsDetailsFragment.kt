@@ -222,6 +222,7 @@ class DebtStudentsDetailsFragment : Fragment() {
             StudentFeesDetailsAdapter(requireContext(), mFeesList).let {
                 mRecyclerView.apply {
                     isAnimating
+                    hasFixedSize()
                     layoutManager = LinearLayoutManager(requireContext())
                     adapter = it
                 }

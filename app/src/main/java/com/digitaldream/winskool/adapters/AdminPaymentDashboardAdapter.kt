@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
-import java.util.*
+import com.digitaldream.winskool.utils.FunctionUtils.formatDate2
+import java.util.Locale
 
 class AdminPaymentDashboardAdapter(
     private val sContext: Context,
@@ -30,7 +31,7 @@ class AdminPaymentDashboardAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sTransactionList[position]
-        holder.mTransactionDate.text = adminModel.getTransactionDate()
+        holder.mTransactionDate.text = formatDate2(adminModel.getTransactionDate()!!)
 
         if (adminModel.getTransactionName() == "receipts") {
             holder.mTransactionCard.setCardBackgroundColor(

@@ -48,12 +48,8 @@ class AdminResultStudentNamesDialog(
         window!!.setGravity(Gravity.BOTTOM)
         setContentView(R.layout.dialog_admin_result_student_names)
 
-        val backBtn: ImageView = findViewById(R.id.back_btn)
         mSearchBar = findViewById(R.id.search_bar)
 
-        backBtn.setOnClickListener {
-            dismiss()
-        }
 
         mSearchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

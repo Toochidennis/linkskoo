@@ -24,12 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ViewResponseAdapter extends RecyclerView.Adapter<ViewResponseAdapter.ViewResponseVH>{
     private Context context;
     private List<ViewResponseModel> list;
-    OnResponseClickListener onResponseClickListener;
+    OnResponseListener onResponseListener;
 
-    public ViewResponseAdapter(Context context, List<ViewResponseModel> list,OnResponseClickListener onResponseClickListener) {
+    public ViewResponseAdapter(Context context, List<ViewResponseModel> list, OnResponseListener onResponseListener) {
         this.context = context;
         this.list = list;
-        this.onResponseClickListener = onResponseClickListener;
+        this.onResponseListener = onResponseListener;
     }
 
     @NonNull
@@ -37,7 +37,7 @@ public class ViewResponseAdapter extends RecyclerView.Adapter<ViewResponseAdapte
     public ViewResponseVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.view_response_item,parent,false);
-        return new ViewResponseVH(view,onResponseClickListener);
+        return new ViewResponseVH(view, onResponseListener);
     }
 
     @Override
@@ -71,11 +71,11 @@ public class ViewResponseAdapter extends RecyclerView.Adapter<ViewResponseAdapte
         return list.size();
     }
 
-    class ViewResponseVH extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ViewResponseVH extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView number,studentName,score,date;
         LinearLayout bg;
-        OnResponseClickListener onResponseClickListener;
-        public ViewResponseVH(@NonNull View itemView,OnResponseClickListener onResponseClickListener) {
+        OnResponseListener onResponseListener;
+        public ViewResponseVH(@NonNull View itemView, OnResponseListener onResponseListener) {
             super(itemView);
             number = itemView.findViewById(R.id.number);
             studentName = itemView.findViewById(R.id.student_name);
@@ -83,17 +83,17 @@ public class ViewResponseAdapter extends RecyclerView.Adapter<ViewResponseAdapte
             date = itemView.findViewById(R.id.date_layout);
             bg = itemView.findViewById(R.id.num_bg);
             itemView.setOnClickListener(this);
-            this.onResponseClickListener = onResponseClickListener;
+            this.onResponseListener = onResponseListener;
 
         }
 
         @Override
         public void onClick(View v) {
-            onResponseClickListener.onResponseClick(getAdapterPosition());
+            onResponseListener.onResponseClick(getAdapterPosition());
         }
     }
 
-    public interface OnResponseClickListener{
+    public interface OnResponseListener {
         void onResponseClick(int position);
     }
 }

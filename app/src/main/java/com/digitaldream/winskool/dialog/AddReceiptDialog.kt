@@ -15,6 +15,7 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
@@ -43,7 +44,7 @@ class AddReceiptDialog(
     private lateinit var mAmountInput: EditText
     private lateinit var mReferenceNumberInput: EditText
     private lateinit var mDateInput: EditText
-    private lateinit var mAddBtn: Button
+    private lateinit var mAddBtn: CardView
     private lateinit var mBackBtn: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {

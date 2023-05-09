@@ -4,20 +4,22 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.AdminPaymentModel
-import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
+import com.digitaldream.winskool.utils.FunctionUtils.formatDate2
 import java.util.*
 
 class ReceiptsHistoryAdapter(
     private val sContext: Context,
     private val sTransactionList: MutableList<AdminPaymentModel>,
     private val sOnItemClickListener: OnItemClickListener,
-) : RecyclerView.Adapter<ReceiptsHistoryAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ReceiptsHistoryAdapter.ViewHolder>(), Filterable {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -31,7 +33,7 @@ class ReceiptsHistoryAdapter(
         val adminModel = sTransactionList[position]
 
         holder.mStudentName.text = capitaliseFirstLetter(adminModel.getStudentName()!!)
-        holder.mReceiptDate.text = adminModel.getTransactionDate()
+        holder.mReceiptDate.text = formatDate2(adminModel.getTransactionDate()!!)
         holder.mStudentClass.text = adminModel.getClassName()
 
         String.format(
@@ -56,5 +58,39 @@ class ReceiptsHistoryAdapter(
         }
 
     }
+
+
+    @Suppress("UNCHECKED_CAST")
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val transactionList = sTransactionList
+                val filteredList = mutableListOf<AdminPaymentModel>()
+
+                if (constraint.isNullOrEmpty())
+                    filteredList.addAll(transactionList)
+                else
+                    transactionList.forEach {
+
+                        if (it.getStudentName()!!.lowercase()
+                                .contains(
+                                    constraint.toString().lowercase().trim(),
+                                )
+                        ) {
+                            filteredList.add(it)
+                        }
+                    }
+
+                return FilterResults().apply { values = filteredList }
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                sTransactionList.clear()
+                sTransactionList.addAll(results?.values as MutableList<AdminPaymentModel>)
+                notifyDataSetChanged()
+            }
+        }
+    }
+
 
 }

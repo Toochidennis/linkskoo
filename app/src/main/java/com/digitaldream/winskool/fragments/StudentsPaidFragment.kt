@@ -248,6 +248,7 @@ class StudentsPaidFragment : Fragment(), OnItemClickListener {
 
 
                             mRecyclerView.apply {
+                                hasFixedSize()
                                 isAnimating
                                 isVisible = true
                                 adapter = mAdapter

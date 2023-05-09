@@ -5,3 +5,4 @@ interface ResultListener {
     fun sendLevelId(sLevelId: String)
     fun sendClassId(sClassId: String)
 }
+

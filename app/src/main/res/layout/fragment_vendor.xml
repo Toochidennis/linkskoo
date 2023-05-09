@@ -23,11 +23,9 @@
 
     <EditText
         android:id="@+id/search_bar"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="15dp"
@@ -36,14 +34,12 @@
         android:drawableStart="@drawable/ic_search_24"
         android:drawableTint="@color/gray"
         android:ems="10"
+        android:minHeight="48dp"
         android:fontFamily="@font/montserrat"
         android:gravity="start|top"
-        android:hint="Search for vendor"
+        android:hint="Search for a vendor"
         android:inputType="textPersonName"
-        android:paddingStart="5dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="5dp"
+        android:padding="10dp"
         android:textSize="14sp"
         android:visibility="gone" />
 
@@ -57,7 +53,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp">
+            android:layout_margin="15dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/vendor_recycler"

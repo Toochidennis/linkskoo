@@ -6,28 +6,15 @@
     android:background="@drawable/dialog_bg"
     tools:context=".fragments.ReceiptStudentNameFragment">
 
-    <ImageView
-        android:id="@+id/back_btn"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:clickable="true"
-        android:contentDescription="@string/todo"
-        android:focusable="true"
-        android:src="@drawable/ic_baseline_keyboard_arrow_down_24" />
 
     <EditText
         android:id="@+id/search_bar"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="15dp"
-        android:layout_toEndOf="@id/back_btn"
         android:autofillHints="name"
-        android:background="@drawable/edit_text_bg"
+        android:background="@drawable/edit_text_bg2"
         android:drawableStart="@drawable/ic_search_24"
-        android:drawableTint="@color/black"
+        android:drawableTint="@color/gray"
         android:ems="10"
         android:fontFamily="@font/poppins_regular"
         android:gravity="start|top"
@@ -66,7 +53,7 @@
         android:id="@+id/error_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/back_btn"
+        android:layout_below="@id/search_bar"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:visibility="gone">

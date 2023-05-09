@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ViewResponses extends AppCompatActivity implements ViewResponseAdapter.OnResponseClickListener {
+public class ViewResponses extends AppCompatActivity implements ViewResponseAdapter.OnResponseListener {
     private RecyclerView recyclerView;
     private List<ViewResponseModel> list;
     private ViewResponseAdapter adapter;

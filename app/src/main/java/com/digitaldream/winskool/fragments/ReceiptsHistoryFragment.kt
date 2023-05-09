@@ -4,13 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -19,21 +27,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
+import com.digitaldream.winskool.dialog.ReceiptsTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermFeeDialog
+import com.digitaldream.winskool.interfaces.TimeFrameListener
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.formatDate
+import com.digitaldream.winskool.utils.FunctionUtils.getDate
 import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.achartengine.GraphicalView
 import org.json.JSONObject
-import java.util.*
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
@@ -48,6 +60,10 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
     private lateinit var mErrorView: LinearLayout
     private lateinit var mRefreshBtn: Button
     private lateinit var mAddReceipt: FloatingActionButton
+    private lateinit var mTimeFrameBtn: Button
+    private lateinit var mTermBtn: Button
+
+    private lateinit var mMenuHost: MenuHost
 
     private var mGraphicalView: GraphicalView? = null
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
@@ -74,20 +90,52 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
         mErrorView = view.findViewById(R.id.error_view)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
         mAddReceipt = view.findViewById(R.id.add_receipt)
+        mTimeFrameBtn = view.findViewById(R.id.time_frame_btn)
+        mTermBtn = view.findViewById(R.id.term_btn)
 
-        toolbar.apply {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        actionBar?.apply {
             title = "Receipts"
-            setNavigationIcon(R.drawable.arrow_left)
-            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            this.setHomeAsUpIndicator(R.drawable.arrow_left)
+            this.setDisplayHomeAsUpEnabled(true)
+            this.setHomeButtonEnabled(true)
         }
 
+
+        mMenuHost = requireActivity()
+
         mAdapter = ReceiptsHistoryAdapter(requireContext(), mReceiptList, this)
-        mRecyclerView.hasFixedSize()
-        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        mRecyclerView.adapter = mAdapter
+
+        mRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            isAnimating
+            adapter = mAdapter
+        }
+
 
         refreshData()
+
         receiptsDialog()
+
+        setUpMenu()
+
+        mTimeFrameBtn.setOnClickListener {
+            ReceiptsTimeFrameBottomSheet(object : TimeFrameListener {
+                override fun startAndEndDate(startDate: String?, endDate: String?) {
+
+                }
+
+                override fun singleDate(singleDate: String?) {
+
+                }
+            }).show(
+                requireActivity().supportFragmentManager, "Time Frame "
+            )
+        }
+
+        timeFrameTitle()
 
         return view
     }
@@ -100,7 +148,8 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
         val year = sharedPreferences.getString("school_year", "")
 
         val url = "${getString(R.string.base_url)}/manageTransactions" +
-                ".php?type=receipts&&term=$term&&year=$year"
+                ".php?type=receipts&&term=$term&&year=$year&&dateRange=custom&&startDate=2023-03" +
+                "-01&&endDate=2023-04-06"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
@@ -251,6 +300,59 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                 )
         }
 
+    }
+
+    private fun setUpMenu() {
+        mMenuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.search_menu, menu)
+
+                val searchItem = menu.findItem(R.id.search)
+                val searchView = searchItem.actionView as SearchView
+
+                searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        mAdapter.filter.filter(newText)
+                        return false
+                    }
+                })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    android.R.id.home -> {
+                        requireActivity().onBackPressedDispatcher
+                            .onBackPressed()
+                        return true
+                    }
+
+                    else -> false
+                }
+            }
+        })
+    }
+
+    private fun timeFrameTitle() {
+        try {
+
+            val simpleDateFormat = SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+            )
+
+            val parseDate = simpleDateFormat.parse(getDate())!!
+            val sdf = SimpleDateFormat("MMMM, yyyy", Locale.getDefault())
+            mTimeFrameBtn.text = sdf.format(parseDate)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onResume() {

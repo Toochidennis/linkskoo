@@ -21,7 +21,6 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -42,7 +41,6 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ChartModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
-import org.achartengine.chart.BarChart
 import org.achartengine.chart.PointStyle
 import org.achartengine.model.XYMultipleSeriesDataset
 import org.achartengine.model.XYSeries
@@ -76,6 +74,7 @@ object FunctionUtils {
         return stringBuilder.toString()
     }
 
+
     fun abbreviate(sS: String): String {
         val strings = sS.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
         val stringBuilder = StringBuilder()
@@ -90,6 +89,7 @@ object FunctionUtils {
         return stringBuilder.toString()
     }
 
+
     fun setColor(): Int {
         val random = Random()
         return Color.argb(
@@ -97,6 +97,7 @@ object FunctionUtils {
             random.nextInt(256)
         )
     }
+
 
     /*    public static CountDownTimer startCountDown(ProgressBar sProgressBar,
                                                 int sI,
@@ -135,6 +136,7 @@ object FunctionUtils {
         }
         animator.start()
     }
+
 
     @JvmStatic
     fun plotLineChart(
@@ -192,16 +194,78 @@ object FunctionUtils {
         return formatter.format(number)
     }
 
+
     @JvmStatic
-    @Throws(ParseException::class)
-    fun dateConverter(date: String): String? {
-        val format = "$date 00:00:00.000Z".replace(" ", "T")
-        val simpleDateFormat = SimpleDateFormat(
-            "yyyy-MM-dd" + "'T'HH" + ":mm:ss.SSS'Z'", Locale.US
-        )
-        val oldDate = simpleDateFormat.parse(format)!!
-        return DateFormat.getDateInstance(DateFormat.FULL).format(oldDate)
+    fun formatDate(date: String): String? {
+        var formattedDate = ""
+        try {
+
+            val simpleDateFormat = SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+            )
+
+            val parseDate = simpleDateFormat.parse("$date 00:00:00")!!
+            val sdf = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault())
+            formattedDate = sdf.format(parseDate)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return formattedDate
     }
+
+    @JvmStatic
+    fun formatDate2(date: String): String? {
+        var formattedDate = ""
+        try {
+
+            val simpleDateFormat = SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+            )
+
+            val parseDate = simpleDateFormat.parse("$date 00:00:00")!!
+            val sdf = SimpleDateFormat("MMMM, dd", Locale.getDefault())
+            formattedDate = sdf.format(parseDate)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return formattedDate
+    }
+
+    @JvmStatic
+    fun getEndDate(startDate: String): String {
+        var formattedDate = ""
+        try {
+            val calender = Calendar.getInstance()
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val parseDate = simpleDateFormat.parse(startDate)
+            calender.time = parseDate!!
+            calender.add(Calendar.MONTH, 1)
+            formattedDate = simpleDateFormat.format(calender.time)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return formattedDate
+
+    }
+
+    @JvmStatic
+    fun getDate(): String {
+        val calendar = Calendar.getInstance()
+        val year = calendar[Calendar.YEAR].toString()
+        val month = (calendar[Calendar.MONTH] + 1).toString()
+        val dayOfMonth = calendar[Calendar.DAY_OF_MONTH].toString()
+        return "$year-$month-$dayOfMonth"
+    }
+
+
 
     private fun createBitMap(sView: View, sWidth: Int, sHeight: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(sWidth, sHeight, Bitmap.Config.ARGB_8888)
@@ -209,6 +273,7 @@ object FunctionUtils {
         sView.draw(canvas)
         return bitmap
     }
+
 
     private fun createPDF(sView: View, sActivity: Activity): PdfDocument {
         val displayMetrics = DisplayMetrics()
@@ -231,6 +296,7 @@ object FunctionUtils {
 
         return pdfDocument
     }
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun notification(max: Int, sFile: File, sActivity: Activity) {
@@ -290,6 +356,7 @@ object FunctionUtils {
         }
     }
 
+
     private fun notificationIntent(sFile: File, sActivity: Activity): Intent {
         val intent = Intent(Intent.ACTION_VIEW)
         val uri = FileProvider.getUriForFile(
@@ -301,6 +368,7 @@ object FunctionUtils {
         return intent
     }
 
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @JvmStatic
     fun downloadPDF(sView: View, sActivity: Activity) {
@@ -311,6 +379,7 @@ object FunctionUtils {
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     .absolutePath + "/receipt$randomId.pdf"
             )
+
             createPDF(sView, sActivity).writeTo(FileOutputStream(file))
             val fileSize = (file.length() / 1024).toInt()
             notification(fileSize, file, sActivity)
@@ -324,6 +393,7 @@ object FunctionUtils {
         }
         createPDF(sView, sActivity).close()
     }
+
 
     @JvmStatic
     fun sharePDF(sView: View, sActivity: Activity) {
@@ -351,6 +421,7 @@ object FunctionUtils {
             startChooser()
         }
     }
+
 
     @JvmStatic
     fun requestToServer(
@@ -397,19 +468,13 @@ object FunctionUtils {
 
                 return stringMap
             }
+
         }
 
         Volley.newRequestQueue(context).add(stringRequest)
+
     }
 
-    @JvmStatic
-    fun getDate(): String {
-        val calendar = Calendar.getInstance()
-        val year = calendar[Calendar.YEAR].toString()
-        val month = (calendar[Calendar.MONTH] + 1).toString()
-        val dayOfMonth = calendar[Calendar.DAY_OF_MONTH].toString()
-        return "$year-$month-$dayOfMonth"
-    }
 
     @JvmStatic
     fun webViewProgress(context: Context, webView: WebView) {
