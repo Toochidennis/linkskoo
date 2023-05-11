@@ -1,13 +1,11 @@
 package com.digitaldream.winskool.utils
 
-import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -25,8 +23,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ShareCompat
@@ -47,30 +45,28 @@ import org.achartengine.model.XYSeries
 import org.achartengine.renderer.XYMultipleSeriesRenderer
 import org.achartengine.renderer.XYSeriesRenderer
 import java.io.*
-import java.text.DateFormat
 import java.text.DecimalFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 object FunctionUtils {
     //var counter = 0
     @JvmStatic
-    fun capitaliseFirstLetter(sS: String): String {
-        val strings = sS.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
+    fun capitaliseFirstLetter(sentence: String): String {
+        val letters = sentence.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
         val stringBuilder = StringBuilder()
-        for (letter in strings) {
+
+        letters.forEach {
             try {
                 val words =
-                    letter.substring(0, 1).uppercase(Locale.getDefault()) +
-                            letter.substring(1).lowercase(Locale.getDefault())
+                    it.substring(0, 1).uppercase(Locale.getDefault()) +
+                            it.substring(1).lowercase(Locale.getDefault())
                 stringBuilder.append(words).append(" ")
             } catch (sE: Exception) {
                 sE.printStackTrace()
             }
         }
+
         return stringBuilder.toString()
     }
 
@@ -156,31 +152,36 @@ object FunctionUtils {
         val dataset = XYMultipleSeriesDataset()
         dataset.addSeries(series)
 
-        val seriesRenderer = XYSeriesRenderer()
-        seriesRenderer.color = ContextCompat.getColor(sContext, R.color.color_4)
-        seriesRenderer.isFillPoints = true
-        seriesRenderer.annotationsColor = Color.WHITE
-        seriesRenderer.lineWidth = 4f
-        seriesRenderer.pointStyle = PointStyle.CIRCLE
-        seriesRenderer.isDisplayChartValues = true
-        seriesRenderer.chartValuesTextSize = 20f
+        val seriesRenderer = XYSeriesRenderer().apply {
+            color = ContextCompat.getColor(sContext, R.color.color_4)
+            isFillPoints = true
+            annotationsColor = Color.WHITE
+            lineWidth = 4f
+            pointStyle = PointStyle.CIRCLE
+            isDisplayChartValues = true
+            chartValuesTextSize = 20f
+        }
 
-        val multipleRenderer = XYMultipleSeriesRenderer()
-        multipleRenderer.xLabels = 0
-        multipleRenderer.yLabels = 0
-        multipleRenderer.margins = intArrayOf(20, 30, 15, 0)
-        multipleRenderer.xTitle = sHorizontalTitle
-        multipleRenderer.isPanEnabled = false
-        multipleRenderer.marginsColor = Color.parseColor("#191F91")
-        multipleRenderer.isZoomEnabled = false
-        multipleRenderer.backgroundColor = Color.parseColor("#191F91")
-        multipleRenderer.isApplyBackgroundColor = true
-        multipleRenderer.labelsColor = Color.WHITE
-        multipleRenderer.labelsTextSize = 20f
-        multipleRenderer.addSeriesRenderer(seriesRenderer)
 
-        for (i in 0 until graphLength)
-            multipleRenderer.addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
+        val multipleRenderer = XYMultipleSeriesRenderer().apply {
+            xLabels = 0
+            yLabels = 0
+            xTitle = sHorizontalTitle
+            isPanEnabled = false
+            marginsColor = Color.parseColor("#191F91")
+            isZoomEnabled = false
+            backgroundColor = Color.parseColor("#191F91")
+            isApplyBackgroundColor = true
+            labelsColor = Color.WHITE
+            labelsTextSize = 20f
+            addSeriesRenderer(seriesRenderer)
+            margins = intArrayOf(20, 30, 15, 0)
+
+
+            for (i in 0 until graphLength)
+                addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
+        }
+
 
         return ChartFactory.getLineChartView(
             sContext, dataset, multipleRenderer,
@@ -196,7 +197,7 @@ object FunctionUtils {
 
 
     @JvmStatic
-    fun formatDate(date: String): String? {
+    fun formatDate(date: String): String {
         var formattedDate = ""
         try {
 
@@ -206,7 +207,7 @@ object FunctionUtils {
             )
 
             val parseDate = simpleDateFormat.parse("$date 00:00:00")!!
-            val sdf = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault())
+            val sdf = SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
             formattedDate = sdf.format(parseDate)
 
         } catch (e: Exception) {
@@ -217,7 +218,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun formatDate2(date: String): String? {
+    fun formatDate2(date: String): String {
         var formattedDate = ""
         try {
 
@@ -227,7 +228,7 @@ object FunctionUtils {
             )
 
             val parseDate = simpleDateFormat.parse("$date 00:00:00")!!
-            val sdf = SimpleDateFormat("MMMM, dd", Locale.getDefault())
+            val sdf = SimpleDateFormat("MMM, dd", Locale.getDefault())
             formattedDate = sdf.format(parseDate)
 
         } catch (e: Exception) {
@@ -266,7 +267,6 @@ object FunctionUtils {
     }
 
 
-
     private fun createBitMap(sView: View, sWidth: Int, sHeight: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(sWidth, sHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -299,61 +299,46 @@ object FunctionUtils {
 
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @RequiresPermission("android.permission.POST_NOTIFICATIONS")
     private fun notification(max: Int, sFile: File, sActivity: Activity) {
         val notificationManger: NotificationManagerCompat =
             NotificationManagerCompat.from(sActivity)
 
-        if (ActivityCompat.checkSelfPermission(
-                sActivity,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                sActivity, arrayOf(
-                    Manifest.permission.POST_NOTIFICATIONS
-                ),
-                PackageManager.PERMISSION_GRANTED
-            )
-        } else if (ActivityCompat.checkSelfPermission(
-                sActivity,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
 
-            val pendingIntent = PendingIntent.getActivity(
-                sActivity,
-                0, notificationIntent(sFile, sActivity), PendingIntent.FLAG_IMMUTABLE
-            )
+        val pendingIntent = PendingIntent.getActivity(
+            sActivity,
+            0, notificationIntent(sFile, sActivity), PendingIntent.FLAG_IMMUTABLE
+        )
 
-            val notification = NotificationCompat.Builder(
-                sActivity, CHANNEL_ID
-            ).apply {
-                setSmallIcon(R.drawable.win_school)
-                setContentTitle("Payment Receipt")
-                setContentText("Download in progress")
-                setContentIntent(pendingIntent)
-                color = ContextCompat.getColor(sActivity, R.color.color_5)
-                setProgress(max, 0, false)
-                setOngoing(true)
-                setOnlyAlertOnce(true)
-                priority = NotificationCompat.PRIORITY_DEFAULT
-            }
-
-            notificationManger.notify(1, notification.build())
-
-            Thread {
-                SystemClock.sleep(1000)
-                for (progress in 0..max step 10) {
-                    notification.setProgress(max, progress, false)
-                    notificationManger.notify(1, notification.build())
-                    SystemClock.sleep(1000)
-                }
-                notification.setContentText("Download finished")
-                    .setProgress(0, 0, false)
-                    .setOngoing(false)
-                notificationManger.notify(1, notification.build())
-            }.start()
+        val notification = NotificationCompat.Builder(
+            sActivity, CHANNEL_ID
+        ).apply {
+            setSmallIcon(R.drawable.win_school)
+            setContentTitle("Payment Receipt")
+            setContentText("Download in progress")
+            setContentIntent(pendingIntent)
+            color = ContextCompat.getColor(sActivity, R.color.color_5)
+            setProgress(max, 0, false)
+            setOngoing(true)
+            setOnlyAlertOnce(true)
+            priority = NotificationCompat.PRIORITY_DEFAULT
         }
+
+        notificationManger.notify(1, notification.build())
+
+        Thread {
+            SystemClock.sleep(1000)
+            for (progress in 0..max step 10) {
+                notification.setProgress(max, progress, false)
+                notificationManger.notify(1, notification.build())
+                SystemClock.sleep(1000)
+            }
+            notification.setContentText("Download finished")
+                .setProgress(0, 0, false)
+                .setOngoing(false)
+            notificationManger.notify(1, notification.build())
+        }.start()
+
     }
 
 
@@ -369,8 +354,9 @@ object FunctionUtils {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @JvmStatic
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @RequiresPermission("android.permission.POST_NOTIFICATIONS")
     fun downloadPDF(sView: View, sActivity: Activity) {
 
         val randomId = UUID.randomUUID().toString()

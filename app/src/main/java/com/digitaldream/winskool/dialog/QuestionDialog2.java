@@ -580,7 +580,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
 
                 } else if (qm.getQuestionImage() != null && !qm.getQuestionImage().isEmpty()) {
                     pic.setVisibility(View.VISIBLE);
-                    Picasso.get().load(Login.urlBase + "/" + qm.getQuestionImage()).into(pic);
+                    Picasso.get().load(getString(R.string.base_url) + "/" + qm.getQuestionImage()).into(pic);
                 }
                 pic.setOnClickListener(new View.OnClickListener() {
                     @Override

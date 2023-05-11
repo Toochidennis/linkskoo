@@ -1,10 +1,11 @@
 package com.digitaldream.winskool.interfaces
 
+import com.digitaldream.winskool.models.TimeFrameData
+
 interface TimeFrameListener {
-
-    fun startAndEndDate(startDate: String?, endDate: String?)
-
-    fun singleDate(singleDate: String?)
+    var timeFrameData: TimeFrameData?
+//    fun startAndEndDate(startDate: String?, endDate: String?)
+//    fun singleDate(singleDate: String?)
 
 
 }

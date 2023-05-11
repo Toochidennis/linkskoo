@@ -57,7 +57,7 @@ class AdminClassesDialog(
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window!!.attributes.windowAnimations = R.style.DialogAnimation
         window!!.setGravity(Gravity.BOTTOM)
-        setContentView(R.layout.dialog_admin_result)
+        setContentView(R.layout.dialog_admin_classes)
 
         mLevelRecyclerView = findViewById(R.id.level_recycler)
         mClassRecyclerView = findViewById(R.id.class_recycler)
@@ -99,12 +99,19 @@ class AdminClassesDialog(
                 mErrorMessage.isVisible = true
                 mLevelRecyclerView.isVisible = false
             } else {
-                val mAdapter = TermFeeDialogAdapter(context, mLevelList, this)
-                mLevelRecyclerView.hasFixedSize()
-                mLevelRecyclerView.layoutManager = GridLayoutManager(context, 2)
-                mLevelRecyclerView.adapter = mAdapter
-                mErrorMessage.isVisible = false
-                mLevelRecyclerView.isVisible = true
+                TermFeeDialogAdapter(context, mLevelList, this).let {
+                    mLevelRecyclerView.apply {
+                        hasFixedSize()
+                        layoutManager = GridLayoutManager(context, 2)
+                        adapter = it
+                        isVisible = true
+                        isAnimating
+                    }
+
+                    mErrorMessage.isVisible = false
+
+                }
+
             }
 
         } catch (e: Exception) {

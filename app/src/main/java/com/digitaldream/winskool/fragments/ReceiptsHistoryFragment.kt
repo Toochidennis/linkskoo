@@ -3,6 +3,7 @@ package com.digitaldream.winskool.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -32,11 +33,10 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
 import com.digitaldream.winskool.dialog.ReceiptsTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermFeeDialog
-import com.digitaldream.winskool.interfaces.TimeFrameListener
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.models.ChartModel
+import com.digitaldream.winskool.models.TimeFrameData
 import com.digitaldream.winskool.utils.FunctionUtils
-import com.digitaldream.winskool.utils.FunctionUtils.formatDate
 import com.digitaldream.winskool.utils.FunctionUtils.getDate
 import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -69,6 +69,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
     private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ReceiptsHistoryAdapter
+    lateinit var timeFrameData: TimeFrameData
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +80,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
             R.layout.fragment_receipts_history,
             container, false
         )
+
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mReceiptView = view.findViewById(R.id.receipt_view)
         mReceiptChart = view.findViewById(R.id.chart)
@@ -93,8 +95,10 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
         mTimeFrameBtn = view.findViewById(R.id.time_frame_btn)
         mTermBtn = view.findViewById(R.id.term_btn)
 
+
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
         actionBar?.apply {
             title = "Receipts"
             this.setHomeAsUpIndicator(R.drawable.arrow_left)
@@ -121,19 +125,13 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
         setUpMenu()
 
+        timeFrameData = TimeFrameData{ getTimeFrameData() }
+
         mTimeFrameBtn.setOnClickListener {
-            ReceiptsTimeFrameBottomSheet(object : TimeFrameListener {
-                override fun startAndEndDate(startDate: String?, endDate: String?) {
-
-                }
-
-                override fun singleDate(singleDate: String?) {
-
-                }
-            }).show(
-                requireActivity().supportFragmentManager, "Time Frame "
-            )
+            ReceiptsTimeFrameBottomSheet(
+                timeFrameData).show(requireActivity().supportFragmentManager, "Time Frame")
         }
+
 
         timeFrameTitle()
 
@@ -282,11 +280,18 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
         )
     }
 
+    private fun getTimeFrameData() {
+        timeFrameData.endDate
+        Log.d("time frame",  timeFrameData.others.toString())
+    }
+
+
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {
             getReceipts()
         }
     }
+
 
     private fun receiptsDialog() {
         mAddReceipt.setOnClickListener {

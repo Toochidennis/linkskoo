@@ -73,7 +73,6 @@ class VendorDialog(
             mVendorEmail.error = "Invalid email"
         } else {
             addVendor(name, reference, email, address, phone)
-            sNotify!!.onItemClick(0)
             dismiss()
 
         }
@@ -100,7 +99,7 @@ class VendorDialog(
         requestToServer(Request.Method.POST, url, sContext, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
-
+                    sNotify!!.onItemClick(0)
                 }
 
                 override fun onError(error: VolleyError) {
