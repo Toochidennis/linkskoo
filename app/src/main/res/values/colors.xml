@@ -41,7 +41,7 @@
 
     <color name="color_1">#cc33ff</color>
     <color name="color_2">#3366ff</color>
-    <color name="color_3">#33cccc</color>
+    <color name="color_3">@color/tab_color</color>
     <color name="color_4">#0066ff</color>
     <color name="color_5">#3333cc</color>
     <color name="color_6">#0099cc</color>

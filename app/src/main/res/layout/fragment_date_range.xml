@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:focusable="false"
     android:background="@color/white"
+    android:focusable="false"
     android:focusableInTouchMode="true"
     android:padding="15dp"
     tools:context=".fragments.DateRangeFragment">
-
 
     <TextView
         android:id="@+id/duration"
@@ -32,6 +31,7 @@
         app:layout_constraintTop_toBottomOf="@id/duration">
 
         <LinearLayout
+            android:id="@+id/duration_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -183,6 +183,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:autofillHints="creditCardExpirationDate"
         android:background="@drawable/edit_text_bg2"
         android:clickable="true"
         android:drawableEnd="@drawable/arrow_forward"
@@ -216,6 +217,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:autofillHints="creditCardExpirationDate"
         android:background="@drawable/edit_text_bg2"
         android:clickable="true"
         android:drawableEnd="@drawable/arrow_forward"

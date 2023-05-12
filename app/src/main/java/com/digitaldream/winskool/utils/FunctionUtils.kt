@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -480,6 +481,25 @@ object FunctionUtils {
             }
         }
 
+    }
+
+    @JvmStatic
+    fun deselectButton(button: Button, type: String) {
+
+        if (type == "deselected") {
+            button.apply {
+                isSelected = false
+                setBackgroundResource(R.drawable.ripple_effect6)
+                setTextColor(Color.BLACK)
+            }
+        } else {
+            button.apply {
+                isSelected = true
+                setBackgroundResource(R.drawable.ripple_effect7)
+                setTextColor(Color.WHITE)
+            }
+
+        }
     }
 
 }

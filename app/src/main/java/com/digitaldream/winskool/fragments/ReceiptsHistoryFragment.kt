@@ -31,7 +31,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
-import com.digitaldream.winskool.dialog.ReceiptsTimeFrameBottomSheet
+import com.digitaldream.winskool.dialog.ReceiptTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermFeeDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.models.ChartModel
@@ -123,12 +123,11 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
         receiptsDialog()
 
-        setUpMenu()
 
         timeFrameData = TimeFrameData{ getTimeFrameData() }
 
         mTimeFrameBtn.setOnClickListener {
-            ReceiptsTimeFrameBottomSheet(
+            ReceiptTimeFrameBottomSheet(
                 timeFrameData).show(requireActivity().supportFragmentManager, "Time Frame")
         }
 
@@ -282,7 +281,7 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     private fun getTimeFrameData() {
         timeFrameData.endDate
-        Log.d("time frame",  timeFrameData.others.toString())
+     //   Log.d("time frame",  timeFrameData.others.toString())
     }
 
 

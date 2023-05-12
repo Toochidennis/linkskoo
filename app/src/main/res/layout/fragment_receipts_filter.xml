@@ -1,72 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/white"
-    android:paddingStart="15dp"
-    android:paddingEnd="0dp"
+    android:orientation="vertical"
+    android:padding="15dp"
     tools:context=".fragments.ReceiptsFilterFragment">
 
-    <TextView
-        android:id="@+id/level_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="@font/poppins_medium"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dimen_16"
-        android:text="@string/select_level"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/level_recycler"
+    <Button
+        android:id="@+id/level_btn"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/level_title"
-        android:clipToPadding="true"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/class_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/level_recycler"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_16"
+        android:layout_height="48dp"
+        android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
-        android:gravity="center"
-        android:text="@string/select_class"
+        android:text="Level"
+        android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:visibility="gone" />
+        android:textSize="14sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/class_recycler"
+    <Button
+        android:id="@+id/class_btn"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/class_title"
-        android:clipToPadding="true"
-        android:visibility="gone" />
-
-
-    <TextView
-        android:id="@+id/error_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/level_recycler"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_32"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/dimen_16"
+        android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
-        android:gravity="center"
-        android:text="@string/no_data"
+        android:text="Class"
+        android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:textSize="14sp" />
 
-</RelativeLayout>
+</LinearLayout>

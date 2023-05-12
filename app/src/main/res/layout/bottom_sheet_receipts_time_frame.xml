@@ -2,20 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:focusableInTouchMode="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
+            android:layout_alignParentTop="true"
             app:tabBackground="@color/white"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/test_color_1"
@@ -23,18 +20,21 @@
             app:tabMode="fixed"
             app:tabTextAppearance="@style/TabStyle2" />
 
-
-
-    </LinearLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/tab_layout"
+        android:contentDescription="@string/todo" />
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/confirm_btn"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/view_pager"
         android:layout_margin="15dp"
-        android:layout_marginBottom="@dimen/dimen_16"
+        android:layout_marginTop="@dimen/dimen_16"
         android:backgroundTint="@color/test_color_1"
         android:clickable="true"
         android:focusable="true"
@@ -53,6 +53,8 @@
             android:textSize="16sp" />
 
     </androidx.cardview.widget.CardView>
+
+
 
 
 </RelativeLayout>

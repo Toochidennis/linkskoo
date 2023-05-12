@@ -8,23 +8,10 @@
     tools:context=".fragments.ReceiptsGroupingFragment">
 
     <Button
-        android:id="@+id/month_btn"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/ripple_effect6"
-        android:fontFamily="@font/poppins_medium"
-        android:text="By Month"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="14sp" />
-
-    <Button
         android:id="@+id/level_btn"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
         android:text="By Level"
@@ -41,6 +28,19 @@
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
         android:text="By Class"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/month_btn"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/ripple_effect6"
+        android:fontFamily="@font/poppins_medium"
+        android:text="By Month"
+        android:layout_marginTop="@dimen/dimen_16"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="14sp" />
