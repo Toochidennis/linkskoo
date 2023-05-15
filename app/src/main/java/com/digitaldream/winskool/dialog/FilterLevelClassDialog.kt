@@ -21,7 +21,8 @@ import com.j256.ormlite.dao.DaoManager
 
 class FilterLevelClassDialog(
     private val timeFrameData: TimeFrameData,
-    private val sFrom: String
+    private val sFrom: String,
+    private val sDismiss: () -> Unit
 ) : BottomSheetDialogFragment(), OnItemClickListener {
 
 
@@ -141,18 +142,21 @@ class FilterLevelClassDialog(
 
     override fun onItemClick(position: Int) {
         if (sFrom == "level") {
-            timeFrameData.levelName = mLevelList[position].levelId
+            timeFrameData.levelId = mLevelList[position].levelId
+            timeFrameData.levelName = mLevelList[position].levelName
 
-            println("levelId ${timeFrameData.levelName}")
             timeFrameData.className = null
+            timeFrameData.classId = null
         } else {
-            timeFrameData.className = mClassList[position].classId
+            timeFrameData.classId = mClassList[position].classId
+            timeFrameData.className = mClassList[position].className
 
-            println("classId ${timeFrameData.className}")
             timeFrameData.levelName = null
+            timeFrameData.levelId = null
         }
 
-
+        dismiss()
+        sDismiss()
     }
 
 

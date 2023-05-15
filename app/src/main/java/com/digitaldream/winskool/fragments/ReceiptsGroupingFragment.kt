@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.TimeFrameData
-import com.digitaldream.winskool.utils.FunctionUtils.deselectButton
+import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 
 
 class ReceiptsGroupingFragment(
@@ -40,32 +40,32 @@ class ReceiptsGroupingFragment(
         when (view.id) {
             R.id.class_btn -> {
                 if (!mClassBtn.isSelected) {
-                    deselectButton(mClassBtn, "selected")
-                    deselectButton(mLevelBtn, "deselected")
-                    deselectButton(mMonthBtn, "deselected")
+                    selectDeselectButton(mClassBtn, "selected")
+                    selectDeselectButton(mLevelBtn, "deselected")
+                    selectDeselectButton(mMonthBtn, "deselected")
                 } else {
-                    deselectButton(mClassBtn, "deselected")
+                    selectDeselectButton(mClassBtn, "deselected")
 
                 }
             }
 
             R.id.level_btn -> {
                 if (!mLevelBtn.isSelected) {
-                    deselectButton(mClassBtn, "deselected")
-                    deselectButton(mLevelBtn, "selected")
-                    deselectButton(mMonthBtn, "deselected")
+                    selectDeselectButton(mClassBtn, "deselected")
+                    selectDeselectButton(mLevelBtn, "selected")
+                    selectDeselectButton(mMonthBtn, "deselected")
                 } else {
-                    deselectButton(mLevelBtn, "deselected")
+                    selectDeselectButton(mLevelBtn, "deselected")
                 }
             }
 
             R.id.month_btn -> {
                 if (!mMonthBtn.isSelected) {
-                    deselectButton(mClassBtn, "deselected")
-                    deselectButton(mLevelBtn, "deselected")
-                    deselectButton(mMonthBtn, "selected")
+                    selectDeselectButton(mClassBtn, "deselected")
+                    selectDeselectButton(mLevelBtn, "deselected")
+                    selectDeselectButton(mMonthBtn, "selected")
                 } else {
-                    deselectButton(mMonthBtn, "deselected")
+                    selectDeselectButton(mMonthBtn, "deselected")
                 }
 
             }

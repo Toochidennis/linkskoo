@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
     android:padding="15dp"
     tools:context=".fragments.ReceiptsFilterFragment">
 
@@ -13,6 +12,7 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_alignParentTop="true"
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
         android:text="Level"
@@ -25,6 +25,7 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_below="@id/level_btn"
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
@@ -33,4 +34,5 @@
         android:textColor="@color/black"
         android:textSize="14sp" />
 
-</LinearLayout>
+
+</RelativeLayout>

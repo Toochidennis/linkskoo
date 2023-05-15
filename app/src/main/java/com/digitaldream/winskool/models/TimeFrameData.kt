@@ -7,4 +7,6 @@ data class TimeFrameData(val getData: () -> Unit) {
     var duration: String? = null
     var levelName: String? = null
     var className: String? = null
+    var levelId: String? = null
+    var classId: String? = null
 }

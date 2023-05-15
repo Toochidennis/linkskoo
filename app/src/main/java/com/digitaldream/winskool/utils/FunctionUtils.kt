@@ -484,7 +484,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun deselectButton(button: Button, type: String) {
+    fun selectDeselectButton(button: Button, type: String) {
 
         if (type == "deselected") {
             button.apply {
