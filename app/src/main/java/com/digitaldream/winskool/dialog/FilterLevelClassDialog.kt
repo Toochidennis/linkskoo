@@ -1,9 +1,11 @@
 package com.digitaldream.winskool.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +42,7 @@ class FilterLevelClassDialog(
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.dialog_filter_level_class, container, false)
 
+        val dismissBtn: ImageView = view.findViewById(R.id.close_btn)
         mRecyclerView = view.findViewById(R.id.recycler_view)
         mTitle = view.findViewById(R.id.title)
         mErrorMessage = view.findViewById(R.id.error_message)
@@ -50,6 +53,8 @@ class FilterLevelClassDialog(
         } else {
             getClassName()
         }
+
+        dismissBtn.setOnClickListener { dismiss() }
 
 
         return view
@@ -156,6 +161,9 @@ class FilterLevelClassDialog(
         }
 
         dismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
         sDismiss()
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
@@ -29,6 +30,7 @@ class DatePickerBottomSheet(
         val view = inflater.inflate(R.layout.bottom_sheet_date_picker, container, false)
 
         val confirmBtn: CardView = view.findViewById(R.id.confirm_btn)
+        val dismissBtn: ImageView = view.findViewById(R.id.close_btn)
         val title: TextView = view.findViewById(R.id.title)
         val datePicker: DatePicker = view.findViewById(R.id.date_picker)
 
@@ -47,6 +49,8 @@ class DatePickerBottomSheet(
             dismiss()
 
         }
+
+        dismissBtn.setOnClickListener { dismiss() }
 
         return view
     }

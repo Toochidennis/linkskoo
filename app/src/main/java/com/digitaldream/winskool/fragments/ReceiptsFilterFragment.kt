@@ -54,6 +54,7 @@ class ReceiptsFilterFragment(
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
                     sTimeFrameData.classId = null
+                    sTimeFrameData.className = null
                     "Class".let { mClassBtn.text = it }
                 }
             }
@@ -73,11 +74,11 @@ class ReceiptsFilterFragment(
 
                 } else {
                     sTimeFrameData.levelId = null
+                    sTimeFrameData.levelName = null
                     "Level".let { mLevelBtn.text = it }
                     selectDeselectButton(mLevelBtn, "deselected")
                 }
             }
-
 
         }
     }
@@ -100,8 +101,12 @@ class ReceiptsFilterFragment(
             setBtnText(mLevelBtn, sTimeFrameData.levelName.toString(), "level")
         } else if (sTimeFrameData.className != null) {
             setBtnText(mClassBtn, sTimeFrameData.className.toString(), "class")
+        } else {
+            selectDeselectButton(mClassBtn, "deselected")
+            selectDeselectButton(mLevelBtn, "deselected")
+            println("mee")
         }
-
+        println("mee here")
     }
 
 
