@@ -9,13 +9,13 @@ import androidx.viewpager.widget.ViewPager
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.SectionPagerAdapter
 import com.digitaldream.winskool.fragments.DateRangeFragment
-import com.digitaldream.winskool.fragments.ReceiptsFilterFragment
-import com.digitaldream.winskool.fragments.ReceiptsGroupingFragment
+import com.digitaldream.winskool.fragments.ExpenditureFilterFragment
+import com.digitaldream.winskool.fragments.ExpenditureGroupingFragment
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 
-class ReceiptTimeFrameBottomSheet(
+class ExpenditureTimeFrameBottomSheet(
     private val sTimeFrameDataModel: TimeFrameDataModel
 ) : BottomSheetDialogFragment() {
 
@@ -24,10 +24,7 @@ class ReceiptTimeFrameBottomSheet(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        // Inflate the layout for this fragment
-        return  inflater.inflate(R.layout.bottom_sheet_receipts_time_frame, container, false)
-
+        return inflater.inflate(R.layout.bottom_sheet_expenditure_time_frame, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,18 +36,17 @@ class ReceiptTimeFrameBottomSheet(
 
         adapter.apply {
             addFragment(DateRangeFragment(sTimeFrameDataModel), "Date Range")
-            addFragment(ReceiptsGroupingFragment(sTimeFrameDataModel), "Grouping")
-            addFragment(ReceiptsFilterFragment(sTimeFrameDataModel), "Filter")
+            addFragment(ExpenditureGroupingFragment(), "Grouping")
+            addFragment(ExpenditureFilterFragment(), "Filter")
 
             viewPager.adapter = this
             tabLayout.setupWithViewPager(viewPager, true)
         }
     }
 
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         sTimeFrameDataModel.getData()
     }
-
-
 }

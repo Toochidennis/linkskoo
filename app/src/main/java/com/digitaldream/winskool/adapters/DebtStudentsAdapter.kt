@@ -37,7 +37,7 @@ class DebtStudentsAdapter(
 
     override fun onBindViewHolder(holder: DebtStudentsAdapter.ViewHolder, position: Int) {
         val model = sStudentList[position]
-        holder.mStudentName.text = capitaliseFirstLetter(model.getStudentName()!!)
+        holder.mStudentName.text = capitaliseFirstLetter(model.mStudentName!!)
         val count = position + 1
         holder.mCount.text = count.toString()
 
@@ -56,7 +56,7 @@ class DebtStudentsAdapter(
         String.format(
             "%s%s",
             sContext.getString(R.string.naira),
-            currencyFormat(model.getReceivedAmount()!!.toDouble())
+            currencyFormat(model.mReceivedAmount!!.toDouble())
         ).let {
             holder.mAmount.text = it
         }

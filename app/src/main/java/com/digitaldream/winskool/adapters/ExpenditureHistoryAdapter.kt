@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
+import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import java.util.*
@@ -29,8 +30,8 @@ class ExpenditureHistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sExpenditureList[position]
 
-      //  holder.mExpenditureName.text = capitaliseFirstLetter(adminModel.getVendorName()!!)
-        holder.mExpenditureDate.text = adminModel.getDate()
+        holder.mExpenditureName.text = capitaliseFirstLetter(adminModel.getVendorName()!!)
+        holder.mExpenditureDate.text = FunctionUtils.formatDate2(adminModel.getDate().toString())
         holder.mExpenditureType.text = adminModel.getType()
 
         String.format(
@@ -43,7 +44,7 @@ class ExpenditureHistoryAdapter(
     override fun getItemCount() = sExpenditureList.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val mExpenditureName: TextView = itemView.findViewById(R.id.expenditure_name)
+        val mExpenditureName: TextView = itemView.findViewById(R.id.expenditure_name)
         val mExpenditureDate: TextView = itemView.findViewById(R.id.expenditure_date)
         val mExpenditureAmount: TextView = itemView.findViewById(R.id.expenditure_amount)
         val mExpenditureType: TextView = itemView.findViewById(R.id.expenditure_type)

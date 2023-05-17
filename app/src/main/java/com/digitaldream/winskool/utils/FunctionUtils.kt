@@ -1,11 +1,13 @@
 package com.digitaldream.winskool.utils
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -24,8 +26,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ShareCompat
@@ -120,6 +122,7 @@ object FunctionUtils {
         };
 
     }*/
+
 
     @JvmStatic
     fun animateObject(sProgressBar: ProgressBar, sTextView: TextView, sI: Int) {
@@ -300,45 +303,53 @@ object FunctionUtils {
 
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @RequiresPermission("android.permission.POST_NOTIFICATIONS")
     private fun notification(max: Int, sFile: File, sActivity: Activity) {
         val notificationManger: NotificationManagerCompat =
             NotificationManagerCompat.from(sActivity)
 
+        if (ActivityCompat.checkSelfPermission(
+                sActivity,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        } else {
 
-        val pendingIntent = PendingIntent.getActivity(
-            sActivity,
-            0, notificationIntent(sFile, sActivity), PendingIntent.FLAG_IMMUTABLE
-        )
+            val pendingIntent = PendingIntent.getActivity(
+                sActivity,
+                0, notificationIntent(sFile, sActivity), PendingIntent.FLAG_IMMUTABLE
+            )
 
-        val notification = NotificationCompat.Builder(
-            sActivity, CHANNEL_ID
-        ).apply {
-            setSmallIcon(R.drawable.win_school)
-            setContentTitle("Payment Receipt")
-            setContentText("Download in progress")
-            setContentIntent(pendingIntent)
-            color = ContextCompat.getColor(sActivity, R.color.color_5)
-            setProgress(max, 0, false)
-            setOngoing(true)
-            setOnlyAlertOnce(true)
-            priority = NotificationCompat.PRIORITY_DEFAULT
+            val notification = NotificationCompat.Builder(
+                sActivity, CHANNEL_ID
+            ).apply {
+                setSmallIcon(R.drawable.win_school)
+                setContentTitle("Payment Receipt")
+                setContentText("Download in progress")
+                setContentIntent(pendingIntent)
+                color = ContextCompat.getColor(sActivity, R.color.color_5)
+                setProgress(max, 0, false)
+                setOngoing(true)
+                setOnlyAlertOnce(true)
+                priority = NotificationCompat.PRIORITY_DEFAULT
+            }
+
+            notificationManger.notify(1, notification.build())
+
+            Thread {
+                SystemClock.sleep(1000)
+                for (progress in 0..max step 10) {
+                    notification.setProgress(max, progress, false)
+                    notificationManger.notify(1, notification.build())
+                    SystemClock.sleep(1000)
+                }
+                notification.setContentText("Download finished")
+                    .setProgress(0, 0, false)
+                    .setOngoing(false)
+                notificationManger.notify(1, notification.build())
+            }.start()
         }
 
-        notificationManger.notify(1, notification.build())
-
-        Thread {
-            SystemClock.sleep(1000)
-            for (progress in 0..max step 10) {
-                notification.setProgress(max, progress, false)
-                notificationManger.notify(1, notification.build())
-                SystemClock.sleep(1000)
-            }
-            notification.setContentText("Download finished")
-                .setProgress(0, 0, false)
-                .setOngoing(false)
-            notificationManger.notify(1, notification.build())
-        }.start()
 
     }
 
@@ -357,7 +368,6 @@ object FunctionUtils {
 
     @JvmStatic
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @RequiresPermission("android.permission.POST_NOTIFICATIONS")
     fun downloadPDF(sView: View, sActivity: Activity) {
 
         val randomId = UUID.randomUUID().toString()
@@ -501,6 +511,7 @@ object FunctionUtils {
 
         }
     }
+
 
 }
 

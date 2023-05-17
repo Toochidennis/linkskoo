@@ -112,6 +112,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                     mTotalView.isVisible = false
                     mTermErrorMessage.isVisible = true
                 }
+
                 else -> throw e
             }
         }
@@ -144,13 +145,16 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                             val mandatory = jsonObject.getString("mandatory")
                             val feeAmount = jsonObject.getString("amount")
 
-                            val termFeesModel = TermFeesDataModel()
-                            termFeesModel.setFeeId(feeId.toInt())
-                            termFeesModel.setFeeName(feeName)
-                            termFeesModel.setFeeAmount(feeAmount.replace(".00", ""))
-                            termFeesModel.setMandatory(mandatory)
+                            val termFeesModel = TermFeesDataModel().apply {
+                                mFeedId = feeId.toInt()
+                                mFeeName = feeName
+                                mFeeAmount = feeAmount.replace(".00", "")
+                                mMandatory = mandatory
+
+                            }
+
                             mTermFeesList.add(termFeesModel)
-                            mTermFeesList.sortBy { it.getFeeName() }
+                            mTermFeesList.sortBy { it.mFeeName }
                         }
                     } catch (e: JSONException) {
                         e.printStackTrace()

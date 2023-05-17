@@ -8,12 +8,12 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.dialog.FilterLevelClassDialog
-import com.digitaldream.winskool.models.TimeFrameData
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 
 
 class ReceiptsFilterFragment(
-    private val sTimeFrameData: TimeFrameData
+    private val sTimeFrameDataModel: TimeFrameDataModel
 ) : Fragment() {
 
     private lateinit var mClassBtn: Button
@@ -45,7 +45,7 @@ class ReceiptsFilterFragment(
                     selectDeselectButton(mLevelBtn, "deselected")
                     "Level".let { mLevelBtn.text = it }
 
-                    FilterLevelClassDialog(sTimeFrameData, "class") { setSelectedName() }
+                    FilterLevelClassDialog(sTimeFrameDataModel, "class") { setSelectedName() }
                         .show(
                             childFragmentManager,
                             "Class Names"
@@ -53,8 +53,8 @@ class ReceiptsFilterFragment(
 
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
-                    sTimeFrameData.classId = null
-                    sTimeFrameData.className = null
+                    sTimeFrameDataModel.classId = null
+                    sTimeFrameDataModel.className = null
                     "Class".let { mClassBtn.text = it }
                 }
             }
@@ -66,15 +66,15 @@ class ReceiptsFilterFragment(
                     selectDeselectButton(mLevelBtn, "selected")
                     "Class".let { mClassBtn.text = it }
 
-                    FilterLevelClassDialog(sTimeFrameData, "level") { setSelectedName() }
+                    FilterLevelClassDialog(sTimeFrameDataModel, "level") { setSelectedName() }
                         .show(
                             childFragmentManager,
                             "Level Names"
                         )
 
                 } else {
-                    sTimeFrameData.levelId = null
-                    sTimeFrameData.levelName = null
+                    sTimeFrameDataModel.levelId = null
+                    sTimeFrameDataModel.levelName = null
                     "Level".let { mLevelBtn.text = it }
                     selectDeselectButton(mLevelBtn, "deselected")
                 }
@@ -84,23 +84,23 @@ class ReceiptsFilterFragment(
     }
 
     private fun selectDeselectedButton() {
-        if (sTimeFrameData.levelId != null) {
+        if (sTimeFrameDataModel.levelId != null) {
             selectDeselectButton(mLevelBtn, "selected")
             selectDeselectButton(mClassBtn, "deselected")
-            setBtnText(mLevelBtn, sTimeFrameData.levelName.toString(), "level")
+            setBtnText(mLevelBtn, sTimeFrameDataModel.levelName.toString(), "level")
 
-        } else if (sTimeFrameData.classId != null) {
+        } else if (sTimeFrameDataModel.classId != null) {
             selectDeselectButton(mClassBtn, "selected")
             selectDeselectButton(mLevelBtn, "deselected")
-            setBtnText(mLevelBtn, sTimeFrameData.className.toString(), "class")
+            setBtnText(mLevelBtn, sTimeFrameDataModel.className.toString(), "class")
         }
     }
 
     private fun setSelectedName() {
-        if (sTimeFrameData.levelName != null) {
-            setBtnText(mLevelBtn, sTimeFrameData.levelName.toString(), "level")
-        } else if (sTimeFrameData.className != null) {
-            setBtnText(mClassBtn, sTimeFrameData.className.toString(), "class")
+        if (sTimeFrameDataModel.levelName != null) {
+            setBtnText(mLevelBtn, sTimeFrameDataModel.levelName.toString(), "level")
+        } else if (sTimeFrameDataModel.className != null) {
+            setBtnText(mClassBtn, sTimeFrameDataModel.className.toString(), "class")
         } else {
             selectDeselectButton(mClassBtn, "deselected")
             selectDeselectButton(mLevelBtn, "deselected")

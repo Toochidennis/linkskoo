@@ -23,7 +23,6 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.adapters.AdminTransactionHistoryAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.models.AdminPaymentModel
@@ -95,7 +94,8 @@ class AdminTransactionHistoryFragment : Fragment(), OnItemClickListener {
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
 
-        val url = "${Login.urlBase}/manageTransactions.php?dashboard=1&&term=$term&&year=$year"
+        val url = "${getString(R.string.base_url)}/manageTransactions" +
+                ".php?dashboard=1&&term=$term&&year=$year"
         val stringRequest = object : StringRequest(
             Method.GET,
             url,
@@ -110,18 +110,18 @@ class AdminTransactionHistoryFragment : Fragment(), OnItemClickListener {
                     for (i in 0 until transactionsArray.length()) {
                         val transactionsObject = transactionsArray.getJSONObject(i)
                         val transactionType = transactionsObject.getString("trans_type")
-                        val reference = transactionsObject.getString("reference")
+                        //val reference = transactionsObject.getString("reference")
                         val description = transactionsObject.getString("description")
                         val amount = transactionsObject.getString("amount")
                         val date = transactionsObject.getString("date")
 
                         val adminModel = AdminPaymentModel()
-                        adminModel.setTransactionName(transactionType)
-                        adminModel.setDescription(description)
-                        adminModel.setReceivedAmount(amount)
-                        adminModel.setTransactionDate(date)
+                        adminModel.mTransactionName = transactionType
+                        adminModel.mDescription = description
+                        adminModel.mReceivedAmount = amount
+                        adminModel.mTransactionDate = date
                         mTransactionList.add(adminModel)
-                        mTransactionList.sortByDescending { it.getTransactionDate() }
+                        mTransactionList.sortByDescending { it.mTransactionDate }
                     }
 
                     if (mTransactionList.isEmpty()) {
@@ -156,8 +156,8 @@ class AdminTransactionHistoryFragment : Fragment(), OnItemClickListener {
             }
         }
 
-        val requestQueue = Volley.newRequestQueue(requireContext())
-        requestQueue.add(stringRequest)
+        Volley.newRequestQueue(requireContext()).add(stringRequest)
+
     }
 
     override fun onItemClick(position: Int) {

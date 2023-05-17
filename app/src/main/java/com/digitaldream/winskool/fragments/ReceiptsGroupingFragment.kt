@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.models.TimeFrameData
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 
 
 class ReceiptsGroupingFragment(
-    private val sTimeFrameData: TimeFrameData
+    private val sTimeFrameDataModel: TimeFrameDataModel
 ) : Fragment() {
 
     private lateinit var mClassBtn: Button
@@ -44,10 +44,10 @@ class ReceiptsGroupingFragment(
                     selectDeselectButton(mLevelBtn, "deselected")
                     selectDeselectButton(mMonthBtn, "deselected")
 
-                    sTimeFrameData.grouping = "By Class"
+                    sTimeFrameDataModel.grouping = "By Class"
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
-                    sTimeFrameData.grouping = null
+                    sTimeFrameDataModel.grouping = null
                 }
             }
 
@@ -57,10 +57,10 @@ class ReceiptsGroupingFragment(
                     selectDeselectButton(mLevelBtn, "selected")
                     selectDeselectButton(mMonthBtn, "deselected")
 
-                    sTimeFrameData.grouping = "By Level"
+                    sTimeFrameDataModel.grouping = "By Level"
                 } else {
                     selectDeselectButton(mLevelBtn, "deselected")
-                    sTimeFrameData.grouping = null
+                    sTimeFrameDataModel.grouping = null
                 }
             }
 
@@ -70,10 +70,10 @@ class ReceiptsGroupingFragment(
                     selectDeselectButton(mLevelBtn, "deselected")
                     selectDeselectButton(mMonthBtn, "selected")
 
-                    sTimeFrameData.grouping = "By Month"
+                    sTimeFrameDataModel.grouping = "By Month"
                 } else {
                     selectDeselectButton(mMonthBtn, "deselected")
-                    sTimeFrameData.grouping = null
+                    sTimeFrameDataModel.grouping = null
                 }
 
             }

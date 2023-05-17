@@ -19,6 +19,7 @@
     <style name="mySpinnerItemStyle" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:textColor">@color/gray</item>
         <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/poppins_regular</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

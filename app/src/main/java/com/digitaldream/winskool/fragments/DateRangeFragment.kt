@@ -13,7 +13,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.CourseAttendance.getDate
 import com.digitaldream.winskool.dialog.DatePickerBottomSheet
 import com.digitaldream.winskool.interfaces.DateListener
-import com.digitaldream.winskool.models.TimeFrameData
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 import java.text.SimpleDateFormat
@@ -22,8 +22,7 @@ import java.util.Locale
 
 
 class DateRangeFragment(
-    private val sTimeFrameData: TimeFrameData,
-    val dismiss: () -> Unit
+    private val sTimeFrameDataModel: TimeFrameDataModel,
 ) : Fragment() {
 
     private lateinit var mCustomBtn: Button
@@ -72,11 +71,11 @@ class DateRangeFragment(
 
         buttonClicks()
 
-        if (sTimeFrameData.duration != null) {
+        if (sTimeFrameDataModel.duration != null) {
             selectDeselectedButton()
         } else {
             selectDeselectButton(mCustomBtn, "selected")
-            sTimeFrameData.duration = null
+            sTimeFrameDataModel.duration = null
         }
 
         return view
@@ -131,8 +130,8 @@ class DateRangeFragment(
 
                 } else {
                     selectDeselectButton(mCustomBtn, "deselected")
-                    sTimeFrameData.startDate = null
-                    sTimeFrameData.endDate = null
+                    sTimeFrameDataModel.startDate = null
+                    sTimeFrameDataModel.endDate = null
                     disableEditText()
                     //sTimeFrameData.duration = null
                 }
@@ -142,7 +141,7 @@ class DateRangeFragment(
                 if (!mTodayBtn.isSelected) {
                     selectDeselectButton(mTodayBtn, "selected")
 
-                    sTimeFrameData.duration = "Today"
+                    sTimeFrameDataModel.duration = "Today"
 
                     selectDeselectButton(mCustomBtn, "deselected")
 
@@ -162,7 +161,7 @@ class DateRangeFragment(
 
                 } else {
                     selectDeselectButton(mTodayBtn, "deselected")
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
                 }
             }
 
@@ -176,7 +175,7 @@ class DateRangeFragment(
 
                     selectDeselectButton(mYesterdayBtn, "selected")
 
-                    sTimeFrameData.duration = "Yesterday"
+                    sTimeFrameDataModel.duration = "Yesterday"
 
                     selectDeselectButton(mThisWeekBtn, "deselected")
 
@@ -192,7 +191,7 @@ class DateRangeFragment(
 
                 } else {
                     selectDeselectButton(mYesterdayBtn, "deselected")
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
                 }
             }
 
@@ -207,7 +206,7 @@ class DateRangeFragment(
 
                     selectDeselectButton(mThisWeekBtn, "selected")
 
-                    sTimeFrameData.duration = "This Week"
+                    sTimeFrameDataModel.duration = "This Week"
 
                     selectDeselectButton(mLast7DaysBtn, "deselected")
 
@@ -221,7 +220,7 @@ class DateRangeFragment(
 
                 } else {
                     selectDeselectButton(mThisWeekBtn, "deselected")
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
 
                 }
             }
@@ -240,7 +239,7 @@ class DateRangeFragment(
 
                     selectDeselectButton(mLast7DaysBtn, "selected")
 
-                    sTimeFrameData.duration = "Last 7 Days"
+                    sTimeFrameDataModel.duration = "Last 7 Days"
 
                     selectDeselectButton(mLastWeekBtn, "deselected")
 
@@ -253,7 +252,7 @@ class DateRangeFragment(
 
                 } else {
                     selectDeselectButton(mLast7DaysBtn, "deselected")
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
                 }
             }
 
@@ -273,7 +272,7 @@ class DateRangeFragment(
 
                     selectDeselectButton(mLastWeekBtn, "selected")
 
-                    sTimeFrameData.duration = "Last Week"
+                    sTimeFrameDataModel.duration = "Last Week"
 
                     selectDeselectButton(mThisMonthBtn, "deselected")
 
@@ -284,7 +283,7 @@ class DateRangeFragment(
                 } else {
                     selectDeselectButton(mLastWeekBtn, "deselected")
 
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
                 }
             }
 
@@ -305,7 +304,7 @@ class DateRangeFragment(
 
                     selectDeselectButton(mThisMonthBtn, "selected")
 
-                    sTimeFrameData.duration = "This Month"
+                    sTimeFrameDataModel.duration = "This Month"
 
                     selectDeselectButton(mLast30DaysBtn, "deselected")
 
@@ -314,7 +313,7 @@ class DateRangeFragment(
                 } else {
                     selectDeselectButton(mThisMonthBtn, "deselected")
 
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
 
                 }
             }
@@ -338,13 +337,13 @@ class DateRangeFragment(
 
                     selectDeselectButton(mLast30DaysBtn, "selected")
 
-                    sTimeFrameData.duration = "Last 30 Days"
+                    sTimeFrameDataModel.duration = "Last 30 Days"
 
                     disableEditText()
 
                 } else {
                     selectDeselectButton(mLast30DaysBtn, "deselected")
-                    sTimeFrameData.duration = null
+                    sTimeFrameDataModel.duration = null
 
                 }
 
@@ -367,8 +366,8 @@ class DateRangeFragment(
             mStartDateInput.setText(FunctionUtils.formatDate(mStartDate!!))
             mEndDateInput.setText(FunctionUtils.formatDate((mEndDate!!)))
 
-            sTimeFrameData.startDate = mStartDate
-            sTimeFrameData.endDate = mEndDate
+            sTimeFrameDataModel.startDate = mStartDate
+            sTimeFrameDataModel.endDate = mEndDate
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -389,8 +388,8 @@ class DateRangeFragment(
                             mEndDate = FunctionUtils.getEndDate(selectedDate)
                             mEndDateInput.setText(FunctionUtils.formatDate(mEndDate!!))
 
-                            sTimeFrameData.startDate = selectedDate
-                            sTimeFrameData.endDate = mEndDate
+                            sTimeFrameDataModel.startDate = selectedDate
+                            sTimeFrameDataModel.endDate = mEndDate
                         }
 
 
@@ -412,7 +411,7 @@ class DateRangeFragment(
                         if (selectedDate.isNotEmpty()) {
                             mEndDateInput.setText(FunctionUtils.formatDate(selectedDate))
 
-                            sTimeFrameData.endDate = selectedDate
+                            sTimeFrameDataModel.endDate = selectedDate
                         }
 
                     }
@@ -422,8 +421,8 @@ class DateRangeFragment(
     }
 
     private fun disableEditText() {
-        sTimeFrameData.startDate = null
-        sTimeFrameData.endDate = null
+        sTimeFrameDataModel.startDate = null
+        sTimeFrameDataModel.endDate = null
 
         mStartDateInput.apply {
             isEnabled = false
@@ -474,11 +473,11 @@ class DateRangeFragment(
 
         selectDeselectButton(mLast30DaysBtn, "deselected")
 
-        sTimeFrameData.duration = null
+        sTimeFrameDataModel.duration = null
     }
 
     private fun selectDeselectedButton() {
-        when (sTimeFrameData.duration) {
+        when (sTimeFrameDataModel.duration) {
 
             "Today" -> selectDeselectButton(mTodayBtn, "selected")
 

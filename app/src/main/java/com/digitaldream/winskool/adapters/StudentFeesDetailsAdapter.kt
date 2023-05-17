@@ -26,11 +26,11 @@ class StudentFeesDetailsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val termFeesModel = sFeeList[position]
-        holder.mFeeName.text = termFeesModel.getFeeName()
+        holder.mFeeName.text = termFeesModel.mFeeName
         holder.mFeeAmount.text = String.format(
             Locale.getDefault(),
             "%s%s", sContext.getString(R.string.naira),
-            currencyFormat(termFeesModel.getFeeAmount()!!.toDouble())
+            currencyFormat(termFeesModel.mFeeAmount!!.toDouble())
         )
     }
 

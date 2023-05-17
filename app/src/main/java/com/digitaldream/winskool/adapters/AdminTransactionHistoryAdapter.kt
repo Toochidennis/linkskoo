@@ -31,21 +31,20 @@ class AdminTransactionHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sTransactionList[position]
-        holder.mTransactionDate.text = adminModel.getTransactionDate()
+        holder.mTransactionDate.text = adminModel.mTransactionDate
 
-        when (adminModel.getTransactionName()) {
+        when (adminModel.mTransactionName) {
             "receipts" -> {
                 holder.mTransactionCard.setCardBackgroundColor(
                     ContextCompat.getColor(
-                        sContext, R
-                            .color.color_4
+                        sContext, R.color.color_4
                     )
                 )
                 holder.mTransactionType.setImageResource(R.drawable.ic_receipt)
-                holder.mDescription.text = adminModel.getDescription()
+                holder.mDescription.text = adminModel.mDescription
                 String.format(
                     Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
-                    FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+                    FunctionUtils.currencyFormat(adminModel.mReceivedAmount!!.toDouble())
                 ).also { holder.mTransactionAmount.text = it }
 
             }
@@ -57,10 +56,10 @@ class AdminTransactionHistoryAdapter(
                     )
                 )
                 holder.mTransactionType.setImageResource(R.drawable.ic_expenditure)
-                holder.mDescription.text = adminModel.getDescription()
+                holder.mDescription.text = adminModel.mDescription
                 String.format(
                     Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
-                    FunctionUtils.currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+                    FunctionUtils.currencyFormat(adminModel.mReceivedAmount!!.toDouble())
                 ).also { holder.mTransactionAmount.text = it }
             }
         }

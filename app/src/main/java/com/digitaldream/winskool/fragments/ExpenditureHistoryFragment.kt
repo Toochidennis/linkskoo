@@ -3,12 +3,11 @@ package com.digitaldream.winskool.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -19,10 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
+import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
@@ -32,9 +31,10 @@ import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.achartengine.GraphicalView
 import org.json.JSONObject
-import java.util.*
+import java.util.Locale
 
-class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
+class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditure),
+    OnItemClickListener {
 
     private lateinit var mExpenditureView: NestedScrollView
     private lateinit var mExpenditureChart: LinearLayout
@@ -45,6 +45,8 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
     private lateinit var mExpenditureImage: ImageView
     private lateinit var mErrorView: LinearLayout
     private lateinit var mRefreshBtn: Button
+    private lateinit var mTimeFrameBtn: Button
+    private lateinit var mTermBtn: Button
     private lateinit var mAddExpenditure: FloatingActionButton
 
     private var mGraphicalView: GraphicalView? = null
@@ -52,16 +54,13 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
     private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ExpenditureHistoryAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(
-            R.layout.fragment_history_expenditure, container,
-            false
-        )
+    private var mTerm: String? = null
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Find child views in the inflated layout by their IDs
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mExpenditureView = view.findViewById(R.id.expenditure_view)
         mExpenditureChart = view.findViewById(R.id.expenditure_chart)
@@ -72,6 +71,8 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
         mExpenditureImage = view.findViewById(R.id.error_image)
         mErrorView = view.findViewById(R.id.error_view)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
+        mTimeFrameBtn = view.findViewById(R.id.time_frame_btn)
+        mTermBtn = view.findViewById(R.id.term_btn)
         mAddExpenditure = view.findViewById(R.id.add_expenditure)
 
         toolbar.apply {
@@ -89,14 +90,23 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
             )
         }
 
-        mAdapter = ExpenditureHistoryAdapter(requireContext(), mExpenditureList, this)
+        mAdapter = ExpenditureHistoryAdapter(
+            requireContext(),
+            mExpenditureList,
+            this
+        )
         mRecyclerView.hasFixedSize()
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mRecyclerView.adapter = mAdapter
 
         refreshData()
 
-        return view
+        mTermBtn.setOnClickListener {
+            TermSessionPickerBottomSheet().show(
+                requireActivity().supportFragmentManager,
+                "Term/Session"
+            )
+        }
     }
 
     private fun getExpenditure() {
@@ -107,7 +117,8 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
         val term = sharedPreferences.getString("term", "")
         val year = sharedPreferences.getString("school_year", "")
 
-        val url = "${Login.urlBase}/manageTransactions.php?type=expenditure&&term=$term&&year=$year"
+        val url = "${getString(R.string.base_url)}/manageTransactions" +
+                ".php?type=expenditure&&term=$term&&year=$year"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
@@ -234,6 +245,7 @@ class ExpenditureHistoryFragment : Fragment(), OnItemClickListener {
         )
 
     }
+
 
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {

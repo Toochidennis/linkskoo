@@ -44,14 +44,16 @@ class TermFeeAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val termFeesModel = sTermFeesList[position]
-        val id = termFeesModel.getFeeId()
-        holder.mFeeAmount.setText(termFeesModel.getFeeAmount())
-        holder.mFeeName.text = termFeesModel.getFeeName()
+        val id = termFeesModel.mFeedId
+        holder.mFeeAmount.setText(termFeesModel.mFeeAmount)
+        holder.mFeeName.text = termFeesModel.mFeeName
 
         mFeeAmountTotal = 0.0
+
         try {
-            mFeeNameList[id] = termFeesModel.getFeeName().toString()
-            mFeeAmountList[id] = termFeesModel.getFeeAmount().toString()
+
+            mFeeNameList[id] = termFeesModel.mFeeName.toString()
+            mFeeAmountList[id] = termFeesModel.mFeeAmount.toString()
 
             mFeeAmountList.forEach { (_, value) ->
                 val total = value.toDouble()
@@ -80,7 +82,7 @@ class TermFeeAdapter(
         }
 
         holder.mRequired.isVisible =
-            !(termFeesModel.getMandatory() == "null" || termFeesModel.getMandatory() == "0")
+            !(termFeesModel.mMandatory == "null" || termFeesModel.mMandatory == "0")
 
         holder.mFeeAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -96,7 +98,7 @@ class TermFeeAdapter(
                     isOnTextChanged = false
                     mFeeAmountTotal = 0.0
                     try {
-                        mFeeNameList[id] = termFeesModel.getFeeName().toString()
+                        mFeeNameList[id] = termFeesModel.mFeeName.toString()
                         mFeeAmountList[id] = s.toString()
 
                         mFeeAmountList.forEach { (_, value) ->
@@ -193,6 +195,7 @@ class TermFeeAdapter(
                                             .LENGTH_SHORT
                                     ).show()
                                 }
+
                                 else -> Toast.makeText(sContext, "Failed", Toast.LENGTH_SHORT)
                                     .show()
                             }

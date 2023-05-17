@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
@@ -22,16 +21,12 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.DebtStudentsAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
-import com.digitaldream.winskool.adapters.StudentsPaidAdapter
 import com.digitaldream.winskool.dialog.AdminClassesDialog
 import com.digitaldream.winskool.interfaces.ResultListener
 import com.digitaldream.winskool.models.AdminPaymentModel
-import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
-import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.Exception
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val CLASS_ID = "id"
@@ -165,7 +160,7 @@ class DebtStudentsFragment : Fragment(), OnItemClickListener {
             override fun afterTextChanged(s: Editable?) {
                 val name = mutableListOf<AdminPaymentModel>()
                 mStudentList.forEach {
-                    if (it.getStudentName()!!.lowercase().contains(s.toString().lowercase()))
+                    if (it.mStudentName!!.lowercase().contains(s.toString().lowercase()))
                         name.add(it)
                 }
 
@@ -216,19 +211,19 @@ class DebtStudentsFragment : Fragment(), OnItemClickListener {
 
                                     // pass data to the model
                                     AdminPaymentModel().apply {
-                                        setStudentId(studentId)
-                                        setInvoice(invoiceId)
-                                        setRegistrationNumber(regNo)
-                                        setStudentName(name)
-                                        setJson(descriptionArray.toString())
-                                        setReceivedAmount(amount)
-                                        setLevelName(levelId)
-                                        setClassName(mClassId)
-                                        setTerm(term)
-                                        setSession(year)
+                                        mStudentId = studentId
+                                        mInvoice = invoiceId
+                                        mRegistrationNumber = regNo
+                                        mStudentName = name
+                                        mJson = descriptionArray.toString()
+                                        mReceivedAmount = amount
+                                        mLevelName = levelId
+                                        mClassName = mClassId
+                                        mTerm = term
+                                        mSession = year
                                     }.also { model ->
                                         mStudentList.add(model)
-                                        mStudentList.sortBy { sort -> sort.getStudentName() }
+                                        mStudentList.sortBy { sort -> sort.mStudentName }
 
                                     }
 
@@ -297,16 +292,16 @@ class DebtStudentsFragment : Fragment(), OnItemClickListener {
 
         startActivity(
             Intent(requireContext(), PaymentActivity::class.java)
-                .putExtra("student_name", model.getStudentName())
-                .putExtra("levelId", model.getLevelName())
-                .putExtra("classId", model.getClassName())
-                .putExtra("invoiceId", model.getInvoice())
-                .putExtra("studentId", model.getStudentId())
-                .putExtra("year", model.getSession())
-                .putExtra("term", model.getTerm())
-                .putExtra("reg_no", model.getRegistrationNumber())
-                .putExtra("amount", model.getReceivedAmount())
-                .putExtra("json", model.getJson())
+                .putExtra("student_name", model.mStudentName)
+                .putExtra("levelId", model.mLevelName)
+                .putExtra("classId", model.mClassName)
+                .putExtra("invoiceId", model.mInvoice)
+                .putExtra("studentId", model.mStudentId)
+                .putExtra("year", model.mSession)
+                .putExtra("term", model.mTerm)
+                .putExtra("reg_no", model.mRegistrationNumber)
+                .putExtra("amount", model.mReceivedAmount)
+                .putExtra("json", model.mJson)
                 .putExtra("from", "debt_details")
         )
 

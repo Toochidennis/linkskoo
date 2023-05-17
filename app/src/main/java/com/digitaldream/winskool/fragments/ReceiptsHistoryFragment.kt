@@ -3,23 +3,14 @@ package com.digitaldream.winskool.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.SearchView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -33,9 +24,10 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
 import com.digitaldream.winskool.dialog.ReceiptTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermFeeDialog
+import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.models.ChartModel
-import com.digitaldream.winskool.models.TimeFrameData
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.getDate
 import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
@@ -48,7 +40,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
+class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), OnItemClickListener {
 
     private lateinit var mReceiptView: NestedScrollView
     private lateinit var mReceiptChart: LinearLayout
@@ -69,17 +61,11 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
     private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ReceiptsHistoryAdapter
-    lateinit var timeFrameData: TimeFrameData
+    private lateinit var timeFrameDataModel: TimeFrameDataModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(
-            R.layout.fragment_receipts_history,
-            container, false
-        )
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mReceiptView = view.findViewById(R.id.receipt_view)
@@ -96,14 +82,13 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
         mTermBtn = view.findViewById(R.id.term_btn)
 
 
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
-
-        actionBar?.apply {
+        toolbar.apply {
             title = "Receipts"
-            this.setHomeAsUpIndicator(R.drawable.arrow_left)
-            this.setDisplayHomeAsUpEnabled(true)
-            this.setHomeButtonEnabled(true)
+            this.setNavigationIcon(R.drawable.arrow_left)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher
+                    .onBackPressed()
+            }
         }
 
 
@@ -124,17 +109,24 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
         receiptsDialog()
 
 
-        timeFrameData = TimeFrameData{ getTimeFrameData() }
+        timeFrameDataModel = TimeFrameDataModel { getTimeFrameData() }
 
         mTimeFrameBtn.setOnClickListener {
             ReceiptTimeFrameBottomSheet(
-                timeFrameData).show(requireActivity().supportFragmentManager, "Time Frame")
+                timeFrameDataModel
+            ).show(requireActivity().supportFragmentManager, "Time Frame")
+        }
+
+        mTermBtn.setOnClickListener {
+            TermSessionPickerBottomSheet().show(
+                requireActivity().supportFragmentManager,
+                "Term/Session"
+            )
         }
 
 
         timeFrameTitle()
 
-        return view
     }
 
     private fun getReceipts() {
@@ -153,7 +145,9 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
+                        //clear list
                         mReceiptList.clear()
+
                         val jsonObject = JSONObject(response)
                         val receiptsArray = jsonObject.getJSONArray("receipts")
 
@@ -236,19 +230,19 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
                                     )
 
                                 val receiptModel = AdminPaymentModel()
-                                receiptModel.setStudentName(studentName)
-                                receiptModel.setTransactionName(transactionType)
-                                receiptModel.setReferenceNumber(reference)
-                                receiptModel.setRegistrationNumber(registrationNo)
-                                receiptModel.setReceivedAmount(receiptAmount)
-                                receiptModel.setTransactionDate(date)
-                                receiptModel.setTerm(receiptTerm)
-                                receiptModel.setSession(session)
-                                receiptModel.setLevelName(levelName)
-                                receiptModel.setClassName(className)
+                                receiptModel.mStudentName = studentName
+                                receiptModel.mTransactionName = transactionType
+                                receiptModel.mReferenceNumber = reference
+                                receiptModel.mRegistrationNumber = registrationNo
+                                receiptModel.mReceivedAmount = receiptAmount
+                                receiptModel.mTransactionDate = date
+                                receiptModel.mTerm = receiptTerm
+                                receiptModel.mSession = session
+                                receiptModel.mLevelName = levelName
+                                receiptModel.mClassName = className
 
                                 mReceiptList.add(receiptModel)
-                                mReceiptList.sortByDescending { it.getTransactionDate() }
+                                mReceiptList.sortByDescending { it.mTransactionDate }
                             }
                         }
 
@@ -280,8 +274,8 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
     }
 
     private fun getTimeFrameData() {
-        timeFrameData.endDate
-     //   Log.d("time frame",  timeFrameData.others.toString())
+        timeFrameDataModel.endDate
+        //   Log.d("time frame",  timeFrameData.others.toString())
     }
 
 
@@ -306,41 +300,41 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     }
 
-    private fun setUpMenu() {
-        mMenuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.search_menu, menu)
+    /*  private fun setUpMenu() {
+          mMenuHost.addMenuProvider(object : MenuProvider {
+              override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                  menuInflater.inflate(R.menu.search_menu, menu)
 
-                val searchItem = menu.findItem(R.id.search)
-                val searchView = searchItem.actionView as SearchView
+                  val searchItem = menu.findItem(R.id.search)
+                  val searchView = searchItem.actionView as SearchView
 
-                searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+                  searchView.imeOptions = EditorInfo.IME_ACTION_DONE
 
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        return false
-                    }
+                  searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                      override fun onQueryTextSubmit(query: String?): Boolean {
+                          return false
+                      }
 
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        mAdapter.filter.filter(newText)
-                        return false
-                    }
-                })
-            }
+                      override fun onQueryTextChange(newText: String?): Boolean {
+                          mAdapter.filter.filter(newText)
+                          return false
+                      }
+                  })
+              }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    android.R.id.home -> {
-                        requireActivity().onBackPressedDispatcher
-                            .onBackPressed()
-                        return true
-                    }
+              override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                  return when (menuItem.itemId) {
+                      android.R.id.home -> {
+                          requireActivity().onBackPressedDispatcher
+                              .onBackPressed()
+                          return true
+                      }
 
-                    else -> false
-                }
-            }
-        })
-    }
+                      else -> false
+                  }
+              }
+          })
+      }*/
 
     private fun timeFrameTitle() {
         try {
@@ -367,27 +361,18 @@ class ReceiptsHistoryFragment : Fragment(), OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val paymentModel = mReceiptList[position]
-        val amount = paymentModel.getReceivedAmount()
-        val name = paymentModel.getStudentName()
-        val levelName = paymentModel.getLevelName()
-        val className = paymentModel.getClassName()
-        val regNo = paymentModel.getRegistrationNumber()
-        val reference = paymentModel.getReferenceNumber()
-        val session = paymentModel.getSession()
-        val term = paymentModel.getTerm()
-        val date = paymentModel.getTransactionDate()
 
         startActivity(
             Intent(requireContext(), PaymentActivity::class.java)
-                .putExtra("amount", amount)
-                .putExtra("name", name)
-                .putExtra("level_name", levelName)
-                .putExtra("class_name", className)
-                .putExtra("reg_no", regNo)
-                .putExtra("reference", reference)
-                .putExtra("session", session)
-                .putExtra("term", term)
-                .putExtra("date", date)
+                .putExtra("amount", paymentModel.mReceivedAmount)
+                .putExtra("name", paymentModel.mStudentName)
+                .putExtra("level_name", paymentModel.mLevelName)
+                .putExtra("class_name", paymentModel.mClassName)
+                .putExtra("reg_no", paymentModel.mRegistrationNumber)
+                .putExtra("reference", paymentModel.mReferenceNumber)
+                .putExtra("session", paymentModel.mSession)
+                .putExtra("term", paymentModel.mTerm)
+                .putExtra("date", paymentModel.mTransactionDate)
                 .putExtra("from", "admin_receipt")
         )
 

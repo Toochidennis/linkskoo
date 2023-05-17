@@ -215,10 +215,13 @@ class StudentFeesDetailsFragment : Fragment(), OnInputListener {
                                             mYear
                                         )
 
-                                    termFeesDataModel.setFeeName(feeName)
-                                    termFeesDataModel.setFeeAmount(feeAmount)
+                                    termFeesDataModel.apply {
+                                        mFeeName = feeName
+                                        mFeeAmount = feeAmount
+
+                                    }
                                     mFeesList.add(termFeesDataModel)
-                                    mFeesList.sortBy { it.getFeeName() }
+                                    mFeesList.sortBy { it.mFeeName }
 
                                     val termText = when (mTerm) {
                                         "1" -> "First Term School Fee Charges for"

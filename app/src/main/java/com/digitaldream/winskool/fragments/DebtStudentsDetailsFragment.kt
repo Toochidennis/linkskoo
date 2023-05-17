@@ -210,11 +210,11 @@ class DebtStudentsDetailsFragment : Fragment() {
 
 
                     TermFeesDataModel().apply {
-                        setFeeName(feeName)
-                        setFeeAmount(feeAmount)
+                        mFeeName = feeName
+                        mFeeAmount = feeAmount
                     }.let { model ->
                         mFeesList.add(model)
-                        mFeesList.sortBy { sort -> sort.getFeeName() }
+                        mFeesList.sortBy { sort -> sort.mFeeName }
                     }
                 }
             }

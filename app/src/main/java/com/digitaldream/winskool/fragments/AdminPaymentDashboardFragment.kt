@@ -3,8 +3,17 @@ package com.digitaldream.winskool.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -24,10 +33,9 @@ import com.digitaldream.winskool.dialog.AdminClassesDialog
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
-import com.digitaldream.winskool.utils.RequestManager.get
 import com.digitaldream.winskool.utils.VolleyCallback
 import org.json.JSONObject
-import java.util.*
+import java.util.Locale
 
 
 class AdminPaymentDashboardFragment : Fragment(),
@@ -51,7 +59,6 @@ class AdminPaymentDashboardFragment : Fragment(),
     private lateinit var mHideAndSee: ImageView
     private lateinit var mErrorView: LinearLayout
     private lateinit var mRefreshBtn: Button
-    private lateinit var mMenu: Menu
 
     private val mTransactionList = mutableListOf<AdminPaymentModel>()
     private lateinit var mAdapter: AdminPaymentDashboardAdapter
@@ -197,18 +204,18 @@ class AdminPaymentDashboardFragment : Fragment(),
                         for (i in 0 until transactionsArray.length()) {
                             val transactionsObject = transactionsArray.getJSONObject(i)
                             val transactionType = transactionsObject.getString("trans_type")
-                            val reference = transactionsObject.getString("reference")
+                          //  val reference = transactionsObject.getString("reference")
                             val description = transactionsObject.getString("description")
                             val amount = transactionsObject.getString("amount")
                             val date = transactionsObject.getString("date")
 
                             val adminModel = AdminPaymentModel()
-                            adminModel.setTransactionName(transactionType)
-                            adminModel.setDescription(description)
-                            adminModel.setReceivedAmount(amount)
-                            adminModel.setTransactionDate(date)
+                            adminModel.mTransactionName = transactionType
+                            adminModel.mDescription = description
+                            adminModel.mReceivedAmount = amount
+                            adminModel.mTransactionDate = date
                             mTransactionList.add(adminModel)
-                            mTransactionList.sortByDescending { it.getTransactionDate() }
+                            mTransactionList.sortByDescending { it.mTransactionDate }
                         }
 
                         if (mTransactionList.isEmpty()) {
@@ -322,7 +329,7 @@ class AdminPaymentDashboardFragment : Fragment(),
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.settings_menu, menu)
-                mMenu = menu
+
                 menu.getItem(0).isVisible = false
                 menu.getItem(2).isVisible = false
                 menu.getItem(1).isVisible = true
@@ -335,6 +342,7 @@ class AdminPaymentDashboardFragment : Fragment(),
                             .onBackPressed()
                         return true
                     }
+
                     else -> false
                 }
             }
@@ -360,410 +368,3 @@ class AdminPaymentDashboardFragment : Fragment(),
         Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
     }
 }
-
-/*
-* <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.AdminPaymentDashboardFragment">
-
-    <RelativeLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_gradient_color"
-        android:padding="10dp">
-
-        <ImageView
-            android:id="@+id/back_btn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:clickable="true"
-            android:contentDescription="@string/todo"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/arrow_left" />
-
-        <TextView
-            android:id="@+id/toolbar_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toStartOf="@id/settings_btn"
-            android:layout_toEndOf="@id/back_btn"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/settings_btn"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignBaseline="@id/back_btn"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:clickable="true"
-            android:contentDescription="@string/todo"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_setting_white_24dp" />
-
-    </RelativeLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/appBar">
-
-        <LinearLayout
-            android:id="@+id/dashboard_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_gradient_color"
-                android:padding="15dp">
-
-                <TextView
-                    android:id="@+id/revenue_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="Expected Revenue"
-                    android:textColor="@color/icons_color"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:id="@+id/hide_and_See"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="20dp"
-                    android:clickable="true"
-                    android:contentDescription="@string/todo"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_eye_view"
-                    app:tint="@color/white" />
-
-                <TextView
-                    android:id="@+id/expected_revenue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/revenue_label"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/zero_balance"
-                    android:textColor="@color/white"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/btn_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/expected_revenue"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/test_color_1"
-                        ads:cardCornerRadius="40dp"
-                        ads:cardElevation="1dp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                        android:clickable="true"
-                        android:focusable="true"
-                        ads:contentPadding="25dp">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_eye_view"
-                            app:tint="@color/green_cyan" />
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/test_color_1"
-                        ads:cardCornerRadius="40dp"
-                        ads:cardElevation="1dp"
-                        ads:contentPadding="25dp">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_eye_view"
-                            app:tint="@color/green_cyan" />
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/test_color_1"
-                        ads:cardCornerRadius="40dp"
-                        ads:cardElevation="1dp"
-                        ads:contentPadding="25dp">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_eye_view"
-                            app:tint="@color/green_cyan" />
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/test_color_1"
-                        ads:cardCornerRadius="40dp"
-                        ads:cardElevation="1dp"
-                        ads:contentPadding="25dp">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_eye_view"
-                            app:tint="@color/green_cyan" />
-
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/btn_layout"
-                    android:orientation="horizontal"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:id="@+id/received_txt"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat"
-                        android:text="Received"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/expenditure_txt"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/expenditure"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/receipt_txt"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat"
-                        android:text="Receipt"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/debt_txt"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat"
-                        android:text="Not paid"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/history_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp">
-
-                <TextView
-                    android:id="@+id/history_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:fontFamily="@font/poppins_regular"
-                    android:text="Transactions"
-                    android:textColor="@color/text_bg_color"
-                    android:textSize="16sp"/>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/see_all_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                    app:cardCornerRadius="5dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@color/test_color_1"
-                        android:fontFamily="@font/montserrat"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="5dp"
-                        android:text="@string/see_all"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/recycler_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/history_text"
-                    android:layout_marginTop="@dimen/dimen_10"
-                    android:layout_marginBottom="55dp"
-                    ads:cardCornerRadius="@dimen/dimen_10"
-                    ads:cardElevation="5dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/transaction_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dimen_10"
-                        android:clipToPadding="true" />
-
-                </androidx.cardview.widget.CardView>
-
-                <ImageView
-                    android:id="@+id/error_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="150dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/baseline_money_off_24"
-                    android:visibility="gone"
-                    app:tint="@color/color_7" />
-
-                <TextView
-                    android:id="@+id/transaction_error_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="200dp"
-                    android:layout_marginEnd="0dp"
-                    android:fontFamily="@font/montserrat"
-                    android:lines="2"
-                    android:text="@string/no_history"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_bg_color"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <LinearLayout
-        android:id="@+id/error_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/error_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
-            android:lines="2"
-            android:text="@string/can_not_retrieve"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/refresh_btn"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/ripple_effect"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/refresh_layout"
-            android:textColor="@color/color_5"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-</RelativeLayout>
-*
-* */

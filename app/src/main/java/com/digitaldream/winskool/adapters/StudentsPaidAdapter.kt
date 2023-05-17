@@ -29,13 +29,13 @@ class StudentsPaidAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val studentList = sStudentList[position]
 
-        holder.mStudentName.text = capitaliseFirstLetter(studentList.getStudentName()!!)
-        holder.mDate.text = studentList.getTransactionDate()
+        holder.mStudentName.text = capitaliseFirstLetter(studentList.mStudentName.toString())
+        holder.mDate.text = studentList.mTransactionDate
 
         String.format(
             "%s%s",
             sContext.getString(R.string.naira),
-            currencyFormat(studentList.getReceivedAmount()!!.toDouble())
+            currencyFormat(studentList.mReceivedAmount!!.toDouble())
         ).let {
             holder.mAmount.text = it
         }

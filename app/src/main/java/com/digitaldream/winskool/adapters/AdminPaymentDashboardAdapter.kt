@@ -31,19 +31,19 @@ class AdminPaymentDashboardAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sTransactionList[position]
-        holder.mTransactionDate.text = formatDate2(adminModel.getTransactionDate()!!)
+        holder.mTransactionDate.text = formatDate2(adminModel.mTransactionDate!!)
 
-        if (adminModel.getTransactionName() == "receipts") {
+        if (adminModel.mTransactionName == "receipts") {
             holder.mTransactionCard.setCardBackgroundColor(
                 ContextCompat.getColor(
                     sContext, R.color.color_4
                 )
             )
             holder.mTransactionType.setImageResource(R.drawable.ic_receipt)
-            holder.mDescription.text = adminModel.getDescription()
+            holder.mDescription.text = adminModel.mDescription
             String.format(
                 Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
-                currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+                currencyFormat(adminModel.mReceivedAmount!!.toDouble())
             ).also { holder.mTransactionAmount.text = it }
         } else {
             holder.mTransactionCard.setCardBackgroundColor(
@@ -52,10 +52,10 @@ class AdminPaymentDashboardAdapter(
                 )
             )
             holder.mTransactionType.setImageResource(R.drawable.ic_expenditure)
-            holder.mDescription.text = adminModel.getDescription()
+            holder.mDescription.text = adminModel.mDescription
             String.format(
                 Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
-                currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+                currencyFormat(adminModel.mReceivedAmount!!.toDouble())
             ).also { holder.mTransactionAmount.text = it }
             holder.mTransactionAmount.setTextColor(
                 ContextCompat.getColor(

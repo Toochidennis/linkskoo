@@ -1,9 +1,9 @@
 package com.digitaldream.winskool.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +11,22 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.adapters.StudentsPaidAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
+import com.digitaldream.winskool.adapters.StudentsPaidAdapter
 import com.digitaldream.winskool.dialog.AdminClassesDialog
 import com.digitaldream.winskool.dialog.StudentsPaidBottomSheet
 import com.digitaldream.winskool.interfaces.ResultListener
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
-import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Locale
 
@@ -33,6 +34,7 @@ import java.util.Locale
 private const val CLASS_NAME = "name"
 private const val CLASS_ID = "id"
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class StudentsPaidFragment : Fragment(), OnItemClickListener {
 
 
@@ -165,7 +167,7 @@ class StudentsPaidFragment : Fragment(), OnItemClickListener {
             override fun afterTextChanged(s: Editable?) {
                 val name = mutableListOf<AdminPaymentModel>()
                 mStudentList.forEach {
-                    if (it.getStudentName()!!.lowercase().contains(s.toString().lowercase()))
+                    if (it.mStudentName!!.lowercase().contains(s.toString().lowercase()))
                         name.add(it)
                 }
 
@@ -224,17 +226,17 @@ class StudentsPaidFragment : Fragment(), OnItemClickListener {
                                     val date = receiptsObject.getString("date")
 
                                     val model = AdminPaymentModel()
-                                    model.setStudentName(name)
-                                    model.setLevelName(levelName)
-                                    model.setRegistrationNumber(regNo)
-                                    model.setTerm(term)
-                                    model.setTransactionDate(date)
-                                    model.setReceivedAmount(amount)
-                                    model.setReferenceNumber(reference)
-                                    model.setSession(session)
+                                    model.mStudentName = name
+                                    model.mLevelName = levelName
+                                    model.mRegistrationNumber = regNo
+                                    model.mTerm = term
+                                    model.mTransactionDate = date
+                                    model.mReceivedAmount = amount
+                                    model.mReferenceNumber = reference
+                                    model.mSession = session
 
                                     mStudentList.add(model)
-                                    mStudentList.sortBy { sort -> sort.getStudentName() }
+                                    mStudentList.sortBy { sort -> sort.mStudentName }
 
                                 }
 
@@ -298,15 +300,15 @@ class StudentsPaidFragment : Fragment(), OnItemClickListener {
         val model = mStudentList[position]
 
         StudentsPaidBottomSheet.newInstance(
-            model.getStudentName()!!,
-            model.getLevelName()!!,
+            model.mStudentName!!,
+            model.mLevelName!!,
             mClassName!!,
-            model.getRegistrationNumber()!!,
-            model.getTerm()!!,
-            model.getTransactionDate()!!,
-            model.getReceivedAmount()!!,
-            model.getReferenceNumber()!!,
-            model.getSession()!!
+            model.mRegistrationNumber!!,
+            model.mTerm!!,
+            model.mTransactionDate!!,
+            model.mReceivedAmount!!,
+            model.mReferenceNumber!!,
+            model.mSession!!
         ).show(
             requireActivity().supportFragmentManager,
             "bottomSheetDialog"

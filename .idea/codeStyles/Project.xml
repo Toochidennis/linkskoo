@@ -1,6 +1,13 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="true" />
+    <JSON>
+      <option name="KEEP_TRAILING_COMMA" value="true" />
+    </JSON>
+    <JavaCodeStyleSettings>
+      <option name="PARAMETER_NAME_PREFIX" value="s" />
+      <option name="LOCAL_VARIABLE_NAME_PREFIX" value="m" />
+    </JavaCodeStyleSettings>
     <JetCodeStyleSettings>
       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
     </JetCodeStyleSettings>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".fragments.ExpenditureHistoryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -26,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
+        android:background="@color/white"
         android:visibility="gone">
 
         <LinearLayout
@@ -116,14 +118,57 @@
                 android:id="@+id/history_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp">
+                android:background="@color/white">
+
+                <Button
+                    android:id="@+id/time_frame_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
+                    android:drawablePadding="5dp"
+                    android:elevation="0dp"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_regular"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:text="May, 2023"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/term_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
+                    android:drawablePadding="5dp"
+                    android:elevation="0dp"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_regular"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:text="First Term"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/expenditure_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="@dimen/dimen_10"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time_frame_btn"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@android:color/transparent"
                     android:clipToPadding="true" />
 
                 <ImageView

@@ -16,13 +16,13 @@ import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.config.DatabaseHelper
 import com.digitaldream.winskool.models.ClassNameTable
 import com.digitaldream.winskool.models.LevelTable
-import com.digitaldream.winskool.models.TimeFrameData
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 
 class FilterLevelClassDialog(
-    private val timeFrameData: TimeFrameData,
+    private val sTimeFrameDataModel: TimeFrameDataModel,
     private val sFrom: String,
     private val sDismiss: () -> Unit
 ) : BottomSheetDialogFragment(), OnItemClickListener {
@@ -147,17 +147,17 @@ class FilterLevelClassDialog(
 
     override fun onItemClick(position: Int) {
         if (sFrom == "level") {
-            timeFrameData.levelId = mLevelList[position].levelId
-            timeFrameData.levelName = mLevelList[position].levelName
+            sTimeFrameDataModel.levelId = mLevelList[position].levelId
+            sTimeFrameDataModel.levelName = mLevelList[position].levelName
 
-            timeFrameData.className = null
-            timeFrameData.classId = null
+            sTimeFrameDataModel.className = null
+            sTimeFrameDataModel.classId = null
         } else {
-            timeFrameData.classId = mClassList[position].classId
-            timeFrameData.className = mClassList[position].className
+            sTimeFrameDataModel.classId = mClassList[position].classId
+            sTimeFrameDataModel.className = mClassList[position].className
 
-            timeFrameData.levelName = null
-            timeFrameData.levelId = null
+            sTimeFrameDataModel.levelName = null
+            sTimeFrameDataModel.levelId = null
         }
 
         dismiss()

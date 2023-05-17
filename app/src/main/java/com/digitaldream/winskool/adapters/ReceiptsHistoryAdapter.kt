@@ -32,13 +32,13 @@ class ReceiptsHistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sTransactionList[position]
 
-        holder.mStudentName.text = capitaliseFirstLetter(adminModel.getStudentName()!!)
-        holder.mReceiptDate.text = formatDate2(adminModel.getTransactionDate()!!)
-        holder.mStudentClass.text = adminModel.getClassName()
+        holder.mStudentName.text = capitaliseFirstLetter(adminModel.mStudentName!!)
+        holder.mReceiptDate.text = formatDate2(adminModel.mTransactionDate!!)
+        holder.mStudentClass.text = adminModel.mClassName
 
         String.format(
             Locale.getDefault(), "%s %s%s", "+", sContext.getString(R.string.naira),
-            currencyFormat(adminModel.getReceivedAmount()!!.toDouble())
+            currencyFormat(adminModel.mReceivedAmount!!.toDouble())
         ).also { holder.mReceiptAmount.text = it }
 
     }
@@ -72,7 +72,7 @@ class ReceiptsHistoryAdapter(
                 else
                     transactionList.forEach {
 
-                        if (it.getStudentName()!!.lowercase()
+                        if (it.mStudentName!!.lowercase()
                                 .contains(
                                     constraint.toString().lowercase().trim(),
                                 )

@@ -138,7 +138,7 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
 
 
     private fun getFees() {
-        val url = getString(R.string.base_url)+ "/manageReceipts.php?list=$studentId"
+        val url = getString(R.string.base_url) + "/manageReceipts.php?list=$studentId"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(Request.Method.GET, url, this, hashMap,
@@ -218,11 +218,13 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
                                                 currencyFormat(mAmount!!.toDouble())
                                             )
 
-                                            val termFeesDataModel = TermFeesDataModel()
-                                            termFeesDataModel.setFeeName(feeName)
-                                            termFeesDataModel.setFeeAmount(feeAmount)
+                                            val termFeesDataModel = TermFeesDataModel().apply {
+                                                mFeeName = feeName
+                                                mFeeAmount = feeAmount
+                                            }
+
                                             mFeeList.add(termFeesDataModel)
-                                            mFeeList.sortBy { it.getFeeName() }
+                                            mFeeList.sortBy { it.mFeeName }
                                         }
 
                                         if (mFeeList.isNotEmpty()) {
@@ -302,10 +304,12 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
         val jsonArray = JSONArray(modelList.getJson())
         val amount = modelList.getAmount()
 
-        dataModel.setTerm(term!!)
-        dataModel.setYear(modelList.getYear()!!)
-        dataModel.setAmount(amount!!)
-        dataModel.setInvoiceId(modelList.getInvoiceId()!!)
+        dataModel.apply {
+            mTerm = term
+            mYear = modelList.getYear()
+            mAmount = amount
+            mInvoiceId = modelList.getInvoiceId()
+        }
 
         mFeeList.clear()
 
@@ -329,7 +333,7 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
                 Locale.getDefault(),
                 "%s%s",
                 getString(R.string.naira),
-                currencyFormat(amount.toDouble())
+                currencyFormat(amount!!.toDouble())
             )
 
             mFeeTotal2.text = String.format(
@@ -339,11 +343,13 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
                 currencyFormat(amount.toDouble())
             )
 
-            val termFeesDataModel = TermFeesDataModel()
-            termFeesDataModel.setFeeName(feeName)
-            termFeesDataModel.setFeeAmount(feeAmount)
+            val termFeesDataModel = TermFeesDataModel().apply {
+                mFeeName = feeName
+                mFeeAmount = feeAmount
+            }
+
             mFeeList.add(termFeesDataModel)
-            mFeeList.sortBy { it.getFeeName() }
+            mFeeList.sortBy { it.mFeeName }
 
         }
         mDetailsAdapter.notifyDataSetChanged()
@@ -358,10 +364,10 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
     private fun makePayment() {
 
         mPayBtn.setOnClickListener {
-            val invoiceId = dataModel.getInvoiceId()
-            val amount = dataModel.getAmount()
-            val term = dataModel.getTerm()
-            val year = dataModel.getYear()
+            val invoiceId = dataModel.mInvoiceId
+            val amount = dataModel.mAmount
+            val term = dataModel.mTerm
+            val year = dataModel.mYear
 
             if (invoiceId != null) {
                 openDialog(invoiceId, amount!!, term!!, year!!)
