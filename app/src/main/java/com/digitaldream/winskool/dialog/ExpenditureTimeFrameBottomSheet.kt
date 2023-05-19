@@ -36,8 +36,8 @@ class ExpenditureTimeFrameBottomSheet(
 
         adapter.apply {
             addFragment(DateRangeFragment(sTimeFrameDataModel), "Date Range")
-            addFragment(ExpenditureGroupingFragment(), "Grouping")
-            addFragment(ExpenditureFilterFragment(), "Filter")
+            addFragment(ExpenditureGroupingFragment(sTimeFrameDataModel), "Grouping")
+            addFragment(ExpenditureFilterFragment(sTimeFrameDataModel), "Filter")
 
             viewPager.adapter = this
             tabLayout.setupWithViewPager(viewPager, true)

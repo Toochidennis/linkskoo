@@ -13,7 +13,7 @@
         android:layout_marginTop="10dp"
         android:layout_toStartOf="@id/close_btn"
         android:fontFamily="@font/poppins_medium"
-        android:text="Session/Term"
+        android:text="Session &amp; Term"
         android:textAlignment="center"
         android:textColor="@color/text_bg_color"
         android:textSize="14sp" />

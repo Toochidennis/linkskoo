@@ -234,6 +234,7 @@
             android:text="@string/refresh_layout"
             android:textColor="@color/color_5"
             android:textSize="14sp" />
+
     </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

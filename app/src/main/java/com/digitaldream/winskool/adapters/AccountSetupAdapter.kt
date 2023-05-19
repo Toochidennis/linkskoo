@@ -42,8 +42,8 @@ class AccountSetupAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mModel = sAccountModel[position]
-        holder.mAccountName.text = mModel.getAccountName()
-        holder.mAccountId.text = mModel.getAccountId()
+        holder.mAccountName.text = mModel.mAccountName
+        holder.mAccountId.text = mModel.mAccountId
 
         holder.itemView.setOnLongClickListener {
             if (!isEnabled) {
@@ -128,10 +128,10 @@ class AccountSetupAdapter(
             if (isEnabled) {
                 clickedItems(holder)
             } else {
-                val id = mModel.getId()
-                val accountId = mModel.getAccountId()
-                val accountName = mModel.getAccountName()
-                val accountType = mModel.getAccountType()
+                val id = mModel.mId
+                val accountId = mModel.mAccountId
+                val accountName = mModel.mAccountName
+                val accountType = mModel.mAccountType
 
                 val accountDialog = AccountSetupDialog(
                     sContext,
@@ -170,10 +170,10 @@ class AccountSetupAdapter(
             holder.mCheckBtn.isVisible = true
             holder.itemView.setBackgroundColor(Color.GRAY)
 
-            selectedItems.add(value.getId().toString())
+            selectedItems.add(value.mId.toString())
         } else {
             holder.mCheckBtn.isVisible = false
-            selectedItems.remove(value.getId().toString())
+            selectedItems.remove(value.mId.toString())
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
         }
         mItemViewModel.setText(selectedItems.size.toString())

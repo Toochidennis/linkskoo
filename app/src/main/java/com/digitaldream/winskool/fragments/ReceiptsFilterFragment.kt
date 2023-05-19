@@ -104,9 +104,8 @@ class ReceiptsFilterFragment(
         } else {
             selectDeselectButton(mClassBtn, "deselected")
             selectDeselectButton(mLevelBtn, "deselected")
-            println("mee")
         }
-        println("mee here")
+
     }
 
 

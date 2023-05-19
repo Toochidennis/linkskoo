@@ -2,59 +2,112 @@ package com.digitaldream.winskool.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Button
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.dialog.FilterLevelClassDialog
+import com.digitaldream.winskool.dialog.VendorAccountNamesBottomSheet
+import com.digitaldream.winskool.models.TimeFrameDataModel
+import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ExpenditureFilterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ExpenditureFilterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class ExpenditureFilterFragment(
+    private val sTimeFrameDataModel: TimeFrameDataModel
+) : Fragment(R.layout.fragment_expenditure_filter) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private lateinit var mVendorBtn: Button
+    private lateinit var mAccountBtn: Button
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        mVendorBtn = view.findViewById(R.id.class_btn)
+        mAccountBtn = view.findViewById(R.id.level_btn)
+
+        mVendorBtn.setOnClickListener { onClick(it) }
+        mAccountBtn.setOnClickListener { onClick(it) }
+    }
+
+    private fun onClick(view: View) {
+        when (view.id) {
+            R.id.vendor_btn -> {
+                if (!mVendorBtn.isSelected) {
+                    selectDeselectButton(mVendorBtn, "selected")
+                    selectDeselectButton(mAccountBtn, "deselected")
+                    "Account".let { mAccountBtn.text = it }
+
+                    VendorAccountNamesBottomSheet(
+                        sTimeFrameDataModel,
+                        "account"
+                    ) { setSelectedName() }
+                        .show(childFragmentManager, "vendor")
+
+                } else {
+                    selectDeselectButton(mVendorBtn, "deselected")
+                    sTimeFrameDataModel.classId = null
+                    sTimeFrameDataModel.className = null
+                    "Vendor".let { mVendorBtn.text = it }
+                }
+            }
+
+            R.id.account_btn -> {
+                if (!mAccountBtn.isSelected) {
+
+                    selectDeselectButton(mVendorBtn, "deselected")
+                    selectDeselectButton(mAccountBtn, "selected")
+                    "Vendor".let { mVendorBtn.text = it }
+
+                    VendorAccountNamesBottomSheet(
+                        sTimeFrameDataModel,
+                        "account"
+                    ) { setSelectedName() }
+                        .show(childFragmentManager, "Account")
+
+                } else {
+                    sTimeFrameDataModel.levelId = null
+                    sTimeFrameDataModel.levelName = null
+                    "Account".let { mAccountBtn.text = it }
+                    selectDeselectButton(mAccountBtn, "deselected")
+                }
+            }
+
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_expenditure_filter, container, false)
+    private fun selectDeselectedButton() {
+        if (sTimeFrameDataModel.levelId != null) {
+            selectDeselectButton(mAccountBtn, "selected")
+            selectDeselectButton(mVendorBtn, "deselected")
+            setBtnText(mAccountBtn, sTimeFrameDataModel.levelName.toString(), "level")
+
+        } else if (sTimeFrameDataModel.classId != null) {
+            selectDeselectButton(mVendorBtn, "selected")
+            selectDeselectButton(mAccountBtn, "deselected")
+            setBtnText(mAccountBtn, sTimeFrameDataModel.className.toString(), "class")
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ExpenditureFilterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ExpenditureFilterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun setSelectedName() {
+        if (sTimeFrameDataModel.vendorName != null) {
+            setBtnText(mVendorBtn, sTimeFrameDataModel.vendorName.toString(), "vendor")
+        } else if (sTimeFrameDataModel.accountName != null) {
+            setBtnText(mAccountBtn, sTimeFrameDataModel.accountName.toString(), "account")
+        } else {
+            selectDeselectButton(mVendorBtn, "deselected")
+            selectDeselectButton(mAccountBtn, "deselected")
+        }
+
     }
+
+
+    private fun setBtnText(button: Button, name: String, from: String) {
+        if (from == "vendor") {
+            "Vendor: $name".let { button.text = it }
+        } else {
+            "Account: $name".let { button.text = it }
+        }
+
+    }
+
+
 }

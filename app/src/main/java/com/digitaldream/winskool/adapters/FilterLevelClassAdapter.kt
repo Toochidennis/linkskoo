@@ -19,7 +19,7 @@ class FilterLevelClassAdapter(
         parent: ViewGroup,
         viewType: Int
     ): FilterLevelClassAdapter.ViewHolder {
-        val view =  LayoutInflater.from(parent.context)
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.dialog_filter_level_class_item, parent, false)
 
         return ViewHolder(view)
@@ -28,11 +28,9 @@ class FilterLevelClassAdapter(
 
     override fun onBindViewHolder(holder: FilterLevelClassAdapter.ViewHolder, position: Int) {
         if (sLevelList == null) {
-            val model = sClassList?.get(position)
-            holder.name.text = model?.className
+            holder.name.text = sClassList!![position].className
         } else {
-            val model = sLevelList[position]
-            holder.name.text = model.levelName
+            holder.name.text = sLevelList[position].levelName
         }
 
     }

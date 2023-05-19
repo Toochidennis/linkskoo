@@ -130,7 +130,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
-        val url = Login.urlBase + "/manageAccount.php?list=1"
+        val url = "${getString(R.string.base_url)}/manageAccount.php?list=1"
         val stringRequest: StringRequest = object : StringRequest(
             Method.GET, url,
             { response: String ->
@@ -145,14 +145,15 @@ class AccountSetupFragment : Fragment(), OnInputListener {
                         val accountId = jsonObject.getString("account_id")
                         val accountType = jsonObject.getString("account_type")
 
-                        val accountModel = AccountSetupDataModel()
-                        accountModel.setId(id.toInt())
-                        accountModel.setAccountId(accountId)
-                        accountModel.setAccountName(accountName)
-                        accountModel.setAccountType(accountType)
+                        val accountModel = AccountSetupDataModel().apply {
+                            mId = id.toInt()
+                            mAccountId = accountId
+                            mAccountName = accountName
+                            mAccountType = accountType
+                        }
 
                         mAccountList.add(accountModel)
-                        mAccountList.sortBy { it.getAccountName() }
+                        mAccountList.sortBy { it.mAccountName }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
