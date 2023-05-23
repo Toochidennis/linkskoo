@@ -85,8 +85,12 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
 
 
         Toolbar toolbar = findViewById(R.id.course_tool_bar);
+        mActionButton = findViewById(R.id.submit_btn);
+        TextView classTerm = findViewById(R.id.class_term);
+        mName = findViewById(R.id.class_title);
+        RelativeLayout layout = findViewById(R.id.empty_state);
+
         setSupportActionBar(toolbar);
-        //final ActionBar actionBar = getSupportActionBar();
         actionBar = getSupportActionBar();
         assert actionBar != null;
 
@@ -95,6 +99,16 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                "loginDetail", Context.MODE_PRIVATE);
+
+        db = sharedPreferences.getString("db", "");
+        term = sharedPreferences.getString("term", "");
+        staffId = sharedPreferences.getString("user_id", "");
+        year = sharedPreferences.getString("school_year", "");
+
 
         mDatabaseHelper = new DatabaseHelper(this);
 
@@ -107,7 +121,7 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             queryBuilder.where().eq("studentLevel", studentLevelId).and().eq(
                     "studentClass", mStudentClassId);
             mStudentTableList = queryBuilder.query();
-            Log.i("date", mStudentTableList.toString());
+
             Random rnd = new Random();
             for (StudentTable table : mStudentTableList) {
                 int currentColor = Color.argb(255, rnd.nextInt(256),
@@ -119,16 +133,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
             e.printStackTrace();
         }
 
-
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                "loginDetail", Context.MODE_PRIVATE);
-
-        db = sharedPreferences.getString("db", "");
-        term = sharedPreferences.getString("term", "");
-        staffId = sharedPreferences.getString("user_id", "");
-        year = sharedPreferences.getString("school_year", "");
-
-        Log.i("term", year);
 
         int previousYear = Integer.parseInt(year) - 1;
         String termText = "";
@@ -144,8 +148,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                 termText = "Third Term";
                 break;
         }
-        TextView classTerm = findViewById(R.id.class_term);
-        mName = findViewById(R.id.class_title);
 
         mName.setText(from);
 
@@ -157,22 +159,19 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         mAdminClassAttendanceAdapter = new AdminClassAttendanceAdapter(this,
                 mStudentTableList,
                 this);
+
         LinearLayoutManager manager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdminClassAttendanceAdapter);
 
-        RelativeLayout layout = findViewById(R.id.empty_state);
-
-        if (!mStudentTableList.isEmpty()) {
+        if (mStudentTableList.size() != 0) {
             layout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         } else {
             layout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
-
-        mActionButton = findViewById(R.id.submit_btn);
 
         mActionButton.setOnClickListener(v -> {
             JSONArray jsonArray = new JSONArray();

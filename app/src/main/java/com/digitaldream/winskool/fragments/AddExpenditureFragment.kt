@@ -150,7 +150,7 @@ class AddExpenditureFragment : Fragment() {
     }
 
     private fun getAccountName() {
-        val url = getString(R.string.base_url)+ "/manageAccount.php?list=1"
+        val url = getString(R.string.base_url) + "/manageAccount.php?list=1"
         val hashMap = hashMapOf<String, String>()
 
         requestToServer(
@@ -174,8 +174,8 @@ class AddExpenditureFragment : Fragment() {
                 position: Int,
                 id: Long,
             ) {
-                accountName = mSpinnerList[position].getAccountName()
-                accountId = mSpinnerList[position].getAccountId()
+                accountName = mSpinnerList[position].mAccountName
+                accountId = mSpinnerList[position].mAccountId
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -202,11 +202,13 @@ class AddExpenditureFragment : Fragment() {
 
                     jsonArray.put(spinnerObject)
 
-                    val accountModel = AccountSetupDataModel()
-                    accountModel.setAccountName(accountName)
-                    accountModel.setAccountId(accountId)
+                    val accountModel = AccountSetupDataModel().apply {
+                        mAccountName = accountName
+                        mAccountId = accountId
+                    }
+
                     mSpinnerList.add(accountModel)
-                    mSpinnerList.sortBy(AccountSetupDataModel::getAccountName)
+                    mSpinnerList.sortBy(AccountSetupDataModel::mAccountName)
                 }
             }
             if (from == "save") {
@@ -218,7 +220,7 @@ class AddExpenditureFragment : Fragment() {
                     .apply()
             }
             for (names in mSpinnerList) {
-                spinnerList.add(names.getAccountName()!!)
+                spinnerList.add(names.mAccountName!!)
                 spinnerAdapter = ArrayAdapter(
                     requireContext(),
                     android.R.layout.simple_spinner_dropdown_item,
@@ -264,7 +266,7 @@ class AddExpenditureFragment : Fragment() {
         val term = sharedPreferences.getString("term", "")
         val year = sharedPreferences.getString("school_year", "")
 
-        val url = getString(R.string.base_url)+ "/manageTransactions.php"
+        val url = getString(R.string.base_url) + "/manageTransactions.php"
         val hashMap = hashMapOf<String, String>()
         hashMap.apply {
             put("transaction_type", "expenditure")

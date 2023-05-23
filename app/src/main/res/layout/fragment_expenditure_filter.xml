@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
-        android:text="By Vendor"
+        android:text="Vendor"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="14sp" />
@@ -26,7 +26,7 @@
         android:layout_height="48dp"
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
-        android:text="By Account"
+        android:text="Account"
         android:layout_marginTop="@dimen/dimen_16"
         android:textAllCaps="false"
         android:textColor="@color/black"

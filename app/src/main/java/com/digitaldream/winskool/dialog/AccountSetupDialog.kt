@@ -9,13 +9,18 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.Toast
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.activities.Login
 import org.json.JSONObject
 
 class AccountSetupDialog(

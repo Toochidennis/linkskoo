@@ -71,7 +71,6 @@ class FilterLevelClassDialog(
             mLevelList = mDao.queryForAll()
             mLevelList.sortBy { it.levelName }
 
-            println("Level list item ${mLevelList[0].levelName}")
 
             if (mLevelList.isEmpty()) {
                 mErrorMessage.isVisible = true
@@ -92,6 +91,7 @@ class FilterLevelClassDialog(
                     }
 
                 }
+
                 mTitle.text = getString(R.string.select_level)
                 mErrorMessage.isVisible = false
 

@@ -1,7 +1,5 @@
 package com.digitaldream.winskool.adapters
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.StudentTable
-import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
-import java.util.*
+import com.digitaldream.winskool.utils.FunctionUtils.getRandomColor
 
 class AdminResultStudentNamesAdapter(
     private var sStudentList: MutableList<StudentTable>,
@@ -41,14 +38,8 @@ class AdminResultStudentNamesAdapter(
 
         holder.mCount.text = count.toString()
 
-        val mutate = holder.mStudentView.background.mutate() as GradientDrawable
-        val random = Random()
-        val currentColor = Color.argb(
-            255, random.nextInt(250),
-            random.nextInt(256), random.nextInt(250)
-        )
-        mutate.setColor(currentColor)
-        holder.mStudentView.background = mutate
+        getRandomColor(holder.mStudentView)
+
     }
 
     override fun getItemCount() = sStudentList.size

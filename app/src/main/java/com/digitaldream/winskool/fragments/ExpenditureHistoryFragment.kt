@@ -20,9 +20,11 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
+import com.digitaldream.winskool.dialog.ExpenditureTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -52,6 +54,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
     private val mExpenditureList = mutableListOf<ExpenditureHistoryModel>()
     private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ExpenditureHistoryAdapter
+    private lateinit var mTimeFrameDataModel: TimeFrameDataModel
 
     private var mTerm: String? = null
 
@@ -100,12 +103,24 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
         refreshData()
 
+        mTimeFrameDataModel = TimeFrameDataModel { getTimeFrameData() }
+
         mTermBtn.setOnClickListener {
             TermSessionPickerBottomSheet().show(
                 requireActivity().supportFragmentManager,
                 "Term/Session"
             )
         }
+
+        mTimeFrameBtn.setOnClickListener {
+            ExpenditureTimeFrameBottomSheet(mTimeFrameDataModel).show(
+                childFragmentManager, "time frame"
+            )
+        }
+    }
+
+    private fun getTimeFrameData() {
+
     }
 
     private fun getExpenditure() {

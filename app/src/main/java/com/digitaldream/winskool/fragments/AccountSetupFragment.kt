@@ -146,7 +146,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
                         val accountType = jsonObject.getString("account_type")
 
                         val accountModel = AccountSetupDataModel().apply {
-                            mId = id.toInt()
+                            mId = id
                             mAccountId = accountId
                             mAccountName = accountName
                             mAccountType = accountType

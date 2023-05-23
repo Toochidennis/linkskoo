@@ -1,6 +1,8 @@
 package com.digitaldream.winskool.utils
 
 import android.Manifest
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
@@ -8,10 +10,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Environment
@@ -27,12 +31,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.android.volley.VolleyError
@@ -512,6 +518,72 @@ object FunctionUtils {
         }
     }
 
+
+    @JvmStatic
+    fun getRandomColor(view: View) {
+        val mutate = view.background.mutate() as GradientDrawable
+        val random = Random()
+        val hue = random.nextInt(256)
+        val color = Color.HSVToColor(floatArrayOf(hue.toFloat(), 2f, 5f))
+        val colorStateList = ColorStateList.valueOf(color)
+        mutate.color = colorStateList
+        view.background = mutate
+    }
+
+
+    @JvmStatic
+    fun flipAnimation(
+        context: Context,
+        frontView: View,
+        backView: View,
+        direction: String
+    ) {
+        val cameraDistance = context.resources.displayMetrics.density * 8000
+        frontView.cameraDistance = cameraDistance
+        backView.cameraDistance = cameraDistance
+
+
+        val flipRightAnimator =
+            AnimatorInflater.loadAnimator(context, R.animator.out_animator) as AnimatorSet
+        val flipLeftAnimator =
+            AnimatorInflater.loadAnimator(context, R.animator.in_animator) as AnimatorSet
+
+
+        when (direction) {
+            "right" -> {
+                flipRightAnimator.run {
+                    setTarget(frontView)
+                    flipLeftAnimator.setTarget(backView)
+                    start()
+                    flipLeftAnimator.start()
+
+                    doOnEnd {
+                        frontView.isVisible = false
+                        backView.isVisible = true
+                    }
+
+                }
+            }
+
+            else -> {
+                flipLeftAnimator.run {
+                    setTarget(frontView)
+                    flipRightAnimator.setTarget(backView)
+                    flipRightAnimator.start()
+                    start()
+
+                    doOnEnd {
+                        backView.isVisible = false
+                        frontView.isVisible = true
+                    }
+
+                }
+            }
+
+        }
+
+
+    }
 
 }
 

@@ -132,7 +132,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(
                 v -> requireActivity().onBackPressed());
-        setHasOptionsMenu(true);
+
 
         if (from.equals("staff")) {
             toolbar.setVisibility(View.VISIBLE);
@@ -289,7 +289,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
-        String url = Login.urlBase + "/getAttendanceList.php";
+        String url = getString(R.string.base_url) + "/getAttendanceList.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url, response -> {
             Log.i("response", response);
@@ -376,7 +376,7 @@ public class AdminClassAttendanceFragment extends Fragment implements Attendance
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
 
-        String url = Login.urlBase + "/getAttendance.php";
+        String url = getString(R.string.base_url) + "/getAttendance.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
                 response -> {

@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.MenuHost
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -51,17 +53,22 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
     private lateinit var mReceiptImage: ImageView
     private lateinit var mErrorView: LinearLayout
     private lateinit var mRefreshBtn: Button
-    private lateinit var mAddReceipt: FloatingActionButton
+    private lateinit var mOpenBtn: FloatingActionButton
+    private lateinit var mAddReceiptBtn1: Button
+    private lateinit var mAddReceiptBtn2: ImageButton
+    private lateinit var mSetupReportBtn1: Button
+    private lateinit var mSetupReportBtn2: ImageButton
+    private lateinit var mSetupLayout: LinearLayout
+    private lateinit var mReceiptLayout: LinearLayout
     private lateinit var mTimeFrameBtn: Button
     private lateinit var mTermBtn: Button
-
-    private lateinit var mMenuHost: MenuHost
 
     private var mGraphicalView: GraphicalView? = null
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
     private val mGraphList = arrayListOf<ChartModel>()
     private lateinit var mAdapter: ReceiptsHistoryAdapter
     private lateinit var timeFrameDataModel: TimeFrameDataModel
+    private var isOpen = false
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +84,13 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         mReceiptImage = view.findViewById(R.id.error_image)
         mErrorView = view.findViewById(R.id.error_view)
         mRefreshBtn = view.findViewById(R.id.refresh_btn)
-        mAddReceipt = view.findViewById(R.id.add_receipt)
+        mOpenBtn = view.findViewById(R.id.open_btn)
+        mAddReceiptBtn1 = view.findViewById(R.id.add_receipt_btn1)
+        mAddReceiptBtn2 = view.findViewById(R.id.add_receipt_btn2)
+        mSetupReportBtn1 = view.findViewById(R.id.setup_btn1)
+        mSetupReportBtn2 = view.findViewById(R.id.setup_btn2)
+        mSetupLayout = view.findViewById(R.id.setup_layout)
+        mReceiptLayout = view.findViewById(R.id.add_receipt_layout)
         mTimeFrameBtn = view.findViewById(R.id.time_frame_btn)
         mTermBtn = view.findViewById(R.id.term_btn)
 
@@ -92,8 +105,6 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         }
 
 
-        mMenuHost = requireActivity()
-
         mAdapter = ReceiptsHistoryAdapter(requireContext(), mReceiptList, this)
 
         mRecyclerView.apply {
@@ -106,28 +117,15 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
 
         refreshData()
 
-        receiptsDialog()
-
 
         timeFrameDataModel = TimeFrameDataModel { getTimeFrameData() }
 
-        mTimeFrameBtn.setOnClickListener {
-            ReceiptTimeFrameBottomSheet(
-                timeFrameDataModel
-            ).show(requireActivity().supportFragmentManager, "Time Frame")
-        }
-
-        mTermBtn.setOnClickListener {
-            TermSessionPickerBottomSheet().show(
-                requireActivity().supportFragmentManager,
-                "Term/Session"
-            )
-        }
-
-
         timeFrameTitle()
 
+        onClickBtn()
+
     }
+
 
     private fun getReceipts() {
 
@@ -254,12 +252,12 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
                         mReceiptView.isVisible = true
                         mReceiptMessage.isVisible = true
                         mErrorView.isVisible = false
-                        mAddReceipt.isVisible = true
+                        mOpenBtn.isVisible = true
                     } else {
                         mReceiptView.isVisible = true
                         mReceiptMessage.isVisible = false
                         mErrorView.isVisible = false
-                        mAddReceipt.isVisible = true
+                        mOpenBtn.isVisible = true
                     }
                     mAdapter.notifyDataSetChanged()
                 }
@@ -267,11 +265,12 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
                 override fun onError(error: VolleyError) {
                     mReceiptView.isVisible = false
                     mErrorView.isVisible = true
-                    mAddReceipt.isVisible = false
+                    mOpenBtn.isVisible = false
                 }
             }
         )
     }
+
 
     private fun getTimeFrameData() {
         timeFrameDataModel.endDate
@@ -286,8 +285,41 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
     }
 
 
-    private fun receiptsDialog() {
-        mAddReceipt.setOnClickListener {
+    private fun onClickBtn() {
+
+        val btnOpen = AnimationUtils.loadAnimation(requireContext(), R.anim.fab_open)
+        val btnClose = AnimationUtils.loadAnimation(requireContext(), R.anim.fab_close)
+
+        val rotateForward = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_forward)
+        val rotateBackward = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_backward)
+
+        val arrayList = arrayListOf(rotateBackward, btnClose)
+        mOpenBtn.setOnClickListener {
+
+            if (isOpen) {
+                closeBtnAnimation(arrayList)
+
+            } else {
+                mOpenBtn.startAnimation(rotateForward)
+                mReceiptLayout.startAnimation(btnOpen)
+                mSetupLayout.startAnimation(btnOpen)
+
+                mAddReceiptBtn1.isClickable = true
+                mAddReceiptBtn2.isClickable = true
+
+                mSetupReportBtn1.isClickable = true
+                mSetupReportBtn2.isClickable = true
+
+                mReceiptLayout.isVisible = true
+                mSetupLayout.isVisible = true
+
+                isOpen = true
+            }
+        }
+
+
+        //open receipt dialog
+        mAddReceiptBtn1.setOnClickListener {
             TermFeeDialog(requireContext(), "receipts", null)
                 .apply {
                     setCancelable(true)
@@ -296,8 +328,75 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
+
+            closeBtnAnimation(arrayList)
         }
 
+
+        //open receipt dialog
+        mAddReceiptBtn2.setOnClickListener {
+            TermFeeDialog(requireContext(), "receipts", null)
+                .apply {
+                    setCancelable(true)
+                    show()
+                }.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+
+            closeBtnAnimation(arrayList)
+        }
+
+
+        //open time frame dialog
+        mSetupReportBtn1.setOnClickListener {
+            timeFrameDialog()
+
+            closeBtnAnimation(arrayList)
+        }
+
+
+        //open time frame dialog
+        mSetupReportBtn2.setOnClickListener {
+            timeFrameDialog()
+
+            closeBtnAnimation(arrayList)
+        }
+
+
+        mTimeFrameBtn.setOnClickListener {
+            timeFrameDialog()
+        }
+
+
+        mTermBtn.setOnClickListener {
+            TermSessionPickerBottomSheet().show(
+                requireActivity().supportFragmentManager,
+                "Term/Session"
+            )
+        }
+
+
+    }
+
+    private fun timeFrameDialog() {
+        ReceiptTimeFrameBottomSheet(
+            timeFrameDataModel
+        ).show(requireActivity().supportFragmentManager, "Time Frame")
+    }
+
+    private fun closeBtnAnimation(arrayList: ArrayList<Animation>) {
+        mOpenBtn.startAnimation(arrayList[0])
+        mReceiptLayout.startAnimation(arrayList[1])
+        mSetupLayout.startAnimation(arrayList[1])
+
+        mAddReceiptBtn1.isClickable = false
+        mAddReceiptBtn2.isClickable = false
+
+        mSetupReportBtn1.isClickable = false
+        mSetupReportBtn2.isClickable = false
+
+        isOpen = false
     }
 
     /*  private fun setUpMenu() {
@@ -353,11 +452,13 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         }
     }
 
+
     override fun onResume() {
         super.onResume()
         getReceipts()
 
     }
+
 
     override fun onItemClick(position: Int) {
         val paymentModel = mReceiptList[position]
@@ -377,4 +478,5 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         )
 
     }
+
 }

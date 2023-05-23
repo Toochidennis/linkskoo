@@ -21,11 +21,14 @@ class ExpenditureFilterFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mVendorBtn = view.findViewById(R.id.class_btn)
-        mAccountBtn = view.findViewById(R.id.level_btn)
+        mVendorBtn = view.findViewById(R.id.vendor_btn)
+        mAccountBtn = view.findViewById(R.id.account_btn)
 
         mVendorBtn.setOnClickListener { onClick(it) }
         mAccountBtn.setOnClickListener { onClick(it) }
+
+        selectDeselectedButton()
+
     }
 
     private fun onClick(view: View) {
@@ -38,14 +41,14 @@ class ExpenditureFilterFragment(
 
                     VendorAccountNamesBottomSheet(
                         sTimeFrameDataModel,
-                        "account"
+                        "vendor"
                     ) { setSelectedName() }
                         .show(childFragmentManager, "vendor")
 
                 } else {
                     selectDeselectButton(mVendorBtn, "deselected")
-                    sTimeFrameDataModel.classId = null
-                    sTimeFrameDataModel.className = null
+                    sTimeFrameDataModel.vendorId = null
+                    sTimeFrameDataModel.vendorName = null
                     "Vendor".let { mVendorBtn.text = it }
                 }
             }
@@ -61,11 +64,11 @@ class ExpenditureFilterFragment(
                         sTimeFrameDataModel,
                         "account"
                     ) { setSelectedName() }
-                        .show(childFragmentManager, "Account")
+                        .show(childFragmentManager, "account")
 
                 } else {
-                    sTimeFrameDataModel.levelId = null
-                    sTimeFrameDataModel.levelName = null
+                    sTimeFrameDataModel.accountId = null
+                    sTimeFrameDataModel.accountName = null
                     "Account".let { mAccountBtn.text = it }
                     selectDeselectButton(mAccountBtn, "deselected")
                 }
@@ -75,15 +78,14 @@ class ExpenditureFilterFragment(
     }
 
     private fun selectDeselectedButton() {
-        if (sTimeFrameDataModel.levelId != null) {
+        if (sTimeFrameDataModel.accountId != null) {
             selectDeselectButton(mAccountBtn, "selected")
             selectDeselectButton(mVendorBtn, "deselected")
-            setBtnText(mAccountBtn, sTimeFrameDataModel.levelName.toString(), "level")
-
-        } else if (sTimeFrameDataModel.classId != null) {
+            setBtnText(mAccountBtn, sTimeFrameDataModel.accountName.toString(), "account")
+        } else if (sTimeFrameDataModel.vendorId != null) {
             selectDeselectButton(mVendorBtn, "selected")
             selectDeselectButton(mAccountBtn, "deselected")
-            setBtnText(mAccountBtn, sTimeFrameDataModel.className.toString(), "class")
+            setBtnText(mAccountBtn, sTimeFrameDataModel.vendorName.toString(), "vendor")
         }
     }
 

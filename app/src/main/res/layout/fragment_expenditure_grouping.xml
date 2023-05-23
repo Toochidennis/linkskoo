@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:fontFamily="@font/poppins_medium"
-        android:text="By vendor"
+        android:text="By Vendor"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="14sp" />

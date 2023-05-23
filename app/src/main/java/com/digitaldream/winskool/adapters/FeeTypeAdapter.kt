@@ -195,7 +195,7 @@ class FeeTypeAdapter(
         )
         val db = sharedPreferences.getString("db", "")
 
-        val url = Login.urlBase + "/manageFees.php"
+        val url = sContext.getString(R.string.base_url) + "/manageFees.php"
         val stringRequest: StringRequest = object : StringRequest(Method.POST, url,
             { response: String ->
                 Log.d("TAG", response)
