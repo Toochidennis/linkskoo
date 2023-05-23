@@ -1,8 +1,6 @@
 package com.digitaldream.winskool.dialog
 
 import android.content.DialogInterface
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +9,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,22 +16,22 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.VendorAccountNamesAdapter
-import com.digitaldream.winskool.interfaces.OnNameClickListener
+import com.digitaldream.winskool.interfaces.OnVendorAccountClickListener
 import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.models.VendorModel
-import com.digitaldream.winskool.utils.FunctionUtils.flipAnimation
+import com.digitaldream.winskool.utils.FunctionUtils.getSelectedItem
+import com.digitaldream.winskool.utils.FunctionUtils.onItemClick
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.json.JSONArray
-import org.json.JSONObject
 
 class VendorAccountNamesBottomSheet(
     private val sTimeFrameDataModel: TimeFrameDataModel,
     private val sFrom: String,
     private val sDismiss: () -> Unit
-) : BottomSheetDialogFragment(), OnNameClickListener {
+) : BottomSheetDialogFragment(), OnVendorAccountClickListener {
 
     private lateinit var mErrorMessage: TextView
     private lateinit var mRecyclerView: RecyclerView
@@ -75,7 +71,6 @@ class VendorAccountNamesBottomSheet(
         }
 
 
-
         if (sFrom == "vendor") {
             vendorNames()
         } else {
@@ -84,15 +79,6 @@ class VendorAccountNamesBottomSheet(
 
         mDismissBtn.setOnClickListener { dismiss() }
 
-//        closeCountBtn.setOnClickListener {
-//            mTitleLayout.isVisible = true
-//            mCountLayout.isVisible = false
-//
-//            sTimeFrameDataModel.vendorName = null
-//            sTimeFrameDataModel.vendorId = null
-//            sTimeFrameDataModel.accountId = null
-//            sTimeFrameDataModel.accountName = null
-//        }
 
     }
 
@@ -250,63 +236,29 @@ class VendorAccountNamesBottomSheet(
 
             if (mAccountList.isNotEmpty()) {
                 accountItemPosition = mAccountList[holder.adapterPosition]
-            } else {
-                vendorItemPosition = mVendorList[holder.adapterPosition]
-            }
 
-
-            if (selectedItems.contains(accountItemPosition.mAccountId) ||
-                selectedItems.contains(vendorItemPosition.customerId)
-            ) {
-
-                flipAnimation(
+                onItemClick(
                     requireContext(),
+                    accountItemPosition,
+                    selectedItems,
                     holder.itemTextLayout,
                     holder.itemImageLayout,
-                    "left"
+                    buttonView = mDoneBtn,
+                    dismissView = mDismissBtn
                 )
-
-                it.setBackgroundColor(Color.TRANSPARENT)
-
-                selectedItems.remove(
-                    accountItemPosition.mId ?: vendorItemPosition.id
-                )
-
-                if (selectedItems.isEmpty()) {
-                    mDoneBtn.isVisible = false
-                    mDismissBtn.isVisible = true
-                }
-
             } else {
+                vendorItemPosition = mVendorList[holder.adapterPosition]
 
-                if (selectedItems.size == 3) {
-                    Toast.makeText(
-                        requireActivity(), "Only 3 items can be selected", Toast
-                            .LENGTH_SHORT
-                    ).show()
-
-                } else {
-                    flipAnimation(
-                        requireContext(),
-                        holder.itemTextLayout,
-                        holder.itemImageLayout,
-                        "right"
-                    )
-
-                    it.setBackgroundColor(Color.GRAY)
-                    mDoneBtn.isVisible = true
-                    mDismissBtn.isVisible = false
-
-                    selectedItems.apply {
-                        put(
-                            accountItemPosition.mId ?: vendorItemPosition.id,
-                            accountItemPosition.mAccountName ?: vendorItemPosition.customerName
-                        )
-                    }
-
-                }
+                onItemClick(
+                    requireContext(),
+                    vendorItemPosition,
+                    selectedItems,
+                    holder.itemTextLayout,
+                    holder.itemImageLayout,
+                    buttonView = mDoneBtn,
+                    dismissView = mDismissBtn
+                )
             }
-
 
         }
 
@@ -317,32 +269,17 @@ class VendorAccountNamesBottomSheet(
 
     private fun performButtonClick(selectedItem: HashMap<String, String>) {
 
-        val jsonArray = JSONArray()
-
         mDoneBtn.setOnClickListener {
 
-            selectedItem.forEach { (key, value) ->
-
-                JSONObject().apply {
-
-                    if (mAccountList.isNotEmpty()) {
-                        put("id", key)
-                        put("account_name", value)
-                    } else {
-                        put("id", key)
-                        put("customername", value)
-                    }
-
-                    jsonArray.put(this)
-                }
-
+            if (mAccountList.isNotEmpty()) {
+                sTimeFrameDataModel.account = getSelectedItem(selectedItem)
+            } else {
+                sTimeFrameDataModel.vendor = getSelectedItem(selectedItem)
             }
 
-
-            println("names: $jsonArray")
+            dismiss()
         }
 
     }
-
 
 }

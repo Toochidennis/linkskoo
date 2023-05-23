@@ -1,6 +1,5 @@
 package com.digitaldream.winskool.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
-import com.digitaldream.winskool.interfaces.OnNameClickListener
+import com.digitaldream.winskool.interfaces.OnVendorAccountClickListener
 import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.digitaldream.winskool.models.VendorModel
 import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
@@ -16,7 +15,7 @@ import com.digitaldream.winskool.utils.FunctionUtils.capitaliseFirstLetter
 class VendorAccountNamesAdapter(
     private val sAccountList: MutableList<AccountSetupDataModel>?,
     private val sVendorList: MutableList<VendorModel>?,
-    private val sOnItemClickListener: OnNameClickListener,
+    private val sOnItemClickListener: OnVendorAccountClickListener,
 ) : RecyclerView.Adapter<VendorAccountNamesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -250,7 +250,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/dimen_16"
             android:clickable="true"
-            app:backgroundTint="@color/test_color_4"
+            app:backgroundTint="@color/test_color_3"
             android:contentDescription="@string/todo"
             android:focusable="true"
             android:visibility="gone"

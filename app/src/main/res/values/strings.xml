@@ -150,4 +150,5 @@
     <string name="select_class">Select Class</string>
     <string name="select_level">Select Level</string>
     <string name="confirm">Confirm</string>
+    <string name="and"><![CDATA[&]]></string>
 </resources>

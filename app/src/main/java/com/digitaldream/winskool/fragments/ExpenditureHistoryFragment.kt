@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -48,7 +51,14 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
     private lateinit var mRefreshBtn: Button
     private lateinit var mTimeFrameBtn: Button
     private lateinit var mTermBtn: Button
-    private lateinit var mAddExpenditure: FloatingActionButton
+    private lateinit var mOpenBtn: FloatingActionButton
+    private lateinit var mAddExpenditureBtn1: Button
+    private lateinit var mAddExpenditureBtn2: ImageButton
+    private lateinit var mSetupReportBtn1: Button
+    private lateinit var mSetupReportBtn2: ImageButton
+    private lateinit var mSetupLayout: LinearLayout
+    private lateinit var mExpenditureLayout: LinearLayout
+
 
     private var mGraphicalView: GraphicalView? = null
     private val mExpenditureList = mutableListOf<ExpenditureHistoryModel>()
@@ -56,55 +66,143 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
     private lateinit var mAdapter: ExpenditureHistoryAdapter
     private lateinit var mTimeFrameDataModel: TimeFrameDataModel
 
-    private var mTerm: String? = null
+    private var isOpen = false
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Find child views in the inflated layout by their IDs
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        mExpenditureView = view.findViewById(R.id.expenditure_view)
-        mExpenditureChart = view.findViewById(R.id.expenditure_chart)
-        mExpenditureSum = view.findViewById(R.id.expenditure_sum)
-        mExpenditureCount = view.findViewById(R.id.expenditure_count)
-        mRecyclerView = view.findViewById(R.id.expenditure_recycler)
-        mExpenditureMessage = view.findViewById(R.id.expenditure_error_message)
-        mExpenditureImage = view.findViewById(R.id.error_image)
-        mErrorView = view.findViewById(R.id.error_view)
-        mRefreshBtn = view.findViewById(R.id.refresh_btn)
-        mTimeFrameBtn = view.findViewById(R.id.time_frame_btn)
-        mTermBtn = view.findViewById(R.id.term_btn)
-        mAddExpenditure = view.findViewById(R.id.add_expenditure)
+        view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            mExpenditureView = findViewById(R.id.expenditure_view)
+            mExpenditureChart = findViewById(R.id.expenditure_chart)
+            mExpenditureSum = findViewById(R.id.expenditure_sum)
+            mExpenditureCount = findViewById(R.id.expenditure_count)
+            mRecyclerView = findViewById(R.id.expenditure_recycler)
+            mExpenditureMessage = findViewById(R.id.expenditure_error_message)
+            mExpenditureImage = findViewById(R.id.error_image)
+            mErrorView = findViewById(R.id.error_view)
+            mRefreshBtn = findViewById(R.id.refresh_btn)
+            mTimeFrameBtn = findViewById(R.id.time_frame_btn)
+            mTermBtn = findViewById(R.id.term_btn)
+            mOpenBtn = findViewById(R.id.open_btn)
+            mAddExpenditureBtn1 = findViewById(R.id.add_expenditure_btn1)
+            mAddExpenditureBtn2 = findViewById(R.id.add_expenditure_btn2)
+            mSetupReportBtn1 = findViewById(R.id.setup_btn1)
+            mSetupReportBtn2 = findViewById(R.id.setup_btn2)
+            mSetupLayout = findViewById(R.id.setup_layout)
+            mExpenditureLayout = findViewById(R.id.add_expenditure_layout)
 
-        toolbar.apply {
-            title = "Expenditures"
-            setNavigationIcon(R.drawable.arrow_left)
-            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+
+            toolbar.apply {
+                title = "Expenditures"
+                setNavigationIcon(R.drawable.arrow_left)
+                setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            }
+
         }
 
-        mAddExpenditure.setOnClickListener {
-            startActivity(
-                Intent(
-                    context,
-                    PaymentActivity::class.java
-                ).putExtra("from", "add_expenditure")
-            )
-        }
 
         mAdapter = ExpenditureHistoryAdapter(
             requireContext(),
             mExpenditureList,
             this
         )
-        mRecyclerView.hasFixedSize()
-        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        mRecyclerView.adapter = mAdapter
+
+        mRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mAdapter
+            isAnimating
+        }
 
         refreshData()
 
         mTimeFrameDataModel = TimeFrameDataModel { getTimeFrameData() }
 
+        performButtonsClick()
+
+    }
+
+
+    private fun performButtonsClick() {
+
+        val btnOpen = AnimationUtils.loadAnimation(requireContext(), R.anim.fab_open)
+        val btnClose = AnimationUtils.loadAnimation(requireContext(), R.anim.fab_close)
+
+        val rotateForward = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_forward)
+        val rotateBackward = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_backward)
+
+        val arrayList = arrayListOf(rotateBackward, btnClose)
+
+        mOpenBtn.setOnClickListener {
+
+            if (isOpen) {
+                closeBtnAnimation(arrayList)
+
+            } else {
+                mOpenBtn.startAnimation(rotateForward)
+                mExpenditureLayout.startAnimation(btnOpen)
+                mSetupLayout.startAnimation(btnOpen)
+
+                mAddExpenditureBtn1.isClickable = true
+                mAddExpenditureBtn2.isClickable = true
+
+                mSetupReportBtn1.isClickable = true
+                mSetupReportBtn2.isClickable = true
+
+                mExpenditureLayout.isVisible = true
+                mSetupLayout.isVisible = true
+
+                isOpen = true
+            }
+        }
+
+
+        //open expenditure fragment
+        mAddExpenditureBtn1.setOnClickListener {
+            startActivity(
+                Intent(context, PaymentActivity::class.java)
+                    .putExtra("from", "add_expenditure")
+            )
+            closeBtnAnimation(arrayList)
+        }
+
+
+        //open expenditure fragment
+        mAddExpenditureBtn2.setOnClickListener {
+            startActivity(
+                Intent(context, PaymentActivity::class.java)
+                    .putExtra("from", "add_expenditure")
+            )
+            closeBtnAnimation(arrayList)
+        }
+
+
+        //open time frame dialog
+        mSetupReportBtn1.setOnClickListener {
+            timeFrameDialog()
+
+            closeBtnAnimation(arrayList)
+        }
+
+
+        //open time frame dialog
+        mSetupReportBtn2.setOnClickListener {
+            timeFrameDialog()
+
+            closeBtnAnimation(arrayList)
+        }
+
+
+        //open time frame dialog
+        mTimeFrameBtn.setOnClickListener {
+            timeFrameDialog()
+        }
+
+
+        //open term /session dialog
         mTermBtn.setOnClickListener {
             TermSessionPickerBottomSheet().show(
                 requireActivity().supportFragmentManager,
@@ -112,16 +210,35 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
             )
         }
 
-        mTimeFrameBtn.setOnClickListener {
-            ExpenditureTimeFrameBottomSheet(mTimeFrameDataModel).show(
-                childFragmentManager, "time frame"
-            )
-        }
     }
+
+
+    private fun timeFrameDialog() {
+        ExpenditureTimeFrameBottomSheet(mTimeFrameDataModel).show(
+            childFragmentManager, "time frame"
+        )
+    }
+
+
+    private fun closeBtnAnimation(arrayList: ArrayList<Animation>) {
+        mOpenBtn.startAnimation(arrayList[0])
+        mExpenditureLayout.startAnimation(arrayList[1])
+        mSetupLayout.startAnimation(arrayList[1])
+
+        mAddExpenditureBtn1.isClickable = false
+        mAddExpenditureBtn2.isClickable = false
+
+        mSetupReportBtn1.isClickable = false
+        mSetupReportBtn2.isClickable = false
+
+        isOpen = false
+    }
+
 
     private fun getTimeFrameData() {
 
     }
+
 
     private fun getExpenditure() {
         mExpenditureList.clear()
@@ -229,12 +346,12 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
                         if (mExpenditureList.isEmpty()) {
                             mExpenditureView.isVisible = true
                             mExpenditureMessage.isVisible = true
-                            mAddExpenditure.isVisible = true
+                            mOpenBtn.isVisible = true
                             mErrorView.isVisible = false
                         } else {
                             mExpenditureView.isVisible = true
                             mExpenditureMessage.isVisible = false
-                            mAddExpenditure.isVisible = true
+                            mOpenBtn.isVisible = true
                             mErrorView.isVisible = false
                         }
                         mAdapter.notifyDataSetChanged()
@@ -242,7 +359,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
                     } else {
                         mExpenditureView.isVisible = true
                         mExpenditureMessage.isVisible = true
-                        mAddExpenditure.isVisible = true
+                        mOpenBtn.isVisible = true
                     }
 
                 } catch (e: Exception) {
@@ -251,7 +368,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
                 override fun onError(error: VolleyError) {
                     mExpenditureView.isVisible = false
-                    mAddExpenditure.isVisible = false
+                    mOpenBtn.isVisible = false
                     mErrorView.isVisible = true
                     mRefreshBtn.isVisible = true
                 }
@@ -267,11 +384,13 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
         }
     }
 
+
     override fun onResume() {
         super.onResume()
         getExpenditure()
 
     }
+
 
     override fun onItemClick(position: Int) {
         val model = mExpenditureList[position]

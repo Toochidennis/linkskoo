@@ -10,6 +10,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.dialog.FilterLevelClassDialog
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
+import org.json.JSONArray
 
 
 class ReceiptsFilterFragment(
@@ -42,8 +43,6 @@ class ReceiptsFilterFragment(
             R.id.class_btn -> {
                 if (!mClassBtn.isSelected) {
                     selectDeselectButton(mClassBtn, "selected")
-                    selectDeselectButton(mLevelBtn, "deselected")
-                    "Level".let { mLevelBtn.text = it }
 
                     FilterLevelClassDialog(sTimeFrameDataModel, "class") { setSelectedName() }
                         .show(
@@ -53,8 +52,7 @@ class ReceiptsFilterFragment(
 
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
-                    sTimeFrameDataModel.classId = null
-                    sTimeFrameDataModel.className = null
+                    sTimeFrameDataModel.classData = null
                     "Class".let { mClassBtn.text = it }
                 }
             }
@@ -62,9 +60,7 @@ class ReceiptsFilterFragment(
             R.id.level_btn -> {
                 if (!mLevelBtn.isSelected) {
 
-                    selectDeselectButton(mClassBtn, "deselected")
                     selectDeselectButton(mLevelBtn, "selected")
-                    "Class".let { mClassBtn.text = it }
 
                     FilterLevelClassDialog(sTimeFrameDataModel, "level") { setSelectedName() }
                         .show(
@@ -73,8 +69,7 @@ class ReceiptsFilterFragment(
                         )
 
                 } else {
-                    sTimeFrameDataModel.levelId = null
-                    sTimeFrameDataModel.levelName = null
+                    sTimeFrameDataModel.levelData = null
                     "Level".let { mLevelBtn.text = it }
                     selectDeselectButton(mLevelBtn, "deselected")
                 }
@@ -84,26 +79,47 @@ class ReceiptsFilterFragment(
     }
 
     private fun selectDeselectedButton() {
-        if (sTimeFrameDataModel.levelId != null) {
+        if (sTimeFrameDataModel.levelData != null) {
             selectDeselectButton(mLevelBtn, "selected")
-            selectDeselectButton(mClassBtn, "deselected")
-            setBtnText(mLevelBtn, sTimeFrameDataModel.levelName.toString(), "level")
+            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.account.toString()), "level")
+        }
 
-        } else if (sTimeFrameDataModel.classId != null) {
+        if (sTimeFrameDataModel.classData != null) {
             selectDeselectButton(mClassBtn, "selected")
-            selectDeselectButton(mLevelBtn, "deselected")
-            setBtnText(mLevelBtn, sTimeFrameDataModel.className.toString(), "class")
+            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.vendor.toString()), "class")
         }
     }
 
     private fun setSelectedName() {
-        if (sTimeFrameDataModel.levelName != null) {
-            setBtnText(mLevelBtn, sTimeFrameDataModel.levelName.toString(), "level")
-        } else if (sTimeFrameDataModel.className != null) {
-            setBtnText(mClassBtn, sTimeFrameDataModel.className.toString(), "class")
+        if (sTimeFrameDataModel.levelData != null) {
+            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.account.toString()), "level")
+        } else {
+            selectDeselectButton(mLevelBtn, "deselected")
+        }
+
+        if (sTimeFrameDataModel.classData != null) {
+            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.vendor.toString()), "class")
         } else {
             selectDeselectButton(mClassBtn, "deselected")
-            selectDeselectButton(mLevelBtn, "deselected")
+        }
+
+    }
+
+    private fun parseJson(json: String): String {
+        val nameList = mutableListOf<String>()
+        JSONArray(json).run {
+            for (i in 0 until length()) {
+                val name = getJSONObject(i).getString("name")
+                nameList.add(name)
+            }
+        }
+
+        return when (nameList.size) {
+            0 -> ""
+            1 -> nameList[0]
+            else -> nameList.dropLast(1)
+                .joinToString(separator = ", ") +
+                    " & " + nameList.last()
         }
 
     }

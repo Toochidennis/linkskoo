@@ -351,7 +351,6 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         //open time frame dialog
         mSetupReportBtn1.setOnClickListener {
             timeFrameDialog()
-
             closeBtnAnimation(arrayList)
         }
 
@@ -359,7 +358,6 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         //open time frame dialog
         mSetupReportBtn2.setOnClickListener {
             timeFrameDialog()
-
             closeBtnAnimation(arrayList)
         }
 
@@ -378,6 +376,7 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
 
 
     }
+
 
     private fun timeFrameDialog() {
         ReceiptTimeFrameBottomSheet(

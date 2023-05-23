@@ -32,7 +32,7 @@
         android:focusable="true"
         android:text="Done"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:visibility="gone" />
 
     <ImageView

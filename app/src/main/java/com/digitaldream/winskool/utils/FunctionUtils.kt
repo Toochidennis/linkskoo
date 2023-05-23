@@ -45,7 +45,11 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.digitaldream.winskool.models.ChartModel
+import com.digitaldream.winskool.models.ClassNameTable
+import com.digitaldream.winskool.models.LevelTable
+import com.digitaldream.winskool.models.VendorModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
 import org.achartengine.chart.PointStyle
@@ -53,6 +57,8 @@ import org.achartengine.model.XYMultipleSeriesDataset
 import org.achartengine.model.XYSeries
 import org.achartengine.renderer.XYMultipleSeriesRenderer
 import org.achartengine.renderer.XYSeriesRenderer
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -585,6 +591,89 @@ object FunctionUtils {
 
     }
 
+
+    @JvmStatic
+    fun getSelectedItem(selectedItem: HashMap<String, String>): String {
+
+        return JSONArray().apply {
+            selectedItem.forEach { (key, value) ->
+                val jsonObject = JSONObject().apply {
+                    put("id", key)
+                    put("name", value)
+                }
+                put(jsonObject)
+            }
+        }.toString()
+
+    }
+
+    @JvmStatic
+    fun onItemClick(
+        context: Context,
+        itemPosition: Any,
+        selectedItems: HashMap<String, String>,
+        frontView: View,
+        backView: View,
+        buttonView: View,
+        dismissView: View,
+    ) {
+        val selectedItemId: String? = when (itemPosition) {
+            is AccountSetupDataModel -> itemPosition.mId
+            is VendorModel -> itemPosition.id
+            is LevelTable -> itemPosition.levelId
+            is ClassNameTable -> itemPosition.classId
+            else -> null
+        }
+
+        val itemName: String? = when (itemPosition) {
+            is AccountSetupDataModel -> itemPosition.mAccountName
+            is VendorModel -> itemPosition.customerName
+            is LevelTable -> itemPosition.levelName
+            is ClassNameTable -> itemPosition.className
+            else -> null
+        }
+
+        if ((selectedItemId != null) && selectedItems.contains(selectedItemId)) {
+
+            flipAnimation(
+                context,
+                frontView,
+                backView,
+                "left"
+            )
+
+            selectedItems.remove(selectedItemId)
+
+            if (selectedItems.isEmpty()) {
+                buttonView.isVisible = false
+                dismissView.isVisible = true
+            }
+
+        } else {
+
+            if (selectedItems.size == 3) {
+                Toast.makeText(
+                    context, "Only 3 items can be selected", Toast
+                        .LENGTH_SHORT
+                ).show()
+            } else {
+
+                flipAnimation(
+                    context,
+                    frontView,
+                    backView,
+                    "right"
+                )
+
+                buttonView.isVisible = true
+                dismissView.isVisible = false
+
+                if (selectedItemId != null && itemName != null) {
+                    selectedItems[selectedItemId] = itemName
+                }
+            }
+        }
+    }
 }
 
 interface VolleyCallback {

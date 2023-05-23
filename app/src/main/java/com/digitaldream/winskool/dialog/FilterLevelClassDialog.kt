@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.FilterLevelClassAdapter
-import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.config.DatabaseHelper
+import com.digitaldream.winskool.interfaces.OnLevelClassClickListener
 import com.digitaldream.winskool.models.ClassNameTable
 import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.TimeFrameDataModel
+import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.getSelectedItem
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
@@ -25,27 +28,42 @@ class FilterLevelClassDialog(
     private val sTimeFrameDataModel: TimeFrameDataModel,
     private val sFrom: String,
     private val sDismiss: () -> Unit
-) : BottomSheetDialogFragment(), OnItemClickListener {
+) : BottomSheetDialogFragment(), OnLevelClassClickListener {
 
 
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mTitle: TextView
     private lateinit var mErrorMessage: TextView
+    private lateinit var mDoneBtn: Button
+    private lateinit var mDismissBtn: ImageView
 
     private var mLevelList = mutableListOf<LevelTable>()
     private var mClassList = mutableListOf<ClassNameTable>()
+
+    private val selectedItems = hashMapOf<String, String>()
+
+    private var levelItemPosition = LevelTable()
+    private var classItemPosition = ClassNameTable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.dialog_filter_level_class, container, false)
+        return inflater.inflate(R.layout.dialog_filter_level_class, container, false)
 
-        val dismissBtn: ImageView = view.findViewById(R.id.close_btn)
-        mRecyclerView = view.findViewById(R.id.recycler_view)
-        mTitle = view.findViewById(R.id.title)
-        mErrorMessage = view.findViewById(R.id.error_message)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.apply {
+            mDismissBtn = view.findViewById(R.id.close_btn)
+            mRecyclerView = view.findViewById(R.id.recycler_view)
+            mTitle = view.findViewById(R.id.title)
+            mErrorMessage = view.findViewById(R.id.error_message)
+            mDoneBtn = findViewById(R.id.done_btn)
+        }
 
 
         if (sFrom == "level") {
@@ -54,10 +72,8 @@ class FilterLevelClassDialog(
             getClassName()
         }
 
-        dismissBtn.setOnClickListener { dismiss() }
+        mDismissBtn.setOnClickListener { dismiss() }
 
-
-        return view
     }
 
     private fun getLevelName() {
@@ -145,23 +161,57 @@ class FilterLevelClassDialog(
 
     }
 
-    override fun onItemClick(position: Int) {
-        if (sFrom == "level") {
-            sTimeFrameDataModel.levelId = mLevelList[position].levelId
-            sTimeFrameDataModel.levelName = mLevelList[position].levelName
+    override fun onNameClick(holder: FilterLevelClassAdapter.ViewHolder) {
 
-            sTimeFrameDataModel.className = null
-            sTimeFrameDataModel.classId = null
-        } else {
-            sTimeFrameDataModel.classId = mClassList[position].classId
-            sTimeFrameDataModel.className = mClassList[position].className
+        holder.itemView.setOnClickListener {
 
-            sTimeFrameDataModel.levelName = null
-            sTimeFrameDataModel.levelId = null
+            if (mLevelList.isNotEmpty()) {
+                levelItemPosition = mLevelList[holder.adapterPosition]
+
+                FunctionUtils.onItemClick(
+                    requireContext(),
+                    levelItemPosition,
+                    selectedItems,
+                    holder.itemTextLayout,
+                    holder.itemImageLayout,
+                    buttonView = mDoneBtn,
+                    dismissView = mDismissBtn
+                )
+            } else {
+                classItemPosition = mClassList[holder.adapterPosition]
+
+                FunctionUtils.onItemClick(
+                    requireContext(),
+                    classItemPosition,
+                    selectedItems,
+                    holder.itemTextLayout,
+                    holder.itemImageLayout,
+                    buttonView = mDoneBtn,
+                    dismissView = mDismissBtn
+                )
+            }
+
         }
 
-        dismiss()
+        performButtonClick(selectedItems)
+
     }
+
+    private fun performButtonClick(selectedItem: HashMap<String, String>) {
+
+        mDoneBtn.setOnClickListener {
+
+            if (mLevelList.isNotEmpty()) {
+                sTimeFrameDataModel.levelData = getSelectedItem(selectedItem)
+            } else {
+                sTimeFrameDataModel.classData = getSelectedItem(selectedItem)
+            }
+
+            dismiss()
+        }
+
+    }
+
 
     override fun onDismiss(dialog: DialogInterface) {
         sDismiss()
