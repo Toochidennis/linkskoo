@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.viewpager.widget.ViewPager
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.adapters.SectionPagerAdapter
@@ -33,6 +34,7 @@ class ExpenditureTimeFrameBottomSheet(
         val tabLayout: TabLayout = view.findViewById(R.id.tab_layout)
         val viewPager: ViewPager = view.findViewById(R.id.view_pager)
         val adapter = SectionPagerAdapter(childFragmentManager)
+        val generateReportBtn: CardView = view.findViewById(R.id.confirm_btn)
 
         adapter.apply {
             addFragment(DateRangeFragment(sTimeFrameDataModel), "Date Range")
@@ -41,6 +43,10 @@ class ExpenditureTimeFrameBottomSheet(
 
             viewPager.adapter = this
             tabLayout.setupWithViewPager(viewPager, true)
+        }
+
+        generateReportBtn.setOnClickListener {
+            dismiss()
         }
     }
 

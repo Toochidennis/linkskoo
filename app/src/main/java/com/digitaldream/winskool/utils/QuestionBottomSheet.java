@@ -26,6 +26,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.Objects;
+
 public class QuestionBottomSheet extends BottomSheetDialogFragment {
     public static TextView accessText;
     public static ImageView accessImg;
@@ -45,6 +47,7 @@ public class QuestionBottomSheet extends BottomSheetDialogFragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE);
         user_name = sharedPreferences.getString("user","");
         user_id = sharedPreferences.getString("user_id","");
+
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,18 +61,16 @@ public class QuestionBottomSheet extends BottomSheetDialogFragment {
         }else{
             userText.setText(user_name);
         }
-        accessBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                value = accessText.getText().toString();
-                FragmentTransaction transaction = ((FragmentActivity) getContext())
-                        .getSupportFragmentManager()
-                        .beginTransaction();
-                AccessControlBottomSheet accessControlBottomSheet = new AccessControlBottomSheet();
-                accessControlBottomSheet.show(transaction, "accessBottomSheet");
+        accessBtn.setOnClickListener(v -> {
+            value = accessText.getText().toString();
+            FragmentTransaction transaction = ((FragmentActivity) getContext())
+                    .getSupportFragmentManager()
+                    .beginTransaction();
+            AccessControlBottomSheet accessControlBottomSheet = new AccessControlBottomSheet();
+            accessControlBottomSheet.show(transaction, "accessBottomSheet");
 
-            }
         });
+
         EditText questionEDT = view.findViewById(R.id.question_text);
 
         Button addQuestion = view.findViewById(R.id.add);
@@ -81,7 +82,7 @@ public class QuestionBottomSheet extends BottomSheetDialogFragment {
                 if(question.isEmpty()){
                     Toast.makeText(getContext(),"Question must not be empty",Toast.LENGTH_SHORT).show();
                 }else {
-                    FragmentTransaction transaction = ((FragmentActivity) getContext())
+                    FragmentTransaction transaction = ((FragmentActivity) Objects.requireNonNull(getContext()))
                             .getSupportFragmentManager()
                             .beginTransaction();
                     QuestionAccessViewSheet a = new QuestionAccessViewSheet();

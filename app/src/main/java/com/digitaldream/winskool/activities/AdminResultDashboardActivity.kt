@@ -75,7 +75,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
         mErrorView = findViewById(R.id.error_view)
         mRefreshBtn = findViewById(R.id.refresh_btn)
 
-        mClassId = intent.getStringExtra("class_id")
+        mClassId = intent.getStringExtra("classId")
         mClassName = intent.getStringExtra("class_name")
         mLevelId = intent.getStringExtra("levelId")
 

@@ -200,7 +200,7 @@ public class ClassResultFragment extends Fragment implements ClassResultAdapter.
     @Override
     public void onClassResultClick(int position) {
         Intent intent = new Intent(getContext(), AdminResultDashboardActivity.class);
-        intent.putExtra("class_id", classList.get(position).getClassId());
+        intent.putExtra("classId", classList.get(position).getClassId());
         intent.putExtra("class_name", classList.get(position).getClassName());
         intent.putExtra("levelId", levelId);
         startActivity(intent);

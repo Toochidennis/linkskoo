@@ -190,27 +190,7 @@ public class AdminDashboardFragment extends Fragment implements NewsAdapter.OnNe
         editor.putString("school_name", school_name);
         editor.apply();
 
-/*        String session = generalSettingsList.get(0).getSchoolYear();
-        String term = generalSettingsList.get(0).getSchoolTerm();
-        if (term.equals("1")) {
-            term = term + "st term";
-        } else if (term.equals("2")) {
-            term = term + "nd term";
-        } else if (term.equals("3")) {
-            term = term + "rd term";
-        }*/
 
-     /*   if (!user_name.equals("null")) {
-            try {
-                user_name = user_name.substring(0,
-                        1).toUpperCase() + user_name.substring(1);
-                school_name = school_name.substring(0,
-                        1).toUpperCase() + school_name.substring(1);
-                user.setText(user_name);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
         String[] strArray = school_name.split(" ");
         StringBuilder builder = new StringBuilder();
         try {

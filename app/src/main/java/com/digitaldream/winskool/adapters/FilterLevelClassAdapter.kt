@@ -31,13 +31,20 @@ class FilterLevelClassAdapter(
 
     override fun onBindViewHolder(holder: FilterLevelClassAdapter.ViewHolder, position: Int) {
         if (sLevelList == null) {
-            holder.itemName.text = sClassList!![position].className
-            holder.itemFirstLetter.text =
-                sClassList[position].className.substring(0, 1).uppercase()
+            val itemPosition = sClassList!![position]
+            if (itemPosition.className.isNotBlank()) {
+                holder.itemName.text = itemPosition.className
+                holder.itemFirstLetter.text =
+                    itemPosition.className.substring(0, 1).uppercase()
+            }
         } else {
-            holder.itemName.text = sLevelList[position].levelName
-            holder.itemFirstLetter.text =
-                sLevelList[position].levelName.substring(0, 1).uppercase()
+            val itemPosition = sLevelList[position]
+            if (itemPosition.levelName.isNotBlank()) {
+                holder.itemName.text = itemPosition.levelName
+                holder.itemFirstLetter.text =
+                    itemPosition.levelName.substring(0, 1).uppercase()
+            }
+
         }
 
         sOnItemClickListener.onNameClick(holder)

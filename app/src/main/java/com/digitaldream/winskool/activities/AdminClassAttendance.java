@@ -83,7 +83,6 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
         responseId = intent.getStringExtra("responseId");
         String from = intent.getStringExtra("class_name");
 
-
         Toolbar toolbar = findViewById(R.id.course_tool_bar);
         mActionButton = findViewById(R.id.submit_btn);
         TextView classTerm = findViewById(R.id.class_term);
@@ -435,15 +434,13 @@ public class AdminClassAttendance extends AppCompatActivity implements AdminClas
                 Map<String, String> stringMap = new HashMap<>();
                 stringMap.put("class", sClassId);
                 stringMap.put("date", sDate);
-                stringMap.put("course", Objects.requireNonNullElse(sCourseId,
-                        "0"));
+                stringMap.put("course", Objects.requireNonNullElse(sCourseId, "0"));
                 stringMap.put("_db", sDb);
                 return stringMap;
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+      Volley.newRequestQueue(this).add(stringRequest);
 
     }
 

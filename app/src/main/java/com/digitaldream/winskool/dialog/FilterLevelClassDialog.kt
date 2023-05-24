@@ -1,10 +1,16 @@
 package com.digitaldream.winskool.dialog
 
+import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,15 +26,18 @@ import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.getSelectedItem
+import com.digitaldream.winskool.utils.FunctionUtils.onItemClick
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 
 class FilterLevelClassDialog(
+   private val context: Context,
     private val sTimeFrameDataModel: TimeFrameDataModel,
     private val sFrom: String,
     private val sDismiss: () -> Unit
-) : BottomSheetDialogFragment(), OnLevelClassClickListener {
+) : Dialog(context), OnLevelClassClickListener {
 
 
     private lateinit var mRecyclerView: RecyclerView
@@ -45,25 +54,23 @@ class FilterLevelClassDialog(
     private var levelItemPosition = LevelTable()
     private var classItemPosition = ClassNameTable()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.dialog_filter_level_class, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        view.apply {
-            mDismissBtn = view.findViewById(R.id.close_btn)
-            mRecyclerView = view.findViewById(R.id.recycler_view)
-            mTitle = view.findViewById(R.id.title)
-            mErrorMessage = view.findViewById(R.id.error_message)
-            mDoneBtn = findViewById(R.id.done_btn)
+        window?.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            attributes.windowAnimations = R.style.DialogAnimation
+            setGravity(Gravity.BOTTOM)
         }
+
+        setContentView(R.layout.dialog_filter_level_class)
+
+        mDismissBtn = findViewById(R.id.close_btn)
+        mRecyclerView = findViewById(R.id.recycler_view)
+        mTitle = findViewById(R.id.title)
+        mErrorMessage = findViewById(R.id.error_message)
+        mDoneBtn = findViewById(R.id.done_btn)
 
 
         if (sFrom == "level") {
@@ -73,8 +80,8 @@ class FilterLevelClassDialog(
         }
 
         mDismissBtn.setOnClickListener { dismiss() }
-
     }
+
 
     private fun getLevelName() {
         try {
@@ -108,7 +115,7 @@ class FilterLevelClassDialog(
 
                 }
 
-                mTitle.text = getString(R.string.select_level)
+                mTitle.text = context.getString(R.string.select_level)
                 mErrorMessage.isVisible = false
 
             }
@@ -150,7 +157,7 @@ class FilterLevelClassDialog(
                     }
 
                 }
-                mTitle.text = getString(R.string.select_class)
+                mTitle.text = context.getString(R.string.select_class)
                 mErrorMessage.isVisible = false
 
             }
@@ -168,8 +175,8 @@ class FilterLevelClassDialog(
             if (mLevelList.isNotEmpty()) {
                 levelItemPosition = mLevelList[holder.adapterPosition]
 
-                FunctionUtils.onItemClick(
-                    requireContext(),
+              onItemClick(
+                    context,
                     levelItemPosition,
                     selectedItems,
                     holder.itemTextLayout,
@@ -180,8 +187,8 @@ class FilterLevelClassDialog(
             } else {
                 classItemPosition = mClassList[holder.adapterPosition]
 
-                FunctionUtils.onItemClick(
-                    requireContext(),
+               onItemClick(
+                    context,
                     classItemPosition,
                     selectedItems,
                     holder.itemTextLayout,
@@ -213,7 +220,8 @@ class FilterLevelClassDialog(
     }
 
 
-    override fun onDismiss(dialog: DialogInterface) {
+    override fun dismiss() {
+        super.dismiss()
         sDismiss()
     }
 

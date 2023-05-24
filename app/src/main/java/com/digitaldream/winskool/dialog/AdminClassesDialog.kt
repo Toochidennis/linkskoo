@@ -39,7 +39,6 @@ class AdminClassesDialog(
     private var mLevelList = mutableListOf<LevelTable>()
     private var mClassList = mutableListOf<ClassNameTable>()
     private lateinit var mAdapter: DialogClassNameAdapter
-    private var mLevelId: String? = null
 
     private lateinit var mLevelRecyclerView: RecyclerView
     private lateinit var mClassRecyclerView: RecyclerView
@@ -157,7 +156,6 @@ class AdminClassesDialog(
         val levelTable = mLevelList[position]
 
         getClassName(levelTable.levelId)
-        mLevelId = levelTable.levelId
         if (mClassList.isEmpty()) {
             mLevelRecyclerView.isVisible = false
             mErrorMessage.isVisible = true
@@ -177,11 +175,12 @@ class AdminClassesDialog(
             } else {
                 context.startActivity(
                     Intent(context, AdminResultDashboardActivity().javaClass)
-                        .putExtra("class_id", classTable.classId)
+                        .putExtra("classId", classTable.classId)
                         .putExtra("class_name", classTable.className)
-                        .putExtra("level_Id", mLevelId)
+                        .putExtra("levelId", classTable.level)
                 )
             }
+
         } else {
             if (sType == "changeLevel") {
                 sResulClick!!.sendClassName(classTable.className)

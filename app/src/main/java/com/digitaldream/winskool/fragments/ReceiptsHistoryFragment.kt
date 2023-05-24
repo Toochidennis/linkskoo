@@ -377,7 +377,6 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
 
     }
 
-
     private fun timeFrameDialog() {
         ReceiptTimeFrameBottomSheet(
             timeFrameDataModel

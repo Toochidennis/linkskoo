@@ -44,11 +44,15 @@ class ReceiptsFilterFragment(
                 if (!mClassBtn.isSelected) {
                     selectDeselectButton(mClassBtn, "selected")
 
-                    FilterLevelClassDialog(sTimeFrameDataModel, "class") { setSelectedName() }
-                        .show(
-                            childFragmentManager,
-                            "Class Names"
-                        )
+                    FilterLevelClassDialog(requireContext(),sTimeFrameDataModel, "class") {
+                        setSelectedName() }.apply {
+                            setCancelable(false)
+                        show()
+                    }.window?.setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+
 
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
@@ -62,11 +66,14 @@ class ReceiptsFilterFragment(
 
                     selectDeselectButton(mLevelBtn, "selected")
 
-                    FilterLevelClassDialog(sTimeFrameDataModel, "level") { setSelectedName() }
-                        .show(
-                            childFragmentManager,
-                            "Level Names"
-                        )
+                    FilterLevelClassDialog(requireContext(),sTimeFrameDataModel, "level") {
+                        setSelectedName() }.apply {
+                        setCancelable(false)
+                        show()
+                    }.window?.setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
 
                 } else {
                     sTimeFrameDataModel.levelData = null
@@ -81,24 +88,24 @@ class ReceiptsFilterFragment(
     private fun selectDeselectedButton() {
         if (sTimeFrameDataModel.levelData != null) {
             selectDeselectButton(mLevelBtn, "selected")
-            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.account.toString()), "level")
+            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.levelData.toString()), "level")
         }
 
         if (sTimeFrameDataModel.classData != null) {
             selectDeselectButton(mClassBtn, "selected")
-            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.vendor.toString()), "class")
+            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.classData.toString()), "class")
         }
     }
 
     private fun setSelectedName() {
         if (sTimeFrameDataModel.levelData != null) {
-            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.account.toString()), "level")
+            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.levelData.toString()), "level")
         } else {
             selectDeselectButton(mLevelBtn, "deselected")
         }
 
         if (sTimeFrameDataModel.classData != null) {
-            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.vendor.toString()), "class")
+            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.classData.toString()), "class")
         } else {
             selectDeselectButton(mClassBtn, "deselected")
         }

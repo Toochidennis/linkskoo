@@ -47,7 +47,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="Confirm"
+            android:text="Generate Report"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
