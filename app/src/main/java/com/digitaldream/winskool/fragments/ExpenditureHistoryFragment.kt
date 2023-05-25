@@ -22,6 +22,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
+import com.digitaldream.winskool.adapters.GenericAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.dialog.ExpenditureTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
@@ -109,6 +110,8 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
             mExpenditureList,
             this
         )
+
+
 
         mRecyclerView.apply {
             hasFixedSize()
