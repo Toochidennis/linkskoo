@@ -29,30 +29,36 @@ class ExpenditureHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val adminModel = sExpenditureList[position]
-
-        holder.mExpenditureName.text = capitaliseFirstLetter(adminModel.getVendorName()!!)
-        holder.mExpenditureDate.text = FunctionUtils.formatDate2(adminModel.getDate().toString())
-        holder.mExpenditureType.text = adminModel.getType()
-
-        String.format(
-            Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
-            currencyFormat(adminModel.getAmount()!!.toDouble())
-        ).also { holder.mExpenditureAmount.text = it }
+        holder.bindItem(adminModel)
 
     }
 
     override fun getItemCount() = sExpenditureList.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mExpenditureName: TextView = itemView.findViewById(R.id.expenditure_name)
-        val mExpenditureDate: TextView = itemView.findViewById(R.id.expenditure_date)
-        val mExpenditureAmount: TextView = itemView.findViewById(R.id.expenditure_amount)
-        val mExpenditureType: TextView = itemView.findViewById(R.id.expenditure_type)
+        private val mExpenditureName: TextView = itemView.findViewById(R.id.expenditure_name)
+        private val mExpenditureDate: TextView = itemView.findViewById(R.id.expenditure_date)
+        private val mExpenditureAmount: TextView = itemView.findViewById(R.id.expenditure_amount)
+        private val mExpenditureType: TextView = itemView.findViewById(R.id.expenditure_type)
 
         init {
             itemView.setOnClickListener {
                 sOnItemClickListener.onItemClick(adapterPosition)
             }
+        }
+
+        fun bindItem(expenditureHistoryModel: ExpenditureHistoryModel) {
+            mExpenditureName.text =
+                capitaliseFirstLetter(expenditureHistoryModel.vendorName.toString())
+            mExpenditureDate.text =
+                FunctionUtils.formatDate2(expenditureHistoryModel.date.toString())
+            mExpenditureType.text = expenditureHistoryModel.type
+
+
+            String.format(
+                Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
+                currencyFormat(expenditureHistoryModel.amount!!.toDouble())
+            ).also { mExpenditureAmount.text = it }
         }
 
     }

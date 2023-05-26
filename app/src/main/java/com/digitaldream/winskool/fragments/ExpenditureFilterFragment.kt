@@ -7,8 +7,8 @@ import android.widget.Button
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.dialog.VendorAccountNamesBottomSheet
 import com.digitaldream.winskool.models.TimeFrameDataModel
+import com.digitaldream.winskool.utils.FunctionUtils.parseFilterJson
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
-import org.json.JSONArray
 
 
 class ExpenditureFilterFragment(
@@ -75,48 +75,46 @@ class ExpenditureFilterFragment(
     private fun selectDeselectedButton() {
         if (sTimeFrameDataModel.account != null) {
             selectDeselectButton(mAccountBtn, "selected")
-            setBtnText(mAccountBtn, parseJson(sTimeFrameDataModel.account.toString()), "account")
+            setBtnText(
+                mAccountBtn,
+                parseFilterJson(sTimeFrameDataModel.account.toString(), "account"),
+                "account"
+            )
         }
 
         if (sTimeFrameDataModel.vendor != null) {
             selectDeselectButton(mVendorBtn, "selected")
-            setBtnText(mVendorBtn, parseJson(sTimeFrameDataModel.vendor.toString()), "vendor")
+            setBtnText(
+                mVendorBtn,
+                parseFilterJson(sTimeFrameDataModel.account.toString(), "vendor"),
+                "vendor"
+            )
         }
     }
 
     private fun setSelectedName() {
         if (sTimeFrameDataModel.account != null) {
-            setBtnText(mAccountBtn, parseJson(sTimeFrameDataModel.account.toString()), "account")
+            setBtnText(
+                mAccountBtn,
+                parseFilterJson(sTimeFrameDataModel.account.toString(), "account"),
+                "account"
+            )
         } else {
             selectDeselectButton(mAccountBtn, "deselected")
         }
 
         if (sTimeFrameDataModel.vendor != null) {
-            setBtnText(mVendorBtn, parseJson(sTimeFrameDataModel.vendor.toString()), "vendor")
+            setBtnText(
+                mVendorBtn,
+                parseFilterJson(sTimeFrameDataModel.vendor.toString(), "vendor"),
+                "vendor"
+            )
         } else {
             selectDeselectButton(mVendorBtn, "deselected")
         }
 
     }
 
-    private fun parseJson(json: String): String {
-        val nameList = mutableListOf<String>()
-        JSONArray(json).run {
-            for (i in 0 until length()) {
-                val name = getJSONObject(i).getString("name")
-                nameList.add(name)
-            }
-        }
-
-        return when (nameList.size) {
-            0 -> ""
-            1 -> nameList[0]
-            else -> nameList.dropLast(1)
-                .joinToString(separator = ", ") +
-                    " & " + nameList.last()
-        }
-
-    }
 
 
     private fun setBtnText(button: Button, name: String, from: String) {

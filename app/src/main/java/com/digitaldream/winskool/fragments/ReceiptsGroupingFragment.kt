@@ -44,7 +44,7 @@ class ReceiptsGroupingFragment(
                     selectDeselectButton(mLevelBtn, "deselected")
                     selectDeselectButton(mMonthBtn, "deselected")
 
-                    sTimeFrameDataModel.grouping = "By Class"
+                    sTimeFrameDataModel.grouping = "class"
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
@@ -57,7 +57,7 @@ class ReceiptsGroupingFragment(
                     selectDeselectButton(mLevelBtn, "selected")
                     selectDeselectButton(mMonthBtn, "deselected")
 
-                    sTimeFrameDataModel.grouping = "By Level"
+                    sTimeFrameDataModel.grouping = "level"
                 } else {
                     selectDeselectButton(mLevelBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
@@ -70,7 +70,7 @@ class ReceiptsGroupingFragment(
                     selectDeselectButton(mLevelBtn, "deselected")
                     selectDeselectButton(mMonthBtn, "selected")
 
-                    sTimeFrameDataModel.grouping = "By Month"
+                    sTimeFrameDataModel.grouping = "month"
                 } else {
                     selectDeselectButton(mMonthBtn, "deselected")
                     sTimeFrameDataModel.grouping = null

@@ -48,6 +48,7 @@ import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.AccountSetupDataModel
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ClassNameTable
+import com.digitaldream.winskool.models.GroupItems
 import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.VendorModel
 import org.achartengine.ChartFactory
@@ -86,19 +87,21 @@ object FunctionUtils {
     }
 
 
-    fun abbreviate(sS: String): String {
-        val strings = sS.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
-        val stringBuilder = StringBuilder()
-        for (letter in strings) {
-            try {
-                val words = letter.substring(0, 1).uppercase(Locale.getDefault())
-                stringBuilder.append(words)
-            } catch (sE: Exception) {
-                sE.printStackTrace()
+    /*
+        fun abbreviate(sS: String): String {
+            val strings = sS.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
+            val stringBuilder = StringBuilder()
+            for (letter in strings) {
+                try {
+                    val words = letter.substring(0, 1).uppercase(Locale.getDefault())
+                    stringBuilder.append(words)
+                } catch (sE: Exception) {
+                    sE.printStackTrace()
+                }
             }
+            return stringBuilder.toString()
         }
-        return stringBuilder.toString()
-    }
+    */
 
 
     fun setColor(): Int {
@@ -593,19 +596,54 @@ object FunctionUtils {
 
 
     @JvmStatic
-    fun getSelectedItem(selectedItem: HashMap<String, String>): String {
+    fun getSelectedItem(selectedItem: HashMap<String, String>, from: String): String {
 
-        return JSONArray().apply {
+        return JSONObject().apply {
+            val jsonArray = JSONArray()
             selectedItem.forEach { (key, value) ->
-                val jsonObject = JSONObject().apply {
+                JSONObject().apply {
                     put("id", key)
                     put("name", value)
+                }.let {
+                    jsonArray.put(it)
                 }
-                put(jsonObject)
             }
+
+            when (from) {
+                "level" -> put(from, jsonArray)
+                "class" -> put(from, jsonArray)
+                "vendor" -> put(from, jsonArray)
+                "account" -> put(from, jsonArray)
+            }
+
         }.toString()
 
     }
+
+
+    @JvmStatic
+    fun parseFilterJson(json: String, from: String): String {
+        val nameList = mutableListOf<String>()
+        println("json: $json")
+
+        JSONObject(json).run {
+            val jsonArray = getJSONArray(from)
+            for (i in 0 until jsonArray.length()) {
+                val name = jsonArray.getJSONObject(i).getString("name")
+                nameList.add(name)
+            }
+
+        }
+
+        return when (nameList.size) {
+            0 -> ""
+            1 -> nameList[0]
+            else -> nameList.dropLast(1)
+                .joinToString(separator = ", ") + " & " + nameList.last()
+        }
+
+    }
+
 
     @JvmStatic
     fun onItemClick(
@@ -674,6 +712,60 @@ object FunctionUtils {
             }
         }
     }
+
+
+    @JvmStatic
+    fun <T, K> groupBy(
+        items: MutableList<T>,
+        keyExtractor: (T) -> K
+    ): MutableList<GroupItems<K, T>> {
+
+        /**
+         * the function takes two data types:  T and K
+         * T is the type of items list supplied
+         *  K represents the type of the grouping key
+         * The keyExtractor parameter is a lambda function that accepts an item of type T and
+         * returns the corresponding grouping key of type K.
+         */
+
+        val groupItems = mutableListOf<GroupItems<K, T>>()
+        var currentGroup = mutableListOf<T>()
+        var currentKey: K? = null
+
+        items.forEach {
+            val key = keyExtractor(it)
+
+            if (key != currentKey) {
+                if (currentGroup.isNotEmpty()) {
+                    groupItems.add(GroupItems(currentKey, currentGroup))
+                }
+
+                currentKey = key
+                currentGroup = mutableListOf()
+
+            }
+
+            currentGroup.add(it)
+        }
+
+
+        /**
+         * After iterating through all the items, the currentGroup will contain the last group of
+         * items with the same key. If currentGroup is not empty at this point, it means there are
+         * items in the last group that haven't been added to groupedItems yet.
+         *
+         * To ensure that all the items are added properly, the condition is used to to add the
+         * last item before return the groupItems.
+         */
+
+        if (currentGroup.isNotEmpty()) {
+            groupItems.add(GroupItems(currentKey, currentGroup))
+        }
+
+        return groupItems
+    }
+
+
 }
 
 interface VolleyCallback {

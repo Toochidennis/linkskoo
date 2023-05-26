@@ -33,7 +33,7 @@ import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 
 class FilterLevelClassDialog(
-   private val context: Context,
+    private val context: Context,
     private val sTimeFrameDataModel: TimeFrameDataModel,
     private val sFrom: String,
     private val sDismiss: () -> Unit
@@ -175,7 +175,7 @@ class FilterLevelClassDialog(
             if (mLevelList.isNotEmpty()) {
                 levelItemPosition = mLevelList[holder.adapterPosition]
 
-              onItemClick(
+                onItemClick(
                     context,
                     levelItemPosition,
                     selectedItems,
@@ -187,7 +187,7 @@ class FilterLevelClassDialog(
             } else {
                 classItemPosition = mClassList[holder.adapterPosition]
 
-               onItemClick(
+                onItemClick(
                     context,
                     classItemPosition,
                     selectedItems,
@@ -209,9 +209,9 @@ class FilterLevelClassDialog(
         mDoneBtn.setOnClickListener {
 
             if (mLevelList.isNotEmpty()) {
-                sTimeFrameDataModel.levelData = getSelectedItem(selectedItem)
+                sTimeFrameDataModel.levelData = getSelectedItem(selectedItem, "level")
             } else {
-                sTimeFrameDataModel.classData = getSelectedItem(selectedItem)
+                sTimeFrameDataModel.classData = getSelectedItem(selectedItem, "class")
             }
 
             dismiss()

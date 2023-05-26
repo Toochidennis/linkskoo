@@ -88,6 +88,7 @@ class DateRangeFragment(
             R.id.custom_btn -> {
                 if (!mCustomBtn.isSelected) {
                     selectDeselectButton(mCustomBtn, "selected")
+                    sTimeFrameDataModel.duration = null
 
 
                     mStartDateInput.apply {
@@ -133,7 +134,7 @@ class DateRangeFragment(
                     sTimeFrameDataModel.startDate = null
                     sTimeFrameDataModel.endDate = null
                     disableEditText()
-                    //sTimeFrameData.duration = null
+
                 }
             }
 
@@ -356,18 +357,17 @@ class DateRangeFragment(
     private fun defaultDate() {
         try {
             val calendar = Calendar.getInstance()
-            mEndDate = getDate()
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val date = sdf.parse(mEndDate!!)
+            val date = sdf.parse(getDate())
             calendar.time = date!!
             calendar.add(Calendar.MONTH, -1)
             mStartDate = sdf.format(calendar.time)
 
             mStartDateInput.setText(FunctionUtils.formatDate(mStartDate!!))
-            mEndDateInput.setText(FunctionUtils.formatDate((mEndDate!!)))
+            mEndDateInput.setText(FunctionUtils.formatDate((getDate())))
 
             sTimeFrameDataModel.startDate = mStartDate
-            sTimeFrameDataModel.endDate = mEndDate
+            sTimeFrameDataModel.endDate = getDate()
 
         } catch (e: Exception) {
             e.printStackTrace()

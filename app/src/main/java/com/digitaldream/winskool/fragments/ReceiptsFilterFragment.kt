@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.dialog.FilterLevelClassDialog
 import com.digitaldream.winskool.models.TimeFrameDataModel
+import com.digitaldream.winskool.utils.FunctionUtils.parseFilterJson
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 import org.json.JSONArray
+import org.json.JSONObject
 
 
 class ReceiptsFilterFragment(
@@ -44,9 +46,10 @@ class ReceiptsFilterFragment(
                 if (!mClassBtn.isSelected) {
                     selectDeselectButton(mClassBtn, "selected")
 
-                    FilterLevelClassDialog(requireContext(),sTimeFrameDataModel, "class") {
-                        setSelectedName() }.apply {
-                            setCancelable(false)
+                    FilterLevelClassDialog(requireContext(), sTimeFrameDataModel, "class") {
+                        setSelectedName()
+                    }.apply {
+                        setCancelable(false)
                         show()
                     }.window?.setLayout(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -57,6 +60,7 @@ class ReceiptsFilterFragment(
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
                     sTimeFrameDataModel.classData = null
+                    sTimeFrameDataModel.filter = sTimeFrameDataModel.levelData
                     "Class".let { mClassBtn.text = it }
                 }
             }
@@ -66,8 +70,9 @@ class ReceiptsFilterFragment(
 
                     selectDeselectButton(mLevelBtn, "selected")
 
-                    FilterLevelClassDialog(requireContext(),sTimeFrameDataModel, "level") {
-                        setSelectedName() }.apply {
+                    FilterLevelClassDialog(requireContext(), sTimeFrameDataModel, "level") {
+                        setSelectedName()
+                    }.apply {
                         setCancelable(false)
                         show()
                     }.window?.setLayout(
@@ -77,6 +82,7 @@ class ReceiptsFilterFragment(
 
                 } else {
                     sTimeFrameDataModel.levelData = null
+                    sTimeFrameDataModel.filter = sTimeFrameDataModel.classData
                     "Level".let { mLevelBtn.text = it }
                     selectDeselectButton(mLevelBtn, "deselected")
                 }
@@ -88,47 +94,60 @@ class ReceiptsFilterFragment(
     private fun selectDeselectedButton() {
         if (sTimeFrameDataModel.levelData != null) {
             selectDeselectButton(mLevelBtn, "selected")
-            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.levelData.toString()), "level")
+            setBtnText(
+                mLevelBtn,
+                parseFilterJson(sTimeFrameDataModel.levelData.toString(), "level"),
+                "level"
+            )
         }
 
         if (sTimeFrameDataModel.classData != null) {
             selectDeselectButton(mClassBtn, "selected")
-            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.classData.toString()), "class")
+            setBtnText(
+                mClassBtn,
+                parseFilterJson(sTimeFrameDataModel.classData.toString(), "class"),
+                "class"
+            )
         }
     }
 
     private fun setSelectedName() {
         if (sTimeFrameDataModel.levelData != null) {
-            setBtnText(mLevelBtn, parseJson(sTimeFrameDataModel.levelData.toString()), "level")
+            setBtnText(
+                mLevelBtn,
+                parseFilterJson(sTimeFrameDataModel.levelData.toString(), "level"),
+                "level"
+            )
+            sTimeFrameDataModel.filter = sTimeFrameDataModel.levelData
         } else {
             selectDeselectButton(mLevelBtn, "deselected")
         }
 
         if (sTimeFrameDataModel.classData != null) {
-            setBtnText(mClassBtn, parseJson(sTimeFrameDataModel.classData.toString()), "class")
+            setBtnText(
+                mClassBtn,
+                parseFilterJson(sTimeFrameDataModel.classData.toString(), "class"),
+                "class"
+            )
+            sTimeFrameDataModel.filter = sTimeFrameDataModel.classData
         } else {
             selectDeselectButton(mClassBtn, "deselected")
         }
 
-    }
+        if (sTimeFrameDataModel.classData != null && sTimeFrameDataModel.levelData != null) {
 
-    private fun parseJson(json: String): String {
-        val nameList = mutableListOf<String>()
-        JSONArray(json).run {
-            for (i in 0 until length()) {
-                val name = getJSONObject(i).getString("name")
-                nameList.add(name)
+            val jsonClass = JSONObject(sTimeFrameDataModel.classData!!).getJSONArray("class")
+            val jsonLevel = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("level")
+
+            JSONObject().apply {
+                put("level", jsonLevel)
+                put("class", jsonClass)
+            }.let {
+                sTimeFrameDataModel.filter = it.toString()
             }
-        }
 
-        return when (nameList.size) {
-            0 -> ""
-            1 -> nameList[0]
-            else -> nameList.dropLast(1)
-                .joinToString(separator = ", ") +
-                    " & " + nameList.last()
         }
-
+        
     }
 
 

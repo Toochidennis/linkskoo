@@ -22,7 +22,6 @@ import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
 import com.digitaldream.winskool.adapters.ExpenditureHistoryAdapter
-import com.digitaldream.winskool.adapters.GenericAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.dialog.ExpenditureTimeFrameBottomSheet
 import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
@@ -111,7 +110,26 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
             this
         )
 
-
+//
+//        GenericAdapter(
+//            mExpenditureList,
+//            R.layout.fragment_history_expenditure_item,
+//            bindItem = { itemView, model ->
+//
+//                mExpenditureName = itemView.findViewById(R.id.expenditure_name)
+//                val mExpenditureDate: TextView = itemView.findViewById(R.id.expenditure_date)
+//                val mExpenditureAmount: TextView = itemView.findViewById(R.id.expenditure_amount)
+//                val mExpenditureType: TextView = itemView.findViewById(R.id.expenditure_type)
+//
+//
+//                mExpenditureName.text = model.getDate()
+//
+//            },
+//
+//            onItemClick = {
+//
+//            }
+//        )
 
         mRecyclerView.apply {
             hasFixedSize()
@@ -324,27 +342,25 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
                             }
                             val receiptYear = transactionObject.getString("year")
 
-                            val previousYear = receiptYear.toInt() - 1
-                            val session =
-                                String.format(
-                                    Locale.getDefault(),
-                                    "%d/%s",
-                                    previousYear,
-                                    receiptYear
-                                )
+                            val session = "${receiptYear.toInt() - 1}/$receiptYear"
 
-                            val historyModel = ExpenditureHistoryModel()
-                            historyModel.setVendorName(vendorName)
-                            historyModel.setAmount(expenditureAmount)
-                            historyModel.setDate(date)
-                            historyModel.setTypeName(transactionType)
-                            historyModel.setReferenceNumber(reference)
-                            historyModel.setTerm(receiptTerm)
-                            historyModel.setSession(session)
-                            historyModel.setPhone(telephone)
+                            ExpenditureHistoryModel().apply {
+                                this.vendorName = vendorName
+                                this.amount = expenditureAmount
+                                this.date = date
+                                this.session = session
+                                this.type = transactionType
+                                this.referenceNumber = reference
+                                this.term = receiptTerm
+                                this.phone = telephone
+                            }.let {
+                                mExpenditureList.apply {
+                                    add(it)
+                                    sortByDescending { it.date }
+                                }
+                            }
 
-                            mExpenditureList.add(historyModel)
-                            mExpenditureList.sortByDescending { it.getDate() }
+
                         }
                         if (mExpenditureList.isEmpty()) {
                             mExpenditureView.isVisible = true
@@ -400,14 +416,14 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
         startActivity(
             Intent(requireContext(), PaymentActivity::class.java)
-                .putExtra("amount", model.getAmount())
-                .putExtra("vendor_name", model.getVendorName())
-                .putExtra("vendor_phone", model.getPhone())
-                .putExtra("reference", model.getReferenceNumber())
-                .putExtra("session", model.getSession())
-                .putExtra("term", model.getTerm())
-                .putExtra("date", model.getDate())
-                .putExtra("description", model.getType())
+                .putExtra("amount", model.amount)
+                .putExtra("vendor_name", model.vendorName)
+                .putExtra("vendor_phone", model.phone)
+                .putExtra("reference", model.referenceNumber)
+                .putExtra("session", model.session)
+                .putExtra("term", model.term)
+                .putExtra("date", model.date)
+                .putExtra("description", model.type)
                 .putExtra("from", "admin_expenditure")
         )
 

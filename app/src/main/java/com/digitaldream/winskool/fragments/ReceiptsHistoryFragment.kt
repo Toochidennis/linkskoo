@@ -273,8 +273,43 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
 
 
     private fun getTimeFrameData() {
-        timeFrameDataModel.endDate
-        //   Log.d("time frame",  timeFrameData.others.toString())
+
+        val sharedPreferences =
+            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        val term = sharedPreferences.getString("term", "")
+        val year = sharedPreferences.getString("school_year", "")
+
+        val url = "${getString(R.string.base_url)}/manageTransactions.php"
+        val hashMap = hashMapOf<String, String>()
+
+
+        println("filter: ${timeFrameDataModel.filter}")
+        println("startDate: ${timeFrameDataModel.startDate ?: timeFrameDataModel.duration}")
+        println("endDate: ${timeFrameDataModel.endDate}")
+
+
+        hashMap.apply {
+            put("type", "receipts")
+            put("term", "$term")
+            put("year", "$year")
+            put("startDate", "${timeFrameDataModel.startDate ?: timeFrameDataModel.duration}")
+            put("endDate", "${timeFrameDataModel.endDate}")
+            put("grouping", timeFrameDataModel.grouping ?: "")
+            put("filter", timeFrameDataModel.filter ?: "")
+
+            requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+                object : VolleyCallback {
+                    override fun onResponse(response: String) {
+
+                    }
+
+                    override fun onError(error: VolleyError) {
+
+                    }
+                })
+        }
+
+
     }
 
 
