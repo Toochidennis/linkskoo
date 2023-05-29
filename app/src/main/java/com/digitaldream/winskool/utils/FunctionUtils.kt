@@ -166,7 +166,7 @@ object FunctionUtils {
         val series = XYSeries(sVerticalTitle)
 
         for (i in 0 until graphLength)
-            series.add(i.toDouble(), sValues[i].verticalValues.toDouble())
+            series.add(i.toDouble(), sValues[i].value.toDouble())
 
         val dataset = XYMultipleSeriesDataset()
         dataset.addSeries(series)
@@ -198,7 +198,7 @@ object FunctionUtils {
 
 
             for (i in 0 until graphLength)
-                addXTextLabel(i.toDouble(), sValues[i].horizontalValues)
+                addXTextLabel(i.toDouble(), sValues[i].label)
         }
 
 

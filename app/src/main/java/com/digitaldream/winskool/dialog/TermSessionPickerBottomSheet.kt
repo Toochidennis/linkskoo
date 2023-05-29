@@ -25,6 +25,8 @@ class TermSessionPickerBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isCancelable = false
+
         val termPicker: NumberPicker = view.findViewById(R.id.term_picker)
         val sessionPicker: NumberPicker = view.findViewById(R.id.session_picker)
         val confirmBtn: CardView = view.findViewById(R.id.confirm_btn)
@@ -44,6 +46,7 @@ class TermSessionPickerBottomSheet : BottomSheetDialogFragment() {
             displayedValues = terms
         }
 
+
         when (currentTerm) {
             "1" -> termPicker.value = 0
             "2" -> termPicker.value = 1
@@ -54,9 +57,8 @@ class TermSessionPickerBottomSheet : BottomSheetDialogFragment() {
         val sessionList = mutableListOf<String>()
         val calendar = Calendar.getInstance().get(Calendar.YEAR)
         val futureYear = calendar + 2
-        val last20Years = futureYear - 20
 
-        for (year in last20Years..futureYear) {
+        for (year in 2003..futureYear) {
             sessionList.add("${year - 1}/$year")
         }
 
@@ -66,6 +68,20 @@ class TermSessionPickerBottomSheet : BottomSheetDialogFragment() {
             wrapSelectorWheel = false
             displayedValues = sessionList.toTypedArray()
             value = sessionList.indexOf(sessionList[sessionList.lastIndex - 2])
+        }
+
+
+        confirmBtn.setOnClickListener {
+            val selectedTerm = when (termPicker.value) {
+                0 -> "1"
+                1 -> "2"
+                else -> "3"
+            }
+
+            val selectedYear = sessionPicker.value.toString().substring(4, 8)
+
+            println(" selected year: $selectedYear : selectedTerm: $selectedTerm")
+
         }
 
     }

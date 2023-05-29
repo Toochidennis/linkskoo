@@ -22,6 +22,7 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.activities.PaymentActivity
+import com.digitaldream.winskool.adapters.GenericAdapter
 import com.digitaldream.winskool.adapters.OnItemClickListener
 import com.digitaldream.winskool.adapters.ReceiptsHistoryAdapter
 import com.digitaldream.winskool.dialog.ReceiptTimeFrameBottomSheet
@@ -30,7 +31,8 @@ import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
 import com.digitaldream.winskool.models.AdminPaymentModel
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.TimeFrameDataModel
-import com.digitaldream.winskool.utils.FunctionUtils
+import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
+import com.digitaldream.winskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.winskool.utils.FunctionUtils.getDate
 import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
@@ -62,204 +64,210 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
     private lateinit var mReceiptLayout: LinearLayout
     private lateinit var mTimeFrameBtn: Button
     private lateinit var mTermBtn: Button
+    private lateinit var mErrorMessage: TextView
 
     private var mGraphicalView: GraphicalView? = null
     private val mReceiptList = mutableListOf<AdminPaymentModel>()
     private val mGraphList = arrayListOf<ChartModel>()
-    private lateinit var mAdapter: ReceiptsHistoryAdapter
     private lateinit var timeFrameDataModel: TimeFrameDataModel
+    private lateinit var mReceiptsAdapter: ReceiptsHistoryAdapter
+
+    private var hashMap = hashMapOf<String, String>()
+
     private var isOpen = false
+    private var mTerm: String? = null
+    private var mYear: String? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        mReceiptView = view.findViewById(R.id.receipt_view)
-        mReceiptChart = view.findViewById(R.id.chart)
-        mReceiptSum = view.findViewById(R.id.receipt_sum)
-        mReceiptCount = view.findViewById(R.id.receipt_count)
-        mRecyclerView = view.findViewById(R.id.receipt_recycler)
-        mReceiptMessage = view.findViewById(R.id.receipt_error_message)
-        mReceiptImage = view.findViewById(R.id.error_image)
-        mErrorView = view.findViewById(R.id.error_view)
-        mRefreshBtn = view.findViewById(R.id.refresh_btn)
-        mOpenBtn = view.findViewById(R.id.open_btn)
-        mAddReceiptBtn1 = view.findViewById(R.id.add_receipt_btn1)
-        mAddReceiptBtn2 = view.findViewById(R.id.add_receipt_btn2)
-        mSetupReportBtn1 = view.findViewById(R.id.setup_btn1)
-        mSetupReportBtn2 = view.findViewById(R.id.setup_btn2)
-        mSetupLayout = view.findViewById(R.id.setup_layout)
-        mReceiptLayout = view.findViewById(R.id.add_receipt_layout)
-        mTimeFrameBtn = view.findViewById(R.id.time_frame_btn)
-        mTermBtn = view.findViewById(R.id.term_btn)
+        view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            mReceiptView = findViewById(R.id.receipt_view)
+            mReceiptChart = findViewById(R.id.chart)
+            mReceiptSum = findViewById(R.id.receipt_sum)
+            mReceiptCount = findViewById(R.id.receipt_count)
+            mRecyclerView = findViewById(R.id.receipt_recycler)
+            mReceiptMessage = findViewById(R.id.receipt_error_message)
+            mReceiptImage = findViewById(R.id.error_image)
+            mErrorView = findViewById(R.id.error_view)
+            mRefreshBtn = findViewById(R.id.refresh_btn)
+            mOpenBtn = findViewById(R.id.open_btn)
+            mAddReceiptBtn1 = findViewById(R.id.add_receipt_btn1)
+            mAddReceiptBtn2 = findViewById(R.id.add_receipt_btn2)
+            mSetupReportBtn1 = findViewById(R.id.setup_btn1)
+            mSetupReportBtn2 = findViewById(R.id.setup_btn2)
+            mSetupLayout = findViewById(R.id.setup_layout)
+            mReceiptLayout = findViewById(R.id.add_receipt_layout)
+            mTimeFrameBtn = findViewById(R.id.time_frame_btn)
+            mTermBtn = findViewById(R.id.term_btn)
+            mErrorMessage = findViewById(R.id.error_message)
 
-
-        toolbar.apply {
-            title = "Receipts"
-            this.setNavigationIcon(R.drawable.arrow_left)
-            setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher
-                    .onBackPressed()
+            toolbar.apply {
+                title = "Receipts"
+                this.setNavigationIcon(R.drawable.arrow_left)
+                setNavigationOnClickListener {
+                    requireActivity().onBackPressedDispatcher
+                        .onBackPressed()
+                }
             }
+
         }
 
 
-        mAdapter = ReceiptsHistoryAdapter(requireContext(), mReceiptList, this)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        mTerm = sharedPreferences.getString("term", "")
+        mYear = sharedPreferences.getString("school_year", "")
 
-        mRecyclerView.apply {
-            hasFixedSize()
-            layoutManager = LinearLayoutManager(requireContext())
-            isAnimating
-            adapter = mAdapter
-        }
 
+        getReceipts()
 
         refreshData()
 
+        timeFrameDataModel = TimeFrameDataModel { filterTimeFrameData() }
 
-        timeFrameDataModel = TimeFrameDataModel { getTimeFrameData() }
-
-        timeFrameTitle()
+        timeFrameTitle(getDate())
 
         onClickBtn()
+
+        mReceiptsAdapter = ReceiptsHistoryAdapter(requireContext(), mReceiptList, this)
+        mRecyclerView.apply {
+            isAnimating
+            isVisible = true
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mReceiptsAdapter
+            hasFixedSize()
+        }
 
     }
 
 
     private fun getReceipts() {
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-        val term = sharedPreferences.getString("term", "")
-        val year = sharedPreferences.getString("school_year", "")
+        val url = "${getString(R.string.base_url)}/manageTransactions.php"
 
-        val url = "${getString(R.string.base_url)}/manageTransactions" +
-                ".php?type=receipts&&term=$term&&year=$year&&dateRange=custom&&startDate=2023-03" +
-                "-01&&endDate=2023-04-06"
-        val hashMap = hashMapOf<String, String>()
+        hashMap.apply {
+            put("type", "receipts")
+            put("term", mTerm!!)
+            put("year", mYear!!)
+            put("startDate", "this month")
+            put("endDate", "")
+            put("grouping", "")
+            put("filter", "")
+        }
 
-        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
-                        //clear list
                         mReceiptList.clear()
+                        mGraphList.clear()
 
-                        val jsonObject = JSONObject(response)
-                        val receiptsArray = jsonObject.getJSONArray("receipts")
+                        JSONObject(response).run {
+                            val receiptsArray = getJSONArray("receipts")
+                            val receiptsObject = receiptsArray.getJSONObject(0)
+                            val receiptSum = receiptsObject.getString("sum")
+                            val receiptCount = receiptsObject.getString("count")
 
-                        val receiptsObject = receiptsArray.getJSONObject(0)
-                        val receiptSum = receiptsObject.getString("sum")
-                        val receiptCount = receiptsObject.getString("count")
+                            mReceiptCount.text = receiptCount ?: "0"
 
-                        mReceiptCount.text = receiptCount
+                            setSum(receiptSum)
 
-                        if (receiptSum == "null" || receiptSum.isNullOrBlank()) {
-                            mReceiptSum.text = getString(R.string.zero_balance)
-                        } else {
-                            String.format(
-                                Locale.getDefault(), "%s%s", getString(R.string.naira),
-                                FunctionUtils.currencyFormat(receiptSum.toDouble())
-                            ).also { mReceiptSum.text = it }
-                        }
+                            if (has("graph")) {
+                                val graphArray = getJSONArray("graph")
 
-                        if (jsonObject.has("graph")) {
-                            val graphArray = jsonObject.getJSONArray("graph")
+                                for (i in 0 until graphArray.length()) {
+                                    val graphObject = graphArray.getJSONObject(i)
+                                    val graphAmount = graphObject.getString("amount")
+                                    val label = graphObject.getString("label")
 
-                            for (i in 0 until graphArray.length()) {
-                                val graphObject = graphArray.getJSONObject(i)
-                                val graphAmount = graphObject.getString("amount")
-                                val graphDate = graphObject.getString("date")
-
-                                mGraphList.add(ChartModel(graphAmount, graphDate))
-                                mGraphList.sortBy { it.horizontalValues }
-                            }
-
-                            if (mGraphicalView == null) {
-                                mGraphicalView = plotLineChart(
-                                    mGraphList,
-                                    requireContext(),
-                                    "Received",
-                                    "Month/Year"
-                                )
-                                mReceiptChart.addView(mGraphicalView)
-                            } else {
-                                mGraphicalView!!.repaint()
-                            }
-                        } else {
-                            mGraphicalView = plotLineChart(
-                                mGraphList,
-                                requireContext(),
-                                "Received",
-                                "Month/Year"
-                            )
-                            mReceiptChart.addView(mGraphicalView)
-                        }
-
-                        if (jsonObject.has("transactions")) {
-
-                            val transactionsArray = jsonObject.getJSONArray("transactions")
-
-                            for (i in 0 until transactionsArray.length()) {
-                                val transactionObject = transactionsArray.getJSONObject(i)
-                                val transactionType = transactionObject.getString("trans_type")
-                                val reference = transactionObject.getString("reference")
-                                val registrationNo = transactionObject.getString("reg_no")
-                                val studentName = transactionObject.getString("name")
-                                val receiptAmount = transactionObject.getString("amount")
-                                val date = transactionObject.getString("date")
-                                val receiptTerm = when (transactionObject.getString("term")) {
-                                    "1" -> "First Term Fees"
-                                    "2" -> "Second Term Fees"
-                                    else -> "Third Term Fees"
+                                    mGraphList.add(ChartModel(graphAmount, formatDate2(label)))
+                                    mGraphList.sortBy { it.label }
                                 }
-                                val receiptYear = transactionObject.getString("year")
-                                val levelName = transactionObject.getString("level_name")
-                                val className = transactionObject.getString("class_name")
 
-                                val previousYear = receiptYear.toInt() - 1
-                                val session =
-                                    String.format(
-                                        Locale.getDefault(),
-                                        "%d/%s",
-                                        previousYear,
-                                        receiptYear
-                                    )
-
-                                val receiptModel = AdminPaymentModel()
-                                receiptModel.mStudentName = studentName
-                                receiptModel.mTransactionName = transactionType
-                                receiptModel.mReferenceNumber = reference
-                                receiptModel.mRegistrationNumber = registrationNo
-                                receiptModel.mReceivedAmount = receiptAmount
-                                receiptModel.mTransactionDate = date
-                                receiptModel.mTerm = receiptTerm
-                                receiptModel.mSession = session
-                                receiptModel.mLevelName = levelName
-                                receiptModel.mClassName = className
-
-                                mReceiptList.add(receiptModel)
-                                mReceiptList.sortByDescending { it.mTransactionDate }
+                                setGraphData(mGraphList)
+                            } else {
+                                setGraphData(mGraphList)
                             }
+
+                            if (has("transactions")) {
+
+                                val transactionsArray = getJSONArray("transactions")
+
+                                for (i in 0 until transactionsArray.length()) {
+                                    val transactionObject = transactionsArray.getJSONObject(i)
+
+                                    transactionObject.let {
+                                        val transactionType = it.getString("trans_type")
+                                        val reference = it.getString("reference")
+                                        val registrationNo = it.getString("reg_no")
+                                        val studentName = it.getString("name")
+                                        val receiptAmount = it.getString("amount")
+                                        val date = it.getString("date")
+                                        val receiptTerm =
+                                            when (it.getString("term")) {
+                                                "1" -> "First Term Fees"
+                                                "2" -> "Second Term Fees"
+                                                else -> "Third Term Fees"
+                                            }
+
+                                        val receiptYear = it.getString("year")
+                                        val levelName = it.getString("level_name")
+                                        val className = it.getString("class_name")
+
+                                        val session = "${receiptYear.toInt() - 1}/$receiptYear"
+
+                                        AdminPaymentModel().apply {
+                                            mStudentName = studentName
+                                            mTransactionName = transactionType
+                                            mReferenceNumber = reference
+                                            mRegistrationNumber = registrationNo
+                                            mReceivedAmount = receiptAmount
+                                            mTransactionDate = date
+                                            mTerm = receiptTerm
+                                            mSession = session
+                                            mLevelName = levelName
+                                            mClassName = className
+                                        }.let { model ->
+                                            mReceiptList.add(model)
+                                        }
+
+                                    }
+
+                                }
+
+                                mReceiptList.sortByDescending { sort ->
+                                    sort.mTransactionDate
+                                }
+
+                                mReceiptsAdapter.notifyDataSetChanged()
+
+                                mReceiptView.isVisible = true
+                                mErrorView.isVisible = false
+                                mOpenBtn.isVisible = true
+                                mReceiptMessage.isVisible = false
+
+                            } else {
+                                mReceiptView.isVisible = true
+                                mErrorView.isVisible = false
+                                mOpenBtn.isVisible = true
+                                mRecyclerView.isVisible = false
+                                mReceiptMessage.isVisible = true
+                            }
+
                         }
 
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        mReceiptView.isVisible = false
+                        mErrorView.isVisible = true
+                        mRefreshBtn.isVisible = false
+                        mErrorMessage.text = getString(R.string.contact_developer)
+                        mOpenBtn.isVisible = false
                     }
 
-                    if (mReceiptList.isEmpty()) {
-                        mReceiptView.isVisible = true
-                        mReceiptMessage.isVisible = true
-                        mErrorView.isVisible = false
-                        mOpenBtn.isVisible = true
-                    } else {
-                        mReceiptView.isVisible = true
-                        mReceiptMessage.isVisible = false
-                        mErrorView.isVisible = false
-                        mOpenBtn.isVisible = true
-                    }
-                    mAdapter.notifyDataSetChanged()
                 }
 
                 override fun onError(error: VolleyError) {
@@ -269,53 +277,330 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
                 }
             }
         )
+
+        hashMap = hashMapOf()
     }
 
+    private fun filterTimeFrameData() {
 
-    private fun getTimeFrameData() {
+        timeFrameTitle(timeFrameDataModel.startDate ?: getDate())
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-        val term = sharedPreferences.getString("term", "")
-        val year = sharedPreferences.getString("school_year", "")
+        mRecyclerView.removeAllViews()
 
         val url = "${getString(R.string.base_url)}/manageTransactions.php"
-        val hashMap = hashMapOf<String, String>()
-
-
-        println("filter: ${timeFrameDataModel.filter}")
-        println("startDate: ${timeFrameDataModel.startDate ?: timeFrameDataModel.duration}")
-        println("endDate: ${timeFrameDataModel.endDate}")
-
 
         hashMap.apply {
             put("type", "receipts")
-            put("term", "$term")
-            put("year", "$year")
+            put("term", "${timeFrameDataModel.term ?: mTerm}")
+            put("year", "${timeFrameDataModel.year ?: mYear}")
             put("startDate", "${timeFrameDataModel.startDate ?: timeFrameDataModel.duration}")
-            put("endDate", "${timeFrameDataModel.endDate}")
+            put("endDate", timeFrameDataModel.endDate ?: "")
             put("grouping", timeFrameDataModel.grouping ?: "")
             put("filter", timeFrameDataModel.filter ?: "")
 
-            requestToServer(Request.Method.POST, url, requireContext(), hashMap,
-                object : VolleyCallback {
-                    override fun onResponse(response: String) {
 
-                    }
+            when {
+                timeFrameDataModel.grouping != null -> {
+                    requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+                        object : VolleyCallback {
+                            override fun onResponse(response: String) {
+                                try {
+                                    mGraphList.clear()
 
-                    override fun onError(error: VolleyError) {
+                                    JSONObject(response).run {
 
-                    }
-                })
+                                        getJSONArray("receipts").run {
+                                            getJSONObject(0).run {
+                                                val sum = getString("sum")
+                                                val count = getString("count")
+                                                mReceiptCount.text = count ?: "0"
+
+                                                setSum(sum)
+                                            }
+
+                                        }
+
+
+                                        if (has("graph")) {
+                                            getJSONArray("graph").run {
+                                                for (i in 0 until length()) {
+                                                    getJSONObject(i).run {
+                                                        val amount = getString("amount")
+                                                        val label = getString("label")
+
+                                                        mGraphList.add(
+                                                            ChartModel(
+                                                                amount,
+                                                                label
+                                                            )
+                                                        )
+
+                                                    }
+                                                }
+
+                                                mGraphList.sortBy { it.label }
+
+                                                setGraphData(mGraphList)
+
+                                                GenericAdapter(
+                                                    mGraphList,
+                                                    R.layout
+                                                        .fragment_receipts_history_grouping_item,
+                                                    bindItem = { itemView: View, model: ChartModel ->
+                                                        val itemName: TextView =
+                                                            itemView.findViewById(R.id.item_name)
+                                                        val itemAmount: TextView =
+                                                            itemView.findViewById(R.id.item_amount)
+
+                                                        itemName.text = model.label
+
+                                                        String.format(
+                                                            Locale.getDefault(),
+                                                            "%s%s",
+                                                            requireContext().getString(R.string.naira),
+                                                            currencyFormat(
+                                                                model.value
+                                                                    .replace(".00", "")
+                                                                    .toDouble()
+                                                            )
+                                                        ).let {
+                                                            itemAmount.text = it
+                                                        }
+
+                                                    }) {
+
+                                                }.let {
+                                                    mRecyclerView.apply {
+                                                        isAnimating
+                                                        isVisible = true
+                                                        layoutManager =
+                                                            LinearLayoutManager(requireContext())
+                                                        adapter = it
+                                                        hasFixedSize()
+                                                    }
+                                                }
+
+                                                mReceiptView.isVisible = true
+                                                mErrorView.isVisible = false
+                                                mReceiptMessage.isVisible = false
+                                                mOpenBtn.isVisible = true
+
+                                            }
+
+                                        } else {
+                                            mReceiptView.isVisible = true
+                                            mReceiptMessage.isVisible = true
+                                            mRecyclerView.isVisible = false
+                                            mErrorView.isVisible = false
+                                            mOpenBtn.isVisible = true
+                                        }
+
+                                    }
+
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    mReceiptView.isVisible = false
+                                    mErrorView.isVisible = true
+                                    mErrorMessage.text = getString(R.string.contact_developer)
+                                    mRefreshBtn.isVisible = false
+                                    mOpenBtn.isVisible = false
+                                }
+
+                            }
+
+                            override fun onError(error: VolleyError) {
+                                mReceiptView.isVisible = false
+                                mErrorView.isVisible = true
+                                mOpenBtn.isVisible = false
+                            }
+                        }
+                    )
+
+                }
+
+                else -> {
+                    requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+                        object : VolleyCallback {
+                            override fun onResponse(response: String) {
+                                try {
+                                    mReceiptList.clear()
+                                    mGraphList.clear()
+
+                                    JSONObject(response).run {
+                                        val receiptsArray = getJSONArray("receipts")
+                                        val receiptsObject = receiptsArray.getJSONObject(0)
+                                        val receiptSum = receiptsObject.getString("sum")
+                                        val receiptCount = receiptsObject.getString("count")
+
+                                        mReceiptCount.text = receiptCount ?: "0"
+
+                                        setSum(receiptSum)
+
+                                        if (has("graph")) {
+                                            val graphArray = getJSONArray("graph")
+
+                                            for (i in 0 until graphArray.length()) {
+                                                val graphObject = graphArray.getJSONObject(i)
+                                                val graphAmount = graphObject.getString("amount")
+                                                val label = graphObject.getString("label")
+
+                                                mGraphList.add(
+                                                    ChartModel(
+                                                        graphAmount,
+                                                        formatDate2(label)
+                                                    )
+                                                )
+
+                                            }
+
+                                            mGraphList.sortBy { it.label }
+
+                                            setGraphData(mGraphList)
+
+                                        } else {
+                                            setGraphData(mGraphList)
+                                        }
+
+                                        if (has("transactions")) {
+
+                                            val transactionsArray = getJSONArray("transactions")
+
+                                            for (i in 0 until transactionsArray.length()) {
+                                                val transactionObject =
+                                                    transactionsArray.getJSONObject(i)
+
+                                                transactionObject.let {
+                                                    val transactionType = it.getString("trans_type")
+                                                    val reference = it.getString("reference")
+                                                    val registrationNo = it.getString("reg_no")
+                                                    val studentName = it.getString("name")
+                                                    val receiptAmount = it.getString("amount")
+                                                    val date = it.getString("date")
+                                                    val receiptTerm =
+                                                        when (it.getString("term")) {
+                                                            "1" -> "First Term Fees"
+                                                            "2" -> "Second Term Fees"
+                                                            else -> "Third Term Fees"
+                                                        }
+
+                                                    val receiptYear = it.getString("year")
+                                                    val levelName = it.getString("level_name")
+                                                    val className = it.getString("class_name")
+
+                                                    val session =
+                                                        "${receiptYear.toInt() - 1}/$receiptYear"
+
+                                                    AdminPaymentModel().apply {
+                                                        mStudentName = studentName
+                                                        mTransactionName = transactionType
+                                                        mReferenceNumber = reference
+                                                        mRegistrationNumber = registrationNo
+                                                        mReceivedAmount = receiptAmount
+                                                        mTransactionDate = date
+                                                        mTerm = receiptTerm
+                                                        mSession = session
+                                                        mLevelName = levelName
+                                                        mClassName = className
+                                                    }.let { model ->
+                                                        mReceiptList.add(model)
+                                                    }
+
+                                                }
+
+                                            }
+
+                                            mReceiptList.sortByDescending { sort ->
+                                                sort.mTransactionDate
+                                            }
+
+                                            ReceiptsHistoryAdapter(
+                                                requireContext(),
+                                                mReceiptList,
+                                                this@ReceiptsHistoryFragment
+                                            ).let {
+                                                mRecyclerView.apply {
+                                                    isAnimating
+                                                    isVisible = true
+                                                    layoutManager =
+                                                        LinearLayoutManager(requireContext())
+                                                    adapter = it
+                                                    hasFixedSize()
+                                                }
+                                            }
+
+
+                                            mReceiptView.isVisible = true
+                                            mErrorView.isVisible = false
+                                            mReceiptMessage.isVisible = false
+                                            mOpenBtn.isVisible = true
+
+                                        } else {
+                                            mReceiptView.isVisible = true
+                                            mReceiptMessage.isVisible = true
+                                            mRecyclerView.isVisible = false
+                                            mErrorView.isVisible = false
+                                            mOpenBtn.isVisible = true
+                                        }
+
+                                    }
+
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    mReceiptView.isVisible = false
+                                    mErrorView.isVisible = true
+                                    mErrorMessage.text = getString(R.string.contact_developer)
+                                    mRefreshBtn.isVisible = false
+                                    mOpenBtn.isVisible = false
+                                }
+                            }
+
+                            override fun onError(error: VolleyError) {
+                                mReceiptView.isVisible = false
+                                mErrorView.isVisible = true
+                                mOpenBtn.isVisible = false
+                            }
+                        }
+                    )
+                }
+            }
+
         }
 
+        hashMap = hashMapOf()
 
     }
 
+
+    private fun setGraphData(items: ArrayList<ChartModel>) {
+
+        mReceiptChart.removeAllViews()
+
+        val graphicalView =
+            plotLineChart(
+                items, requireContext(), "Received", "Label"
+            )
+        graphicalView.repaint()
+        mReceiptChart.addView(graphicalView)
+
+    }
 
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {
             getReceipts()
+        }
+    }
+
+
+    private fun setSum(sum: String) {
+        if (sum == "null" || sum.isBlank()) {
+            mReceiptSum.text = getString(R.string.zero_balance)
+        } else {
+            String.format(
+                Locale.getDefault(),
+                "%s%s",
+                getString(R.string.naira),
+                currencyFormat(sum.toDouble())
+            ).also { mReceiptSum.text = it }
         }
     }
 
@@ -329,6 +614,7 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         val rotateBackward = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_backward)
 
         val arrayList = arrayListOf(rotateBackward, btnClose)
+
         mOpenBtn.setOnClickListener {
 
             if (isOpen) {
@@ -432,6 +718,7 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
         isOpen = false
     }
 
+
     /*  private fun setUpMenu() {
           mMenuHost.addMenuProvider(object : MenuProvider {
               override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -468,28 +755,21 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
           })
       }*/
 
-    private fun timeFrameTitle() {
-        try {
 
+    private fun timeFrameTitle(date: String) {
+        try {
             val simpleDateFormat = SimpleDateFormat(
                 "yyyy-MM-dd",
                 Locale.getDefault()
             )
 
-            val parseDate = simpleDateFormat.parse(getDate())!!
+            val parseDate = simpleDateFormat.parse(date)!!
             val sdf = SimpleDateFormat("MMMM, yyyy", Locale.getDefault())
             mTimeFrameBtn.text = sdf.format(parseDate)
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        getReceipts()
-
     }
 
 

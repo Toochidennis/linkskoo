@@ -1,11 +1,9 @@
 package com.digitaldream.winskool.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.digitaldream.winskool.R
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
@@ -13,37 +11,62 @@ import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
 
 class ReceiptsGroupingFragment(
     private val sTimeFrameDataModel: TimeFrameDataModel
-) : Fragment() {
+) : Fragment(R.layout.fragment_receipts_grouping) {
 
     private lateinit var mClassBtn: Button
     private lateinit var mLevelBtn: Button
     private lateinit var mMonthBtn: Button
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_receipts_grouping, container, false)
 
-        mClassBtn = view.findViewById(R.id.class_btn)
-        mLevelBtn = view.findViewById(R.id.level_btn)
-        mMonthBtn = view.findViewById(R.id.month_btn)
+    private lateinit var buttons: MutableList<Button>
 
-        mClassBtn.setOnClickListener { onClick(it) }
-        mLevelBtn.setOnClickListener { onClick(it) }
-        mMonthBtn.setOnClickListener { onClick(it) }
 
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.apply {
+            mClassBtn = findViewById(R.id.class_btn)
+            mLevelBtn = findViewById(R.id.level_btn)
+            mMonthBtn = findViewById(R.id.month_btn)
+        }
+
+        buttons = mutableListOf(
+            mClassBtn, mLevelBtn, mMonthBtn
+        )
+
+        when (sTimeFrameDataModel.grouping) {
+            "level", "class", "month" -> {
+                selectDeselectButton(getButtonByGroup(sTimeFrameDataModel.grouping), "selected")
+            }
+        }
+
+        buttonClicks()
     }
 
-    private fun onClick(view: View) {
+    private fun buttonClicks() {
+        buttons.forEach { button ->
+            button.setOnClickListener {
+                handleButtonClick(button)
+            }
+        }
+    }
+
+
+    private fun deselectAllButtonsExcept(selectedBtn: Button) {
+        buttons.forEach { button ->
+            if (button != selectedBtn) {
+                selectDeselectButton(button, "deselected")
+            } else {
+                selectDeselectButton(button, "selected")
+            }
+        }
+    }
+
+
+    private fun handleButtonClick(view: View) {
         when (view.id) {
             R.id.class_btn -> {
                 if (!mClassBtn.isSelected) {
-                    selectDeselectButton(mClassBtn, "selected")
-                    selectDeselectButton(mLevelBtn, "deselected")
-                    selectDeselectButton(mMonthBtn, "deselected")
-
+                    deselectAllButtonsExcept(mClassBtn)
                     sTimeFrameDataModel.grouping = "class"
                 } else {
                     selectDeselectButton(mClassBtn, "deselected")
@@ -53,10 +76,7 @@ class ReceiptsGroupingFragment(
 
             R.id.level_btn -> {
                 if (!mLevelBtn.isSelected) {
-                    selectDeselectButton(mClassBtn, "deselected")
-                    selectDeselectButton(mLevelBtn, "selected")
-                    selectDeselectButton(mMonthBtn, "deselected")
-
+                    deselectAllButtonsExcept(mLevelBtn)
                     sTimeFrameDataModel.grouping = "level"
                 } else {
                     selectDeselectButton(mLevelBtn, "deselected")
@@ -66,10 +86,7 @@ class ReceiptsGroupingFragment(
 
             R.id.month_btn -> {
                 if (!mMonthBtn.isSelected) {
-                    selectDeselectButton(mClassBtn, "deselected")
-                    selectDeselectButton(mLevelBtn, "deselected")
-                    selectDeselectButton(mMonthBtn, "selected")
-
+                    deselectAllButtonsExcept(mMonthBtn)
                     sTimeFrameDataModel.grouping = "month"
                 } else {
                     selectDeselectButton(mMonthBtn, "deselected")
@@ -78,6 +95,15 @@ class ReceiptsGroupingFragment(
 
             }
 
+        }
+    }
+
+
+    private fun getButtonByGroup(group: String?): Button {
+        return when (group) {
+            "level" -> mLevelBtn
+            "class" -> mClassBtn
+            else -> mMonthBtn
         }
     }
 

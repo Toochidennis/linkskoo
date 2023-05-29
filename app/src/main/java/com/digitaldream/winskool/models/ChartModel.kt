@@ -1,3 +1,3 @@
 package com.digitaldream.winskool.models
 
-data class ChartModel(var verticalValues: String, var horizontalValues: String)
+data class ChartModel(var value: String, var label: String)

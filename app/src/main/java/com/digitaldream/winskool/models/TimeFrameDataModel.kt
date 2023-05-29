@@ -11,5 +11,7 @@ data class TimeFrameDataModel(val getData: () -> Unit) {
     var classData: String? = null
     var vendor: String? = null
     var account: String? = null
+    var term: String? = null
+    var year: String? = null
 
 }

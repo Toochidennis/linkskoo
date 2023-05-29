@@ -1,6 +1,5 @@
 package com.digitaldream.winskool.dialog
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,12 +47,8 @@ class ReceiptTimeFrameBottomSheet(
 
         generateReportBtn.setOnClickListener {
             dismiss()
+            sTimeFrameDataModel.getData()
         }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        sTimeFrameDataModel.getData()
     }
 
 

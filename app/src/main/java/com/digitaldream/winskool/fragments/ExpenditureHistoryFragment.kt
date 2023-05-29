@@ -301,7 +301,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
                             val graphDate = graphObject.getString("date")
 
                             mGraphList.add(ChartModel(graphAmount, graphDate))
-                            mGraphList.sortBy { it.horizontalValues }
+                            mGraphList.sortBy { it.label }
                         }
 
                         if (mGraphicalView == null) {
