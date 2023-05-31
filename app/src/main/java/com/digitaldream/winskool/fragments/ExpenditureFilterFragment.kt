@@ -9,6 +9,7 @@ import com.digitaldream.winskool.dialog.VendorAccountNamesBottomSheet
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.parseFilterJson
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
+import org.json.JSONObject
 
 
 class ExpenditureFilterFragment(
@@ -47,6 +48,7 @@ class ExpenditureFilterFragment(
                 } else {
                     selectDeselectButton(mVendorBtn, "deselected")
                     sTimeFrameDataModel.vendor = null
+                    sTimeFrameDataModel.filter = sTimeFrameDataModel.account
                     "Vendor".let { mVendorBtn.text = it }
                 }
             }
@@ -64,6 +66,7 @@ class ExpenditureFilterFragment(
 
                 } else {
                     sTimeFrameDataModel.account = null
+                    sTimeFrameDataModel.filter = sTimeFrameDataModel.vendor
                     "Account".let { mAccountBtn.text = it }
                     selectDeselectButton(mAccountBtn, "deselected")
                 }
@@ -113,8 +116,21 @@ class ExpenditureFilterFragment(
             selectDeselectButton(mVendorBtn, "deselected")
         }
 
-    }
+        if (sTimeFrameDataModel.account != null && sTimeFrameDataModel.vendor != null) {
 
+            val accountJson = JSONObject(sTimeFrameDataModel.classData!!).getJSONArray("account")
+            val vendorJson = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("vendor")
+
+            JSONObject().apply {
+                put("vendor", vendorJson)
+                put("account", accountJson)
+            }.let {
+                sTimeFrameDataModel.filter = it.toString()
+            }
+
+        }
+
+    }
 
 
     private fun setBtnText(button: Button, name: String, from: String) {

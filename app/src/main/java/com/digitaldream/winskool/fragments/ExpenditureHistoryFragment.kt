@@ -62,7 +62,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
     private var mGraphicalView: GraphicalView? = null
     private val mExpenditureList = mutableListOf<ExpenditureHistoryModel>()
-    private val mGraphList = arrayListOf<ChartModel>()
+    private val mGraphList = mutableListOf<ChartModel>()
     private lateinit var mAdapter: ExpenditureHistoryAdapter
     private lateinit var mTimeFrameDataModel: TimeFrameDataModel
 

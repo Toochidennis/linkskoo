@@ -27,7 +27,13 @@ class DatePickerBottomSheet(
         savedInstanceState: Bundle?
     ): View? {
         // inflates view of the dialog
-        val view = inflater.inflate(R.layout.bottom_sheet_date_picker, container, false)
+        return inflater.inflate(R.layout.bottom_sheet_date_picker, container, false)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        isCancelable = false
 
         val confirmBtn: CardView = view.findViewById(R.id.confirm_btn)
         val dismissBtn: ImageView = view.findViewById(R.id.close_btn)
@@ -45,14 +51,15 @@ class DatePickerBottomSheet(
 
 
         confirmBtn.setOnClickListener {
+            if (selectedDate.isEmpty()) {
+                selectedDate = "${datePicker.year}-${datePicker.month + 1}-${datePicker.dayOfMonth}"
+            }
             sDateListener.selectedDate(selectedDate)
             dismiss()
-
         }
 
         dismissBtn.setOnClickListener { dismiss() }
 
-        return view
     }
 
 }

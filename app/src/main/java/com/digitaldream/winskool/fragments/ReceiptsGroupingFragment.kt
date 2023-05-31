@@ -29,9 +29,11 @@ class ReceiptsGroupingFragment(
             mMonthBtn = findViewById(R.id.month_btn)
         }
 
+
         buttons = mutableListOf(
             mClassBtn, mLevelBtn, mMonthBtn
         )
+
 
         when (sTimeFrameDataModel.grouping) {
             "level", "class", "month" -> {
@@ -46,17 +48,6 @@ class ReceiptsGroupingFragment(
         buttons.forEach { button ->
             button.setOnClickListener {
                 handleButtonClick(button)
-            }
-        }
-    }
-
-
-    private fun deselectAllButtonsExcept(selectedBtn: Button) {
-        buttons.forEach { button ->
-            if (button != selectedBtn) {
-                selectDeselectButton(button, "deselected")
-            } else {
-                selectDeselectButton(button, "selected")
             }
         }
     }
@@ -95,6 +86,17 @@ class ReceiptsGroupingFragment(
 
             }
 
+        }
+    }
+
+
+    private fun deselectAllButtonsExcept(selectedBtn: Button) {
+        buttons.forEach { button ->
+            if (button != selectedBtn) {
+                selectDeselectButton(button, "deselected")
+            } else {
+                selectDeselectButton(button, "selected")
+            }
         }
     }
 

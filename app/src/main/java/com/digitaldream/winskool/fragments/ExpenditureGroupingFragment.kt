@@ -13,10 +13,11 @@ class ExpenditureGroupingFragment(
     private val sTimeFrameDataModel: TimeFrameDataModel
 ) : Fragment(R.layout.fragment_expenditure_grouping) {
 
-
     private lateinit var mMonthBtn: Button
     private lateinit var mVendorBtn: Button
     private lateinit var mAccountBtn: Button
+
+    private lateinit var buttons: MutableList<Button>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,21 +26,36 @@ class ExpenditureGroupingFragment(
         mVendorBtn = view.findViewById(R.id.vendor_btn)
         mAccountBtn = view.findViewById(R.id.account_btn)
 
-        mMonthBtn.setOnClickListener { onClick(it) }
-        mVendorBtn.setOnClickListener { onClick(it) }
-        mAccountBtn.setOnClickListener { onClick(it) }
+
+        buttons = mutableListOf(
+            mMonthBtn, mVendorBtn, mAccountBtn
+        )
+
+        when (sTimeFrameDataModel.grouping) {
+            "account", "vendor", "month" -> {
+                selectDeselectButton(getButtonByGroup(sTimeFrameDataModel.grouping), "selected")
+            }
+        }
+
+        buttonClicks()
     }
 
-    private fun onClick(view: View) {
+
+    private fun buttonClicks() {
+        buttons.forEach { button ->
+            button.setOnClickListener {
+                handleButtonClick(button)
+            }
+        }
+    }
+
+    private fun handleButtonClick(view: View) {
         when (view.id) {
 
             R.id.month_btn -> {
                 if (!mMonthBtn.isSelected) {
-                    selectDeselectButton(mMonthBtn, "selected")
-                    selectDeselectButton(mVendorBtn, "deselected")
-                    selectDeselectButton(mAccountBtn, "deselected")
-
-                    sTimeFrameDataModel.grouping = "By Month"
+                    deselectAllButtonsExcept(mMonthBtn)
+                    sTimeFrameDataModel.grouping = "month"
                 } else {
                     selectDeselectButton(mMonthBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
@@ -49,11 +65,8 @@ class ExpenditureGroupingFragment(
 
             R.id.vendor_btn -> {
                 if (!mVendorBtn.isSelected) {
-                    selectDeselectButton(mMonthBtn, "deselected")
-                    selectDeselectButton(mVendorBtn, "selected")
-                    selectDeselectButton(mAccountBtn, "deselected")
-
-                    sTimeFrameDataModel.grouping = "By Vendor"
+                    deselectAllButtonsExcept(mVendorBtn)
+                    sTimeFrameDataModel.grouping = "vendor"
                 } else {
                     selectDeselectButton(mVendorBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
@@ -62,19 +75,34 @@ class ExpenditureGroupingFragment(
 
             R.id.account_btn -> {
                 if (!mAccountBtn.isSelected) {
-                    selectDeselectButton(mMonthBtn, "deselected")
-                    selectDeselectButton(mVendorBtn, "deselected")
-                    selectDeselectButton(mAccountBtn, "selected")
-
-                    sTimeFrameDataModel.grouping = "By Account"
+                    deselectAllButtonsExcept(mAccountBtn)
+                    sTimeFrameDataModel.grouping = "account"
                 } else {
                     selectDeselectButton(mAccountBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
                 }
             }
 
-
         }
-
     }
+
+
+    private fun deselectAllButtonsExcept(selectedBtn: Button) {
+        buttons.forEach { button ->
+            if (button != selectedBtn) {
+                selectDeselectButton(button, "deselected")
+            } else {
+                selectDeselectButton(button, "selected")
+            }
+        }
+    }
+
+    private fun getButtonByGroup(group: String?): Button {
+        return when (group) {
+            "month" -> mMonthBtn
+            "vendor" -> mVendorBtn
+            else -> mAccountBtn
+        }
+    }
+
 }

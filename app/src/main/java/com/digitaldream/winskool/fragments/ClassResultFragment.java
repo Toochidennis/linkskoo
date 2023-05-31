@@ -52,9 +52,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class ClassResultFragment extends Fragment implements ClassResultAdapter.OnClassResultClickListener {
     private RecyclerView recyclerView;
     private List<String> classResultList;

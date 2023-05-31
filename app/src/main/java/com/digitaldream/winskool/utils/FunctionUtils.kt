@@ -155,7 +155,7 @@ object FunctionUtils {
 
     @JvmStatic
     fun plotLineChart(
-        sValues: ArrayList<ChartModel>,
+        sValues: MutableList<ChartModel>,
         sContext: Context,
         sVerticalTitle: String?,
         sHorizontalTitle: String?,
@@ -526,6 +526,7 @@ object FunctionUtils {
 
         }
     }
+
 
 
     @JvmStatic

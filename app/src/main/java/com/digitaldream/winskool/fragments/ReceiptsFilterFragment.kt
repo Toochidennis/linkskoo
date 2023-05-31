@@ -11,7 +11,6 @@ import com.digitaldream.winskool.dialog.FilterLevelClassDialog
 import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.digitaldream.winskool.utils.FunctionUtils.parseFilterJson
 import com.digitaldream.winskool.utils.FunctionUtils.selectDeselectButton
-import org.json.JSONArray
 import org.json.JSONObject
 
 
