@@ -215,14 +215,9 @@ class FilterLevelClassDialog(
             }
 
             dismiss()
+            sDismiss()
         }
 
-    }
-
-
-    override fun dismiss() {
-        super.dismiss()
-        sDismiss()
     }
 
 

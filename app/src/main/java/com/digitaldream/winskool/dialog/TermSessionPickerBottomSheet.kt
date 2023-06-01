@@ -9,10 +9,13 @@ import android.widget.ImageView
 import android.widget.NumberPicker
 import androidx.cardview.widget.CardView
 import com.digitaldream.winskool.R
+import com.digitaldream.winskool.models.TimeFrameDataModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Calendar
 
-class TermSessionPickerBottomSheet : BottomSheetDialogFragment() {
+class TermSessionPickerBottomSheet(
+    private val timeFrameDataModel: TimeFrameDataModel
+) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,10 +81,14 @@ class TermSessionPickerBottomSheet : BottomSheetDialogFragment() {
                 else -> "3"
             }
 
-            val selectedYear = sessionPicker.value.toString().substring(4, 8)
+            val selectedYear = sessionList[sessionPicker.value].substring(5, 9)
 
-            println(" selected year: $selectedYear : selectedTerm: $selectedTerm")
+            timeFrameDataModel.term = selectedTerm
+            timeFrameDataModel.year = selectedYear
 
+            dismiss()
+
+            timeFrameDataModel.getData()
         }
 
     }

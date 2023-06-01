@@ -28,13 +28,16 @@ import com.digitaldream.winskool.dialog.TermSessionPickerBottomSheet
 import com.digitaldream.winskool.models.ChartModel
 import com.digitaldream.winskool.models.ExpenditureHistoryModel
 import com.digitaldream.winskool.models.TimeFrameDataModel
+import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.currencyFormat
+import com.digitaldream.winskool.utils.FunctionUtils.formatOrdinalTerms
+import com.digitaldream.winskool.utils.FunctionUtils.getDate
 import com.digitaldream.winskool.utils.FunctionUtils.plotLineChart
 import com.digitaldream.winskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.winskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.achartengine.GraphicalView
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditure),
@@ -58,15 +61,19 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
     private lateinit var mSetupReportBtn2: ImageButton
     private lateinit var mSetupLayout: LinearLayout
     private lateinit var mExpenditureLayout: LinearLayout
+    private lateinit var mErrorMessage: TextView
 
 
-    private var mGraphicalView: GraphicalView? = null
-    private val mExpenditureList = mutableListOf<ExpenditureHistoryModel>()
-    private val mGraphList = mutableListOf<ChartModel>()
-    private lateinit var mAdapter: ExpenditureHistoryAdapter
-    private lateinit var mTimeFrameDataModel: TimeFrameDataModel
+    private lateinit var mExpenditureList: MutableList<ExpenditureHistoryModel>
+    private lateinit var mGraphList: MutableList<ChartModel>
+    private lateinit var timeFrameDataModel: TimeFrameDataModel
+
+    private var hashMap = hashMapOf<String, String>()
 
     private var isOpen = false
+    private var mTerm: String? = null
+    private var mYear: String? = null
+    private var mUrl: String? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,6 +100,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
             mSetupReportBtn2 = findViewById(R.id.setup_btn2)
             mSetupLayout = findViewById(R.id.setup_layout)
             mExpenditureLayout = findViewById(R.id.add_expenditure_layout)
+            mErrorMessage = findViewById(R.id.error_message)
 
 
             toolbar.apply {
@@ -103,47 +111,489 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
         }
 
+        val sharedPreferences =
+            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        mTerm = sharedPreferences.getString("term", "")
+        mYear = sharedPreferences.getString("school_year", "")
 
-        mAdapter = ExpenditureHistoryAdapter(
-            requireContext(),
-            mExpenditureList,
-            this
-        )
+        mUrl = "${getString(R.string.base_url)}/manageTransactions.php"
 
-//
-//        GenericAdapter(
-//            mExpenditureList,
-//            R.layout.fragment_history_expenditure_item,
-//            bindItem = { itemView, model ->
-//
-//                mExpenditureName = itemView.findViewById(R.id.expenditure_name)
-//                val mExpenditureDate: TextView = itemView.findViewById(R.id.expenditure_date)
-//                val mExpenditureAmount: TextView = itemView.findViewById(R.id.expenditure_amount)
-//                val mExpenditureType: TextView = itemView.findViewById(R.id.expenditure_type)
-//
-//
-//                mExpenditureName.text = model.getDate()
-//
-//            },
-//
-//            onItemClick = {
-//
-//            }
-//        )
 
-        mRecyclerView.apply {
-            hasFixedSize()
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = mAdapter
-            isAnimating
-        }
-
-        refreshData()
-
-        mTimeFrameDataModel = TimeFrameDataModel { getTimeFrameData() }
+        timeFrameDataModel = TimeFrameDataModel { filterTimeFrameData() }
 
         performButtonsClick()
 
+        getExpenditure()
+
+        refreshData()
+
+        termTitle(mTerm!!, mYear!!)
+
+        mTermBtn.isEnabled = false
+
+    }
+
+
+    private fun getExpenditure() {
+
+        hashMap.apply {
+            put("type", "expenditure")
+            put("term", mTerm!!)
+            put("year", mYear!!)
+            put("startDate", "this month")
+            put("endDate", "")
+            put("grouping", "")
+            put("filter", "")
+        }
+
+
+        requestToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    try {
+                        initialiseList()
+
+                        JSONObject(response).run {
+
+                            getJSONArray("expenditure").run {
+                                getJSONObject(0).run {
+                                    val sum = getString("sum")
+                                    val count = getString("count")
+
+                                    mExpenditureCount.text = count ?: "0"
+
+                                    setSum(sum)
+                                }
+
+                            }
+
+
+                            if (has("graph")) {
+                                val graphArray = getJSONArray("graph")
+
+                                for (i in 0 until graphArray.length()) {
+                                    val graphObject = graphArray.getJSONObject(i)
+                                    val graphAmount = graphObject.getString("amount")
+                                    val graphDate = graphObject.getString("label")
+
+                                    mGraphList.add(ChartModel(graphAmount, graphDate))
+                                }
+
+                                mGraphList.sortBy { it.label }
+                                setChartData(mGraphList)
+
+                            } else {
+                                setChartData(mGraphList)
+                            }
+
+
+                            if (has("transactions")) {
+                                val transactionsArray = getJSONArray("transactions")
+                                for (i in 0 until transactionsArray.length()) {
+                                    val transactionObject = transactionsArray.getJSONObject(i)
+
+                                    transactionObject.let {
+                                        val transactionType = it.getString("description")
+                                        val reference = it.getString("reference")
+                                        val vendorName = it.getString("name")
+                                        val telephone = it.getString("reg_no")
+                                        val expenditureAmount = it.getString("amount")
+                                        val date = it.getString("date")
+                                        val receiptTerm = when (it.getString("term")) {
+                                            "1" -> "First Term Fees"
+                                            "2" -> "Second Term Fees"
+                                            else -> "Third Term Fees"
+                                        }
+                                        val receiptYear = transactionObject.getString("year")
+
+                                        val session = "${receiptYear.toInt() - 1}/$receiptYear"
+
+                                        ExpenditureHistoryModel().apply {
+                                            this.vendorName = vendorName
+                                            this.amount = expenditureAmount
+                                            this.date = date
+                                            this.session = session
+                                            this.type = transactionType
+                                            this.referenceNumber = reference
+                                            this.term = receiptTerm
+                                            this.phone = telephone
+                                        }.let { model ->
+                                            mExpenditureList.add(model)
+                                        }
+
+                                    }
+
+                                }
+
+                                mExpenditureList.sortByDescending { it.date }
+
+                                ExpenditureHistoryAdapter(
+                                    requireContext(),
+                                    mExpenditureList,
+                                    null,
+                                    this@ExpenditureHistoryFragment
+                                ).let {
+                                    mRecyclerView.apply {
+                                        isAnimating
+                                        isVisible = true
+                                        layoutManager = LinearLayoutManager(requireContext())
+                                        adapter = it
+                                        hasFixedSize()
+                                    }
+                                    showRootView()
+                                }
+
+                            } else {
+                                hideRecyclerView()
+                            }
+
+                        }
+
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        mExpenditureView.isVisible = false
+                        mErrorView.isVisible = true
+                        mRefreshBtn.isVisible = false
+                        mErrorMessage.text = getString(R.string.contact_developer)
+                        mOpenBtn.isVisible = false
+                    }
+                }
+
+
+                override fun onError(error: VolleyError) {
+                    mExpenditureView.isVisible = false
+                    mErrorView.isVisible = true
+                    mOpenBtn.isVisible = false
+                }
+            }
+        )
+
+        hashMap = hashMapOf()
+
+    }
+
+
+    private fun filterTimeFrameData() {
+
+        timeFrameTitle(timeFrameDataModel.startDate ?: getDate())
+        termTitle("${timeFrameDataModel.term ?: mTerm}", "${timeFrameDataModel.year ?: mYear}")
+        mTermBtn.isEnabled = true
+
+        hashMap.apply {
+            put("type", "expenditure")
+            put("term", "${timeFrameDataModel.term ?: mTerm}")
+            put("year", "${timeFrameDataModel.year ?: mYear}")
+            put("startDate", "${timeFrameDataModel.startDate ?: timeFrameDataModel.duration}")
+            put("endDate", timeFrameDataModel.endDate ?: "")
+            put("grouping", timeFrameDataModel.grouping ?: "")
+            put("filter", timeFrameDataModel.filter ?: "")
+        }
+
+        when {
+            timeFrameDataModel.grouping != null -> {
+                requestToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
+                    object : VolleyCallback {
+                        override fun onResponse(response: String) {
+                            try {
+                                initialiseList()
+
+                                if (response != "[]") {
+                                    JSONObject(response).run {
+
+                                        getJSONArray("expenditure").run {
+                                            getJSONObject(0).run {
+                                                val sum = getString("sum")
+                                                val count = getString("count")
+                                                mExpenditureCount.text = count ?: "0"
+
+                                                setSum(sum)
+                                            }
+                                        }
+
+
+                                        if (has("graph")) {
+                                            getJSONArray("graph").run {
+                                                for (i in 0 until length()) {
+                                                    getJSONObject(i).run {
+                                                        val amount = getString("amount")
+                                                        val label = getString("label")
+
+                                                        mGraphList.add(
+                                                            ChartModel(
+                                                                amount,
+                                                                label
+                                                            )
+                                                        )
+
+                                                    }
+                                                }
+
+                                                mGraphList.sortBy { it.label }
+                                                setChartData(mGraphList)
+
+                                                ExpenditureHistoryAdapter(
+                                                    requireContext(),
+                                                    null,
+                                                    mGraphList,
+                                                    null
+                                                ).let {
+                                                    mRecyclerView.apply {
+                                                        isAnimating
+                                                        isVisible = true
+                                                        layoutManager =
+                                                            LinearLayoutManager(requireContext())
+                                                        adapter = it
+                                                        hasFixedSize()
+                                                    }
+                                                    showRootView()
+                                                }
+
+                                            }
+
+                                        } else {
+                                            hideRecyclerView()
+                                        }
+
+                                    }
+
+                                } else {
+                                    hideRecyclerView()
+                                }
+
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                mExpenditureView.isVisible = false
+                                mErrorView.isVisible = true
+                                mErrorMessage.text = getString(R.string.contact_developer)
+                                mRefreshBtn.isVisible = false
+                                mOpenBtn.isVisible = false
+                            }
+
+                        }
+
+                        override fun onError(error: VolleyError) {
+                            mExpenditureView.isVisible = false
+                            mErrorView.isVisible = true
+                            mOpenBtn.isVisible = false
+                        }
+                    }
+                )
+
+            }
+
+            else -> {
+                requestToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
+                    object : VolleyCallback {
+                        override fun onResponse(response: String) {
+                            try {
+                                initialiseList()
+
+                                JSONObject(response).run {
+                                    getJSONArray("expenditure").run {
+                                        getJSONObject(0).run {
+                                            val sum = getString("sum")
+                                            val count = getString("count")
+
+                                            mExpenditureCount.text = count ?: "0"
+
+                                            setSum(sum)
+                                        }
+                                    }
+
+
+                                    if (has("graph")) {
+                                        val graphArray = getJSONArray("graph")
+
+                                        for (i in 0 until graphArray.length()) {
+                                            val graphObject = graphArray.getJSONObject(i)
+                                            val graphAmount = graphObject.getString("amount")
+                                            val label = graphObject.getString("label")
+
+                                            mGraphList.add(
+                                                ChartModel(
+                                                    graphAmount,
+                                                    FunctionUtils.formatDate2(label)
+                                                )
+                                            )
+
+                                        }
+
+                                        mGraphList.sortBy { it.label }
+
+                                        setChartData(mGraphList)
+
+                                    } else {
+                                        setChartData(mGraphList)
+                                    }
+
+                                    if (has("transactions")) {
+
+                                        val transactionsArray = getJSONArray("transactions")
+
+                                        for (i in 0 until transactionsArray.length()) {
+                                            val transactionObject =
+                                                transactionsArray.getJSONObject(i)
+
+                                            transactionObject.let {
+                                                val transactionType = it.getString("description")
+                                                val reference = it.getString("reference")
+                                                val vendorName = it.getString("name")
+                                                val telephone = it.getString("reg_no")
+                                                val expenditureAmount = it.getString("amount")
+                                                val date = it.getString("date")
+                                                val receiptTerm = when (it.getString("term")) {
+                                                    "1" -> "First Term Fees"
+                                                    "2" -> "Second Term Fees"
+                                                    else -> "Third Term Fees"
+                                                }
+                                                val receiptYear =
+                                                    transactionObject.getString("year")
+
+                                                val session =
+                                                    "${receiptYear.toInt() - 1}/$receiptYear"
+
+                                                ExpenditureHistoryModel().apply {
+                                                    this.vendorName = vendorName
+                                                    this.amount = expenditureAmount
+                                                    this.date = date
+                                                    this.session = session
+                                                    this.type = transactionType
+                                                    this.referenceNumber = reference
+                                                    this.term = receiptTerm
+                                                    this.phone = telephone
+                                                }.let { model ->
+                                                    mExpenditureList.add(model)
+                                                }
+
+                                            }
+
+                                        }
+
+                                        mExpenditureList.sortByDescending {
+                                            it.date
+                                        }
+
+                                        ExpenditureHistoryAdapter(
+                                            requireContext(),
+                                            mExpenditureList,
+                                            null,
+                                            this@ExpenditureHistoryFragment
+                                        ).let {
+                                            mRecyclerView.apply {
+                                                isAnimating
+                                                isVisible = true
+                                                layoutManager =
+                                                    LinearLayoutManager(requireContext())
+                                                adapter = it
+                                                hasFixedSize()
+                                            }
+                                            showRootView()
+                                        }
+
+                                    } else {
+                                        hideRecyclerView()
+                                    }
+
+                                }
+
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                mExpenditureView.isVisible = false
+                                mErrorView.isVisible = true
+                                mErrorMessage.text = getString(R.string.contact_developer)
+                                mRefreshBtn.isVisible = false
+                                mOpenBtn.isVisible = false
+                            }
+                        }
+
+                        override fun onError(error: VolleyError) {
+                            mExpenditureView.isVisible = false
+                            mErrorView.isVisible = true
+                            mOpenBtn.isVisible = false
+                        }
+                    }
+                )
+            }
+        }
+
+        hashMap = hashMapOf()
+
+    }
+
+    private fun initialiseList() {
+        mExpenditureList = mutableListOf()
+        mGraphList = mutableListOf()
+    }
+
+
+    private fun setSum(sum: String) {
+        if (sum == "null" || sum.isBlank()) {
+            mExpenditureSum.text = getString(R.string.zero_balance)
+        } else {
+            String.format(
+                Locale.getDefault(),
+                "%s%s",
+                getString(R.string.naira),
+                currencyFormat(sum.toDouble())
+            ).also { mExpenditureSum.text = it }
+        }
+    }
+
+
+    private fun termTitle(term: String, year: String) {
+        val session = "${year.toInt() - 1}/$year"
+        mTermBtn.text = when (term) {
+            "1" -> formatOrdinalTerms("$session 1st Term")
+            "2" -> formatOrdinalTerms("$session 2nd Term")
+            else -> formatOrdinalTerms("$session 3rd Term")
+        }
+
+    }
+
+    private fun timeFrameTitle(date: String) {
+        try {
+            val simpleDateFormat = SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+            )
+
+            val parseDate = simpleDateFormat.parse(date)!!
+            val sdf = SimpleDateFormat("MMMM, yyyy", Locale.getDefault())
+            mTimeFrameBtn.text = sdf.format(parseDate)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    private fun setChartData(items: MutableList<ChartModel>) {
+        mExpenditureChart.removeAllViews()
+
+        val graphicalView =
+            plotLineChart(
+                items, requireContext(), "Expenses", "Label"
+            )
+        graphicalView.repaint()
+        mExpenditureChart.addView(graphicalView)
+
+    }
+
+
+    private fun showRootView() {
+        mExpenditureView.isVisible = true
+        mErrorView.isVisible = false
+        mOpenBtn.isVisible = true
+        mExpenditureMessage.isVisible = false
+    }
+
+    private fun hideRecyclerView() {
+        mExpenditureView.isVisible = true
+        mExpenditureMessage.isVisible = true
+        mRecyclerView.isVisible = false
+        mErrorView.isVisible = false
+        mOpenBtn.isVisible = true
     }
 
 
@@ -225,9 +675,9 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
         //open term /session dialog
         mTermBtn.setOnClickListener {
-            TermSessionPickerBottomSheet().show(
+            TermSessionPickerBottomSheet(timeFrameDataModel).show(
                 requireActivity().supportFragmentManager,
-                "Term/Session"
+                "Term & Session"
             )
         }
 
@@ -235,7 +685,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
 
     private fun timeFrameDialog() {
-        ExpenditureTimeFrameBottomSheet(mTimeFrameDataModel).show(
+        ExpenditureTimeFrameBottomSheet(timeFrameDataModel).show(
             childFragmentManager, "time frame"
         )
     }
@@ -256,158 +706,10 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
     }
 
 
-    private fun getTimeFrameData() {
-
-    }
-
-
-    private fun getExpenditure() {
-        mExpenditureList.clear()
-        val sharedPreferences =
-            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-
-        val term = sharedPreferences.getString("term", "")
-        val year = sharedPreferences.getString("school_year", "")
-
-        val url = "${getString(R.string.base_url)}/manageTransactions" +
-                ".php?type=expenditure&&term=$term&&year=$year"
-        val hashMap = hashMapOf<String, String>()
-
-        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
-            object : VolleyCallback {
-                override fun onResponse(response: String) = try {
-                    val jsonObject = JSONObject(response)
-                    val expenditureArray = jsonObject.getJSONArray("expenditure")
-                    val expenditureObject = expenditureArray.getJSONObject(0)
-                    val expenditureSum = expenditureObject.getString("sum")
-                    val expenditureCount = expenditureObject.getString("count")
-
-                    if (expenditureSum == "null" || expenditureSum.isNullOrBlank()) {
-                        mExpenditureSum.text = getString(R.string.zero_balance)
-                    } else {
-                        String.format(
-                            Locale.getDefault(), "%s%s", getString(R.string.naira),
-                            currencyFormat(expenditureSum.toDouble())
-                        ).also { mExpenditureSum.text = it }
-                    }
-                    mExpenditureCount.text = expenditureCount
-
-                    if (jsonObject.has("graph")) {
-                        val graphArray = jsonObject.getJSONArray("graph")
-
-                        for (i in 0 until graphArray.length()) {
-                            val graphObject = graphArray.getJSONObject(i)
-                            val graphAmount = graphObject.getString("amount")
-                            val graphDate = graphObject.getString("date")
-
-                            mGraphList.add(ChartModel(graphAmount, graphDate))
-                            mGraphList.sortBy { it.label }
-                        }
-
-                        if (mGraphicalView == null) {
-                            mGraphicalView = plotLineChart(
-                                mGraphList,
-                                requireContext(),
-                                "Received",
-                                "Month/Year",
-                            )
-                            mExpenditureChart.addView(mGraphicalView)
-                        } else {
-                            mGraphicalView!!.repaint()
-                        }
-                    } else {
-                        mGraphicalView = plotLineChart(
-                            mGraphList,
-                            requireContext(),
-                            "Received",
-                            "Month/Year",
-                        )
-                        mExpenditureChart.addView(mGraphicalView)
-                    }
-
-                    if (jsonObject.has("transactions")) {
-                        val transactionsArray = jsonObject.getJSONArray("transactions")
-                        for (i in 0 until transactionsArray.length()) {
-                            val transactionObject = transactionsArray.getJSONObject(i)
-                            val transactionType = transactionObject.getString("description")
-                            val reference = transactionObject.getString("reference")
-                            val vendorName = transactionObject.getString("name")
-                            val telephone = transactionObject.getString("reg_no")
-                            val expenditureAmount = transactionObject.getString("amount")
-                            val date = transactionObject.getString("date")
-                            val receiptTerm = when (transactionObject.getString("term")) {
-                                "1" -> "First Term Fees"
-                                "2" -> "Second Term Fees"
-                                else -> "Third Term Fees"
-                            }
-                            val receiptYear = transactionObject.getString("year")
-
-                            val session = "${receiptYear.toInt() - 1}/$receiptYear"
-
-                            ExpenditureHistoryModel().apply {
-                                this.vendorName = vendorName
-                                this.amount = expenditureAmount
-                                this.date = date
-                                this.session = session
-                                this.type = transactionType
-                                this.referenceNumber = reference
-                                this.term = receiptTerm
-                                this.phone = telephone
-                            }.let {
-                                mExpenditureList.apply {
-                                    add(it)
-                                    sortByDescending { it.date }
-                                }
-                            }
-
-
-                        }
-                        if (mExpenditureList.isEmpty()) {
-                            mExpenditureView.isVisible = true
-                            mExpenditureMessage.isVisible = true
-                            mOpenBtn.isVisible = true
-                            mErrorView.isVisible = false
-                        } else {
-                            mExpenditureView.isVisible = true
-                            mExpenditureMessage.isVisible = false
-                            mOpenBtn.isVisible = true
-                            mErrorView.isVisible = false
-                        }
-                        mAdapter.notifyDataSetChanged()
-
-                    } else {
-                        mExpenditureView.isVisible = true
-                        mExpenditureMessage.isVisible = true
-                        mOpenBtn.isVisible = true
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-                override fun onError(error: VolleyError) {
-                    mExpenditureView.isVisible = false
-                    mOpenBtn.isVisible = false
-                    mErrorView.isVisible = true
-                    mRefreshBtn.isVisible = true
-                }
-            }
-        )
-
-    }
-
-
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {
             getExpenditure()
         }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        getExpenditure()
-
     }
 
 

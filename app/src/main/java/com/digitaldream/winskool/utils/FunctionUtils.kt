@@ -20,6 +20,8 @@ import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Environment
 import android.os.SystemClock
+import android.text.SpannableString
+import android.text.style.SuperscriptSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -528,7 +530,6 @@ object FunctionUtils {
     }
 
 
-
     @JvmStatic
     fun getRandomColor(view: View) {
         val mutate = view.background.mutate() as GradientDrawable
@@ -625,7 +626,6 @@ object FunctionUtils {
     @JvmStatic
     fun parseFilterJson(json: String, from: String): String {
         val nameList = mutableListOf<String>()
-        println("json: $json")
 
         JSONObject(json).run {
             val jsonArray = getJSONArray(from)
@@ -764,6 +764,30 @@ object FunctionUtils {
         }
 
         return groupItems
+    }
+
+
+    @JvmStatic
+    fun formatOrdinalTerms(term: String): SpannableString {
+        val spannableString = SpannableString(term)
+        val ordinalSuffixes = arrayOf("st", "nd", "rd")
+        // \\d+(st|nd|rd)
+
+        for (suffix in ordinalSuffixes) {
+            val startIndex = term.indexOf(suffix)
+            if (startIndex >= 0) {
+                val endIndex = startIndex + suffix.length
+                spannableString.setSpan(
+                    SuperscriptSpan(),
+                    startIndex,
+                    endIndex,
+                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+
+        }
+
+        return spannableString
     }
 
 

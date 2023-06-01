@@ -225,11 +225,6 @@ class VendorAccountNamesBottomSheet(
     }
 
 
-    override fun onDismiss(dialog: DialogInterface) {
-        sDismiss()
-    }
-
-
     override fun onNameClick(holder: VendorAccountNamesAdapter.ViewHolder) {
 
         holder.itemView.setOnClickListener {
@@ -278,6 +273,7 @@ class VendorAccountNamesBottomSheet(
             }
 
             dismiss()
+            sDismiss()
         }
 
     }

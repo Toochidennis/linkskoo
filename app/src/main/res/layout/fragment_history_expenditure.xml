@@ -153,6 +153,7 @@
                     android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
                     android:drawablePadding="5dp"
                     android:elevation="0dp"
+                    android:textAllCaps="false"
                     android:focusable="true"
                     android:fontFamily="@font/poppins_regular"
                     android:foreground="?android:attr/selectableItemBackground"
