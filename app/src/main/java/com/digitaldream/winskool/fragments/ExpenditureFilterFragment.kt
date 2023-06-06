@@ -1,5 +1,6 @@
 package com.digitaldream.winskool.fragments
 
+
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -89,7 +90,7 @@ class ExpenditureFilterFragment(
             selectDeselectButton(mVendorBtn, "selected")
             setBtnText(
                 mVendorBtn,
-                parseFilterJson(sTimeFrameDataModel.account.toString(), "vendor"),
+                parseFilterJson(sTimeFrameDataModel.account.toString(), "cid"),
                 "vendor"
             )
         }
@@ -109,7 +110,7 @@ class ExpenditureFilterFragment(
         if (sTimeFrameDataModel.vendor != null) {
             setBtnText(
                 mVendorBtn,
-                parseFilterJson(sTimeFrameDataModel.vendor.toString(), "vendor"),
+                parseFilterJson(sTimeFrameDataModel.vendor.toString(), "cid"),
                 "vendor"
             )
         } else {
@@ -119,10 +120,10 @@ class ExpenditureFilterFragment(
         if (sTimeFrameDataModel.account != null && sTimeFrameDataModel.vendor != null) {
 
             val accountJson = JSONObject(sTimeFrameDataModel.classData!!).getJSONArray("account")
-            val vendorJson = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("vendor")
+            val vendorJson = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("cid")
 
             JSONObject().apply {
-                put("vendor", vendorJson)
+                put("cid", vendorJson)
                 put("account", accountJson)
             }.let {
                 sTimeFrameDataModel.filter = it.toString()
@@ -133,8 +134,8 @@ class ExpenditureFilterFragment(
     }
 
 
-    private fun setBtnText(button: Button, name: String, from: String) {
-        if (from == "vendor") {
+    private fun setBtnText(button: Button, name: String, buttonType: String) {
+        if (buttonType == "vendor") {
             "Vendor: $name".let { button.text = it }
         } else {
             "Account: $name".let { button.text = it }

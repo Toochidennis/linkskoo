@@ -32,7 +32,7 @@ class ExpenditureGroupingFragment(
         )
 
         when (sTimeFrameDataModel.grouping) {
-            "account", "vendor", "month" -> {
+            "account", "cid", "month" -> {
                 selectDeselectButton(getButtonByGroup(sTimeFrameDataModel.grouping), "selected")
             }
         }
@@ -66,7 +66,7 @@ class ExpenditureGroupingFragment(
             R.id.vendor_btn -> {
                 if (!mVendorBtn.isSelected) {
                     deselectAllButtonsExcept(mVendorBtn)
-                    sTimeFrameDataModel.grouping = "vendor"
+                    sTimeFrameDataModel.grouping = "cid"
                 } else {
                     selectDeselectButton(mVendorBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
@@ -100,7 +100,7 @@ class ExpenditureGroupingFragment(
     private fun getButtonByGroup(group: String?): Button {
         return when (group) {
             "month" -> mMonthBtn
-            "vendor" -> mVendorBtn
+            "cid" -> mVendorBtn
             else -> mAccountBtn
         }
     }

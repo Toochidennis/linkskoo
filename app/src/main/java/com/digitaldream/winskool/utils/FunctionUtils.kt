@@ -62,6 +62,7 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer
 import org.achartengine.renderer.XYSeriesRenderer
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -448,6 +449,7 @@ object FunctionUtils {
         val sharedPreferences =
             context.getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         val db = sharedPreferences.getString("db", "")
+
         val progressFlower = ACProgressFlower.Builder(context)
             .direction(ACProgressConstant.DIRECT_CLOCKWISE)
             .textMarginTop(10)
@@ -457,11 +459,12 @@ object FunctionUtils {
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
 
+        Timber.plant(Timber.DebugTree())
+
         val stringRequest = object : StringRequest(
-            method,
-            url,
+            method, url,
             { response: String ->
-                Log.d("response", response)
+                Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
                 progressFlower.dismiss()
 
@@ -614,7 +617,7 @@ object FunctionUtils {
             when (from) {
                 "level" -> put(from, jsonArray)
                 "class" -> put(from, jsonArray)
-                "vendor" -> put(from, jsonArray)
+                "cid" -> put(from, jsonArray)
                 "account" -> put(from, jsonArray)
             }
 
@@ -626,7 +629,6 @@ object FunctionUtils {
     @JvmStatic
     fun parseFilterJson(json: String, from: String): String {
         val nameList = mutableListOf<String>()
-
         JSONObject(json).run {
             val jsonArray = getJSONArray(from)
             for (i in 0 until jsonArray.length()) {

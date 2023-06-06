@@ -2,14 +2,10 @@ package com.digitaldream.winskool.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
@@ -24,11 +20,8 @@ import com.digitaldream.winskool.interfaces.OnLevelClassClickListener
 import com.digitaldream.winskool.models.ClassNameTable
 import com.digitaldream.winskool.models.LevelTable
 import com.digitaldream.winskool.models.TimeFrameDataModel
-import com.digitaldream.winskool.utils.FunctionUtils
 import com.digitaldream.winskool.utils.FunctionUtils.getSelectedItem
 import com.digitaldream.winskool.utils.FunctionUtils.onItemClick
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 
@@ -215,9 +208,13 @@ class FilterLevelClassDialog(
             }
 
             dismiss()
-            sDismiss()
         }
 
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        sDismiss()
     }
 
 
