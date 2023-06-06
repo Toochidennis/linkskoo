@@ -109,7 +109,7 @@ class ExpenditureFilterFragment(
         if (sTimeFrameDataModel.vendor != null) {
             setBtnText(
                 mVendorBtn,
-                parseFilterJson(sTimeFrameDataModel.vendor.toString(), "vendor"),
+                parseFilterJson(sTimeFrameDataModel.vendor.toString(), "cid"),
                 "vendor"
             )
         } else {
@@ -119,10 +119,10 @@ class ExpenditureFilterFragment(
         if (sTimeFrameDataModel.account != null && sTimeFrameDataModel.vendor != null) {
 
             val accountJson = JSONObject(sTimeFrameDataModel.classData!!).getJSONArray("account")
-            val vendorJson = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("vendor")
+            val vendorJson = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("cid")
 
             JSONObject().apply {
-                put("vendor", vendorJson)
+                put("cid", vendorJson)
                 put("account", accountJson)
             }.let {
                 sTimeFrameDataModel.filter = it.toString()

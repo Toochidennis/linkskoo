@@ -62,6 +62,7 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer
 import org.achartengine.renderer.XYSeriesRenderer
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -390,7 +391,8 @@ object FunctionUtils {
         val randomId = UUID.randomUUID().toString()
         try {
             val file = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     .absolutePath + "/receipt$randomId.pdf"
             )
 
@@ -461,7 +463,7 @@ object FunctionUtils {
             method,
             url,
             { response: String ->
-                Log.d("response", response)
+                Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
                 progressFlower.dismiss()
 
@@ -614,7 +616,7 @@ object FunctionUtils {
             when (from) {
                 "level" -> put(from, jsonArray)
                 "class" -> put(from, jsonArray)
-                "vendor" -> put(from, jsonArray)
+                "cid" -> put(from, jsonArray)
                 "account" -> put(from, jsonArray)
             }
 

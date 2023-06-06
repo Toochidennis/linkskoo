@@ -66,7 +66,7 @@ class ExpenditureGroupingFragment(
             R.id.vendor_btn -> {
                 if (!mVendorBtn.isSelected) {
                     deselectAllButtonsExcept(mVendorBtn)
-                    sTimeFrameDataModel.grouping = "vendor"
+                    sTimeFrameDataModel.grouping = "cid"
                 } else {
                     selectDeselectButton(mVendorBtn, "deselected")
                     sTimeFrameDataModel.grouping = null
