@@ -5,11 +5,11 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.digitaldream.winskool"
+        applicationId "com.digitaldream.linkskool"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 42
-        versionName "27.7"
+        versionCode 31
+        versionName "27.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -49,7 +49,7 @@ android {
         checkReleaseBuilds false
     }
 
-    namespace 'com.digitaldream.winskool'
+    namespace 'com.digitaldream.linkskool'
 
     packagingOptions {
         resources {
