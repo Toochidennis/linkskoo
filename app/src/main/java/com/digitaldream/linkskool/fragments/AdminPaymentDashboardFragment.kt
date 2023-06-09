@@ -38,7 +38,7 @@ import org.json.JSONObject
 import java.util.Locale
 
 
-class AdminPaymentDashboardFragment : Fragment(),
+class AdminPaymentDashboardFragment : Fragment(R.layout.fragment_dashboard_payment_admin),
     OnItemClickListener {
 
     private lateinit var menuHost: MenuHost
@@ -63,53 +63,49 @@ class AdminPaymentDashboardFragment : Fragment(),
     private val mTransactionList = mutableListOf<AdminPaymentModel>()
     private lateinit var mAdapter: AdminPaymentDashboardAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
 
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(
-            R.layout.fragment_dashboard_payment_admin, container,
-            false
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            mMainLayout = findViewById(R.id.dashboard_view)
+            mReceivedBtn = findViewById(R.id.received_btn)
+            mRecyclerView = findViewById(R.id.transaction_recycler)
+            mDebtBtn = findViewById(R.id.debt_btn)
+            mDebtTxt = findViewById(R.id.debt_txt)
+            mReceivedTxt = findViewById(R.id.received_txt)
+            mTransactionImage = findViewById(R.id.error_image)
+            mTransactionMessage = findViewById(R.id.transaction_error_message)
+            mErrorMessage = findViewById(R.id.error_message)
+            mHideAndSee = findViewById(R.id.hide_and_See)
+            mExpenditureBtn = findViewById(R.id.expenditure_btn)
+            mReceiptBtn = findViewById(R.id.receipt_btn)
+            mRecyclerLayout = findViewById(R.id.recycler_layout)
+            mExpectedAmount = findViewById(R.id.expected_revenue)
+            mSeeAllBtn = findViewById(R.id.see_all_btn)
+            mErrorView = findViewById(R.id.error_view)
+            mRefreshBtn = findViewById(R.id.refresh_btn)
 
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        menuHost = requireActivity()
+            (activity as AppCompatActivity).setSupportActionBar(toolbar)
+            val actionBar = (activity as AppCompatActivity).supportActionBar
+            menuHost = requireActivity()
 
-        setUpMenu()
+            setUpMenu()
 
-        actionBar!!.apply {
-            setHomeButtonEnabled(true)
-            title = "Payment"
-            setHomeAsUpIndicator(R.drawable.arrow_left)
-            setDisplayHomeAsUpEnabled(true)
+            actionBar!!.apply {
+                setHomeButtonEnabled(true)
+                title = "Payment"
+                setHomeAsUpIndicator(R.drawable.arrow_left)
+                setDisplayHomeAsUpEnabled(true)
+            }
+
+            toolbar.setNavigationOnClickListener {
+                requireActivity().onBackPressed()
+            }
+
         }
 
-        toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
-        }
-
-        mMainLayout = view.findViewById(R.id.dashboard_view)
-        mReceivedBtn = view.findViewById(R.id.received_btn)
-        mRecyclerView = view.findViewById(R.id.transaction_recycler)
-        mDebtBtn = view.findViewById(R.id.debt_btn)
-        mDebtTxt = view.findViewById(R.id.debt_txt)
-        mReceivedTxt = view.findViewById(R.id.received_txt)
-        mTransactionImage = view.findViewById(R.id.error_image)
-        mTransactionMessage = view.findViewById(R.id.transaction_error_message)
-        mErrorMessage = view.findViewById(R.id.error_message)
-        mHideAndSee = view.findViewById(R.id.hide_and_See)
-        mExpenditureBtn = view.findViewById(R.id.expenditure_btn)
-        mReceiptBtn = view.findViewById(R.id.receipt_btn)
-        mRecyclerLayout = view.findViewById(R.id.recycler_layout)
-        mExpectedAmount = view.findViewById(R.id.expected_revenue)
-        mSeeAllBtn = view.findViewById(R.id.see_all_btn)
-        mErrorView = view.findViewById(R.id.error_view)
-        mRefreshBtn = view.findViewById(R.id.refresh_btn)
 
         mAdapter = AdminPaymentDashboardAdapter(requireContext(), mTransactionList, this)
         mRecyclerView.hasFixedSize()
@@ -119,57 +115,6 @@ class AdminPaymentDashboardFragment : Fragment(),
         refreshData()
 
         buttonsCLick()
-
-
-        return view
-    }
-
-    private fun buttonsCLick() {
-
-        mExpenditureBtn.setOnClickListener {
-            startActivity(
-                Intent(activity, PaymentActivity().javaClass)
-                    .putExtra("from", "expenditure")
-            )
-
-        }
-
-        mReceiptBtn.setOnClickListener {
-            startActivity(
-                Intent(activity, PaymentActivity().javaClass)
-                    .putExtra("from", "receipt")
-            )
-        }
-
-        mSeeAllBtn.setOnClickListener {
-            startActivity(
-                Intent(activity, PaymentActivity().javaClass)
-                    .putExtra("from", "see_all")
-            )
-        }
-
-        mReceivedBtn.setOnClickListener {
-            AdminClassesDialog(requireContext(), "received", "", null)
-                .apply {
-                    setCancelable(true)
-                    show()
-                }.window?.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-        }
-
-        mDebtBtn.setOnClickListener {
-            AdminClassesDialog(requireContext(), "debt", "", null)
-                .apply {
-                    setCancelable(true)
-                    show()
-                }.window?.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-        }
-
     }
 
 
@@ -180,14 +125,33 @@ class AdminPaymentDashboardFragment : Fragment(),
         val year = sharedPreferences.getString("school_year", "")
         val isHide = sharedPreferences.getBoolean("hide", false)
 
-        val url = "${getString(R.string.base_url)}/manageTransactions" +
-                ".php?dashboard=1&&term=$term&&year=$year"
+        val url = "${getString(R.string.base_url)}/manageTransactions.php?dashboard=1&&term=$term" +
+                "&&year=$year"
         val hashMap = hashMapOf<String, String>()
+
+//        hashMap.apply {
+//            put("dashboard", "1")
+//            put("term", term!!)
+//            put("year", year!!)
+//        }
+
 
         requestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
+//
+//                        if (response != "[]") {
+//                            JSONObject(response).run {
+//                                if (has("receipts") && has("invoice")){
+//                                    val receiptsArray = getJSONArray("receipts")
+//                                    val invoiceArray = getJSONArray("invoice")
+//                                }
+//
+//                            }
+//                        }
+
+
                         val jsonObject = JSONObject(response)
                         val receiptsArray = jsonObject.getJSONArray("receipts")
                         val invoiceArray = jsonObject.getJSONArray("invoice")
@@ -204,7 +168,7 @@ class AdminPaymentDashboardFragment : Fragment(),
                         for (i in 0 until transactionsArray.length()) {
                             val transactionsObject = transactionsArray.getJSONObject(i)
                             val transactionType = transactionsObject.getString("trans_type")
-                          //  val reference = transactionsObject.getString("reference")
+                            //  val reference = transactionsObject.getString("reference")
                             val description = transactionsObject.getString("description")
                             val amount = transactionsObject.getString("amount")
                             val date = transactionsObject.getString("date")
@@ -238,9 +202,7 @@ class AdminPaymentDashboardFragment : Fragment(),
                         mMainLayout.isVisible = false
                         mErrorView.isVisible = true
                         mRefreshBtn.isVisible = false
-                        "An error occurred, please contact your developer for more info".also {
-                            mErrorMessage.text = it
-                        }
+                        mErrorMessage.text = getString(R.string.contact_developer)
 
                     }
                 }
@@ -325,6 +287,54 @@ class AdminPaymentDashboardFragment : Fragment(),
     }
 
 
+    private fun buttonsCLick() {
+
+        mExpenditureBtn.setOnClickListener {
+            startActivity(
+                Intent(activity, PaymentActivity().javaClass)
+                    .putExtra("from", "expenditure")
+            )
+
+        }
+
+        mReceiptBtn.setOnClickListener {
+            startActivity(
+                Intent(activity, PaymentActivity().javaClass)
+                    .putExtra("from", "receipt")
+            )
+        }
+
+        mSeeAllBtn.setOnClickListener {
+            startActivity(
+                Intent(activity, PaymentActivity().javaClass)
+                    .putExtra("from", "see_all")
+            )
+        }
+
+        mReceivedBtn.setOnClickListener {
+            AdminClassesDialog(requireContext(), "received", "", null)
+                .apply {
+                    setCancelable(true)
+                    show()
+                }.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+        }
+
+        mDebtBtn.setOnClickListener {
+            AdminClassesDialog(requireContext(), "debt", "", null)
+                .apply {
+                    setCancelable(true)
+                    show()
+                }.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+        }
+
+    }
+
     private fun setUpMenu() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -349,7 +359,6 @@ class AdminPaymentDashboardFragment : Fragment(),
         })
     }
 
-
     private fun refreshData() {
         mRefreshBtn.setOnClickListener {
             mTransactionList.clear()
@@ -368,3 +377,5 @@ class AdminPaymentDashboardFragment : Fragment(),
         Toast.makeText(requireContext(), ":)", Toast.LENGTH_SHORT).show()
     }
 }
+
+//keytool -exportcert -rfc -alias key1 -file upload_certificate.pem -keystore upload_key.jks

@@ -23,6 +23,7 @@ import android.os.SystemClock
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -457,6 +458,8 @@ object FunctionUtils {
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
+        
+        Timber.plant(Timber.DebugTree())
 
         val stringRequest = object : StringRequest(
             method,

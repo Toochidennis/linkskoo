@@ -14,16 +14,5 @@
     </targetSelectedWithDropDown>
     <timeTargetWasSelectedWithDropDown value="2023-05-23T09:33:46.323411700Z" />
     <multipleDevicesSelectedInDropDown value="true" />
-    <runningDeviceTargetsSelectedWithDialog>
-      <Target>
-        <type value="RUNNING_DEVICE_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="R9AMC2WD4EJ" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </runningDeviceTargetsSelectedWithDialog>
   </component>
 </project>

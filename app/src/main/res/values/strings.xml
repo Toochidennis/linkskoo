@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Link Skool</string>
+    <string name="app_name">LinkSkool</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -43,7 +43,7 @@
     <string name="failed_internet">Failed to load Students, please check your internet connection and try again</string>
     <string name="can_not_retrieve">Failed to load data, please check your internet connection
         and try again</string>
-    <string name="no_history">No payment made for this month</string>
+    <string name="no_history">No payment made yet</string>
     <string name="naira">\u20A6</string>
     <string name="success">Success</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -8,12 +8,14 @@ android {
         applicationId "com.digitaldream.linkskool"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 31
-        versionName "27.4"
+        versionCode 34
+        versionName "27.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary true
         }
+
         buildConfigField("String", "PSTK_PUBLIC_KEY", PSTK_PUBLIC_KEY)
         buildConfigField("String", "PSTK_SECRET_KEY", PSTK_SECRET_KEY)
     }
