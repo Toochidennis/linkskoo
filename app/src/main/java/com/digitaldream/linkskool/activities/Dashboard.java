@@ -146,26 +146,11 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
+
         userId = sharedPreferences.getString("user_id", "");
         user_name = sharedPreferences.getString("user", "User ID: " + userId);
         db = sharedPreferences.getString("db", "");
 
-        /*String session = generalSettingsList.get(0).getSchoolYear();
-        //String term = generalSettingsList.get(0).getSchoolTerm();
-        if(term.equals("1")){
-            term = term+"st term";
-        }else if(term.equals("2")){
-            term = term+"nd term";
-        }else if(term.equals("3")){
-            term = term+"rd term";
-        }
-        try {
-            int previousYear = Integer.parseInt(session) - 1;
-            schoolSession.setText(String.valueOf(previousYear) + "/" +
-            session + " " + term);
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
 
         if (!user_name.equals("null")) {
             try {

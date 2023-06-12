@@ -95,7 +95,7 @@ class AdminTransactionHistoryFragment : Fragment(), OnItemClickListener {
         progressFlower.show()
 
         val url = "${getString(R.string.base_url)}/manageTransactions" +
-                ".php?dashboard=1&&term=$term&&year=$year"
+                ".php?dashboard=1&&term=$term&&year=$year&&_db=$db"
         val stringRequest = object : StringRequest(
             Method.GET,
             url,
@@ -148,12 +148,7 @@ class AdminTransactionHistoryFragment : Fragment(), OnItemClickListener {
                 mRefreshBtn.isVisible = true
                 mErrorMessage.text = getString(R.string.can_not_retrieve)
             }) {
-            override fun getParams(): MutableMap<String, String> {
-                val stringMap = hashMapOf<String, String>()
-                stringMap["_db"] = db!!
 
-                return stringMap
-            }
         }
 
         Volley.newRequestQueue(requireContext()).add(stringRequest)

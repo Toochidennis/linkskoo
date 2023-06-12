@@ -23,7 +23,6 @@ import android.os.SystemClock
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -458,12 +457,19 @@ object FunctionUtils {
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
-        
+
         Timber.plant(Timber.DebugTree())
+
+        val mUrl =
+            if (values.isEmpty()) {
+                "$url&&_db=$db"
+            } else {
+                url
+            }
 
         val stringRequest = object : StringRequest(
             method,
-            url,
+            mUrl,
             { response: String ->
                 Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
@@ -481,8 +487,8 @@ object FunctionUtils {
                     for ((key, value) in values) {
                         stringMap[key] = value
                     }
+                    stringMap["_db"] = db!!
                 }
-                stringMap["_db"] = db!!
 
                 return stringMap
             }

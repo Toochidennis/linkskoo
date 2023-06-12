@@ -3,7 +3,6 @@ package com.digitaldream.linkskool.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -125,77 +124,75 @@ class AdminPaymentDashboardFragment : Fragment(R.layout.fragment_dashboard_payme
         val year = sharedPreferences.getString("school_year", "")
         val isHide = sharedPreferences.getBoolean("hide", false)
 
-        val url = "${getString(R.string.base_url)}/manageTransactions.php?dashboard=1&&term=$term" +
-                "&&year=$year"
+        val url = "${getString(R.string.base_url)}/manageTransactions.php"
         val hashMap = hashMapOf<String, String>()
 
-//        hashMap.apply {
-//            put("dashboard", "1")
-//            put("term", term!!)
-//            put("year", year!!)
-//        }
+        hashMap.apply {
+            put("dashboard", "1")
+            put("term", term!!)
+            put("year", year!!)
+        }
 
 
-        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+        requestToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
-//
-//                        if (response != "[]") {
-//                            JSONObject(response).run {
-//                                if (has("receipts") && has("invoice")){
-//                                    val receiptsArray = getJSONArray("receipts")
-//                                    val invoiceArray = getJSONArray("invoice")
-//                                }
-//
-//                            }
-//                        }
 
+                        JSONObject(response).run {
+                            val receiptsSum = getJSONArray("receipts")
+                                .getJSONObject(0)
+                                .getString("sum")
+                                .replace(".00", "")
 
-                        val jsonObject = JSONObject(response)
-                        val receiptsArray = jsonObject.getJSONArray("receipts")
-                        val invoiceArray = jsonObject.getJSONArray("invoice")
-                        val transactionsArray = jsonObject.getJSONArray("transactions")
+                            val invoiceSum = getJSONArray("invoice")
+                                .getJSONObject(0)
+                                .getString("sum")
+                                .replace(".00", "")
 
-                        val receiptsObject = receiptsArray.getJSONObject(0)
-                        val receiptsSum = receiptsObject.getString("sum").replace(".00", "")
+                            hideAndShowBalance(isHide, invoiceSum, receiptsSum)
 
-                        val invoiceObject = invoiceArray.getJSONObject(0)
-                        val invoiceSum = invoiceObject.getString("sum").replace(".00", "")
+                            if (has("transactions")) {
+                                val transactionsArray = getJSONArray("transactions")
 
-                        hideAndShowBalance(isHide, invoiceSum, receiptsSum)
+                                for (i in 0 until transactionsArray.length()) {
+                                    val transactionsObject = transactionsArray.getJSONObject(i)
+                                    val transactionType = transactionsObject.getString("trans_type")
+                                    //  val reference = transactionsObject.getString("reference")
+                                    val description = transactionsObject.getString("description")
+                                    val amount = transactionsObject.getString("amount")
+                                    val date = transactionsObject.getString("date")
 
-                        for (i in 0 until transactionsArray.length()) {
-                            val transactionsObject = transactionsArray.getJSONObject(i)
-                            val transactionType = transactionsObject.getString("trans_type")
-                            //  val reference = transactionsObject.getString("reference")
-                            val description = transactionsObject.getString("description")
-                            val amount = transactionsObject.getString("amount")
-                            val date = transactionsObject.getString("date")
+                                    AdminPaymentModel().apply {
+                                        mTransactionName = transactionType
+                                        mDescription = description
+                                        mReceivedAmount = amount
+                                        mTransactionDate = date
+                                    }.let { model ->
+                                        mTransactionList.add(model)
+                                    }
 
-                            val adminModel = AdminPaymentModel()
-                            adminModel.mTransactionName = transactionType
-                            adminModel.mDescription = description
-                            adminModel.mReceivedAmount = amount
-                            adminModel.mTransactionDate = date
-                            mTransactionList.add(adminModel)
-                            mTransactionList.sortByDescending { it.mTransactionDate }
+                                }
+
+                                mTransactionList.sortByDescending { it.mTransactionDate }
+
+                                mMainLayout.isVisible = true
+                                mTransactionMessage.isVisible = false
+                                mTransactionImage.isVisible = false
+                                mErrorView.isVisible = false
+                                mRecyclerLayout.isVisible = true
+
+                                mAdapter.notifyDataSetChanged()
+
+                            } else {
+                                mMainLayout.isVisible = true
+                                mTransactionMessage.isVisible = true
+                                mTransactionImage.isVisible = true
+                                mErrorView.isVisible = false
+                                mRecyclerLayout.isVisible = false
+                            }
+
                         }
-
-                        if (mTransactionList.isEmpty()) {
-                            mMainLayout.isVisible = true
-                            mTransactionMessage.isVisible = true
-                            mTransactionImage.isVisible = true
-                            mErrorView.isVisible = false
-                            mRecyclerLayout.isVisible = false
-                        } else {
-                            mMainLayout.isVisible = true
-                            mTransactionMessage.isVisible = false
-                            mTransactionImage.isVisible = false
-                            mErrorView.isVisible = false
-                            mRecyclerLayout.isVisible = true
-                        }
-                        mAdapter.notifyDataSetChanged()
 
                     } catch (e: Exception) {
                         e.printStackTrace()

@@ -129,7 +129,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
-        val url = "${getString(R.string.base_url)}/manageAccount.php?list=1"
+        val url = "${getString(R.string.base_url)}/manageAccount.php?list=1&&_db=$mDb"
         val stringRequest: StringRequest = object : StringRequest(
             Method.GET, url,
             { response: String ->
@@ -152,7 +152,7 @@ class AccountSetupFragment : Fragment(), OnInputListener {
                         }
 
                         mAccountList.add(accountModel)
-                        mAccountList.sortBy { it.mAccountName }
+                        mAccountList.sortBy { it.mAccountId }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()

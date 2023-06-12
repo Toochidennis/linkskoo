@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -272,9 +273,13 @@ class VendorAccountNamesBottomSheet(
             }
 
             dismiss()
-            sDismiss()
         }
 
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        sDismiss()
     }
 
 }

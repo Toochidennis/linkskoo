@@ -75,7 +75,6 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
     private var mTerm: String? = null
     private var mYear: String? = null
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -703,9 +702,9 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
     private fun termTitle(term: String, year: String) {
         val session = "${year.toInt() - 1}/$year"
         mTermBtn.text = when (term) {
-            "1" -> formatOrdinalTerms("$session 1st Term")
-            "2" -> formatOrdinalTerms("$session 2nd Term")
-            else -> formatOrdinalTerms("$session 3rd Term")
+            "1" -> "$session 1st Term"
+            "2" -> "$session 2nd Term"
+            else -> "$session 3rd Term"
         }
 
     }
