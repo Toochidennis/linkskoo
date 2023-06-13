@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragments.AdminELearning">
+    android:background="@color/white"
+    tools:context=".fragments.AdminELearningFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -17,42 +20,187 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:contentDescription="@string/todo">
 
-            <LinearLayout
-                android:id="@+id/t"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/background_gradient_color"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@color/white">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/banner_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="Select Level"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="120dp"
+                        android:contentDescription="@string/todo"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/learning_bg" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/e_learning_level_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp" />
+                    <TextView
+                        android:id="@+id/course_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginBottom="35dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="English Language"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/level_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="JSS1"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
 
-    </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+                <RelativeLayout
+                    android:id="@+id/notification_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:layout_below="@id/banner_layout"
+                    android:layout_marginTop="@dimen/dimen_10"
+                    android:background="@drawable/edit_text_bg4">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/description_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        app:cardElevation="0dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginTop="10dp"
+                                android:backgroundTint="@color/test_color_1"
+                                app:cardCornerRadius="@dimen/dimen_24"
+                                app:contentPadding="8dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:contentDescription="@string/todo"
+                                    android:src="@drawable/baseline_assignment_24"
+                                    app:tint="@color/white" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/description"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_toStartOf="@id/more_btn"
+                                android:layout_toEndOf="@id/icon"
+                                android:ellipsize="marquee"
+                                android:fontFamily="@font/poppins_regular"
+                                android:lines="2"
+                                android:text="Toochi Dennis: Introduction to DevOps"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/description"
+                                android:layout_marginStart="15dp"
+                                android:layout_toEndOf="@id/icon"
+                                android:fontFamily="@font/poppins_regular"
+                                android:text="June 02, 2023"
+                                android:textColor="@color/test_color_7"
+                                android:textSize="12sp" />
+
+                            <ImageView
+                                android:id="@+id/more_btn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginTop="15dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:contentDescription="@string/todo"
+                                android:src="@drawable/ic_more"
+                                app:tint="@color/test_color_7" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:id="@+id/separator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/description_layout"
+                        android:background="@drawable/line_separator"
+                        android:orientation="horizontal" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/separator"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/montserrat"
+                        android:padding="10dp"
+                        android:text="Add course comment"
+                        android:textColor="@color/test_color_7"
+                        android:textSize="11sp" />
+
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</RelativeLayout>

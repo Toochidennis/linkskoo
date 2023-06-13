@@ -75,7 +75,7 @@ public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElear
 
         public StudentElearningCourseViewHolder(@NonNull View itemView, StudentElearningCourseAdapter.OnCourseClickListener onCourseClickListener) {
             super(itemView);
-            courseName = itemView.findViewById(R.id.elearning_course);
+            courseName = itemView.findViewById(R.id.course_name);
             courseInitials = itemView.findViewById(R.id.course_initials);
             linearLayout = itemView.findViewById(R.id.initials_bg);
             this.onCourseClickListener = onCourseClickListener;

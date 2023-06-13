@@ -437,15 +437,11 @@ public class CourseOutlines extends AppCompatActivity {
                     TableUtils.clearTable(databaseHelper.getConnectionSource(),
                             CourseOutlineTable.class);
                     for (int a = 0; a < contentArray.length(); a++) {
-                        Log.i("Value of a: ", String.valueOf(a));
                         JSONObject contentObj = contentArray.getJSONObject(a);
                         String id = contentObj.getString("id");
                         String week = contentObj.getString("rank");
                         String title = contentObj.getString("title");
                         String objective = contentObj.getString("description");
-
-                        Log.i("Obj: ", objective);
-
                         String noteMaterialPath = contentObj.getString("url");
                         String otherMatherialPath = contentObj.getString("picref");
                         String levelID = contentObj.getString("level");
@@ -468,7 +464,6 @@ public class CourseOutlines extends AppCompatActivity {
                         cot.setOtherMatherialPath(otherMatherialPath);
                         cot.setAssessmentUrl(noteMaterialPath);
                         cot.setBody(body);
-                        Log.i("response", week);
 
                         if (type.equals("2")) {
                             cot.setObjective(body);

@@ -54,7 +54,7 @@ class DatePickerBottomSheet(
             if (selectedDate.isEmpty()) {
                 selectedDate = "${datePicker.year}-${datePicker.month + 1}-${datePicker.dayOfMonth}"
             }
-            sDateListener.selectedDate(selectedDate)
+            sDateListener.selectedItem(selectedDate)
             dismiss()
         }
 

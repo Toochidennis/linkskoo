@@ -67,7 +67,7 @@ private List<CourseTable> courseLists= new ArrayList<>();
 
         public ElearningCourseViewHolder(@NonNull View itemView,OnCourseClickListener onCourseClickListener) {
             super(itemView);
-            courseName = itemView.findViewById(R.id.elearning_course);
+            courseName = itemView.findViewById(R.id.course_name);
             courseInitials = itemView.findViewById(R.id.course_initials);
             linearLayout = itemView.findViewById(R.id.initials_bg);
             this.onCourseClickListener = onCourseClickListener;

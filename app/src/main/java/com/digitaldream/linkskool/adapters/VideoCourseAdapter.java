@@ -62,7 +62,7 @@ public class VideoCourseAdapter extends RecyclerView.Adapter<VideoCourseAdapter.
 
         public VideoCourseViewHolder(@NonNull View itemView,OnVideoCourseClickListener onVideoCourseClickListener) {
             super(itemView);
-            courseName = itemView.findViewById(R.id.elearning_course);
+            courseName = itemView.findViewById(R.id.course_name);
             courseInitials = itemView.findViewById(R.id.course_initials);
             linearLayout = itemView.findViewById(R.id.initials_bg);
             this.onVideoCourseClickListener = onVideoCourseClickListener;

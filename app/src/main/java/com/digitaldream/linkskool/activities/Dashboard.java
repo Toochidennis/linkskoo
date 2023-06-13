@@ -22,16 +22,19 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.digitaldream.linkskool.R;
+import com.digitaldream.linkskool.adapters.NewsAdapter;
 import com.digitaldream.linkskool.config.DatabaseHelper;
 import com.digitaldream.linkskool.config.ForceUpdateAsync;
-import com.digitaldream.linkskool.adapters.NewsAdapter;
-import com.digitaldream.linkskool.R;
 import com.digitaldream.linkskool.dialog.AdminClassesDialog;
+import com.digitaldream.linkskool.dialog.AdminELearningDialog;
+import com.digitaldream.linkskool.dialog.ContactUsDialog;
 import com.digitaldream.linkskool.fragments.AdminDashboardFragment;
-import com.digitaldream.linkskool.fragments.AdminELearning;
+import com.digitaldream.linkskool.fragments.AdminELearningFragment;
 import com.digitaldream.linkskool.fragments.AdminPaymentDashboardFragment;
 import com.digitaldream.linkskool.fragments.ELibraryFragment;
 import com.digitaldream.linkskool.fragments.FlashCardList;
+import com.digitaldream.linkskool.interfaces.ResultListener;
 import com.digitaldream.linkskool.models.AssessmentModel;
 import com.digitaldream.linkskool.models.ClassNameTable;
 import com.digitaldream.linkskool.models.CourseOutlineTable;
@@ -48,7 +51,6 @@ import com.digitaldream.linkskool.models.TeacherCourseModelCopy;
 import com.digitaldream.linkskool.models.TeachersTable;
 import com.digitaldream.linkskool.models.VideoTable;
 import com.digitaldream.linkskool.models.VideoUtilTable;
-import com.digitaldream.linkskool.dialog.ContactUsDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.j256.ormlite.dao.Dao;
@@ -274,14 +276,42 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                     return true;
 
                 case R.id.student_elearning:
-                    getSupportFragmentManager().beginTransaction().replace(
-                            R.id.payment_container,
-                            new AdminELearning()).commit();
+
+                    AdminELearningDialog mAdminELearningDialog = new AdminELearningDialog(this,
+                            new ResultListener() {
+                                @Override
+                                public void sendClassName(@NonNull String sName) {
+                                    setHomeItem(Dashboard.this);
+                                }
+
+                                @Override
+                                public void sendLevelId(@NonNull String sLevelId) {
+
+                                }
+
+                                @Override
+                                public void sendClassId(@NonNull String sClassId) {
+
+                                    getSupportFragmentManager().beginTransaction().replace(
+                                            R.id.payment_container,
+                                            new AdminELearningFragment()).commit();
+                                }
+                            });
+
+                    mAdminELearningDialog.setCancelable(true);
+                    mAdminELearningDialog.show();
+                    Window mWindow = mAdminELearningDialog.getWindow();
+                    mWindow.setLayout(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+
                     return true;
             }
             return false;
         });
     }
+
 
     @Override
     public void onNewsClick(int position) {

@@ -50,12 +50,16 @@ class AdminClassesDialog(
     private lateinit var mErrorMessage: TextView
     private lateinit var mBackBtn: ImageView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        window!!.attributes.windowAnimations = R.style.DialogAnimation
-        window!!.setGravity(Gravity.BOTTOM)
+        window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            attributes.windowAnimations = R.style.DialogAnimation
+            setGravity(Gravity.BOTTOM)
+        }
+
         setContentView(R.layout.dialog_admin_classes)
 
         mLevelRecyclerView = findViewById(R.id.level_recycler)
@@ -63,6 +67,7 @@ class AdminClassesDialog(
         mTitle = findViewById(R.id.title)
         mErrorMessage = findViewById(R.id.error_message)
         mBackBtn = findViewById(R.id.back_btn)
+
 
         mLeftToLeftAnimation = AnimationUtils.loadAnimation(context, R.anim.move_left_left)
         mRightToRightAnimation = AnimationUtils.loadAnimation(context, R.anim.move_right_right)
@@ -76,10 +81,10 @@ class AdminClassesDialog(
             "Select Level".also { mTitle.text = it }
             mLevelRecyclerView.isVisible = true
             mErrorMessage.isVisible = false
-            // mClassRecyclerView.isVisible = false
             mClassRecyclerView.startAnimation(mRightToRightAnimation)
             mLevelRecyclerView.startAnimation(mLeftToRightAnimation)
         }
+
 
     }
 
@@ -130,6 +135,7 @@ class AdminClassesDialog(
             if (mClassList.isEmpty()) {
                 mErrorMessage.isVisible = true
                 mClassRecyclerView.isVisible = false
+                mLevelRecyclerView.isVisible = false
                 mBackBtn.isVisible = true
                 "Select Class".also { mTitle.text = it }
             } else {
@@ -156,10 +162,6 @@ class AdminClassesDialog(
         val levelTable = mLevelList[position]
 
         getClassName(levelTable.levelId)
-        if (mClassList.isEmpty()) {
-            mLevelRecyclerView.isVisible = false
-            mErrorMessage.isVisible = true
-        }
 
     }
 

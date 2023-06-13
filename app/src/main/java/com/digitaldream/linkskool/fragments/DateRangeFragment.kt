@@ -121,7 +121,7 @@ class DateRangeFragment(
             DatePickerBottomSheet(
                 "start date",
                 object : DateListener {
-                    override fun selectedDate(selectedDate: String) {
+                    override fun selectedItem(selectedDate: String) {
                         if (selectedDate.isNotEmpty()) {
                             mStartDateInput.setText(FunctionUtils.formatDate(selectedDate))
 
@@ -146,7 +146,7 @@ class DateRangeFragment(
             DatePickerBottomSheet(
                 "end date",
                 object : DateListener {
-                    override fun selectedDate(selectedDate: String) {
+                    override fun selectedItem(selectedDate: String) {
                         if (selectedDate.isNotEmpty()) {
                             mEndDateInput.setText(FunctionUtils.formatDate(selectedDate))
 
