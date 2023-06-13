@@ -62,7 +62,7 @@ class AdminELearningFragment : Fragment(R.layout.fragment_admin_elearning) {
             toolbar.apply {
                 title = "Stream"
                 setNavigationIcon(R.drawable.arrow_left)
-                setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+                setNavigationOnClickListener { requireActivity().onBackPressed() }
             }
 
             postLayout.setOnClickListener {

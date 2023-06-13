@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.fragments.AdminELearningAssignmentFragment
 import com.digitaldream.linkskool.fragments.AdminELearningTopicsFragment
 
 class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
@@ -17,6 +18,15 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     replace(
                         R.id.learning_container,
                         AdminELearningTopicsFragment()
+                    )
+                }
+            }
+
+            "assignment"->{
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningAssignmentFragment()
                     )
                 }
             }

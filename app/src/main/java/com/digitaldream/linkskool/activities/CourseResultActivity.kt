@@ -104,7 +104,7 @@ class CourseResultActivity : AppCompatActivity(R.layout.activity_course_result),
 
     private fun getCourseResults() {
 
-        val url = "${Login.urlBase}/classCourse" +
+        val url = "${getString(R.string.base_url)}/classCourse" +
                 ".php?class=$mClassId&&year=$mYear&&term=$mTerm"
         val hashMap = hashMapOf<String, String>()
 

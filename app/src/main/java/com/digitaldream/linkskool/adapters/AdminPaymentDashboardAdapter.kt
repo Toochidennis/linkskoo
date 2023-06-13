@@ -51,8 +51,11 @@ class AdminPaymentDashboardAdapter(
                     sContext, R.color.test_color_3
                 )
             )
+
+
             holder.mTransactionType.setImageResource(R.drawable.ic_expenditure)
             holder.mDescription.text = adminModel.mDescription
+
             String.format(
                 Locale.getDefault(), "%s %s%s", "-", sContext.getString(R.string.naira),
                 currencyFormat(adminModel.mReceivedAmount!!.toDouble())
