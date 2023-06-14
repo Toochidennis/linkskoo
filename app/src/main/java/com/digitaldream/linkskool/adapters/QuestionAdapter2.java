@@ -226,12 +226,7 @@ public class QuestionAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
                 MultipleVH multipleVH = (MultipleVH) holder;
                 multipleVH.question.setText(questionNumber+". "+qm.getQuestion());
                 multipleVH.edit.setTag(questionNumber);
-                multipleVH.edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showDialog(qm,position,(Integer) v.getTag());
-                    }
-                });
+                multipleVH.edit.setOnClickListener(v -> showDialog(qm,position,(Integer) v.getTag()));
                 if(!qm.getQuestion().isEmpty()){
                     multipleVH.rTitle.setVisibility(View.GONE);
                 }else{
@@ -243,19 +238,9 @@ public class QuestionAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }else{
                     multipleVH.showOptionBtn.setText("Add Options");
                 }
-                multipleVH.delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteRow(position);
-                    }
-                });
+                multipleVH.delete.setOnClickListener(v -> deleteRow(position));
                 qm.setQuestionNumber(String.valueOf(questionNumber));
-                multipleVH.copy.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        copyRow(position);
-                    }
-                });
+                multipleVH.copy.setOnClickListener(v -> copyRow(position));
 
                 break;
             case 5:

@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/shortAnswerBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/dimen_32"
@@ -21,6 +22,7 @@
         app:drawableStartCompat="@drawable/ic_short_text" />
 
     <TextView
+        android:id="@+id/multiChoiceBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/dimen_32"
@@ -42,6 +44,7 @@
         android:orientation="horizontal" />
 
     <TextView
+        android:id="@+id/sectionBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_16"

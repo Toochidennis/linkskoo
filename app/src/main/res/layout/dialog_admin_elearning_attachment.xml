@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/insertLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/dimen_32"
@@ -20,6 +21,7 @@
         app:drawableStartCompat="@drawable/ic_link" />
 
     <TextView
+        android:id="@+id/uploadFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/dimen_32"
@@ -41,6 +43,7 @@
         android:orientation="horizontal" />
 
     <TextView
+        android:id="@+id/takePhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/dimen_32"
@@ -54,6 +57,7 @@
         app:drawableStartCompat="@drawable/ic_camera_enhance" />
 
     <TextView
+        android:id="@+id/recordVideo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_16"

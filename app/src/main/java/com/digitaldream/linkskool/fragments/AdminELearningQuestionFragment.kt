@@ -5,7 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
+import androidx.appcompat.widget.Toolbar
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 private const val ARG_PARAM1 = "param1"
@@ -35,5 +39,32 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            val add: FloatingActionButton = findViewById(R.id.add_question_btn)
+
+            toolbar.apply {
+                title = "Stream"
+                setNavigationIcon(R.drawable.arrow_left)
+                setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            }
+
+            add.setOnClickListener {
+                AdminELearningQuestionDialog(requireContext(), parentFragmentManager).apply {
+                    setCancelable(true)
+                    show()
+                }.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+        }
+
+
     }
 }

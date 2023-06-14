@@ -13,57 +13,54 @@ import com.digitaldream.linkskool.activities.PaymentActivity
 import com.digitaldream.linkskool.dialog.TermFeeDialog
 
 
-class PaymentSettingsFragment : Fragment() {
+class PaymentSettingsFragment : Fragment(R.layout.fragment_settings_payment) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_settings_payment, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        view.apply {
+            val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
 
-        toolbar.apply {
-            title = "Payment Settings"
-            setNavigationIcon(R.drawable.arrow_left)
-            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
-        }
+            toolbar.apply {
+                title = "Payment Settings"
+                setNavigationIcon(R.drawable.arrow_left)
+                setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            }
 
-        val feeBtn = view.findViewById<CardView>(R.id.fee_settings)
-        val termBtn: CardView = view.findViewById(R.id.term_settings)
-        val accountBtn: CardView = view.findViewById(R.id.account_settings)
+            val feeBtn = view.findViewById<CardView>(R.id.fee_settings)
+            val termBtn: CardView = view.findViewById(R.id.term_settings)
+            val accountBtn: CardView = view.findViewById(R.id.account_settings)
 
-        feeBtn.setOnClickListener {
-            startActivity(
-                Intent(context, PaymentActivity().javaClass).putExtra(
-                    "from",
-                    "fee_settings"
+            feeBtn.setOnClickListener {
+                startActivity(
+                    Intent(context, PaymentActivity().javaClass).putExtra(
+                        "from",
+                        "fee_settings"
+                    )
                 )
-            )
 
-        }
+            }
 
-        termBtn.setOnClickListener {
-            TermFeeDialog(requireContext(), "term", null)
-                .apply {
-                    setCancelable(true)
-                    show()
-                }.window?.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+            termBtn.setOnClickListener {
+                TermFeeDialog(requireContext(), "term", null)
+                    .apply {
+                        setCancelable(true)
+                        show()
+                    }.window?.setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+            }
+
+            accountBtn.setOnClickListener {
+                startActivity(
+                    Intent(context, PaymentActivity().javaClass).putExtra(
+                        "from",
+                        "account_settings"
+                    )
                 )
-        }
+            }
 
-        accountBtn.setOnClickListener {
-            startActivity(
-                Intent(context, PaymentActivity().javaClass).putExtra(
-                    "from",
-                    "account_settings"
-                )
-            )
         }
-
-        return view
     }
 }

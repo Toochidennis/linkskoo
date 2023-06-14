@@ -231,19 +231,11 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                     }
                 });
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    }
+                new Handler().postDelayed(() -> {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }, 500);
-                attachBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectImage();
-                    }
-                });
+                attachBtn.setOnClickListener(v -> selectImage());
                 a.addView(view);
                 return;
             case "long_answer":
@@ -308,12 +300,9 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 questionNumberText.setText(qm.getQuestionNumber());
                 questionText.requestFocus();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    }
+                new Handler().postDelayed(() -> {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }, 500);
                 a.addView(view);
                 return;

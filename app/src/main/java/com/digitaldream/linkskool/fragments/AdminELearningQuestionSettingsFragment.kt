@@ -1,8 +1,13 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.ELearningActivity
 
 
 private const val ARG_PARAM1 = "param1"
@@ -34,4 +39,26 @@ class AdminELearningQuestionSettingsFragment : Fragment(R.layout.fragment_admin_
                 }
             }
     }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.apply {
+            val btn: Button = findViewById(R.id.apply_btn)
+            btn.setOnClickListener {
+                requireActivity().supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningQuestionFragment()
+                    )
+                }
+
+
+            }
+
+        }
+
+    }
+
 }

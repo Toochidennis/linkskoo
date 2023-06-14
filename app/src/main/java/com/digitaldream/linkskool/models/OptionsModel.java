@@ -5,9 +5,7 @@ import android.widget.EditText;
 
 public class OptionsModel {
     private String optionText;
-
     private boolean isChecked=false;
-
     private String correctAnswer;
     private String correctAnswerOrder;
 

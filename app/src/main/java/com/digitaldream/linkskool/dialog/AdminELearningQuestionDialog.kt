@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.dialog
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -7,9 +8,15 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Window
+import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.fragments.AdminELearningQuestionDialogFragment
 
-class AdminELearningQuestionDialog(context: Context): Dialog(context) {
+class AdminELearningQuestionDialog(
+    context: Context,
+    private val fragmentManager: FragmentManager
+): Dialog(context) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,5 +29,18 @@ class AdminELearningQuestionDialog(context: Context): Dialog(context) {
         }
 
         setContentView(R.layout.dialog_admin_e_learning_question)
+
+        val shortAnswer:TextView = findViewById(R.id.shortAnswerBtn)
+        val multiChoiceBtn:TextView = findViewById(R.id.multiChoiceBtn)
+        val sectionBtn:TextView = findViewById(R.id.sectionBtn)
+
+        multiChoiceBtn.setOnClickListener {
+
+           val dialogA = AdminELearningQuestionDialogFragment()
+            dialogA.isCancelable = true
+            dialogA.show(fragmentManager, "")
+
+            dismiss()
+        }
     }
 }

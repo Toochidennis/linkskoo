@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RadioButton
+        android:id="@+id/radioButtonOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_10" />
+
+    <EditText
+        android:id="@+id/editTextAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dimen_16"
+        android:layout_toStartOf="@id/removeOptionButton"
+        android:layout_toEndOf="@id/radioButtonOption"
+        android:autofillHints="name"
+        android:hint="Option"
+        android:inputType="textMultiLine"
+        android:lineSpacingMultiplier="1"
+        android:lines="2"
+        android:minLines="1"
+        android:overScrollMode="always"
+        android:padding="@dimen/dimen_16"
+        android:scrollbars="vertical" />
+
+    <ImageView
+        android:id="@+id/removeOptionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dimen_16"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ic_more"
+        app:tint="@color/test_color_7" />
+
+
+</RelativeLayout>

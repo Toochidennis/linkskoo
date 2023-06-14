@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.fragments.AdminELearningAssignmentFragment
-import com.digitaldream.linkskool.fragments.AdminELearningTopicsFragment
+import com.digitaldream.linkskool.fragments.*
+
 
 class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
 
@@ -30,6 +30,25 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     )
                 }
             }
+
+            "question"->{
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningQuestionSettingsFragment()
+                    )
+                }
+            }
+
+            "material"->{
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningMaterialFragment()
+                    )
+                }
+            }
+
         }
     }
 

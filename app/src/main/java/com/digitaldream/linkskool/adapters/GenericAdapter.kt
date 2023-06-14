@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 class GenericAdapter<T>(
     private val itemList: MutableList<T>,
     private val itemResLayout: Int,
-    private val bindItem: (itemView: View, model: T) -> Unit,
+    private val bindItem: (itemView: View, model: T, position: Int) -> Unit,
     private val onItemClick: (model: T) -> Unit
 ) : RecyclerView.Adapter<GenericAdapter<T>.ViewHolder>() {
+
+    init {
+        setHasStableIds(true)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(itemResLayout, parent, false)
@@ -21,7 +25,7 @@ class GenericAdapter<T>(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = itemList[position]
 
-        bindItem(holder.itemView, model)
+        bindItem(holder.itemView, model, position)
 
         holder.itemView.setOnClickListener {
             onItemClick(model)

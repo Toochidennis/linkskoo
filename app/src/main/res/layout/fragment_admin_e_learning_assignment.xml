@@ -267,11 +267,11 @@
         android:id="@+id/topic_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_topic2"
         android:drawablePadding="@dimen/dimen_16"
         android:padding="@dimen/dimen_16"
         android:textSize="@dimen/text_16"
-        android:text="Topic" />
+        android:text="Topic"
+        app:drawableStartCompat="@drawable/ic_topic2" />
 
     <LinearLayout
         android:layout_width="match_parent"

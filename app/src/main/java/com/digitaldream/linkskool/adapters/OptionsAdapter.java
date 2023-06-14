@@ -44,6 +44,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
 
         optionsViewHolder.optionText.setText(op.getOptionText());
         optionsViewHolder.optionText.requestFocus();
+
         optionsViewHolder.clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,29 +53,23 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
             }
         });
 
-        if(op.isChecked()) {
-            optionsViewHolder.radioButton.setChecked(true);
-        }else{
-            optionsViewHolder.radioButton.setChecked(false);
+        optionsViewHolder.radioButton.setChecked(op.isChecked());
 
-        }
-        optionsViewHolder.radioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for(int a=0;a<optionsList.size();a++){
-                   optionsList.get(a).setChecked(false);
-                }
-                optionsList.get(i).setChecked(true);
-
-                //QuestionDialog.adapter.notifyDataSetChanged();
-                //TestUpload.questionAdapter.notifyDataSetChanged();
-                op.setCorrectAnswer(optionsList.get(i).getOptionText());
-                //Toast.makeText(context,optionsList.get(i).getOptionText(),Toast.LENGTH_SHORT).show();
-
+        optionsViewHolder.radioButton.setOnClickListener(v -> {
+            for(int a=0;a<optionsList.size();a++){
+               optionsList.get(a).setChecked(false);
             }
+            optionsList.get(i).setChecked(true);
+
+            //QuestionDialog.adapter.notifyDataSetChanged();
+            //TestUpload.questionAdapter.notifyDataSetChanged();
+            op.setCorrectAnswer(optionsList.get(i).getOptionText());
+            //Toast.makeText(context,optionsList.get(i).getOptionText(),Toast.LENGTH_SHORT).show();
+
         });
 
     }
+
 
     public List<OptionsModel> getOptionsList(){
         List<OptionsModel> opList = new ArrayList<>();
@@ -86,6 +81,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
         }
         return opList;
     }
+
 
     @Override
     public int getItemCount() {

@@ -108,7 +108,7 @@ public class OptionsAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     multipleChoiceVH.optionPic.setImageURI(optionsModel.getOptionsImage());
                     //multipleChoiceVH.addImgContainer.setVisibility(View.GONE);
                     String imgUrl = optionsModel.getOptionImageUrl();
-                    Log.i("response","img "+imgUrl);
+
                     try {
                         //imgUrl = imgUrl.substring(2);
                         Picasso.get().load(Login.urlBase+"/"+imgUrl).into(multipleChoiceVH.optionPic);
@@ -164,37 +164,34 @@ public class OptionsAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 multipleChoiceVH.more.setOnClickListener(v -> {
                     PopupMenu popup = new PopupMenu(context, multipleChoiceVH.more);
                     popup.inflate(R.menu.pop_menu);
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()){
-                                case R.id.attach:
-                                    optionPosition = position;
-                                    Toast.makeText(context,"position "+optionPosition,Toast.LENGTH_SHORT).show();
-                                    Activity activity = unwrap(v.getContext());
-                                    selectOptionImage(activity);
-                                    return true;
-                                case R.id.delete:
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle("Delete ?");
-                                    builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            list.remove(position);
-                                            QuestionDialog2.adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                    popup.setOnMenuItemClickListener(item -> {
+                        switch (item.getItemId()){
+                            case R.id.attach:
+                                optionPosition = position;
+                                Toast.makeText(context,"position "+optionPosition,Toast.LENGTH_SHORT).show();
+                                Activity activity = unwrap(v.getContext());
+                                selectOptionImage(activity);
+                                return true;
+                            case R.id.delete:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Delete ?");
+                                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        list.remove(position);
+                                        QuestionDialog2.adapter.notifyDataSetChanged();
+                                    }
+                                });
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                        }
-                                    });
-                                    builder.show();
-                                    return true;
-                            }
-                            return false;
+                                    }
+                                });
+                                builder.show();
+                                return true;
                         }
+                        return false;
                     });
                     popup.show();
 

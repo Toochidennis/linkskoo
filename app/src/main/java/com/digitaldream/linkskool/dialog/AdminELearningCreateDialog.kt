@@ -47,6 +47,17 @@ class AdminELearningCreateDialog(
                 .putExtra("from", "assignment"))
         }
 
+        questionBtn.setOnClickListener {
+            context.startActivity(Intent(context, ELearningActivity::class.java)
+                .putExtra("from", "question"))
+        }
+
+        materialBtn.setOnClickListener {
+            context.startActivity(Intent(context, ELearningActivity::class.java)
+                .putExtra("from", "material"))
+        }
+
+
 
     }
 }

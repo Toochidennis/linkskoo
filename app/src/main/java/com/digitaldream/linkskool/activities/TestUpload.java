@@ -80,6 +80,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class TestUpload extends AppCompatActivity implements TestSettingHeaderAdapter.OnTestSettingHeaderClickListener, QuestionAdapter.OnQuestionClickListener, QuestionAdapter2.StartDragListener {
     public static RecyclerView recyclerView, questionRecycler;
@@ -122,9 +123,8 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         from = i.getStringExtra("from");
         assessmentId = i.getStringExtra("id");
 
-        Log.i("response Toochi", "json " + json);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
 
@@ -191,78 +191,75 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         touchHelper.attachToRecyclerView(questionRecycler);
 
         addQuestionBtn = findViewById(R.id.add_question);
-        addQuestionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (from.equalsIgnoreCase("upload") || from.equalsIgnoreCase("edit")) {
-                    QuestionTypeDialog dialog = new QuestionTypeDialog(TestUpload.this);
-                    dialog.show();
-                    Window window = dialog.getWindow();
-                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    addQuestionBtn.setEnabled(true);
-                } else if (from.equalsIgnoreCase("flashcard")) {
-                    QuestionsModel qm = new QuestionsModel();
-                    qm.setQuestionType("flash_card");
-                    qm.setQuestion("");
-                    qm.setQuestionId("");
-                    TestUpload.questionsList.add(qm);
-                    TestUpload.questionAdapter2.notifyDataSetChanged();
-                    TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount() - 1);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                           /*QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
-                           dialog2.show();
-                           Window window = dialog2.getWindow();
-                           //window.setLayout(ViewGroup.LayoutParams
-                           // .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                           window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                                   WindowManager.LayoutParams.MATCH_PARENT);*/
+        addQuestionBtn.setOnClickListener(v -> {
+            if (from.equalsIgnoreCase("upload") || from.equalsIgnoreCase("edit")) {
+                QuestionTypeDialog dialog = new QuestionTypeDialog(TestUpload.this);
+                dialog.show();
+                Window window = dialog.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                addQuestionBtn.setEnabled(true);
+            } else if (from.equalsIgnoreCase("flashcard")) {
+                QuestionsModel qm = new QuestionsModel();
+                qm.setQuestionType("flash_card");
+                qm.setQuestion("");
+                qm.setQuestionId("");
+                TestUpload.questionsList.add(qm);
+                TestUpload.questionAdapter2.notifyDataSetChanged();
+                TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount() - 1);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                       /*QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
+                       dialog2.show();
+                       Window window = dialog2.getWindow();
+                       //window.setLayout(ViewGroup.LayoutParams
+                       // .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                       window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                               WindowManager.LayoutParams.MATCH_PARENT);*/
 
-                            FragmentActivity activityF =
-                                    TestUpload.this;
-                            FragmentManager manager = activityF.getSupportFragmentManager();
-                            QuestionDialog2 dialog2 =
-                                    new QuestionDialog2(TestUpload.this
-                                            , qm,
-                                            TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
-                            dialog2.setCancelable(false);
-                            dialog2.show(manager, "tag");
+                        FragmentActivity activityF =
+                                TestUpload.this;
+                        FragmentManager manager = activityF.getSupportFragmentManager();
+                        QuestionDialog2 dialog2 =
+                                new QuestionDialog2(TestUpload.this
+                                        , qm,
+                                        TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
+                        dialog2.setCancelable(false);
+                        dialog2.show(manager, "tag");
 
-                        }
-                    }, 500);
-                } else if (from.equals("flash_card")) {
-                    QuestionsModel qm = new QuestionsModel();
-                    qm.setQuestionType("flash_card");
-                    qm.setQuestion("");
-                    qm.setQuestionId("");
-                    TestUpload.questionsList.add(qm);
-                    TestUpload.questionAdapter2.notifyDataSetChanged();
-                    TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount() - 1);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                           /*QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
-                           dialog2.show();
-                           Window window = dialog2.getWindow();
-                           window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    }
+                }, 500);
+            } else if (from.equals("flash_card")) {
+                QuestionsModel qm = new QuestionsModel();
+                qm.setQuestionType("flash_card");
+                qm.setQuestion("");
+                qm.setQuestionId("");
+                TestUpload.questionsList.add(qm);
+                TestUpload.questionAdapter2.notifyDataSetChanged();
+                TestUpload.questionRecycler.smoothScrollToPosition(TestUpload.questionAdapter2.getItemCount() - 1);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                       /*QuestionDialog2 dialog2 = new QuestionDialog2(TestUpload.this,qm,TestUpload.questionAdapter2.getItemCount()-1, QuestionAdapter2.questionNumber);
+                       dialog2.show();
+                       Window window = dialog2.getWindow();
+                       window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 */
 
-                            FragmentActivity activityF =
-                                    TestUpload.this;
-                            FragmentManager manager = activityF.getSupportFragmentManager();
-                            QuestionDialog2 dialog2 =
-                                    new QuestionDialog2(TestUpload.this
-                                            , qm,
-                                            TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
-                            dialog2.setCancelable(false);
-                            dialog2.show(manager, "tag");
+                        FragmentActivity activityF =
+                                TestUpload.this;
+                        FragmentManager manager = activityF.getSupportFragmentManager();
+                        QuestionDialog2 dialog2 =
+                                new QuestionDialog2(TestUpload.this
+                                        , qm,
+                                        TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
+                        dialog2.setCancelable(false);
+                        dialog2.show(manager, "tag");
 
-                        }
-                    }, 500);
-                }
-
+                    }
+                }, 500);
             }
+
         });
         submitBtn = findViewById(R.id.submit);
 

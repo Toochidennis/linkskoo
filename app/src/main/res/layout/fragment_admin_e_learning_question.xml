@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +9,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include
@@ -18,6 +19,244 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
+        android:contentDescription="@string/todo">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/edit_topic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_10"
+                android:background="@drawable/edit_text_bg4"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:padding="@dimen/dimen_16">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/test_color_1"
+                    app:cardCornerRadius="@dimen/dimen_24"
+                    app:contentPadding="8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/baseline_assignment_24"
+                        app:tint="@color/white" />
+
+                </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_toEndOf="@id/icon"
+                    android:ellipsize="marquee"
+                    android:fontFamily="@font/poppins_regular"
+                    android:lines="2"
+                    android:text="Topic: Introduction to DevOps"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/description"
+                    android:layout_marginStart="15dp"
+                    android:layout_toEndOf="@id/icon"
+                    android:ellipsize="marquee"
+                    android:fontFamily="@font/poppins_regular"
+                    android:lines="2"
+                    android:text="Description: An assignment to be submitted..."
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_16"
+                android:text="Part A"
+                android:textColor="@color/test_color_1"
+                android:textSize="@dimen/text_18"
+                app:drawableEndCompat="@drawable/ic_more" />
+
+            <RelativeLayout
+                android:id="@+id/notification_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_10"
+                android:background="@drawable/edit_text_bg4"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+
+                    <RelativeLayout
+                        android:id="@+id/description_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/count_icon"
+                            android:layout_width="@dimen/dimen_32"
+                            android:layout_height="@dimen/dimen_32"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="10dp"
+                            android:backgroundTint="@color/test_color_3"
+                            app:cardCornerRadius="@dimen/dimen_32">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/poppins_regular"
+                                android:padding="5dp"
+                                android:text="1"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/text_14" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:id="@+id/description1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_toEndOf="@id/count_icon"
+                            android:ellipsize="marquee"
+                            android:fontFamily="@font/poppins_regular"
+                            android:lines="2"
+                            android:text="Introduction to DevOps is what____?"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_16" />
+
+                    </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/description_layout"
+                    android:background="@drawable/line_separator"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/separator"
+                    android:drawablePadding="@dimen/dimen_16"
+                    android:padding="@dimen/dimen_10"
+                    android:text="Add answer"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@drawable/ic_more"
+                    app:drawableStartCompat="@drawable/ic_multi_choice" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_16">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preview"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_14"
+                    app:drawableTint="@color/test_color_2"
+                    app:drawableTopCompat="@drawable/ic_preview" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_question_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/test_color_3"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/ic_add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_14"
+                    app:drawableTint="@color/test_color_1"
+                    app:drawableTopCompat="@drawable/ic_submit" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

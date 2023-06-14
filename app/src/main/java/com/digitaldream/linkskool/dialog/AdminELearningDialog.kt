@@ -110,7 +110,7 @@ class AdminELearningDialog(
             } else {
                 GenericAdapter(mLevelList,
                     R.layout.dialog_fee_term_item,
-                    bindItem = { itemView, model ->
+                    bindItem = { itemView, model, _ ->
                         val levelName: Button = itemView.findViewById(R.id.level_name)
                         levelName.text = model.levelName
 
@@ -120,7 +120,9 @@ class AdminELearningDialog(
                     mLevelName = model.levelName
                     getCourses()
 
+
                 }.let {
+
                     mLevelRecyclerView.apply {
                         hasFixedSize()
                         isAnimating
@@ -129,6 +131,7 @@ class AdminELearningDialog(
                         isVisible = true
                     }
                 }
+
 
             }
 
@@ -158,7 +161,7 @@ class AdminELearningDialog(
                 GenericAdapter(
                     mCourseList,
                     R.layout.elearning_course_item,
-                    bindItem = { itemView, model ->
+                    bindItem = { itemView, model, _ ->
                         val courseName: TextView = itemView.findViewById(R.id.course_name)
                         val courseInitials: TextView = itemView.findViewById(R.id.course_initials)
                         val linearLayout: LinearLayout = itemView.findViewById(R.id.initials_bg)
