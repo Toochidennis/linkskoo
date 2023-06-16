@@ -238,7 +238,6 @@
             android:name=".FileTransferService"
             android:enabled="true" />
 
-
     </application>
 
 </manifest>

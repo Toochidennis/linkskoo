@@ -30,11 +30,11 @@ import com.digitaldream.linkskool.dialog.AdminClassesDialog;
 import com.digitaldream.linkskool.dialog.AdminELearningDialog;
 import com.digitaldream.linkskool.dialog.ContactUsDialog;
 import com.digitaldream.linkskool.fragments.AdminDashboardFragment;
-import com.digitaldream.linkskool.fragments.AdminELearningFragment;
+import com.digitaldream.linkskool.fragments.AdminELearningStreamFragment;
 import com.digitaldream.linkskool.fragments.AdminPaymentDashboardFragment;
 import com.digitaldream.linkskool.fragments.ELibraryFragment;
 import com.digitaldream.linkskool.fragments.FlashCardList;
-import com.digitaldream.linkskool.interfaces.ResultListener;
+import com.digitaldream.linkskool.interfaces.ELearningListener;
 import com.digitaldream.linkskool.models.AssessmentModel;
 import com.digitaldream.linkskool.models.ClassNameTable;
 import com.digitaldream.linkskool.models.CourseOutlineTable;
@@ -278,23 +278,31 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                 case R.id.student_elearning:
 
                     AdminELearningDialog mAdminELearningDialog = new AdminELearningDialog(this,
-                            new ResultListener() {
+                            new ELearningListener() {
                                 @Override
-                                public void sendClassName(@NonNull String sName) {
+                                public void goBackToHome() {
                                     setHomeItem(Dashboard.this);
-                                }
-
-                                @Override
-                                public void sendLevelId(@NonNull String sLevelId) {
 
                                 }
 
                                 @Override
-                                public void sendClassId(@NonNull String sClassId) {
+                                public void openELearning(@NonNull String courseName,
+                                                          @NonNull String courseId,
+                                                          @NonNull String levelName,
+                                                          @NonNull String levelId
+                                ) {
 
-                                    getSupportFragmentManager().beginTransaction().replace(
-                                            R.id.payment_container,
-                                            new AdminELearningFragment()).commit();
+                                    getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(
+                                                    R.id.payment_container,
+                                                    AdminELearningStreamFragment.newInstance(
+                                                            courseName,
+                                                            courseId,
+                                                            levelName,
+                                                            levelId
+                                                    )
+                                            ).commit();
                                 }
                             });
 

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.GenericAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
+import com.digitaldream.linkskool.interfaces.ELearningListener
 import com.digitaldream.linkskool.interfaces.ResultListener
 import com.digitaldream.linkskool.models.CourseTable
 import com.digitaldream.linkskool.models.LevelTable
@@ -30,7 +31,7 @@ import com.j256.ormlite.dao.DaoManager
 
 class AdminELearningDialog(
     context: Context,
-    private val onItemClick: ResultListener
+    private val onItemClick: ELearningListener
 ) : Dialog(context) {
 
     private lateinit var mLevelRecyclerView: RecyclerView
@@ -83,7 +84,7 @@ class AdminELearningDialog(
         }
 
         mDismissBtn.setOnClickListener {
-            onItemClick.sendClassName("")
+            onItemClick.goBackToHome()
             dismiss()
         }
 
@@ -119,7 +120,6 @@ class AdminELearningDialog(
                     mLevelId = model.levelId
                     mLevelName = model.levelName
                     getCourses()
-
 
                 }.let {
 
@@ -172,7 +172,10 @@ class AdminELearningDialog(
                     }
                 ) { model ->
 
-                    onItemClick.sendClassId(model.courseName)
+                    onItemClick.openELearning(
+                        model.courseName, model.courseId,
+                        mLevelName!!, mLevelId!!
+                    )
                     dismiss()
 
                 }.let {
