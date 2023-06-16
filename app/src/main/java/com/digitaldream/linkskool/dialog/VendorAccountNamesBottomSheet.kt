@@ -269,7 +269,7 @@ class VendorAccountNamesBottomSheet(
             if (mAccountList.isNotEmpty()) {
                 sTimeFrameDataModel.account = getSelectedItem(selectedItem, "account")
             } else {
-                sTimeFrameDataModel.vendor = getSelectedItem(selectedItem, "vendor")
+                sTimeFrameDataModel.vendor = getSelectedItem(selectedItem, "cid")
             }
 
             dismiss()

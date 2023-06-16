@@ -32,6 +32,7 @@ class ExpenditureFilterFragment(
 
     }
 
+
     private fun onClick(view: View) {
 
         when (view.id) {
@@ -75,6 +76,7 @@ class ExpenditureFilterFragment(
         }
     }
 
+
     private fun selectDeselectedButton() {
         if (sTimeFrameDataModel.account != null) {
             selectDeselectButton(mAccountBtn, "selected")
@@ -85,15 +87,17 @@ class ExpenditureFilterFragment(
             )
         }
 
+
         if (sTimeFrameDataModel.vendor != null) {
             selectDeselectButton(mVendorBtn, "selected")
             setBtnText(
                 mVendorBtn,
-                parseFilterJson(sTimeFrameDataModel.account.toString(), "vendor"),
+                parseFilterJson(sTimeFrameDataModel.account.toString(), "cid"),
                 "vendor"
             )
         }
     }
+
 
     private fun setSelectedName() {
         if (sTimeFrameDataModel.account != null) {
@@ -106,6 +110,7 @@ class ExpenditureFilterFragment(
             selectDeselectButton(mAccountBtn, "deselected")
         }
 
+
         if (sTimeFrameDataModel.vendor != null) {
             setBtnText(
                 mVendorBtn,
@@ -115,6 +120,7 @@ class ExpenditureFilterFragment(
         } else {
             selectDeselectButton(mVendorBtn, "deselected")
         }
+
 
         if (sTimeFrameDataModel.account != null && sTimeFrameDataModel.vendor != null) {
 

@@ -68,6 +68,8 @@ class AdminELearningQuestionDialogFragment :
                         itemView.findViewById(R.id.editTextAnswer)
                     val removeButton: ImageView =
                         itemView.findViewById(R.id.removeOptionButton)
+                    val attachmentTxt:TextView =
+                        itemView.findViewById(R.id.attachmentName)
 
 
                     editText.setOnTouchListener { v, event ->
@@ -85,6 +87,7 @@ class AdminELearningQuestionDialogFragment :
 
                     editText.setText(model.optionText)
                     radioButton.isChecked = position == selectedPosition
+
                     radioButton.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
                             selectedPosition = position
