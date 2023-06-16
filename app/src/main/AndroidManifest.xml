@@ -238,9 +238,6 @@
             android:name=".FileTransferService"
             android:enabled="true" />
 
-<!--        <meta-data-->
-<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
-<!--            android:value="ca-app-pub-9708958609167471~9055223780" />-->
 
     </application>
 
