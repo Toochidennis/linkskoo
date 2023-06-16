@@ -100,7 +100,7 @@ class ExpenditureGroupingFragment(
     private fun getButtonByGroup(group: String?): Button {
         return when (group) {
             "month" -> mMonthBtn
-            "vendor" -> mVendorBtn
+            "cid" -> mVendorBtn
             else -> mAccountBtn
         }
     }
