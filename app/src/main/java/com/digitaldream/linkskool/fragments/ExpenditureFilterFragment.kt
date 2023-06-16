@@ -124,8 +124,8 @@ class ExpenditureFilterFragment(
 
         if (sTimeFrameDataModel.account != null && sTimeFrameDataModel.vendor != null) {
 
-            val accountJson = JSONObject(sTimeFrameDataModel.classData!!).getJSONArray("account")
-            val vendorJson = JSONObject(sTimeFrameDataModel.levelData!!).getJSONArray("cid")
+            val accountJson = JSONObject(sTimeFrameDataModel.account!!).getJSONArray("account")
+            val vendorJson = JSONObject(sTimeFrameDataModel.vendor!!).getJSONArray("cid")
 
             JSONObject().apply {
                 put("cid", vendorJson)

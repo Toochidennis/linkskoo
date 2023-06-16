@@ -32,7 +32,7 @@ class ExpenditureGroupingFragment(
         )
 
         when (sTimeFrameDataModel.grouping) {
-            "account", "vendor", "month" -> {
+            "account", "cid", "month" -> {
                 selectDeselectButton(getButtonByGroup(sTimeFrameDataModel.grouping), "selected")
             }
         }
