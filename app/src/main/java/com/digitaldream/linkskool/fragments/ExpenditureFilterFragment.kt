@@ -92,7 +92,7 @@ class ExpenditureFilterFragment(
             selectDeselectButton(mVendorBtn, "selected")
             setBtnText(
                 mVendorBtn,
-                parseFilterJson(sTimeFrameDataModel.account.toString(), "cid"),
+                parseFilterJson(sTimeFrameDataModel.vendor.toString(), "cid"),
                 "vendor"
             )
         }
