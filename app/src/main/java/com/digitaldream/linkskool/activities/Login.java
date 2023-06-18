@@ -183,7 +183,7 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void onError(@NonNull VolleyError error) {
-                        Toast.makeText(Login.this, "Something went wrong, " +
+                        Toast.makeText(Login.this, error+ "Something went wrong, " +
                                 "Please try again", Toast.LENGTH_SHORT).show();
                     }
                 });

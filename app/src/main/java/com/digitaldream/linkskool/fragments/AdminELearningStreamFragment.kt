@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 private const val COURSE_NAME = "course_name"
@@ -21,6 +22,7 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
 
     private lateinit var mCourseNameTxt: TextView
     private lateinit var mLevelNameTxt: TextView
+    private lateinit var mAddCourseOutlineBtn: FloatingActionButton
 
     private var mCourseName: String? = null
     private var mCourseId: String? = null
@@ -63,6 +65,7 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
             val postLayout: RelativeLayout = findViewById(R.id.notification_layout)
             mCourseNameTxt = findViewById(R.id.course_name)
             mLevelNameTxt = findViewById(R.id.level_name)
+            mAddCourseOutlineBtn = findViewById(R.id.addCourseLineButton)
 
 
             toolbar.apply {
@@ -80,6 +83,12 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
                 )
             }
 
+        }
+
+
+        mAddCourseOutlineBtn.setOnClickListener {
+            AdminELearningAddCourseOutlineDialogFragment.newInstance(mLevelId!!)
+                .show(parentFragmentManager, "")
         }
 
     }

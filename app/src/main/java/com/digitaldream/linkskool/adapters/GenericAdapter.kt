@@ -9,7 +9,7 @@ class GenericAdapter<T>(
     private val itemList: MutableList<T>,
     private val itemResLayout: Int,
     private val bindItem: (itemView: View, model: T, position: Int) -> Unit,
-    private val onItemClick: (model: T) -> Unit
+    private val onItemClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<GenericAdapter<T>.ViewHolder>() {
 
     init {
@@ -25,10 +25,10 @@ class GenericAdapter<T>(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = itemList[position]
 
-        bindItem(holder.itemView, model, position)
+        bindItem(holder.itemView, model, holder.adapterPosition)
 
         holder.itemView.setOnClickListener {
-            onItemClick(model)
+            onItemClick(holder.adapterPosition)
         }
 
     }

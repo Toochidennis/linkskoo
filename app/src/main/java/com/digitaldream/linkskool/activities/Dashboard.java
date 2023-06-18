@@ -306,7 +306,7 @@ public class Dashboard extends AppCompatActivity implements NewsAdapter.OnNewsCl
                                 }
                             });
 
-                    mAdminELearningDialog.setCancelable(true);
+                    mAdminELearningDialog.setCancelable(false);
                     mAdminELearningDialog.show();
                     Window mWindow = mAdminELearningDialog.getWindow();
                     mWindow.setLayout(

@@ -109,16 +109,18 @@ class AdminELearningDialog(
                 mErrorMessage.isVisible = true
                 mLevelRecyclerView.isVisible = false
             } else {
-                GenericAdapter(mLevelList,
+                GenericAdapter(
+                    mLevelList,
                     R.layout.dialog_fee_term_item,
                     bindItem = { itemView, model, _ ->
                         val levelName: Button = itemView.findViewById(R.id.level_name)
                         levelName.text = model.levelName
 
                     }
-                ) { model ->
-                    mLevelId = model.levelId
-                    mLevelName = model.levelName
+                ) { position ->
+                    val levelModel = mLevelList[position]
+                    mLevelId = levelModel.levelId
+                    mLevelName = levelModel.levelName
                     getCourses()
 
                 }.let {
@@ -170,10 +172,11 @@ class AdminELearningDialog(
                         getRandomColor(linearLayout)
                         courseInitials.text = model.courseName.substring(0, 1).uppercase()
                     }
-                ) { model ->
+                ) { position ->
+                    val courseModel = mCourseList[position]
 
                     onItemClick.openELearning(
-                        model.courseName, model.courseId,
+                        courseModel.courseName, courseModel.courseId,
                         mLevelName!!, mLevelId!!
                     )
                     dismiss()

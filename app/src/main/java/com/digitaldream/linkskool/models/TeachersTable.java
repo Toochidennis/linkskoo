@@ -15,6 +15,8 @@ public class TeachersTable implements Serializable {
     private String staffSurname;
     @DatabaseField
     private String staffMiddlename;
+
+    private String staffFullName;
     @DatabaseField
     private String staffGender;
     @DatabaseField
@@ -78,6 +80,14 @@ public class TeachersTable implements Serializable {
 
     public void setStaffMiddlename(String staffMiddlename) {
         this.staffMiddlename = staffMiddlename;
+    }
+
+    public String getStaffFullName() {
+        return staffFullName;
+    }
+
+    public void setStaffFullName(String sStaffFullName) {
+        staffFullName = sStaffFullName;
     }
 
     public String getStaffGender() {

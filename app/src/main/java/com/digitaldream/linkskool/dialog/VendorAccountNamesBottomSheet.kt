@@ -46,9 +46,6 @@ class VendorAccountNamesBottomSheet(
 
     private val selectedItems = hashMapOf<String, String>()
 
-    private var accountItemPosition = AccountSetupDataModel()
-    private var vendorItemPosition = VendorModel()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -230,7 +227,7 @@ class VendorAccountNamesBottomSheet(
         holder.itemView.setOnClickListener {
 
             if (mAccountList.isNotEmpty()) {
-                accountItemPosition = mAccountList[holder.adapterPosition]
+               val  accountItemPosition = mAccountList[holder.adapterPosition]
 
                 onItemClick(
                     requireContext(),
@@ -242,7 +239,7 @@ class VendorAccountNamesBottomSheet(
                     dismissView = mDismissBtn
                 )
             } else {
-                vendorItemPosition = mVendorList[holder.adapterPosition]
+                val vendorItemPosition = mVendorList[holder.adapterPosition]
 
                 onItemClick(
                     requireContext(),
@@ -283,3 +280,4 @@ class VendorAccountNamesBottomSheet(
     }
 
 }
+

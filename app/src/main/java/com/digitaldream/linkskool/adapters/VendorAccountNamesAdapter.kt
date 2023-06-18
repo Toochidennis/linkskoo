@@ -20,8 +20,7 @@ class VendorAccountNamesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout
-                .bottom_sheet_vendor_account_names_item, parent, false
+            R.layout.bottom_sheet_vendor_account_names_item, parent, false
         )
 
         return ViewHolder(view)

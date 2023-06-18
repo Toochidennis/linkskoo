@@ -40,6 +40,7 @@ import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.android.volley.VolleyError
@@ -51,6 +52,7 @@ import com.digitaldream.linkskool.models.ChartModel
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.GroupItems
 import com.digitaldream.linkskool.models.LevelTable
+import com.digitaldream.linkskool.models.TeachersTable
 import com.digitaldream.linkskool.models.VendorModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
@@ -520,6 +522,7 @@ object FunctionUtils {
 
     }
 
+
     @JvmStatic
     fun selectDeselectButton(button: Button, type: String) {
 
@@ -720,6 +723,50 @@ object FunctionUtils {
                 if (selectedItemId != null && itemName != null) {
                     selectedItems[selectedItemId] = itemName
                 }
+            }
+        }
+    }
+
+
+    @JvmStatic
+    fun onItemClick2(
+        context: Context,
+        itemPosition: Any,
+        selectedItems: HashMap<String, String>,
+        frontView: View,
+        backView: View,
+        buttonView: Button,
+    ) {
+
+        val selectedItemId: String? = when (itemPosition) {
+            is TeachersTable -> itemPosition.staffId
+            is ClassNameTable -> itemPosition.classId
+            else -> null
+        }
+
+        val itemName: String? = when (itemPosition) {
+            is TeachersTable -> itemPosition.staffFullName
+            is ClassNameTable -> itemPosition.className
+            else -> null
+        }
+
+
+        if ((selectedItemId != null) && selectedItems.contains(selectedItemId)) {
+            flipAnimation(context, frontView, backView, "left")
+
+            selectedItems.remove(selectedItemId)
+
+            buttonView.apply {
+                setBackgroundResource(R.drawable.ripple_effect6)
+                setTextColor(Color.BLACK)
+            }
+
+        } else {
+            flipAnimation(context, frontView, backView, "right")
+
+            if (selectedItemId != null && itemName != null) {
+                selectedItems[selectedItemId] = itemName
+                println("items: $selectedItems")
             }
         }
     }

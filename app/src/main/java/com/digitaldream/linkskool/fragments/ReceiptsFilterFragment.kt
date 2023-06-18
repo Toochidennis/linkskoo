@@ -16,18 +16,13 @@ import org.json.JSONObject
 
 class ReceiptsFilterFragment(
     private val sTimeFrameDataModel: TimeFrameDataModel
-) : Fragment() {
+) : Fragment(R.layout.fragment_receipts_filter) {
 
     private lateinit var mClassBtn: Button
     private lateinit var mLevelBtn: Button
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_receipts_filter, container, false)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         mClassBtn = view.findViewById(R.id.class_btn)
         mLevelBtn = view.findViewById(R.id.level_btn)
 
@@ -35,8 +30,6 @@ class ReceiptsFilterFragment(
         mLevelBtn.setOnClickListener { onClick(it) }
 
         selectDeselectedButton()
-
-        return view
     }
 
     private fun onClick(view: View) {
