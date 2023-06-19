@@ -42,7 +42,7 @@ class AdminELearningAssignmentFragment : Fragment(R.layout.fragment_admin_e_lear
         super.onViewCreated(view, savedInstanceState)
 
         view.apply {
-            val attach: RelativeLayout = findViewById(R.id.attachment_btn)
+            val attach: RelativeLayout = findViewById(R.id.attachmentBtn)
 
             attach.setOnClickListener {
                 AdminELearningAttachmentDialog().show(parentFragmentManager, "")
