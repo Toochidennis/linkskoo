@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="Add link"
+        android:text="Add topic"
         android:textColor="@color/black"
         android:textSize="@dimen/text_16" />
 
@@ -29,14 +29,14 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="URL"
+            android:hint="Topic"
             android:inputType="textUri" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="30dp"
         android:layout_below="@id/linkEditText"
         android:layout_marginTop="@dimen/dimen_16"
@@ -51,7 +51,7 @@
 
     <Button
         android:id="@+id/addButton"
-        android:layout_width="30dp"
+        android:layout_width="45dp"
         android:layout_height="30dp"
         android:layout_below="@id/linkEditText"
         android:layout_alignParentEnd="true"

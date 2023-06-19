@@ -24,9 +24,11 @@ import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -40,7 +42,6 @@ import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.android.volley.VolleyError
@@ -52,7 +53,6 @@ import com.digitaldream.linkskool.models.ChartModel
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.GroupItems
 import com.digitaldream.linkskool.models.LevelTable
-import com.digitaldream.linkskool.models.TeachersTable
 import com.digitaldream.linkskool.models.VendorModel
 import org.achartengine.ChartFactory
 import org.achartengine.GraphicalView
@@ -241,7 +241,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun formatDate2(date: String): String {
+    fun formatDate2(date: String, format: String = "default"): String {
         var formattedDate = ""
         try {
 
@@ -251,7 +251,11 @@ object FunctionUtils {
             )
 
             val parseDate = simpleDateFormat.parse("$date 00:00:00")!!
-            val sdf = SimpleDateFormat("MMM, dd", Locale.getDefault())
+            val sdf = when (format) {
+                "default" -> SimpleDateFormat("MMM, dd", Locale.getDefault())
+                "custom" -> SimpleDateFormat("dd MMM", Locale.getDefault())
+                else -> SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
+            }
             formattedDate = sdf.format(parseDate)
 
         } catch (e: Exception) {
@@ -616,11 +620,13 @@ object FunctionUtils {
         return JSONObject().apply {
             val jsonArray = JSONArray()
             selectedItem.forEach { (key, value) ->
-                JSONObject().apply {
-                    put("id", key)
-                    put("name", value)
-                }.let {
-                    jsonArray.put(it)
+                if (key.isNotEmpty() && value.isNotEmpty()) {
+                    JSONObject().apply {
+                        put("id", key)
+                        put("name", value)
+                    }.let {
+                        jsonArray.put(it)
+                    }
                 }
             }
 
@@ -640,13 +646,16 @@ object FunctionUtils {
     fun parseFilterJson(json: String, from: String): String {
         val nameList = mutableListOf<String>()
 
-        JSONObject(json).run {
-            val jsonArray = getJSONArray(from)
-            for (i in 0 until jsonArray.length()) {
-                val name = jsonArray.getJSONObject(i).getString("name")
-                nameList.add(name)
+        try {
+            JSONObject(json).run {
+                val jsonArray = getJSONArray(from)
+                for (i in 0 until jsonArray.length()) {
+                    val name = jsonArray.getJSONObject(i).getString("name")
+                    nameList.add(name)
+                }
             }
-
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         return when (nameList.size) {
@@ -655,7 +664,6 @@ object FunctionUtils {
             else -> nameList.dropLast(1)
                 .joinToString(separator = ", ") + " & " + nameList.last()
         }
-
     }
 
 
@@ -723,50 +731,6 @@ object FunctionUtils {
                 if (selectedItemId != null && itemName != null) {
                     selectedItems[selectedItemId] = itemName
                 }
-            }
-        }
-    }
-
-
-    @JvmStatic
-    fun onItemClick2(
-        context: Context,
-        itemPosition: Any,
-        selectedItems: HashMap<String, String>,
-        frontView: View,
-        backView: View,
-        buttonView: Button,
-    ) {
-
-        val selectedItemId: String? = when (itemPosition) {
-            is TeachersTable -> itemPosition.staffId
-            is ClassNameTable -> itemPosition.classId
-            else -> null
-        }
-
-        val itemName: String? = when (itemPosition) {
-            is TeachersTable -> itemPosition.staffFullName
-            is ClassNameTable -> itemPosition.className
-            else -> null
-        }
-
-
-        if ((selectedItemId != null) && selectedItems.contains(selectedItemId)) {
-            flipAnimation(context, frontView, backView, "left")
-
-            selectedItems.remove(selectedItemId)
-
-            buttonView.apply {
-                setBackgroundResource(R.drawable.ripple_effect6)
-                setTextColor(Color.BLACK)
-            }
-
-        } else {
-            flipAnimation(context, frontView, backView, "right")
-
-            if (selectedItemId != null && itemName != null) {
-                selectedItems[selectedItemId] = itemName
-                println("items: $selectedItems")
             }
         }
     }
@@ -845,6 +809,16 @@ object FunctionUtils {
         }
 
         return spannableString
+    }
+
+
+    @JvmStatic
+    fun showSoftInput(context: Context, editText: EditText) {
+        editText.requestFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        editText.postDelayed({
+            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+        }, 200)
     }
 
 

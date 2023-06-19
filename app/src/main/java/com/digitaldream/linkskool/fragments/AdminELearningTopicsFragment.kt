@@ -16,15 +16,15 @@ private const val ARG_PARAM2 = "param2"
 
 class AdminELearningTopicsFragment : Fragment(R.layout.fragment_admin_e_learning_topics) {
 
-    private var param1: String? = null
-    private var param2: String? = null
+    private var mLevelId: String? = null
+    private var mCourseId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            mLevelId = it.getString(ARG_PARAM1)
+            mCourseId = it.getString(ARG_PARAM2)
         }
     }
 
@@ -54,7 +54,7 @@ class AdminELearningTopicsFragment : Fragment(R.layout.fragment_admin_e_learning
             }
 
             addBtn.setOnClickListener {
-                AdminELearningCreateDialog(requireContext()).apply {
+                AdminELearningCreateDialog(requireContext(), mLevelId!!, mCourseId!!).apply {
                     setCancelable(true)
                     show()
                 }.window?.setLayout(

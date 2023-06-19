@@ -97,7 +97,6 @@ class AdminELearningQuestionDialogFragment :
                             ) {
                                 mAdapter.notifyDataSetChanged()
                             }
-
                         }
                     }
 

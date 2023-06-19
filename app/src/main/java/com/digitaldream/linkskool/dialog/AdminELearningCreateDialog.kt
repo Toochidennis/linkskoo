@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -15,6 +16,8 @@ import com.digitaldream.linkskool.activities.ELearningActivity
 
 class AdminELearningCreateDialog(
     context: Context,
+    private val levelId: String,
+    private val courseId: String
 ) : Dialog(context) {
 
     private lateinit var assignmentBtn: TextView
@@ -43,20 +46,37 @@ class AdminELearningCreateDialog(
 
 
         assignmentBtn.setOnClickListener {
-            context.startActivity(Intent(context, ELearningActivity::class.java)
-                .putExtra("from", "assignment"))
+            context.startActivity(
+                Intent(context, ELearningActivity::class.java)
+                    .putExtra("from", "assignment")
+            )
         }
 
         questionBtn.setOnClickListener {
-            context.startActivity(Intent(context, ELearningActivity::class.java)
-                .putExtra("from", "question"))
+            context.startActivity(
+                Intent(context, ELearningActivity::class.java)
+                    .putExtra("from", "question")
+                    .putExtra("levelId", levelId)
+                    .putExtra("courseId", courseId)
+            )
         }
 
         materialBtn.setOnClickListener {
-            context.startActivity(Intent(context, ELearningActivity::class.java)
-                .putExtra("from", "material"))
+            context.startActivity(
+                Intent(context, ELearningActivity::class.java)
+                    .putExtra("from", "material")
+            )
         }
 
+        topicBtn.setOnClickListener {
+            AdminELearningAddTopicDialog(context).apply {
+                setCancelable(true)
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
 
 
     }

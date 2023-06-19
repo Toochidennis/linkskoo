@@ -1,28 +1,23 @@
 package com.digitaldream.linkskool.adapters
 
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.TagModel
-import com.digitaldream.linkskool.utils.FunctionUtils.flipAnimation
 
-class AdminELearningCourseOutlineAdapter(
-    private val context: Context,
+class AdminELearningQuestionSettingsAdapter(
     private val selectedItems: HashMap<String, String>,
     private val itemList: MutableList<TagModel>,
     private val button: Button,
-) : RecyclerView.Adapter<AdminELearningCourseOutlineAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AdminELearningQuestionSettingsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.bottom_sheet_vendor_account_names_item, parent, false
+            R.layout.fragment_admin_e_learning_question_settings_class_item, parent, false
         )
 
         return ViewHolder(view)
@@ -59,48 +54,37 @@ class AdminELearningCourseOutlineAdapter(
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val itemName: TextView = itemView.findViewById(R.id.item_name)
-        val itemTextLayout: LinearLayout = itemView.findViewById(R.id.layout_text)
-        val itemImageLayout: LinearLayout = itemView.findViewById(R.id.item_image_layout)
-        private val itemFirstLetter: TextView = itemView.findViewById(R.id.item_first_letter)
+        val itemName: Button = itemView.findViewById(R.id.itemName)
+
 
         fun bindItem(tag: TagModel) {
             itemName.text = tag.tagName
-            itemFirstLetter.text = tag.tagName.substring(0, 1).uppercase()
             itemView.isSelected = tag.isSelected
 
             if (itemView.isSelected) {
-                flipAnimation(context, itemTextLayout, itemImageLayout, "right")
+                buttonBackground(itemName, "select")
                 selectedItems[tag.tagId] = tag.tagName
-
-                if (selectedItems.size == itemList.size) {
-                    button.apply {
-                        setBackgroundResource(R.drawable.ripple_effect10)
-                        setTextColor(Color.WHITE)
-                        isSelected = true
-                    }
+                if (selectedItems.size == itemList.size){
+                    buttonBackground(button, "select")
                 }
             } else {
-                flipAnimation(context, itemTextLayout, itemImageLayout, "left")
+                buttonBackground(itemName, "deselect")
             }
+
 
             itemView.setOnClickListener {
                 tag.isSelected = !tag.isSelected
                 itemView.isSelected = tag.isSelected
 
                 if (itemView.isSelected) {
-                    flipAnimation(context, itemTextLayout, itemImageLayout, "right")
+                    buttonBackground(itemName, "select")
                     selectedItems[tag.tagId] = tag.tagName
                 } else {
                     if (tag.tagId.isNotEmpty() && selectedItems.contains(tag.tagId)) {
                         selectedItems.remove(tag.tagId)
-                        flipAnimation(context, itemTextLayout, itemImageLayout, "left")
 
-                        button.apply {
-                            setBackgroundResource(R.drawable.ripple_effect6)
-                            isSelected = false
-                            setTextColor(Color.BLACK)
-                        }
+                        buttonBackground(itemName, "deselect")
+                        buttonBackground(button, "deselect")
                     }
                 }
             }
@@ -111,7 +95,8 @@ class AdminELearningCourseOutlineAdapter(
         selectedItems.clear()
         itemList.forEach { item ->
             item.isSelected = true
-            flipAnimation(context, holder.itemTextLayout, holder.itemImageLayout, "right")
+            buttonBackground(holder.itemName, "select")
+            buttonBackground(button, "select")
             selectedItems[item.tagId] = item.tagName
         }
         notifyDataSetChanged()
@@ -121,10 +106,27 @@ class AdminELearningCourseOutlineAdapter(
         itemList.forEach { item ->
             if (item.isSelected) {
                 item.isSelected = false
-                flipAnimation(context, holder.itemTextLayout, holder.itemImageLayout, "left")
+                buttonBackground(holder.itemName, "deselect")
+                buttonBackground(button, "deselect")
             }
         }
         selectedItems.clear()
         notifyDataSetChanged()
+    }
+
+    private fun buttonBackground(button: Button, from: String) {
+        if (from == "select") {
+            button.apply {
+                setBackgroundResource(R.drawable.ripple_effect10)
+                isSelected = true
+                setTextColor(Color.WHITE)
+            }
+        } else {
+            button.apply {
+                setBackgroundResource(R.drawable.ripple_effect6)
+                isSelected = false
+                setTextColor(Color.BLACK)
+            }
+        }
     }
 }

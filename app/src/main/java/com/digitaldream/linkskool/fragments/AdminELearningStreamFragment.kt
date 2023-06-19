@@ -80,6 +80,8 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
                 startActivity(
                     Intent(requireContext(), ELearningActivity::class.java)
                         .putExtra("from", "view_post")
+                        .putExtra("levelId", mLevelId)
+                        .putExtra("courseId", mCourseId)
                 )
             }
 

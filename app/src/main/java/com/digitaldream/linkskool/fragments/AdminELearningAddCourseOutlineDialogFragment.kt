@@ -15,13 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningCourseOutlineAdapter
-import com.digitaldream.linkskool.adapters.OnTagItemListener
 import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.models.ClassNameTable
+import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.models.TeachersTable
-import com.digitaldream.linkskool.utils.FunctionUtils
-import com.digitaldream.linkskool.utils.FunctionUtils.flipAnimation
-import com.digitaldream.linkskool.utils.FunctionUtils.onItemClick2
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 
@@ -30,8 +27,7 @@ private const val ARG_PARAM1 = "param1"
 
 
 class AdminELearningAddCourseOutlineDialogFragment :
-    DialogFragment(R.layout.dialog_fragment_admin_e_learning_add_course_outline),
-    OnTagItemListener {
+    DialogFragment(R.layout.dialog_fragment_admin_e_learning_add_course_outline) {
 
     private lateinit var mBackBtn: ImageView
     private lateinit var mDoneBtn: Button
@@ -46,14 +42,12 @@ class AdminELearningAddCourseOutlineDialogFragment :
     private var mClassList = mutableListOf<ClassNameTable>()
     private var mTeacherList = mutableListOf<TeachersTable>()
     private val selectedItems = hashMapOf<String, String>()
-
-    private var classItemPosition = ClassNameTable()
-    private var teacherItemPosition = TeachersTable()
+    private val mTagList = mutableListOf<TagModel>()
 
     private lateinit var mDatabaseHelper: DatabaseHelper
-    private lateinit var mAdapter: AdminELearningCourseOutlineAdapter
 
     private var levelId: String? = null
+    private var selectedTag = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,106 +88,82 @@ class AdminELearningAddCourseOutlineDialogFragment :
             mTagView = findViewById(R.id.tagView)
         }
 
-
         mDatabaseHelper = DatabaseHelper(requireContext())
 
         mTagClassBtn.setOnClickListener {
-            tagClass()
-
-
+            tagList("class")
+            selectedTag = 0
         }
 
         mTagTeacherBtn.setOnClickListener {
-            tagTeacher()
-
+            tagList("teacher")
+            selectedTag = 1
         }
-
     }
 
 
-    private fun tagClass() {
+    private fun tagList(from: String) {
         try {
             selectedItems.clear()
-            mTeacherList.clear()
+            mTagList.clear()
 
-            val dao: Dao<ClassNameTable, Long> = DaoManager.createDao(
-                mDatabaseHelper.connectionSource, ClassNameTable::class.java
-            )
-
-            mClassList = dao.queryBuilder().where().eq("level", levelId).query()
-
-            mClassList.sortBy { it.className }
-
-            if (mClassList.isEmpty()) {
-                mRecyclerView.isVisible = false
-                mErrorMessageTxt.isVisible = true
-                mSelectAllBtn.isVisible = false
-                mTagView.isVisible = true
-            } else {
-
-                mAdapter = AdminELearningCourseOutlineAdapter(
-                    mClassList,
-                    null,
-                    this
-                )
-
-                mRecyclerView.apply {
-                    hasFixedSize()
-                    layoutManager = LinearLayoutManager(requireContext())
-                    isAnimating
-                    adapter = mAdapter
-                    isVisible = true
-
-                    mErrorMessageTxt.isVisible = false
-                    mSelectAllBtn.isVisible = true
-                    mTagView.isVisible = true
-                }
-
+            mSelectAllBtn.apply {
+                setBackgroundResource(R.drawable.ripple_effect6)
+                isSelected = false
+                setTextColor(Color.BLACK)
             }
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+            if (from == "class") {
+                val dao: Dao<ClassNameTable, Long> = DaoManager.createDao(
+                    mDatabaseHelper.connectionSource, ClassNameTable::class.java
+                )
 
-        }
-    }
+                mClassList = dao.queryBuilder().where().eq("level", levelId).query()
 
+                mClassList.sortBy { it.className }
 
-    private fun tagTeacher() {
-        try {
-            selectedItems.clear()
-            mClassList.clear()
+                mClassList.forEach { item ->
+                    mTagList.add(TagModel(item.classId, item.className))
+                }
+            } else {
+                val dao: Dao<TeachersTable, Long> = DaoManager.createDao(
+                    mDatabaseHelper
+                        .connectionSource, TeachersTable::class.java
+                )
 
-            val dao: Dao<TeachersTable, Long> = DaoManager.createDao(
-                mDatabaseHelper
-                    .connectionSource, TeachersTable::class.java
-            )
+                mTeacherList = dao.queryForAll()
+                mTeacherList.sortBy { it.staffFirstname }
 
-            mTeacherList = dao.queryForAll()
+                mTeacherList.forEach { item ->
+                    item.staffFullName =
+                        "${item.staffSurname} ${item.staffMiddlename} ${item.staffFirstname}"
+                    mTagList.add(TagModel(item.staffId, item.staffFullName))
+                }
+            }
 
-            mTeacherList.sortBy { it.staffFirstname }
-
-            if (mTeacherList.isEmpty()) {
+            if (mTagList.isEmpty()) {
                 mRecyclerView.isVisible = false
                 mErrorMessageTxt.isVisible = true
                 mSelectAllBtn.isVisible = false
                 mTagView.isVisible = true
             } else {
-                mAdapter = AdminELearningCourseOutlineAdapter(
-                    null,
-                    mTeacherList,
-                    this
-                )
+                AdminELearningCourseOutlineAdapter(
+                    requireContext(),
+                    selectedItems,
+                    mTagList,
+                    mSelectAllBtn
+                ).let {
+                    mRecyclerView.apply {
+                        hasFixedSize()
+                        layoutManager = LinearLayoutManager(requireContext())
+                        isAnimating
+                        adapter = it
+                        isVisible = true
 
-                mRecyclerView.apply {
-                    hasFixedSize()
-                    layoutManager = LinearLayoutManager(requireContext())
-                    isAnimating
-                    adapter = mAdapter
-                    isVisible = true
-
-                    mErrorMessageTxt.isVisible = false
-                    mSelectAllBtn.isVisible = true
-                    mTagView.isVisible = true
+                        mErrorMessageTxt.isVisible = false
+                        mSelectAllBtn.isVisible = true
+                        mTagView.isVisible = true
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -201,69 +171,7 @@ class AdminELearningAddCourseOutlineDialogFragment :
         }
     }
 
-    override fun onTagClick(holder: AdminELearningCourseOutlineAdapter.ViewHolder) {
-        holder.itemView.setOnClickListener {
-            if (mClassList.isNotEmpty()) {
-                classItemPosition = mClassList[holder.adapterPosition]
-                onItemClick2(
-                    requireContext(),
-                    classItemPosition,
-                    selectedItems,
-                    holder.itemTextLayout,
-                    holder.itemImageLayout,
-                    mSelectAllBtn,
-                )
-            } else {
-                teacherItemPosition = mTeacherList[holder.adapterPosition]
-                onItemClick2(
-                    requireContext(),
-                    teacherItemPosition,
-                    selectedItems,
-                    holder.itemTextLayout,
-                    holder.itemImageLayout,
-                    mSelectAllBtn,
-                )
-            }
-        }
-
-        mSelectAllBtn.setOnClickListener {
-            selectAll(holder.itemTextLayout, holder.itemImageLayout)
-        }
-    }
-
-    private fun selectAll(frontView: View, backView: View) {
-        val isAllSelected: Boolean
-
-        if (mClassList.isNotEmpty()) {
-            isAllSelected = selectedItems.size == mClassList.size
-
-            if (isAllSelected) {
-                mSelectAllBtn.apply {
-                    setBackgroundResource(R.drawable.ripple_effect6)
-                    setTextColor(Color.BLACK)
-                }
-
-                for (position in 0 until mAdapter.itemCount) {
-                    flipAnimation(requireContext(), frontView, backView, "left")
-                }
-                selectedItems.clear()
-            } else {
-                mSelectAllBtn.apply {
-                    setBackgroundResource(R.drawable.ripple_effect10)
-                    setTextColor(Color.WHITE)
-                }
-
-                for (position in 0 until mAdapter.itemCount) {
-                    flipAnimation(requireContext(), frontView, backView, "right")
-                    val itemPosition = mClassList[position]
-                    val itemId=  itemPosition.classId
-                    val itemName = itemPosition.className
-
-                    selectedItems[itemId] = itemName
-                    println(selectedItems)
-                }
-            }
-        }
+    private fun buttonAction() {
 
     }
 }

@@ -34,7 +34,6 @@
             android:layout_height="35dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dimen_10"
             android:background="@drawable/ripple_effect10"
             android:clickable="true"
             android:focusable="true"
@@ -98,8 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_16"
-            android:orientation="horizontal"
-            android:visibility="visible" />
+            android:orientation="horizontal" />
 
     </LinearLayout>
 
@@ -141,8 +139,7 @@
         android:id="@+id/dateBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="@dimen/dimen_16">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/date_icon"
@@ -150,6 +147,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_marginTop="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_date1" />
 
@@ -162,20 +161,36 @@
             android:layout_marginEnd="@dimen/dimen_16"
             android:layout_toStartOf="@id/startDateBtn"
             android:layout_toEndOf="@id/date_icon"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
             android:text="Date"
+            android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
+
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/startDateTxt"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_toEndOf="@id/date_icon"
+            android:background="@drawable/line_separator"
+            android:orientation="horizontal"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/endDateTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/startDateTxt"
+            android:layout_below="@id/separator"
             android:layout_marginStart="@dimen/dimen_16"
-            android:layout_marginTop="@dimen/dimen_10"
             android:layout_marginEnd="@dimen/dimen_16"
             android:layout_toStartOf="@id/endDateBtn"
             android:layout_toEndOf="@id/date_icon"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
             android:text="@string/todo"
+            android:textColor="@color/black"
             android:textSize="@dimen/text_16"
             android:visibility="gone" />
 
@@ -185,6 +200,8 @@
             android:layout_height="18dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dimen_16"
+            android:layout_marginEnd="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_close"
             android:visibility="gone"
@@ -196,7 +213,8 @@
             android:layout_height="18dp"
             android:layout_below="@id/startDateBtn"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dimen_16"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_close"
             android:visibility="gone"
@@ -217,6 +235,7 @@
         android:drawablePadding="@dimen/dimen_16"
         android:padding="@dimen/dimen_16"
         android:text="Topic"
+        android:textColor="@color/black"
         android:textSize="@dimen/text_16"
         app:drawableStartCompat="@drawable/ic_topic2" />
 

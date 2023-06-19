@@ -32,8 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="@dimen/dimen_10"
-            android:layout_toStartOf="@id/more_btn"
+            android:layout_alignParentEnd="true"
             android:background="@drawable/ripple_effect10"
             android:clickable="true"
             android:focusable="true"
@@ -43,16 +42,6 @@
             android:textAllCaps="false"
             android:textSize="@dimen/text_14" />
 
-        <ImageView
-            android:id="@+id/more_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_more" />
-
     </RelativeLayout>
 
     <EditText
@@ -61,7 +50,6 @@
         android:layout_height="wrap_content"
         android:autofillHints="title"
         android:background="@android:color/transparent"
-        android:cursorVisible="true"
         android:focusableInTouchMode="true"
         android:hint="Assignment title"
         android:inputType="text"
@@ -88,13 +76,26 @@
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_group" />
 
+        <Button
+            android:id="@+id/selectAllBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:background="@drawable/ripple_effect6"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="All classes"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_14" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/class_recyclerview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_16"
-            android:orientation="horizontal"
-            android:visibility="gone" />
+            android:orientation="horizontal" />
 
     </LinearLayout>
 
@@ -134,7 +135,7 @@
         android:orientation="horizontal" />
 
     <RelativeLayout
-        android:id="@+id/attachment_btn"
+        android:id="@+id/attachmentBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -150,22 +151,56 @@
             android:src="@drawable/ic_attachment" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/attachmentTxt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/dimen_16"
             android:layout_toEndOf="@id/attachment_icon"
             android:text="Add attachment"
+            android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/attachment_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/dimen_16"
             android:layout_toEndOf="@id/attachment_icon"
             android:orientation="horizontal"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/separator2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attachment_recyclerview"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_toEndOf="@id/attachment_icon"
+            android:background="@drawable/line_separator"
+            android:orientation="horizontal"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/addAttachmentButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attachment_recyclerview"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_toEndOf="@id/attachment_icon"
+            android:clickable="true"
+            android:drawablePadding="@dimen/dimen_16"
+            android:focusable="true"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
+            android:text="Add attachment"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_add"
+            app:drawableTint="@color/black" />
+
 
     </RelativeLayout>
 
@@ -176,7 +211,7 @@
         android:orientation="horizontal" />
 
     <RelativeLayout
-        android:id="@+id/grading_btn"
+        android:id="@+id/gradingBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -196,12 +231,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_16"
+            android:layout_marginEnd="@dimen/dimen_16"
+            android:layout_toStartOf="@id/resetGradingBtn"
             android:layout_toEndOf="@id/points_icon"
             android:text="100 points"
+            android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
         <ImageView
-            android:id="@+id/points_btn"
+            android:id="@+id/resetGradingBtn"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_alignParentTop="true"
@@ -220,11 +258,10 @@
 
 
     <RelativeLayout
-        android:id="@+id/due_date_btn"
+        android:id="@+id/dateBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="@dimen/dimen_16">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/date_icon"
@@ -232,24 +269,74 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_marginTop="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_date1" />
 
         <TextView
-            android:id="@+id/date_txt"
+            android:id="@+id/startDateTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/dimen_16"
+            android:layout_marginEnd="@dimen/dimen_16"
+            android:layout_toStartOf="@id/startDateBtn"
             android:layout_toEndOf="@id/date_icon"
-            android:text="Due date"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
+            android:text="Date"
+            android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/startDateTxt"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_toEndOf="@id/date_icon"
+            android:background="@drawable/line_separator"
+            android:orientation="horizontal"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/endDateTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/separator"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_marginEnd="@dimen/dimen_16"
+            android:layout_toStartOf="@id/endDateBtn"
+            android:layout_toEndOf="@id/date_icon"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
+            android:text="@string/todo"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16"
+            android:visibility="gone" />
+
         <ImageView
-            android:id="@+id/date_btn"
+            android:id="@+id/startDateBtn"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dimen_16"
+            android:layout_marginEnd="@dimen/dimen_16"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_close"
+            android:visibility="gone"
+            app:tint="@color/test_color_7" />
+
+        <ImageView
+            android:id="@+id/endDateBtn"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_below="@id/startDateBtn"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_close"
             android:visibility="gone"
@@ -269,8 +356,9 @@
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/dimen_16"
         android:padding="@dimen/dimen_16"
-        android:textSize="@dimen/text_16"
         android:text="Topic"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16"
         app:drawableStartCompat="@drawable/ic_topic2" />
 
     <LinearLayout

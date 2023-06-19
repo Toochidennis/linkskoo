@@ -80,14 +80,14 @@
 
         <RadioButton
             android:id="@+id/tagClassButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dimen_16"
             android:text="Tag class" />
 
         <RadioButton
             android:id="@+id/tagTeacherButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dimen_16"
             android:text="Tag teacher(s)" />
