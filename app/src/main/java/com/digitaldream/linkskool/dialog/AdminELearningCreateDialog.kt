@@ -49,6 +49,9 @@ class AdminELearningCreateDialog(
             context.startActivity(
                 Intent(context, ELearningActivity::class.java)
                     .putExtra("from", "assignment")
+                    .putExtra("levelId", levelId)
+                    .putExtra("courseId", courseId)
+
             )
         }
 

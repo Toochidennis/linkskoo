@@ -5,6 +5,7 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
@@ -23,6 +24,7 @@ import android.os.SystemClock
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.DisplayMetrics
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebChromeClient
@@ -821,6 +823,22 @@ object FunctionUtils {
         }, 200)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @JvmStatic
+    fun smoothScrollEditText(editText: EditText){
+
+        editText.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            when (event.action and MotionEvent.ACTION_MASK) {
+                MotionEvent.ACTION_SCROLL -> {
+                    v.parent.requestDisallowInterceptTouchEvent(false)
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
 
 }
 

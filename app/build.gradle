@@ -78,15 +78,11 @@ dependencies {
     implementation 'cc.cloudist.acplibrary:library:1.2.1'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-   // implementation 'com.google.android.gms:play-services-ads:21.4.0'
-
     implementation 'org.jsoup:jsoup:1.8.3'
     api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-
-    //kotlin
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation "androidx.fragment:fragment-ktx:1.5.7"

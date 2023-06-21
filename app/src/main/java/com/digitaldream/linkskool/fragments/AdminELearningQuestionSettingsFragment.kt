@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -102,6 +103,16 @@ class AdminELearningQuestionSettingsFragment :
         setDate()
 
         showSoftInput(requireContext(), mQuestionTitleEditText)
+
+        mApplyBtn.setOnClickListener {
+            requireActivity().supportFragmentManager.commit {
+                replace(
+                    R.id.learning_container, AdminELearningQuestionFragment.newInstance
+                        (mLevelId!!, mCourseId!!)
+                )
+                addToBackStack(null)
+            }
+        }
     }
 
 
@@ -117,7 +128,6 @@ class AdminELearningQuestionSettingsFragment :
             mClassList.forEach { item ->
                 mTagList.add(TagModel(item.classId, item.className))
             }
-            println(mClassList)
 
 
             if (mTagList.isEmpty()) {

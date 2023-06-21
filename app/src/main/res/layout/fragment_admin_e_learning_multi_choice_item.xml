@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/option_layout"
@@ -34,24 +35,6 @@
             android:padding="@dimen/dimen_16"
             android:scrollbars="vertical" />
 
-        <TextView
-            android:id="@+id/attachmentName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/dimen_16"
-            android:layout_toStartOf="@id/removeOptionButton"
-            android:layout_toEndOf="@id/radioButtonOption"
-            android:clickable="true"
-            android:drawablePadding="@dimen/dimen_16"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:padding="@dimen/dimen_16"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16"
-            android:visibility="gone" />
-
         <ImageView
             android:id="@+id/removeOptionButton"
             android:layout_width="wrap_content"
@@ -59,11 +42,44 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dimen_16"
-            android:clickable="true"
             android:contentDescription="@string/todo"
-            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_more"
+            app:tint="@color/test_color_7" />
+
+        <TextView
+            android:id="@+id/attachmentName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:layout_marginEnd="@dimen/dimen_16"
+            android:layout_toStartOf="@id/removeAttachmentButton"
+            android:layout_toEndOf="@id/radioButtonOption"
+            android:drawablePadding="@dimen/dimen_16"
+            android:ellipsize="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:lines="1"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
+            android:text="@string/todo"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/removeAttachmentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dimen_16"
+            android:contentDescription="@string/todo"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_more"
+            android:visibility="gone"
             app:tint="@color/test_color_7" />
 
     </RelativeLayout>
@@ -71,9 +87,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/option_layout"
         android:background="@drawable/line_separator"
         android:orientation="horizontal" />
 
-
-</RelativeLayout>
+</LinearLayout>

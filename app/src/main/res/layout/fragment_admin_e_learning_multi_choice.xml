@@ -85,8 +85,7 @@
                 android:id="@+id/attachment_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="@dimen/dimen_16">
+                android:background="@color/white">
 
                 <ImageView
                     android:id="@+id/attachment_icon"
@@ -94,14 +93,17 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/dimen_16"
+                    android:layout_marginTop="@dimen/dimen_16"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/ic_attachment" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/attachmentTxt"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginStart="@dimen/dimen_16"
+                    android:layout_margin="@dimen/dimen_16"
                     android:layout_toEndOf="@id/attachment_icon"
                     android:text="Add attachment"
                     android:textSize="@dimen/text_16" />
@@ -110,8 +112,28 @@
                     android:id="@+id/attachment_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:layout_marginStart="@dimen/dimen_16"
+                    android:layout_marginTop="@dimen/dimen_8"
+                    android:layout_marginEnd="@dimen/dimen_16"
+                    android:layout_toEndOf="@id/attachment_icon" />
+
+                <TextView
+                    android:id="@+id/addAttachmentButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/attachment_recyclerview"
+                    android:layout_marginStart="@dimen/dimen_16"
+                    android:layout_marginEnd="@dimen/dimen_16"
                     android:layout_toEndOf="@id/attachment_icon"
+                    android:clickable="true"
+                    android:drawablePadding="@dimen/dimen_16"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:paddingTop="@dimen/dimen_16"
+                    android:paddingBottom="@dimen/dimen_16"
+                    android:text="Add attachment"
+                    android:textSize="@dimen/text_16"
                     android:visibility="gone" />
 
             </RelativeLayout>

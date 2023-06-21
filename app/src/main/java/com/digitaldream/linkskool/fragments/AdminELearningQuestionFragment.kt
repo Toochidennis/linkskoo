@@ -65,6 +65,5 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             }
         }
 
-
     }
 }

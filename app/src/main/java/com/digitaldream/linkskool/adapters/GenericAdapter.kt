@@ -11,14 +11,9 @@ class GenericAdapter<T>(
     private val bindItem: (itemView: View, model: T, position: Int) -> Unit,
     private val onItemClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<GenericAdapter<T>.ViewHolder>() {
-
-    init {
-        setHasStableIds(true)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(itemResLayout, parent, false)
-
+        val view = LayoutInflater.from(parent.context).inflate(itemResLayout, parent,
+            false)
         return ViewHolder(view)
     }
 
