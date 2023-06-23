@@ -223,7 +223,8 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
                         QuestionDialog2 dialog2 =
                                 new QuestionDialog2(TestUpload.this
                                         , qm,
-                                        TestUpload.questionAdapter2.getItemCount() - 1, QuestionAdapter2.questionNumber);
+                                        TestUpload.questionAdapter2.getItemCount() - 1,
+                                        QuestionAdapter2.questionNumber);
                         dialog2.setCancelable(false);
                         dialog2.show(manager, "tag");
 
@@ -277,7 +278,6 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
 
             if (testHeaderList.size() > 0 && !testHeaderList.get(0).getTitle().isEmpty() || !FlashCardSettingsDialog.title.isEmpty()) {
                 JSONObject jsonObject = new JSONObject();
-
 
                 try {
                     if (!from.equals("flash_card")) {

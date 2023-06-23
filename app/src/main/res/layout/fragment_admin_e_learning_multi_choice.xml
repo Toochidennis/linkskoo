@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.AdminELearningQuestionDialogFragment">
+    tools:context=".fragments.AdminELearningMultiChoiceDialogFragment">
 
     <RelativeLayout
         android:id="@+id/appBar"
@@ -103,38 +103,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="@dimen/dimen_16"
-                    android:layout_toEndOf="@id/attachment_icon"
-                    android:text="Add attachment"
-                    android:textSize="@dimen/text_16" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/attachment_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="@dimen/dimen_16"
-                    android:layout_marginTop="@dimen/dimen_8"
-                    android:layout_marginEnd="@dimen/dimen_16"
-                    android:layout_toEndOf="@id/attachment_icon" />
-
-                <TextView
-                    android:id="@+id/addAttachmentButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/attachment_recyclerview"
                     android:layout_marginStart="@dimen/dimen_16"
                     android:layout_marginEnd="@dimen/dimen_16"
+                    android:layout_toStartOf="@id/removeQuestionAttachment"
                     android:layout_toEndOf="@id/attachment_icon"
-                    android:clickable="true"
                     android:drawablePadding="@dimen/dimen_16"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
+                    android:ellipsize="end"
+                    android:lines="1"
                     android:paddingTop="@dimen/dimen_16"
                     android:paddingBottom="@dimen/dimen_16"
                     android:text="Add attachment"
-                    android:textSize="@dimen/text_16"
-                    android:visibility="gone" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_16" />
+
+                <ImageView
+                    android:id="@+id/removeQuestionAttachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/dimen_16"
+                    android:layout_marginEnd="@dimen/dimen_16"
+                    android:clickable="true"
+                    android:contentDescription="@string/todo"
+                    android:focusable="true"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone"
+                    app:tint="@color/test_color_7" />
 
             </RelativeLayout>
 

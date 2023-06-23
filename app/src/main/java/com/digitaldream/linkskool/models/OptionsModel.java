@@ -15,8 +15,6 @@ public class OptionsModel {
     private String optionImageUrl;
 
 
-
-
     public String getOptionText() {
         return optionText;
     }

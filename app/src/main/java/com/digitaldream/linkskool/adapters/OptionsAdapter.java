@@ -1,8 +1,10 @@
 package com.digitaldream.linkskool.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -34,7 +36,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
     @Override
     public OptionsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.multichoice_option_layout,viewGroup,false);
+        View view = layoutInflater.inflate(R.layout.multichoice_option_layout, viewGroup, false);
         return new OptionsViewHolder(view);
     }
 
@@ -56,8 +58,8 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
         optionsViewHolder.radioButton.setChecked(op.isChecked());
 
         optionsViewHolder.radioButton.setOnClickListener(v -> {
-            for(int a=0;a<optionsList.size();a++){
-               optionsList.get(a).setChecked(false);
+            for (int a = 0; a < optionsList.size(); a++) {
+                optionsList.get(a).setChecked(false);
             }
             optionsList.get(i).setChecked(true);
 
@@ -71,9 +73,9 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
     }
 
 
-    public List<OptionsModel> getOptionsList(){
+    public List<OptionsModel> getOptionsList() {
         List<OptionsModel> opList = new ArrayList<>();
-        for(int a=0;a<optionsList.size();a++){
+        for (int a = 0; a < optionsList.size(); a++) {
             OptionsModel md = new OptionsModel();
             md.setOptionText(optionsList.get(a).getOptionText());
 
@@ -88,7 +90,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
         return optionsList.size();
     }
 
-    class OptionsViewHolder extends RecyclerView.ViewHolder  {
+    class OptionsViewHolder extends RecyclerView.ViewHolder {
         public EditText optionText;
         ImageView clear;
         RadioGroup radioGroup;
@@ -118,9 +120,6 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.OptionsV
             });
 
         }
-
-
     }
-
 
 }

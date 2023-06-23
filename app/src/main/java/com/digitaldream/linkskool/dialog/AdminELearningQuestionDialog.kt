@@ -1,6 +1,5 @@
 package com.digitaldream.linkskool.dialog
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -11,7 +10,7 @@ import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.fragments.AdminELearningQuestionDialogFragment
+import com.digitaldream.linkskool.fragments.AdminELearningMultiChoiceDialogFragment
 
 class AdminELearningQuestionDialog(
     context: Context,
@@ -36,7 +35,7 @@ class AdminELearningQuestionDialog(
 
         multiChoiceBtn.setOnClickListener {
 
-           val dialogA = AdminELearningQuestionDialogFragment()
+           val dialogA = AdminELearningMultiChoiceDialogFragment()
             dialogA.isCancelable = true
             dialogA.show(fragmentManager, "")
 

@@ -88,13 +88,10 @@ public class QuestionDialog extends Dialog {
 
                 TestUpload.questionAdapter.updateQuestion(position,questionText,optionsList);
 
-                //optionsList = oplist();
-
                 dismiss();
 
             }
         });
-        //optionsList.clear();
 
             question.setText(TestUpload.questionsList.get(position).getQuestion());
 
@@ -104,10 +101,8 @@ public class QuestionDialog extends Dialog {
             adapter = new OptionsAdapter(getContext(),optionsList);
             optionsRecycler.setAdapter(adapter);
             Log.i("response", String.valueOf(optionsList.size()));
-
         }
     }
-
 
 
     @Override
@@ -126,6 +121,5 @@ public class QuestionDialog extends Dialog {
         //optionsList = oplist();
         TestUpload.questionAdapter.updateQuestion(position,questionText,optionsList);
     }
-
 
 }
