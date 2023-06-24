@@ -1,6 +1,5 @@
 package com.digitaldream.linkskool.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,13 +18,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.GenericAdapter
+import com.digitaldream.linkskool.adapters.GenericAdapter2
 import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
-import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.MultiChoiceOption
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
@@ -34,7 +31,8 @@ import java.io.File
 
 
 class AdminELearningMultiChoiceDialogFragment(
-    /*  private val askQuestion: (question: MultiChoiceQuestion) -> Unit*/
+    private val question: MultiChoiceQuestion,
+    private val askQuestion: (question: MultiChoiceQuestion) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_multi_choice) {
 
     private lateinit var mDismissBtn: ImageView
@@ -43,21 +41,13 @@ class AdminELearningMultiChoiceDialogFragment(
     private lateinit var mAttachmentTxt: TextView
     private lateinit var mAttachmentBtn: RelativeLayout
     private lateinit var mRemoveQuestionAttachmentBtn: ImageView
-    private lateinit var mOptionsRecyclerview: RecyclerView
+    private lateinit var mOptionsRecyclerView: RecyclerView
     private lateinit var mAddOptionBtn: TextView
 
-    private lateinit var mOptionsAdapter: GenericAdapter<MultiChoiceOption>
+    private lateinit var mOptionsAdapter: GenericAdapter2<MultiChoiceOption>
 
     private val mOptionList = mutableListOf<MultiChoiceOption>()
-    private val mFileList = mutableListOf<AttachmentModel>()
-    private val optionList = HashMap<String, Any>()
-    private val correctList = HashMap<String, Any>()
-
-    private var mOptionAttachmentModel: AttachmentModel? = null
-    private var mQuestionAttachmentModel: AttachmentModel? = null
-    private val mQuestionModel: MultiChoiceQuestion? = null
-
-    private var isTextChanged = false
+    private lateinit var mQuestionModel: MultiChoiceQuestion
     private var selectedPosition = RecyclerView.NO_POSITION
 
 
@@ -67,7 +57,7 @@ class AdminELearningMultiChoiceDialogFragment(
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -78,33 +68,65 @@ class AdminELearningMultiChoiceDialogFragment(
             mAttachmentTxt = findViewById(R.id.attachmentTxt)
             mAttachmentBtn = findViewById(R.id.attachment_btn)
             mRemoveQuestionAttachmentBtn = findViewById(R.id.removeQuestionAttachment)
-            mOptionsRecyclerview = findViewById(R.id.options_recyclerview)
+            mOptionsRecyclerView = findViewById(R.id.options_recyclerview)
             mAddOptionBtn = findViewById(R.id.add_option_btn)
         }
 
-        options()
-
-        attachment(mAttachmentBtn)
-
         showSoftInput(requireContext(), mQuestionEditText)
+
+        initializeQuestionModel()
+        initializeOptions()
+        options()
+        showQuestionAttachment(mAttachmentBtn)
 
         mDismissBtn.setOnClickListener {
             dismiss()
         }
 
+        mAddOptionBtn.setOnClickListener {
+            addOption()
+        }
+
+
         mAskBtn.setOnClickListener {
             askQuestion()
         }
 
+        mRemoveQuestionAttachmentBtn.setOnClickListener {
+            removeQuestionAttachment()
+        }
+
+
+    }
+
+    private fun initializeQuestionModel() {
+        mQuestionModel = question.copy()
+        mQuestionEditText.setText(mQuestionModel.questionText)
+
+        if (mQuestionModel.attachmentName.isNotEmpty()) {
+            setDrawableOnTextView(mAttachmentTxt)
+            mAttachmentTxt.text = mQuestionModel.attachmentName
+            mRemoveQuestionAttachmentBtn.isVisible = true
+            mAttachmentBtn.isClickable = false
+        }
+
+    }
+
+    private fun initializeOptions() {
+        if (!mQuestionModel.options.isNullOrEmpty()) {
+            mOptionList.addAll(mQuestionModel.options!!)
+        } else {
+            mOptionList.add(MultiChoiceOption("Option 1"))
+        }
+
+        if (mQuestionModel.checkedPosition != RecyclerView.NO_POSITION) {
+            selectedPosition = mQuestionModel.checkedPosition
+        }
     }
 
 
     private fun options() {
-        mOptionList.add(MultiChoiceOption().apply {
-            optionText = "Option 1"
-        })
-
-        mOptionsAdapter = GenericAdapter(
+        mOptionsAdapter = GenericAdapter2(
             mOptionList,
             R.layout.fragment_admin_e_learning_multi_choice_item,
             bindItem = { itemView, model, position ->
@@ -112,86 +134,71 @@ class AdminELearningMultiChoiceDialogFragment(
                     itemView.findViewById(R.id.radioButtonOption)
                 val editText: EditText =
                     itemView.findViewById(R.id.editTextAnswer)
-                val removeOptionButton: ImageView =
+                val showAttachmentPopUpBtn: ImageView =
                     itemView.findViewById(R.id.removeOptionButton)
                 val attachmentTxt: TextView =
                     itemView.findViewById(R.id.attachmentName)
                 val removeAttachmentBtn: ImageView =
                     itemView.findViewById(R.id.removeAttachmentButton)
 
-                editText.setText(model.optionText)
                 smoothScrollEditText(editText)
 
-                if (selectedPosition != RecyclerView.NO_POSITION) {
-                    optionList[model.optionOrder ?: ""] = model.optionText ?: ""
-                }
-
-
-                if (!model.optionImageName.isNullOrEmpty()) {
-                    setDrawableOnTextView(attachmentTxt, model.optionImageType!!)
-                    mOptionAttachmentModel = AttachmentModel(
-                        model.optionImageName!!,
-                        model.optionImageType!!,
-                        model.optionImageUri
-                    )
-
-                    // correctList[mQuestionModel!!.correctAnswerOrder] = model.optionImageName!!
-
-                    attachmentTxt.isVisible = true
-                    editText.isVisible = false
-                    removeOptionButton.isVisible = false
-                    removeAttachmentBtn.isVisible = true
+                if (model.optionText.isEmpty()) {
+                    attachmentTxt.text = model.attachmentName
+                    attachmentTxt.visibility = View.VISIBLE
+                    editText.visibility = View.GONE
+                } else {
+                    editText.setText(model.optionText)
+                    editText.visibility = View.VISIBLE
+                    attachmentTxt.visibility = View.GONE
                 }
 
                 radioButton.isChecked = position == selectedPosition
 
-
-                radioButton.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        correctList.clear()
+                radioButton.setOnClickListener {
+                    if (radioButton.isChecked) {
                         selectedPosition = position
+                        mQuestionModel.checkedPosition = selectedPosition
 
-                        if (attachmentTxt.text != "TODO") {
-                            correctList["$selectedPosition"] = " model.optionImageName!!"
-                        } else {
-                            correctList["$selectedPosition"] = editText.text.toString().trim()
-                        }
+                        mQuestionModel.correctAnswer =
+                            model.optionText.ifEmpty { model.attachmentName }
 
-
-                        if (!mOptionsRecyclerview.isComputingLayout && mOptionsRecyclerview
-                                .scrollState == RecyclerView.SCROLL_STATE_IDLE
+                        if (!mOptionsRecyclerView.isComputingLayout &&
+                            mOptionsRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
                         ) {
                             mOptionsAdapter.notifyDataSetChanged()
                         }
                     }
                 }
 
-                removeOptionButton.setOnClickListener { view ->
+                showAttachmentPopUpBtn.setOnClickListener { view ->
                     val popUpMenu = PopupMenu(view.context, view)
                     popUpMenu.inflate(R.menu.pop_menu)
                     popUpMenu.setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.attach -> {
-                                AdminELearningAttachmentDialog { type: String, name: String, uri: Any? ->
-                                    mOptionAttachmentModel = AttachmentModel(name, type, uri)
-                                    attachmentTxt.text = mOptionAttachmentModel?.name
-                                    setDrawableOnTextView(
-                                        attachmentTxt,
-                                        mOptionAttachmentModel!!.type
-                                    )
+                                AdminELearningAttachmentDialog("multiple choice")
+                                { type: String, name: String, uri: Any? ->
+                                    attachmentTxt.text = name
+                                    model.attachmentName = name
+                                    model.attachmentType = type
+                                    model.attachmentUri = uri
+                                    model.optionText = ""
+                                    model.optionOrder = "$position"
 
                                     if (selectedPosition == position)
-                                        correctList["$selectedPosition"] =
-                                            mOptionAttachmentModel?.name!!
+                                        mQuestionModel.correctAnswer = model.attachmentName
+
+                                    setDrawableOnTextView(attachmentTxt)
 
                                     attachmentTxt.isVisible = true
-                                    editText.isVisible = false
-                                    removeOptionButton.isVisible = false
                                     removeAttachmentBtn.isVisible = true
+                                    showAttachmentPopUpBtn.isVisible = false
+                                    editText.isVisible = false
 
 
                                     attachmentTxt.setOnClickListener {
-                                        previewAttachment(mOptionAttachmentModel!!)
+                                        previewAttachment(model.attachmentUri!!)
                                     }
 
                                 }.show(parentFragmentManager, "")
@@ -200,10 +207,7 @@ class AdminELearningMultiChoiceDialogFragment(
                             }
 
                             R.id.delete -> {
-                                mOptionList.removeAt(position)
-                                optionList.remove("$position")
-                                mOptionsAdapter.notifyDataSetChanged()
-
+                                removeOption(position)
                                 true
                             }
 
@@ -220,12 +224,12 @@ class AdminELearningMultiChoiceDialogFragment(
                     popUpMenu.setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.detach -> {
-                                attachmentTxt.isVisible = false
-                                attachmentTxt.text = ""
-                                removeAttachmentBtn.isVisible = false
-                                removeOptionButton.isVisible = true
-                                editText.isVisible = true
-                                mOptionAttachmentModel = null
+                                attachmentTxt.visibility = View.GONE
+                                removeAttachmentBtn.visibility = View.GONE
+                                showAttachmentPopUpBtn.visibility = View.VISIBLE
+                                editText.visibility = View.VISIBLE
+
+                                removeOption(position)
 
                                 true
                             }
@@ -253,79 +257,52 @@ class AdminELearningMultiChoiceDialogFragment(
                         before: Int,
                         count: Int
                     ) {
-                        isTextChanged = true
-
+                        model.optionOrder = "$position"
+                        model.optionText = s.toString()
                     }
 
                     override fun afterTextChanged(s: Editable?) {
-                        if (isTextChanged) {
-                            isTextChanged = false
-
-                            try {
-                                optionList["$position"] = s.toString().trim()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                optionList["$position"] = ""
-                            }
-                        }
 
                     }
                 })
-            },
-
-            onItemClick = {}
+            }
         )
 
-        val temAnimator = DefaultItemAnimator()
-        temAnimator.supportsChangeAnimations = true
-
-        mOptionsRecyclerview.apply {
-            itemAnimator = temAnimator
+        mOptionsRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mOptionsAdapter
-            scrollToPosition(mOptionList.size - 1)
             hasFixedSize()
-            isAnimating
-        }
-
-
-        mAddOptionBtn.setOnClickListener {
-            mOptionList.add(
-                MultiChoiceOption().apply {
-                    optionText = "Option ${mOptionList.size + 1}"
-                }
-            )
-
-            mOptionsAdapter.notifyItemInserted(mOptionList.size + 1)
         }
     }
 
+    private fun removeOption(position: Int) {
+        mOptionList.removeAt(position)
+        mOptionsAdapter.notifyDataSetChanged()
+    }
 
-    private fun attachment(button: View) {
+    private fun addOption() {
+        mOptionList.add(MultiChoiceOption("Option ${mOptionList.size + 1}"))
+        mOptionsAdapter.notifyItemInserted(mOptionList.size + 1)
+        mOptionsRecyclerView.smoothScrollToPosition(mOptionList.size - 1)
+    }
+
+
+    private fun showQuestionAttachment(button: View) {
         button.setOnClickListener {
-            AdminELearningAttachmentDialog { type: String, name: String, uri: Any? ->
+            AdminELearningAttachmentDialog("multiple choice")
+            { type: String, name: String, uri: Any? ->
                 try {
-                    mQuestionAttachmentModel = AttachmentModel(name, type, uri)
-                    setDrawableOnTextView(mAttachmentTxt, mQuestionAttachmentModel!!.type)
-                    mAttachmentTxt.text = mQuestionAttachmentModel!!.name
+                    mQuestionModel.attachmentName = name
+                    mQuestionModel.attachmentType = type
+                    mQuestionModel.attachmentUri = uri
+
+                    setDrawableOnTextView(mAttachmentTxt)
+                    mAttachmentTxt.text = mQuestionModel.attachmentName
                     mRemoveQuestionAttachmentBtn.isVisible = true
                     mAttachmentBtn.isClickable = false
 
                     mAttachmentTxt.setOnClickListener {
-                        previewAttachment(mQuestionAttachmentModel!!)
-                    }
-
-                    mRemoveQuestionAttachmentBtn.setOnClickListener {
-                        mRemoveQuestionAttachmentBtn.isVisible = false
-                        mAttachmentTxt.text = "Add attachment"
-                        mAttachmentTxt.setCompoundDrawablesWithIntrinsicBounds(
-                            null,
-                            null, null, null
-                        )
-                        mAttachmentTxt.isClickable = false
-                        mAttachmentBtn.isClickable = true
-
-                        mQuestionAttachmentModel = null
+                        previewAttachment(mQuestionModel.attachmentUri!!)
                     }
 
                 } catch (e: Exception) {
@@ -337,102 +314,66 @@ class AdminELearningMultiChoiceDialogFragment(
 
     }
 
-    private fun setDrawableOnTextView(textView: TextView, type: String) {
+    private fun removeQuestionAttachment() {
+        mQuestionModel.attachmentUri = null
+        mQuestionModel.attachmentName = ""
+        mQuestionModel.attachmentType = ""
+        mRemoveQuestionAttachmentBtn.isVisible = false
+        mAttachmentTxt.text = "Add attachment"
+        mAttachmentTxt.setCompoundDrawablesWithIntrinsicBounds(
+            null, null, null, null
+        )
+        mAttachmentTxt.isClickable = false
+        mAttachmentBtn.isClickable = true
+    }
+
+    private fun setDrawableOnTextView(textView: TextView) {
         textView.setCompoundDrawablesWithIntrinsicBounds(
-            when (type) {
-                "image" -> R.drawable.ic_image24
-                "video" -> R.drawable.ic_video24
-                "pdf" -> R.drawable.ic_pdf24
-                "unknown" -> R.drawable.ic_unknown_document24
-                "url" -> R.drawable.ic_link
-                else -> R.drawable.ic_document24
-            }.let {
-                ContextCompat.getDrawable(requireContext(), it)
-            },
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_image24),
             null, null, null
         )
     }
 
-    private fun previewAttachment(item: AttachmentModel) {
-        val fileUri = if (item.uri is File) {
-            val file = File(item.uri.absolutePath)
+    private fun previewAttachment(uri: Any) {
+        val fileUri = if (uri is File) {
+            val file = File(uri.absolutePath)
             FileProvider.getUriForFile(
                 requireContext(),
                 "${requireActivity().packageName}.provider",
                 file
             )
         } else {
-            item.uri
+            uri
         }
 
-        when (item.type) {
-            "image" -> {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(fileUri as Uri?, "image/*")
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                startActivity(intent)
-            }
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(fileUri as Uri?, "image/*")
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(intent)
 
-            "video" -> {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(fileUri as Uri?, "video/*")
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                startActivity(intent)
-            }
-
-            "url" -> {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(fileUri.toString())
-                )
-                startActivity(intent)
-            }
-
-            "pdf", "excel", "word" -> {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(fileUri as Uri?, "application/*")
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                startActivity(intent)
-            }
-
-            else -> {
-                Toast.makeText(
-                    requireContext(), "Can't open file", Toast
-                        .LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 
 
     private fun askQuestion() {
-        val optionsModel = MultiChoiceOption()
-        val questionText = mQuestionEditText.text.toString().trim().ifEmpty {
-            mQuestionEditText.error = "Question is required!"
+        val questionText = mQuestionEditText.text.toString().trim()
+
+        if (questionText.isEmpty()) {
+            mQuestionEditText.error = "Please enter a question"
+        } else if (selectedPosition == RecyclerView.NO_POSITION) {
+            Toast.makeText(
+                requireContext(), "Please select an option", Toast.LENGTH_SHORT
+            ).show()
+        } else if (mOptionList.isEmpty()) {
+            Toast.makeText(
+                requireContext(), "Please set at least one option", Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            mQuestionModel.questionText = questionText
+            mQuestionModel.options = mOptionList
+
+            println("question $mQuestionModel")
         }
 
-
-        optionList.forEach { (key, value) ->
-            optionsModel.apply {
-                optionOrder = key
-                if (value is String)
-                    optionText = value
-                optionImageName = mOptionAttachmentModel?.name ?: ""
-                optionImageType = mOptionAttachmentModel?.type ?: ""
-                optionImageUri = mOptionAttachmentModel?.uri ?: ""
-            }
-        }
-
-
-        MultiChoiceQuestion(
-            questionText.toString(),
-            optionsModel,
-            correctList.keys.toString(),
-            correctList.values.toString()
-        )
-
-        println("option: $optionList  correct: $correctList")
     }
-
 
 }

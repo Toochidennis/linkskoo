@@ -11,12 +11,15 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.fragments.AdminELearningMultiChoiceDialogFragment
+import com.digitaldream.linkskool.models.MultiChoiceQuestion
 
 class AdminELearningQuestionDialog(
     context: Context,
     private val fragmentManager: FragmentManager
 ): Dialog(context) {
 
+
+    private var mQuestionModel =  MultiChoiceQuestion()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -35,7 +38,9 @@ class AdminELearningQuestionDialog(
 
         multiChoiceBtn.setOnClickListener {
 
-           val dialogA = AdminELearningMultiChoiceDialogFragment()
+           val dialogA = AdminELearningMultiChoiceDialogFragment(mQuestionModel){
+
+           }
             dialogA.isCancelable = true
             dialogA.show(fragmentManager, "")
 

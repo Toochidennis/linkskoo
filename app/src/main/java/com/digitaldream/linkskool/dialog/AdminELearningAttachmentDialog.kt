@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.documentfile.provider.DocumentFile
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
@@ -39,6 +40,7 @@ enum class FileType {
 
 
 class AdminELearningAttachmentDialog(
+    private val from: String = "",
     private val onFileSelected: (type: String, name: String, uri: Any?) -> Unit
 ) : BottomSheetDialogFragment() {
 
@@ -120,7 +122,6 @@ class AdminELearningAttachmentDialog(
                 }
             }
 
-
         cameraLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -163,6 +164,19 @@ class AdminELearningAttachmentDialog(
             val takePhotoBtn: TextView = findViewById(R.id.takePhoto)
             val recordVideoBtn: TextView = findViewById(R.id.recordVideo)
 
+            if (from == "multiple choice") {
+                insertLink.isVisible = false
+                recordVideoBtn.isVisible = false
+
+                uploadFile.setOnClickListener {
+                    filePickerLauncher.launch("image/*")
+                }
+            } else {
+                uploadFile.setOnClickListener {
+                    filePickerLauncher.launch("*/*")
+                }
+            }
+
 
             insertLink.setOnClickListener {
                 InsertLinkDialog(requireContext()) { url: String ->
@@ -177,12 +191,6 @@ class AdminELearningAttachmentDialog(
 
                 dismiss()
             }
-
-
-            uploadFile.setOnClickListener {
-                filePickerLauncher.launch("*/*")
-            }
-
 
             takePhotoBtn.setOnClickListener {
                 takePhoto()

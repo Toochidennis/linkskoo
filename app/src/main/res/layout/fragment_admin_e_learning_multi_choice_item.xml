@@ -64,7 +64,7 @@
             android:lines="1"
             android:paddingTop="@dimen/dimen_16"
             android:paddingBottom="@dimen/dimen_16"
-            android:text="@string/todo"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="@dimen/text_16"
             android:visibility="gone" />
