@@ -62,8 +62,6 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="title"
                 android:background="@android:color/transparent"
-                android:cursorVisible="true"
-                android:focusableInTouchMode="true"
                 android:hint="Question"
                 android:inputType="textMultiLine"
                 android:lineSpacingMultiplier="1"
@@ -71,7 +69,6 @@
                 android:minLines="1"
                 android:overScrollMode="always"
                 android:padding="@dimen/dimen_16"
-                android:scrollbars="vertical"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_16" />
 

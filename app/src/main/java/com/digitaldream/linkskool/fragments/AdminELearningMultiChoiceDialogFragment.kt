@@ -1,11 +1,13 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -87,7 +89,6 @@ class AdminELearningMultiChoiceDialogFragment(
             addOption()
         }
 
-
         mAskBtn.setOnClickListener {
             askQuestion()
         }
@@ -126,6 +127,8 @@ class AdminELearningMultiChoiceDialogFragment(
 
 
     private fun options() {
+        var editTextHasFocus = false
+
         mOptionsAdapter = GenericAdapter2(
             mOptionList,
             R.layout.fragment_admin_e_learning_multi_choice_item,
@@ -143,30 +146,34 @@ class AdminELearningMultiChoiceDialogFragment(
 
                 smoothScrollEditText(editText)
 
-                if (model.optionText.isEmpty()) {
-                    attachmentTxt.text = model.attachmentName
-                    attachmentTxt.visibility = View.VISIBLE
-                    editText.visibility = View.GONE
-                } else {
+                if (model.attachmentName.isEmpty()) {
+                    println("nae: ${model.optionText}")
                     editText.setText(model.optionText)
-                    editText.visibility = View.VISIBLE
-                    attachmentTxt.visibility = View.GONE
+                    attachmentTxt.isVisible = false
+                    editText.isVisible = true
+                } else {
+                    println("ne: ${model.attachmentName}")
+                    attachmentTxt.text = model.attachmentName
+                    attachmentTxt.isVisible = true
+                    editText.isVisible = false
                 }
 
                 radioButton.isChecked = position == selectedPosition
 
                 radioButton.setOnClickListener {
                     if (radioButton.isChecked) {
-                        selectedPosition = position
-                        mQuestionModel.checkedPosition = selectedPosition
+                        if (!editTextHasFocus) {
+                            selectedPosition = position
+                            mQuestionModel.checkedPosition = selectedPosition
 
-                        mQuestionModel.correctAnswer =
-                            model.optionText.ifEmpty { model.attachmentName }
+                            mQuestionModel.correctAnswer =
+                                model.optionText.ifEmpty { model.attachmentName }
 
-                        if (!mOptionsRecyclerView.isComputingLayout &&
-                            mOptionsRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
-                        ) {
                             mOptionsAdapter.notifyDataSetChanged()
+                        } else {
+                            radioButton.isChecked = false
+                            editText.clearFocus()
+                            Toast.makeText(requireContext(), "u cant", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -179,7 +186,6 @@ class AdminELearningMultiChoiceDialogFragment(
                             R.id.attach -> {
                                 AdminELearningAttachmentDialog("multiple choice")
                                 { type: String, name: String, uri: Any? ->
-                                    attachmentTxt.text = name
                                     model.attachmentName = name
                                     model.attachmentType = type
                                     model.attachmentUri = uri
@@ -200,6 +206,8 @@ class AdminELearningMultiChoiceDialogFragment(
                                     attachmentTxt.setOnClickListener {
                                         previewAttachment(model.attachmentUri!!)
                                     }
+
+                                    mOptionsAdapter.notifyDataSetChanged()
 
                                 }.show(parentFragmentManager, "")
 
@@ -224,13 +232,7 @@ class AdminELearningMultiChoiceDialogFragment(
                     popUpMenu.setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.detach -> {
-                                attachmentTxt.visibility = View.GONE
-                                removeAttachmentBtn.visibility = View.GONE
-                                showAttachmentPopUpBtn.visibility = View.VISIBLE
-                                editText.visibility = View.VISIBLE
-
                                 removeOption(position)
-
                                 true
                             }
 
@@ -241,6 +243,15 @@ class AdminELearningMultiChoiceDialogFragment(
                     popUpMenu.show()
                 }
 
+
+                editText.setOnFocusChangeListener { _, hasFocus ->
+                    editTextHasFocus = hasFocus
+                    if (!hasFocus) {
+                        model.optionOrder = "$position"
+                        model.optionText = editText.text.toString()
+                    }
+                }
+
                 editText.addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(
                         s: CharSequence?,
@@ -248,7 +259,6 @@ class AdminELearningMultiChoiceDialogFragment(
                         count: Int,
                         after: Int
                     ) {
-
                     }
 
                     override fun onTextChanged(
@@ -257,21 +267,21 @@ class AdminELearningMultiChoiceDialogFragment(
                         before: Int,
                         count: Int
                     ) {
-                        model.optionOrder = "$position"
-                        model.optionText = s.toString()
+                        if (editText.hasFocus()) {
+                            model.optionOrder = "$position"
+                            model.optionText = s.toString()
+                        }
                     }
 
-                    override fun afterTextChanged(s: Editable?) {
-
-                    }
+                    override fun afterTextChanged(s: Editable?) {}
                 })
             }
         )
 
         mOptionsRecyclerView.apply {
+            hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mOptionsAdapter
-            hasFixedSize()
         }
     }
 
@@ -285,7 +295,6 @@ class AdminELearningMultiChoiceDialogFragment(
         mOptionsAdapter.notifyItemInserted(mOptionList.size + 1)
         mOptionsRecyclerView.smoothScrollToPosition(mOptionList.size - 1)
     }
-
 
     private fun showQuestionAttachment(button: View) {
         button.setOnClickListener {
@@ -346,13 +355,14 @@ class AdminELearningMultiChoiceDialogFragment(
             uri
         }
 
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(fileUri as Uri?, "image/*")
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivity(intent)
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(fileUri as Uri?, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.let {
+            startActivity(it)
+        }
 
     }
-
 
     private fun askQuestion() {
         val questionText = mQuestionEditText.text.toString().trim()
@@ -374,6 +384,12 @@ class AdminELearningMultiChoiceDialogFragment(
             println("question $mQuestionModel")
         }
 
+    }
+
+    private fun hideSoftKeyboard() {
+        val inputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
 }

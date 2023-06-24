@@ -31,9 +31,7 @@
             android:lineSpacingMultiplier="1"
             android:lines="2"
             android:minLines="1"
-            android:overScrollMode="always"
-            android:padding="@dimen/dimen_16"
-            android:scrollbars="vertical" />
+            android:padding="@dimen/dimen_16" />
 
         <ImageView
             android:id="@+id/removeOptionButton"
