@@ -82,5 +82,4 @@ class TermlyFeeDialog(
 interface OnInputListener {
     fun sendInput(input: String)
     fun sendId(levelId: String)
-
 }

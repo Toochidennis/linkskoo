@@ -32,7 +32,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/edit_topic"
+                android:id="@+id/topicButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dimen_10"
@@ -40,8 +40,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:padding="@dimen/dimen_16">
-
+                android:padding="@dimen/dimen_10">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/icon"
@@ -63,124 +62,54 @@
 
                 </androidx.cardview.widget.CardView>
 
-
                 <TextView
-                    android:id="@+id/description"
+                    android:id="@+id/questionTitleTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="15dp"
                     android:layout_toEndOf="@id/icon"
-                    android:ellipsize="marquee"
+                    android:ellipsize="end"
                     android:fontFamily="@font/poppins_regular"
                     android:lines="2"
-                    android:text="Topic: Introduction to DevOps"
+                    android:minLines="1"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
-
                 <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/descriptionTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/description"
+                    android:layout_below="@id/questionTitleTxt"
                     android:layout_marginStart="15dp"
                     android:layout_toEndOf="@id/icon"
-                    android:ellipsize="marquee"
+                    android:ellipsize="end"
                     android:fontFamily="@font/poppins_regular"
                     android:lines="2"
-                    android:text="Description: An assignment to be submitted..."
+                    android:minLines="1"
+                    android:text=""
                     android:textSize="14sp" />
 
             </RelativeLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/questionRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="true"
+                android:padding="@dimen/dimen_10"
+                android:visibility="visible" />
+
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/emptyQuestionTxt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_16"
-                android:text="Part A"
-                android:textColor="@color/test_color_1"
-                android:textSize="@dimen/text_18"
-                app:drawableEndCompat="@drawable/ic_more" />
-
-            <RelativeLayout
-                android:id="@+id/notification_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_10"
-                android:background="@drawable/edit_text_bg4"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-
-                    <RelativeLayout
-                        android:id="@+id/description_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/count_icon"
-                            android:layout_width="@dimen/dimen_32"
-                            android:layout_height="@dimen/dimen_32"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginTop="10dp"
-                            android:backgroundTint="@color/test_color_3"
-                            app:cardCornerRadius="@dimen/dimen_32">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins_regular"
-                                android:padding="5dp"
-                                android:text="1"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/text_14" />
-
-                        </androidx.cardview.widget.CardView>
-
-                        <TextView
-                            android:id="@+id/description1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="15dp"
-                            android:layout_toEndOf="@id/count_icon"
-                            android:ellipsize="marquee"
-                            android:fontFamily="@font/poppins_regular"
-                            android:lines="2"
-                            android:text="Introduction to DevOps is what____?"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/text_16" />
-
-                    </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/separator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/description_layout"
-                    android:background="@drawable/line_separator"
-                    android:orientation="horizontal" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/separator"
-                    android:drawablePadding="@dimen/dimen_16"
-                    android:padding="@dimen/dimen_10"
-                    android:text="Add answer"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:drawableEndCompat="@drawable/ic_more"
-                    app:drawableStartCompat="@drawable/ic_multi_choice" />
-
-            </RelativeLayout>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_64"
+                android:text="No question set yet!"
+                android:textSize="@dimen/text_16"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -201,11 +130,15 @@
             android:padding="@dimen/dimen_16">
 
             <LinearLayout
+                android:id="@+id/previewQuestionButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_16"
                 android:layout_marginEnd="@dimen/dimen_16"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center">
 
                 <TextView
@@ -238,10 +171,14 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/submitQuestionButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_16"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center">
 
                 <TextView

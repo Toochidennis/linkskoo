@@ -12,8 +12,8 @@ import com.digitaldream.linkskool.models.TagModel
 class AdminELearningQuestionSettingsAdapter(
     private val selectedItems: HashMap<String, String>,
     private val itemList: MutableList<TagModel>,
-    private val button: Button,
-) : RecyclerView.Adapter<AdminELearningQuestionSettingsAdapter.ViewHolder>() {
+    private val selectAllBtn: Button,
+    ) : RecyclerView.Adapter<AdminELearningQuestionSettingsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -27,26 +27,6 @@ class AdminELearningQuestionSettingsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemModel = itemList[position]
         holder.bindItem(itemModel)
-
-        button.setOnClickListener {
-            if (!button.isSelected) {
-                selectAll(holder)
-
-                button.apply {
-                    setBackgroundResource(R.drawable.ripple_effect10)
-                    setTextColor(Color.WHITE)
-                    isSelected = true
-                }
-            } else {
-                deselectAll(holder)
-
-                button.apply {
-                    setBackgroundResource(R.drawable.ripple_effect6)
-                    setTextColor(Color.BLACK)
-                    isSelected = false
-                }
-            }
-        }
     }
 
 
@@ -54,22 +34,30 @@ class AdminELearningQuestionSettingsAdapter(
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemName: Button = itemView.findViewById(R.id.itemName)
-
+        private val itemName: Button = itemView.findViewById(R.id.itemName)
 
         fun bindItem(tag: TagModel) {
             itemName.text = tag.tagName
             itemView.isSelected = tag.isSelected
 
-            if (itemView.isSelected) {
+            if (selectedItems.size == itemList.size) {
+                buttonBackground(selectAllBtn, "select")
                 buttonBackground(itemName, "select")
-                selectedItems[tag.tagId] = tag.tagName
-                if (selectedItems.size == itemList.size){
-                    buttonBackground(button, "select")
-                }
             } else {
-                buttonBackground(itemName, "deselect")
+                val isSelected = selectedItems.containsKey(tag.tagId) &&
+                        selectedItems[tag.tagId] == tag.tagName
+                buttonBackground(itemName, if (isSelected) "select" else "deselect")
             }
+
+//            if (itemView.isSelected) {
+//                buttonBackground(itemName, "select")
+//                selectedItems[tag.tagId] = tag.tagName
+//                if (selectedItems.size == itemList.size) {
+//                    buttonBackground(selectAllBtn, "select")
+//                }
+//            } else {
+//                buttonBackground(itemName, "deselect")
+//            }
 
 
             itemView.setOnClickListener {
@@ -79,34 +67,45 @@ class AdminELearningQuestionSettingsAdapter(
                 if (itemView.isSelected) {
                     buttonBackground(itemName, "select")
                     selectedItems[tag.tagId] = tag.tagName
+                    if (selectedItems.size == itemList.size) {
+                        buttonBackground(selectAllBtn, "select")
+                    }
                 } else {
                     if (tag.tagId.isNotEmpty() && selectedItems.contains(tag.tagId)) {
                         selectedItems.remove(tag.tagId)
 
                         buttonBackground(itemName, "deselect")
-                        buttonBackground(button, "deselect")
+                        buttonBackground(selectAllBtn, "deselect")
                     }
+                }
+            }
+
+            selectAllBtn.setOnClickListener {
+                if (!selectAllBtn.isSelected) {
+                    selectAll(selectAllBtn)
+                    selectAll(itemName)
+                } else {
+                    deselectAll(selectAllBtn)
+                    deselectAll(itemName)
                 }
             }
         }
     }
 
-    private fun selectAll(holder: ViewHolder) {
+    private fun selectAll(button: Button) {
         selectedItems.clear()
         itemList.forEach { item ->
             item.isSelected = true
-            buttonBackground(holder.itemName, "select")
             buttonBackground(button, "select")
             selectedItems[item.tagId] = item.tagName
         }
         notifyDataSetChanged()
     }
 
-    private fun deselectAll(holder: ViewHolder) {
+    private fun deselectAll(button: Button) {
         itemList.forEach { item ->
             if (item.isSelected) {
                 item.isSelected = false
-                buttonBackground(holder.itemName, "deselect")
                 buttonBackground(button, "deselect")
             }
         }

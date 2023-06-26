@@ -75,7 +75,7 @@ class TermFeeDialog(
             "Select Level".also { mTitle.text = it }
             mLevelRecyclerView.isVisible = true
             mErrorMessage.isVisible = false
-            // mClassRecyclerView.isVisible = false
+
             mClassRecyclerView.startAnimation(mRightToRightAnimation)
             mLevelRecyclerView.startAnimation(mLeftToRightAnimation)
         }
@@ -181,7 +181,6 @@ class TermFeeDialog(
         }
 
         dismiss()
-
     }
 
 }

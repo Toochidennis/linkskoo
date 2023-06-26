@@ -14,7 +14,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class AdminELearningTopicsFragment : Fragment(R.layout.fragment_admin_e_learning_topics) {
+class AdminELearningCourseTopicsFragment : Fragment(R.layout.fragment_admin_e_learning_course_topics) {
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
@@ -33,7 +33,7 @@ class AdminELearningTopicsFragment : Fragment(R.layout.fragment_admin_e_learning
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AdminELearningTopicsFragment().apply {
+            AdminELearningCourseTopicsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

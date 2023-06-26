@@ -1,13 +1,12 @@
 package com.digitaldream.linkskool.fragments
 
-import android.content.Context
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -23,7 +22,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.GenericAdapter2
+import com.digitaldream.linkskool.adapters.GenericAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
 import com.digitaldream.linkskool.models.MultiChoiceOption
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
@@ -34,7 +33,7 @@ import java.io.File
 
 class AdminELearningMultiChoiceDialogFragment(
     private val question: MultiChoiceQuestion,
-    private val askQuestion: (question: MultiChoiceQuestion) -> Unit
+    private val onQuestionSet: (question: MultiChoiceQuestion) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_multi_choice) {
 
     private lateinit var mDismissBtn: ImageView
@@ -46,17 +45,17 @@ class AdminELearningMultiChoiceDialogFragment(
     private lateinit var mOptionsRecyclerView: RecyclerView
     private lateinit var mAddOptionBtn: TextView
 
-    private lateinit var mOptionsAdapter: GenericAdapter2<MultiChoiceOption>
+    private lateinit var mOptionsAdapter: GenericAdapter<MultiChoiceOption>
 
     private val mOptionList = mutableListOf<MultiChoiceOption>()
-    private lateinit var mQuestionModel: MultiChoiceQuestion
+    private lateinit var questionModelCopy: MultiChoiceQuestion
     private var selectedPosition = RecyclerView.NO_POSITION
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
-
+        isCancelable = false
     }
 
 
@@ -82,7 +81,7 @@ class AdminELearningMultiChoiceDialogFragment(
         showQuestionAttachment(mAttachmentBtn)
 
         mDismissBtn.setOnClickListener {
-            dismiss()
+            onDiscard()
         }
 
         mAddOptionBtn.setOnClickListener {
@@ -97,16 +96,15 @@ class AdminELearningMultiChoiceDialogFragment(
             removeQuestionAttachment()
         }
 
-
     }
 
     private fun initializeQuestionModel() {
-        mQuestionModel = question.copy()
-        mQuestionEditText.setText(mQuestionModel.questionText)
+        questionModelCopy = question.copy()
+        mQuestionEditText.setText(questionModelCopy.questionText)
 
-        if (mQuestionModel.attachmentName.isNotEmpty()) {
+        if (questionModelCopy.attachmentName.isNotEmpty()) {
             setDrawableOnTextView(mAttachmentTxt)
-            mAttachmentTxt.text = mQuestionModel.attachmentName
+            mAttachmentTxt.text = questionModelCopy.attachmentName
             mRemoveQuestionAttachmentBtn.isVisible = true
             mAttachmentBtn.isClickable = false
         }
@@ -114,14 +112,14 @@ class AdminELearningMultiChoiceDialogFragment(
     }
 
     private fun initializeOptions() {
-        if (!mQuestionModel.options.isNullOrEmpty()) {
-            mOptionList.addAll(mQuestionModel.options!!)
+        if (!questionModelCopy.options.isNullOrEmpty()) {
+            mOptionList.addAll(questionModelCopy.options!!)
         } else {
             mOptionList.add(MultiChoiceOption("Option 1"))
         }
 
-        if (mQuestionModel.checkedPosition != RecyclerView.NO_POSITION) {
-            selectedPosition = mQuestionModel.checkedPosition
+        if (questionModelCopy.checkedPosition != RecyclerView.NO_POSITION) {
+            selectedPosition = questionModelCopy.checkedPosition
         }
     }
 
@@ -129,7 +127,7 @@ class AdminELearningMultiChoiceDialogFragment(
     private fun options() {
         var editTextHasFocus = false
 
-        mOptionsAdapter = GenericAdapter2(
+        mOptionsAdapter = GenericAdapter(
             mOptionList,
             R.layout.fragment_admin_e_learning_multi_choice_item,
             bindItem = { itemView, model, position ->
@@ -147,12 +145,10 @@ class AdminELearningMultiChoiceDialogFragment(
                 smoothScrollEditText(editText)
 
                 if (model.attachmentName.isEmpty()) {
-                    println("nae: ${model.optionText}")
                     editText.setText(model.optionText)
                     attachmentTxt.isVisible = false
                     editText.isVisible = true
                 } else {
-                    println("ne: ${model.attachmentName}")
                     attachmentTxt.text = model.attachmentName
                     attachmentTxt.isVisible = true
                     editText.isVisible = false
@@ -164,16 +160,21 @@ class AdminELearningMultiChoiceDialogFragment(
                     if (radioButton.isChecked) {
                         if (!editTextHasFocus) {
                             selectedPosition = position
-                            mQuestionModel.checkedPosition = selectedPosition
+                            questionModelCopy.checkedPosition = selectedPosition
 
-                            mQuestionModel.correctAnswer =
+                            questionModelCopy.correctAnswer =
                                 model.optionText.ifEmpty { model.attachmentName }
 
                             mOptionsAdapter.notifyDataSetChanged()
                         } else {
                             radioButton.isChecked = false
                             editText.clearFocus()
-                            Toast.makeText(requireContext(), "u cant", Toast.LENGTH_SHORT).show()
+
+                            Toast.makeText(
+                                requireContext(),
+                                "You can't select an option while typing",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -193,7 +194,7 @@ class AdminELearningMultiChoiceDialogFragment(
                                     model.optionOrder = "$position"
 
                                     if (selectedPosition == position)
-                                        mQuestionModel.correctAnswer = model.attachmentName
+                                        questionModelCopy.correctAnswer = model.attachmentName
 
                                     setDrawableOnTextView(attachmentTxt)
 
@@ -201,7 +202,6 @@ class AdminELearningMultiChoiceDialogFragment(
                                     removeAttachmentBtn.isVisible = true
                                     showAttachmentPopUpBtn.isVisible = false
                                     editText.isVisible = false
-
 
                                     attachmentTxt.setOnClickListener {
                                         previewAttachment(model.attachmentUri!!)
@@ -249,6 +249,7 @@ class AdminELearningMultiChoiceDialogFragment(
                     if (!hasFocus) {
                         model.optionOrder = "$position"
                         model.optionText = editText.text.toString()
+                        editText.clearFocus()
                     }
                 }
 
@@ -275,7 +276,9 @@ class AdminELearningMultiChoiceDialogFragment(
 
                     override fun afterTextChanged(s: Editable?) {}
                 })
-            }
+            },
+
+            onItemClick = {}
         )
 
         mOptionsRecyclerView.apply {
@@ -287,13 +290,14 @@ class AdminELearningMultiChoiceDialogFragment(
 
     private fun removeOption(position: Int) {
         mOptionList.removeAt(position)
-        mOptionsAdapter.notifyDataSetChanged()
+        mOptionsAdapter.notifyItemRemoved(position)
     }
 
     private fun addOption() {
-        mOptionList.add(MultiChoiceOption("Option ${mOptionList.size + 1}"))
-        mOptionsAdapter.notifyItemInserted(mOptionList.size + 1)
-        mOptionsRecyclerView.smoothScrollToPosition(mOptionList.size - 1)
+        val optionText = "Option ${mOptionList.size + 1}"
+        val option = MultiChoiceOption(optionText)
+        mOptionList.add(option)
+        mOptionsAdapter.notifyItemRangeInserted(mOptionList.size - 1, 1)
     }
 
     private fun showQuestionAttachment(button: View) {
@@ -301,17 +305,17 @@ class AdminELearningMultiChoiceDialogFragment(
             AdminELearningAttachmentDialog("multiple choice")
             { type: String, name: String, uri: Any? ->
                 try {
-                    mQuestionModel.attachmentName = name
-                    mQuestionModel.attachmentType = type
-                    mQuestionModel.attachmentUri = uri
+                    questionModelCopy.attachmentName = name
+                    questionModelCopy.attachmentType = type
+                    questionModelCopy.attachmentUri = uri
 
                     setDrawableOnTextView(mAttachmentTxt)
-                    mAttachmentTxt.text = mQuestionModel.attachmentName
+                    mAttachmentTxt.text = questionModelCopy.attachmentName
                     mRemoveQuestionAttachmentBtn.isVisible = true
                     mAttachmentBtn.isClickable = false
 
                     mAttachmentTxt.setOnClickListener {
-                        previewAttachment(mQuestionModel.attachmentUri!!)
+                        previewAttachment(questionModelCopy.attachmentUri!!)
                     }
 
                 } catch (e: Exception) {
@@ -324,9 +328,9 @@ class AdminELearningMultiChoiceDialogFragment(
     }
 
     private fun removeQuestionAttachment() {
-        mQuestionModel.attachmentUri = null
-        mQuestionModel.attachmentName = ""
-        mQuestionModel.attachmentType = ""
+        questionModelCopy.attachmentUri = null
+        questionModelCopy.attachmentName = ""
+        questionModelCopy.attachmentType = ""
         mRemoveQuestionAttachmentBtn.isVisible = false
         mAttachmentTxt.text = "Add attachment"
         mAttachmentTxt.setCompoundDrawablesWithIntrinsicBounds(
@@ -344,24 +348,51 @@ class AdminELearningMultiChoiceDialogFragment(
     }
 
     private fun previewAttachment(uri: Any) {
-        val fileUri = if (uri is File) {
-            val file = File(uri.absolutePath)
-            FileProvider.getUriForFile(
-                requireContext(),
-                "${requireActivity().packageName}.provider",
-                file
-            )
-        } else {
-            uri
+        try {
+            val fileUri = when (uri) {
+                is File -> {
+                    val file = File(uri.absolutePath)
+                    FileProvider.getUriForFile(
+                        requireContext(),
+                        "${requireActivity().packageName}.provider",
+                        file
+                    )
+                }
+
+                is String -> Uri.parse(uri)
+
+                else -> uri
+            }
+
+            Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(fileUri as Uri?, "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }.let {
+                startActivity(it)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(
+                requireContext(), "Error occurred while viewing file", Toast.LENGTH_SHORT
+            ).show()
+
         }
 
-        Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(fileUri as Uri?, "image/*")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }.let {
-            startActivity(it)
-        }
+    }
 
+    private fun onDiscard() {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Are you sure to exit?")
+            setMessage("Your unsaved changes will be lost")
+            setPositiveButton("Yes") { _, _ ->
+                dismiss()
+            }
+            setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            show()
+        }.create()
     }
 
     private fun askQuestion() {
@@ -378,18 +409,15 @@ class AdminELearningMultiChoiceDialogFragment(
                 requireContext(), "Please set at least one option", Toast.LENGTH_SHORT
             ).show()
         } else {
-            mQuestionModel.questionText = questionText
-            mQuestionModel.options = mOptionList
+            questionModelCopy.questionText = questionText
+            questionModelCopy.options = mOptionList
 
-            println("question $mQuestionModel")
+            onQuestionSet(questionModelCopy)
+            println("question $questionModelCopy")
+
+            dismiss()
         }
 
-    }
-
-    private fun hideSoftKeyboard() {
-        val inputMethodManager =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
 }

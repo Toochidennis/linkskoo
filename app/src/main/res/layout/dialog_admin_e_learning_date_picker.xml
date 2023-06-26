@@ -19,15 +19,15 @@
     <Button
         android:id="@+id/startDateBtn"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_below="@id/title1"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:clickable="true"
         android:focusable="true"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="@dimen/dimen_12"
+        android:paddingEnd="@dimen/dimen_12"
         android:text="@string/todo"
         android:textAllCaps="false"
         android:textSize="@dimen/text_14" />
@@ -35,7 +35,7 @@
     <Button
         android:id="@+id/startTimeBtn"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_below="@id/title1"
         android:layout_marginStart="@dimen/dimen_32"
         android:layout_marginTop="@dimen/dimen_16"
@@ -43,9 +43,9 @@
         android:background="@drawable/ripple_effect6"
         android:clickable="true"
         android:focusable="true"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="@string/todo"
+        android:paddingStart="@dimen/dimen_12"
+        android:paddingEnd="@dimen/dimen_12"
+        android:text="22:11"
         android:textAllCaps="false"
         android:textSize="@dimen/text_14" />
 
@@ -60,19 +60,18 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_16" />
 
-
     <Button
         android:id="@+id/endDateBtn"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_below="@id/title2"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:clickable="true"
         android:focusable="true"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="@dimen/dimen_12"
+        android:paddingEnd="@dimen/dimen_12"
         android:text="@string/todo"
         android:textAllCaps="false"
         android:textSize="@dimen/text_14" />
@@ -80,7 +79,7 @@
     <Button
         android:id="@+id/endTimeBtn"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_below="@id/title2"
         android:layout_marginStart="@dimen/dimen_32"
         android:layout_marginTop="@dimen/dimen_16"
@@ -88,16 +87,16 @@
         android:background="@drawable/ripple_effect6"
         android:clickable="true"
         android:focusable="true"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="@string/todo"
+        android:paddingStart="@dimen/dimen_12"
+        android:paddingEnd="@dimen/dimen_12"
+        android:text="22:11"
         android:textAllCaps="false"
         android:textSize="@dimen/text_14" />
 
     <Button
         android:id="@+id/cancelBtn"
-        android:layout_width="55dp"
-        android:layout_height="30dp"
+        android:layout_width="65dp"
+        android:layout_height="40dp"
         android:layout_below="@id/endDateBtn"
         android:layout_marginTop="@dimen/dimen_16"
         android:layout_marginEnd="@dimen/dimen_16"
@@ -112,7 +111,7 @@
     <Button
         android:id="@+id/saveBtn"
         android:layout_width="60dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:layout_below="@id/endDateBtn"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dimen_16"

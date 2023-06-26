@@ -1,9 +1,7 @@
 package com.digitaldream.linkskool.dialog
 
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,15 +16,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.documentfile.provider.DocumentFile
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
-import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 enum class FileType {
     IMAGE,
@@ -46,7 +44,7 @@ class AdminELearningAttachmentDialog(
 
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
     private var cameraCode = 0
-    private var date: String? = null
+    private var timeStamp: String? = null
 
 
     override fun onCreateView(
@@ -128,9 +126,7 @@ class AdminELearningAttachmentDialog(
             if (result.resultCode == Activity.RESULT_OK) {
 
                 if (cameraCode == 0) {
-                    //val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
                     onFileSelected("image", imageFile().name, imageFile())
-                    imageFile().delete()
                 } else {
                     val videoUri = result.data?.data
                     videoUri?.let { uri ->
@@ -203,18 +199,18 @@ class AdminELearningAttachmentDialog(
         }
 
 
-        date = formatDate2(getDate(), "custom1")
+        timeStamp = SimpleDateFormat("EEE, dd MMM HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
 
     private fun imageFile(): File {
         val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File(storageDir, "$date.jpg")
+        return File(storageDir, "$timeStamp.jpg")
     }
 
     private fun videoFile(): File {
         val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-        return File(storageDir, "$date.mp4")
+        return File(storageDir, "$timeStamp.mp4")
     }
 
 
@@ -260,6 +256,5 @@ class AdminELearningAttachmentDialog(
         }
         return "No name"
     }
-
 
 }
