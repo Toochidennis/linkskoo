@@ -124,13 +124,11 @@ class AdminELearningDatePickerDialog(
         try {
             if (mStartDate.isNullOrEmpty() && mStartTime.isNullOrEmpty()) {
                 Toast.makeText(
-                    context, "Start date or start time is empty", Toast
-                        .LENGTH_SHORT
+                    context, "Start date or start time is empty", Toast.LENGTH_SHORT
                 ).show()
             } else if (mEndDate.isNullOrEmpty() && mEndTime.isNullOrEmpty()) {
                 Toast.makeText(
-                    context, "End date or end time is empty", Toast
-                        .LENGTH_SHORT
+                    context, "End date or end time is empty", Toast.LENGTH_SHORT
                 ).show()
             } else {
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
