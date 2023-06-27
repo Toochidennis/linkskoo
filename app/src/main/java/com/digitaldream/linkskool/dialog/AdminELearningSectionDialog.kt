@@ -12,7 +12,7 @@ import com.google.android.material.textfield.TextInputLayout
 
 class AdminELearningSectionDialog(
     context: Context,
-    private val section: String,
+    private val section: String = "",
     private val onSection: (section: String) -> Unit
 ) : Dialog(context) {
 

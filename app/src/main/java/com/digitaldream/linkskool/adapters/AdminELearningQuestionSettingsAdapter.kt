@@ -29,9 +29,7 @@ class AdminELearningQuestionSettingsAdapter(
         holder.bindItem(itemModel)
     }
 
-
     override fun getItemCount() = itemList.size
-
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val itemName: Button = itemView.findViewById(R.id.itemName)
@@ -43,10 +41,12 @@ class AdminELearningQuestionSettingsAdapter(
             if (selectedItems.size == itemList.size) {
                 buttonBackground(selectAllBtn, "select")
                 buttonBackground(itemName, "select")
-            } else {
+                tag.isSelected = true
+            } else if (selectedItems.size != 0){
                 val isSelected = selectedItems.containsKey(tag.tagId) &&
                         selectedItems[tag.tagId] == tag.tagName
                 buttonBackground(itemName, if (isSelected) "select" else "deselect")
+                tag.isSelected = true
             }
 
 //            if (itemView.isSelected) {

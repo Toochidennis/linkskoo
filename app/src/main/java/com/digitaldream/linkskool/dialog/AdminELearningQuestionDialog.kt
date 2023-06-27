@@ -20,7 +20,6 @@ class AdminELearningQuestionDialog(
     private val fragmentManager: FragmentManager,
     private val questionModel: MultiChoiceQuestion,
     private val shortAnswerModel: ShortAnswerModel,
-    private val section: String = "",
     private val onQuestionSelected: (
         question: MultiChoiceQuestion?,
         shortQuestion: ShortAnswerModel?,
@@ -63,7 +62,7 @@ class AdminELearningQuestionDialog(
         }
 
         sectionBtn.setOnClickListener {
-            AdminELearningSectionDialog(context, section) {
+            AdminELearningSectionDialog(context) {
                 onQuestionSelected(null, null, it)
             }.apply {
                 setCancelable(true)

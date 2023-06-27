@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.GenericAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
-import com.digitaldream.linkskool.models.MultiChoiceOption
+import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.FunctionUtils.smoothScrollEditText
@@ -45,9 +45,9 @@ class AdminELearningMultiChoiceDialogFragment(
     private lateinit var mOptionsRecyclerView: RecyclerView
     private lateinit var mAddOptionBtn: TextView
 
-    private lateinit var mOptionsAdapter: GenericAdapter<MultiChoiceOption>
+    private lateinit var mOptionsAdapter: GenericAdapter<MultipleChoiceOption>
 
-    private val mOptionList = mutableListOf<MultiChoiceOption>()
+    private val mOptionList = mutableListOf<MultipleChoiceOption>()
     private lateinit var questionModelCopy: MultiChoiceQuestion
     private var selectedPosition = RecyclerView.NO_POSITION
 
@@ -115,7 +115,7 @@ class AdminELearningMultiChoiceDialogFragment(
         if (!questionModelCopy.options.isNullOrEmpty()) {
             mOptionList.addAll(questionModelCopy.options!!)
         } else {
-            mOptionList.add(MultiChoiceOption("Option 1"))
+            mOptionList.add(MultipleChoiceOption("Option 1"))
         }
 
         if (questionModelCopy.checkedPosition != RecyclerView.NO_POSITION) {
@@ -295,7 +295,7 @@ class AdminELearningMultiChoiceDialogFragment(
 
     private fun addOption() {
         val optionText = "Option ${mOptionList.size + 1}"
-        val option = MultiChoiceOption(optionText)
+        val option = MultipleChoiceOption(optionText)
         mOptionList.add(option)
         mOptionsAdapter.notifyItemRangeInserted(mOptionList.size - 1, 1)
     }

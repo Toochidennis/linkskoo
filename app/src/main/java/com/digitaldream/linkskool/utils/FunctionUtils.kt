@@ -53,7 +53,7 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.AccountSetupDataModel
 import com.digitaldream.linkskool.models.ChartModel
 import com.digitaldream.linkskool.models.ClassNameTable
-import com.digitaldream.linkskool.models.GroupItems
+import com.digitaldream.linkskool.models.GroupItem
 import com.digitaldream.linkskool.models.LevelTable
 import com.digitaldream.linkskool.models.VendorModel
 import org.achartengine.ChartFactory
@@ -742,7 +742,7 @@ object FunctionUtils {
     fun <T, K> groupBy(
         items: MutableList<T>,
         keyExtractor: (T) -> K
-    ): MutableList<GroupItems<K, T>> {
+    ): MutableList<GroupItem<K, T>> {
 
         /**
          * the function takes two data types:  T and K
@@ -752,7 +752,7 @@ object FunctionUtils {
          * returns the corresponding grouping key of type K.
          */
 
-        val groupItems = mutableListOf<GroupItems<K, T>>()
+        val groupItems = mutableListOf<GroupItem<K, T>>()
         var currentGroup = mutableListOf<T>()
         var currentKey: K? = null
 
@@ -761,7 +761,7 @@ object FunctionUtils {
 
             if (key != currentKey) {
                 if (currentGroup.isNotEmpty()) {
-                    groupItems.add(GroupItems(currentKey, currentGroup))
+                    groupItems.add(GroupItem(currentKey, currentGroup))
                 }
 
                 currentKey = key
@@ -783,7 +783,7 @@ object FunctionUtils {
          */
 
         if (currentGroup.isNotEmpty()) {
-            groupItems.add(GroupItems(currentKey, currentGroup))
+            groupItems.add(GroupItem(currentKey, currentGroup))
         }
 
         return groupItems

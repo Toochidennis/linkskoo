@@ -47,13 +47,11 @@ class AdminELearningAddCourseOutlineDialogFragment :
     private lateinit var mDatabaseHelper: DatabaseHelper
 
     private var levelId: String? = null
-    private var selectedTag = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
-
         arguments?.let {
             levelId = it.getString(ARG_PARAM1)
         }
@@ -67,7 +65,6 @@ class AdminELearningAddCourseOutlineDialogFragment :
             AdminELearningAddCourseOutlineDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
-
                 }
             }
     }
@@ -92,15 +89,13 @@ class AdminELearningAddCourseOutlineDialogFragment :
 
         mTagClassBtn.setOnClickListener {
             tagList("class")
-            selectedTag = 0
         }
 
         mTagTeacherBtn.setOnClickListener {
             tagList("teacher")
-            selectedTag = 1
         }
-    }
 
+    }
 
     private fun tagList(from: String) {
         try {
