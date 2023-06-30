@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -38,6 +39,8 @@ class AdminELearningQuestionAdapter(
     inner class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val sectionTxt: TextView = itemView.findViewById(R.id.sectionTxt)
         private val sectionBtn: ImageView = itemView.findViewById(R.id.sectionButton)
+        private val sectionBottomBorder:LinearLayout = itemView.findViewById(R.id.separator)
+        private val sectionTopBorder:LinearLayout = itemView.findViewById(R.id.separator2)
         private val questionRecyclerView: RecyclerView =
             itemView.findViewById(R.id.questionRecyclerView)
 
@@ -47,13 +50,17 @@ class AdminELearningQuestionAdapter(
             if (groupItems.title.isNullOrEmpty()) {
                 sectionTxt.isVisible = false
                 sectionBtn.isVisible = false
+                sectionBottomBorder.isVisible = false
+                sectionTopBorder.isVisible = false
             } else {
                 sectionTxt.text = groupItems.title
                 sectionTxt.isVisible = true
                 sectionBtn.isVisible = true
+                sectionBottomBorder.isVisible = true
+                sectionTopBorder.isVisible = true
             }
 
-            questionAdapter(questionRecyclerView, groupItems)
+            setupQuestionRecyclerView(questionRecyclerView, groupItems)
 
             sectionAction(sectionBtn, groupItems)
 
@@ -105,18 +112,20 @@ class AdminELearningQuestionAdapter(
     }
 
 
-    private fun questionAdapter(
+    private fun setupQuestionRecyclerView(
         recyclerView: RecyclerView,
-        item: GroupItem<String, QuestionItem?>
+        groupItem: GroupItem<String, QuestionItem?>
     ) {
-        println("jjjjjjjjjj ${item.itemList}")
-
-        if (item.itemList.isNotEmpty())
+        if (groupItem.itemList.isNotEmpty()) {
             recyclerView.apply {
                 hasFixedSize()
                 layoutManager = LinearLayoutManager(context)
-                adapter = AdminELearningQuestionItemAdapter(item.itemList)
+                adapter = AdminELearningQuestionItemAdapter(groupItem.itemList)
             }
+        }
+
     }
 
 }
+
+

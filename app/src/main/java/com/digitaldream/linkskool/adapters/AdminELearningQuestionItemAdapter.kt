@@ -64,8 +64,14 @@ class AdminELearningQuestionItemAdapter(
         return when (questionList[position]) {
             is QuestionItem.MultiChoice -> VIEW_TYPE_MULTI_CHOICE_OPTION
             is QuestionItem.ShortAnswer -> VIEW_TYPE_SHORT_ANSWER
-            else -> 0
+            else -> position
         }
+    }
+
+    fun updateQuestions(questions: MutableList<QuestionItem?>) {
+        questionList.clear()
+        questionList.addAll(questions)
+        notifyDataSetChanged()
     }
 
 
@@ -100,6 +106,9 @@ class AdminELearningQuestionItemAdapter(
         }
     }
 }
+
+
+
 
 
 

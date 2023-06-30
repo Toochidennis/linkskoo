@@ -21,6 +21,7 @@ import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.Exception
 
 
 private const val ARG_PARAM1 = "param1"
@@ -119,18 +120,25 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 else -> null
             }
 
-            val sectionItem = GroupItem(sectionTitle, mutableListOf(questionModel))
-            val existingSection = groupItems.find { it.title == sectionTitle }
-
-            if (existingSection != null) {
-                existingSection.itemList.add(questionModel)
+            if (groupItems.isNotEmpty() && groupItems.last().title != null) {
+                //Existing Section
+                groupItems.last().itemList.add(questionModel)
+            } else if (groupItems.isNotEmpty() && groupItems.last().itemList.isNotEmpty() &&
+                questionModel != null
+            ) {
+                //Existing question
+                groupItems.last().itemList.add(questionModel)
+            } else if (questionModel != null) {
+                // New question without a section
+                val newQuestionToAdd =
+                    GroupItem(sectionTitle, mutableListOf<QuestionItem?>(questionModel))
+                groupItems.add(newQuestionToAdd)
             } else {
-                groupItems.add(sectionItem)
+                //New section without a question
+                val newSectionItem = GroupItem(sectionTitle, mutableListOf<QuestionItem?>())
+                groupItems.add(newSectionItem)
             }
-
             questionAdapter.notifyDataSetChanged()
-
-            println("multi $question  short: $shortQuestion section: $sectionTitle")
 
         }.apply {
             setCancelable(true)
@@ -152,32 +160,36 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
 
     private fun fromQuestionSettings() {
-        if (!jsonFromQuestionSettings.isNullOrEmpty()) {
-            jsonFromQuestionSettings?.let {
-                JSONObject(it).run {
-                    val settingsObject = getJSONObject("settings")
-                    val classArray = getJSONArray("class")
+        try {
+            if (!jsonFromQuestionSettings.isNullOrEmpty()) {
+                jsonFromQuestionSettings?.let {
+                    JSONObject(it).run {
+                        val settingsObject = getJSONObject("settings")
+                        val classArray = getJSONArray("class")
 
-                    questionTitle = settingsObject.getString("title")
-                    questionDescription = settingsObject.getString("description")
-                    startDate = settingsObject.getString("startDate")
-                    endDate = settingsObject.getString("endDate")
-                    startTime = settingsObject.getString("startTime")
-                    endTime = settingsObject.getString("endTime")
-                    questionTopic = settingsObject.getString("topic")
-                    levelId = settingsObject.getString("levelId")
-                    courseId = settingsObject.getString("courseId")
+                        questionTitle = settingsObject.getString("title")
+                        questionDescription = settingsObject.getString("description")
+                        startDate = settingsObject.getString("startDate")
+                        endDate = settingsObject.getString("endDate")
+                        startTime = settingsObject.getString("startTime")
+                        endTime = settingsObject.getString("endTime")
+                        questionTopic = settingsObject.getString("topic")
+                        levelId = settingsObject.getString("levelId")
+                        courseId = settingsObject.getString("courseId")
 
-                    questionTitleTxt.text = questionTitle
-                    descriptionTxt.text = questionDescription
+                        questionTitleTxt.text = questionTitle
+                        descriptionTxt.text = questionDescription
 
-                    for (i in 0 until classArray.length()) {
-                        selectedClassId[classArray.getJSONObject(i).getString("id")] =
-                            classArray.getJSONObject(i).getString("name")
+                        for (i in 0 until classArray.length()) {
+                            selectedClassId[classArray.getJSONObject(i).getString("id")] =
+                                classArray.getJSONObject(i).getString("name")
+                        }
                     }
                 }
-            }
 
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
