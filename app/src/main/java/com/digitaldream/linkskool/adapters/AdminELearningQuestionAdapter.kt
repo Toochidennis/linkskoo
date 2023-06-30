@@ -106,7 +106,6 @@ class AdminELearningQuestionAdapter(
 
                     else -> false
                 }
-
             }
 
             popupMenu.show()
