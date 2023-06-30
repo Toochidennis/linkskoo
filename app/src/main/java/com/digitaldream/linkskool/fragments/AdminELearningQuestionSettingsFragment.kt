@@ -230,7 +230,9 @@ class AdminELearningQuestionSettingsFragment :
             Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
-        }  else if (topicText.isEmpty()) {
+        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Please set  date", Toast.LENGTH_SHORT).show()
+        } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
             val jsonObject = JSONObject()
@@ -270,9 +272,6 @@ class AdminELearningQuestionSettingsFragment :
             }
         }
 
-      /*  else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Please set  date", Toast.LENGTH_SHORT).show()
-        }*/
     }
 
     private fun onEdit() {
