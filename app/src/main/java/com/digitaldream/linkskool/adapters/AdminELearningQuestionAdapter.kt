@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -18,6 +19,7 @@ import com.digitaldream.linkskool.models.QuestionItem
 
 class AdminELearningQuestionAdapter(
     private val context: Context,
+    private val fragmentManager: FragmentManager,
     private val groupItems: MutableList<GroupItem<String, QuestionItem?>>,
 ) : RecyclerView.Adapter<AdminELearningQuestionAdapter.SectionViewHolder>() {
 
@@ -120,7 +122,7 @@ class AdminELearningQuestionAdapter(
             recyclerView.apply {
                 hasFixedSize()
                 layoutManager = LinearLayoutManager(context)
-                adapter = AdminELearningQuestionItemAdapter(groupItem.itemList)
+                adapter = AdminELearningQuestionItemAdapter(fragmentManager,groupItem.itemList)
             }
         }
 

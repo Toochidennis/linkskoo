@@ -9,8 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_16"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@color/white"
+        android:padding="@dimen/dimen_16">
 
         <ImageView
             android:id="@+id/dismissBtn"
@@ -18,11 +18,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="5dp"
             android:clickable="true"
             android:contentDescription="@string/todo"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dimen_10"
             android:src="@drawable/ic_close"
             app:tint="@color/test_color_7" />
 
@@ -39,6 +39,7 @@
             android:paddingEnd="10dp"
             android:text="Ask"
             android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_14" />
     </RelativeLayout>
 
@@ -99,11 +100,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="@dimen/dimen_16"
-                    android:layout_marginEnd="@dimen/dimen_16"
                     android:layout_toStartOf="@id/removeQuestionAttachment"
                     android:layout_toEndOf="@id/attachment_icon"
                     android:drawablePadding="@dimen/dimen_16"
                     android:ellipsize="end"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:lines="1"
                     android:paddingTop="@dimen/dimen_16"
                     android:paddingBottom="@dimen/dimen_16"
@@ -117,11 +118,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/dimen_16"
-                    android:layout_marginEnd="@dimen/dimen_16"
                     android:clickable="true"
                     android:contentDescription="@string/todo"
                     android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:padding="@dimen/dimen_16"
                     android:src="@drawable/ic_close"
                     android:visibility="gone"
                     app:tint="@color/test_color_7" />

@@ -4,15 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.dialog.AdminELearningShortAnswerDialogFragment
+import com.digitaldream.linkskool.fragments.AdminELearningMultiChoiceDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.ShortAnswerModel
 
 
 class AdminELearningQuestionItemAdapter(
+    private val fragmentManager: FragmentManager,
     private var questionList: MutableList<QuestionItem?>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -42,7 +48,6 @@ class AdminELearningQuestionItemAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        println("size: ${questionList.size}")
         val questionItem = questionList[position]
         when (holder) {
             is MultiChoiceViewHolder -> {
@@ -68,41 +73,121 @@ class AdminELearningQuestionItemAdapter(
         }
     }
 
-    fun updateQuestions(questions: MutableList<QuestionItem?>) {
-        questionList.clear()
-        questionList.addAll(questions)
-        notifyDataSetChanged()
-    }
-
-
     inner class MultiChoiceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
-        val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
-        val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
-        val questionButton: ImageView = itemView.findViewById(R.id.questionButton)
+        private val questionLayout: RelativeLayout = itemView.findViewById(R.id.multiLayout)
+        private val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
+        private val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
+        private val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
+        private val questionButton: ImageView = itemView.findViewById(R.id.questionButton)
 
         fun bind(multiItem: MultiChoiceQuestion) {
-            val option = multiItem.options?.get(adapterPosition) ?: return
-
             val questionCount = (adapterPosition + 1).toString()
+            val numberOfOptions = "Options (${multiItem.options?.size})"
             questionTextView.text = multiItem.questionText
             questionCountTextView.text = questionCount
-            answerTextView.text = multiItem.correctAnswer
+            answerTextView.text = numberOfOptions
+
+            questionLayout.setOnClickListener {
+                multiChoiceItemClick(multiItem, adapterPosition)
+            }
+
+            questionButtonAction(
+                questionButton, ShortAnswerModel(), multiItem,
+                adapterPosition, "multi"
+            )
         }
     }
 
 
     inner class ShortAnswerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
-        val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
-        val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
-        val questionButton: ImageView = itemView.findViewById(R.id.questionButton)
+        private val questionLayout: RelativeLayout = itemView.findViewById(R.id.shortLayout)
+        private val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
+        private val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
+        private val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
+        private val questionButton: ImageView = itemView.findViewById(R.id.questionButton)
 
         fun bind(shortAnswer: ShortAnswerModel) {
             val questionCount = (adapterPosition + 1).toString()
             questionTextView.text = shortAnswer.questionText
             questionCountTextView.text = questionCount
             answerTextView.text = shortAnswer.answerText
+
+            questionLayout.setOnClickListener {
+                shortAnswerItemClick(shortAnswer, adapterPosition)
+            }
+
+            questionButtonAction(
+                questionButton, shortAnswer, MultiChoiceQuestion(),
+                adapterPosition, "short"
+            )
+        }
+    }
+
+    private fun multiChoiceItemClick(multiItem: MultiChoiceQuestion, position: Int) {
+        AdminELearningMultiChoiceDialogFragment(multiItem) { question ->
+            val updatedQuestionItem = QuestionItem.MultiChoice(question)
+            questionList[position] = updatedQuestionItem
+            notifyItemChanged(position)
+        }.show(fragmentManager, "")
+    }
+
+
+    private fun deleteQuestion(position: Int) {
+        questionList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    private fun shortAnswerItemClick(shortAnswer: ShortAnswerModel, position: Int) {
+        AdminELearningShortAnswerDialogFragment(shortAnswer) { question ->
+            val updatedQuestionItem = QuestionItem.ShortAnswer(question)
+            questionList[position] = updatedQuestionItem
+            notifyItemChanged(position)
+        }.show(fragmentManager, "")
+    }
+
+    private fun questionButtonAction(
+        questionBtn: ImageView,
+        shortAnswer: ShortAnswerModel,
+        multiItem: MultiChoiceQuestion,
+        position: Int,
+        from: String
+    ) {
+        questionBtn.setOnClickListener {
+            val popupMenu = PopupMenu(it.context, it)
+            popupMenu.inflate(R.menu.section_menu)
+            var updatedQuestionItem: Any
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.editSection -> {
+                        if (from == "short") {
+                            AdminELearningShortAnswerDialogFragment(shortAnswer) { question ->
+                                updatedQuestionItem = QuestionItem.ShortAnswer(question)
+                                questionList[position] =
+                                    updatedQuestionItem as QuestionItem.ShortAnswer
+                                notifyItemChanged(position)
+                            }.show(fragmentManager, "")
+                        } else {
+                            AdminELearningMultiChoiceDialogFragment(multiItem) { question ->
+                                updatedQuestionItem = QuestionItem.MultiChoice(question)
+                                questionList[position] =
+                                    updatedQuestionItem as QuestionItem.MultiChoice
+                                notifyItemChanged(position)
+                            }.show(fragmentManager, "")
+                        }
+                        true
+                    }
+
+                    R.id.deleteSection -> {
+                        deleteQuestion(position)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+            popupMenu.show()
+
         }
     }
 }

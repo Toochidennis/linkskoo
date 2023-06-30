@@ -8,7 +8,6 @@ sealed class QuestionItem {
 }
 
 data class MultiChoiceQuestion(
-    var sectionText: String = "",
     var questionText: String = "",
     var attachmentType: String = "",
     var attachmentName: String = "",

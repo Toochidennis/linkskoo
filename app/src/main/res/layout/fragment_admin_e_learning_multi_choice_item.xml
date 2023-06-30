@@ -9,7 +9,9 @@
         android:id="@+id/option_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:paddingStart="@dimen/dimen_16"
+        android:paddingEnd="0dp">
 
         <RadioButton
             android:id="@+id/radioButtonOption"
@@ -21,7 +23,7 @@
             android:id="@+id/editTextAnswer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_16"
+            android:layout_marginStart="@dimen/dimen_16"
             android:layout_toStartOf="@id/removeOptionButton"
             android:layout_toEndOf="@id/radioButtonOption"
             android:autofillHints="name"
@@ -31,7 +33,8 @@
             android:lineSpacingMultiplier="1"
             android:lines="2"
             android:minLines="1"
-            android:padding="@dimen/dimen_16" />
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16" />
 
         <ImageView
             android:id="@+id/removeOptionButton"
@@ -39,9 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dimen_16"
             android:src="@drawable/ic_more"
             app:tint="@color/test_color_7" />
 
@@ -51,12 +54,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_16"
             android:layout_toStartOf="@id/removeAttachmentButton"
             android:layout_toEndOf="@id/radioButtonOption"
+            android:clickable="true"
             android:drawablePadding="@dimen/dimen_16"
             android:ellipsize="end"
-            android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:lines="1"
@@ -73,9 +75,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dimen_16"
             android:contentDescription="@string/todo"
             android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dimen_16"
             android:src="@drawable/ic_more"
             android:visibility="gone"
             app:tint="@color/test_color_7" />

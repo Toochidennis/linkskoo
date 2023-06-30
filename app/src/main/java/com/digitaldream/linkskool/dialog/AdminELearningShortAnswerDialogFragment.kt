@@ -57,7 +57,6 @@ class AdminELearningShortAnswerDialogFragment(
         showSoftInput(requireContext(), questionEditText)
 
         initializeModel()
-        showQuestionAttachment(attachmentBtn)
 
         removeQuestionAttachmentBtn.setOnClickListener {
             removeQuestionAttachment()
@@ -70,6 +69,14 @@ class AdminELearningShortAnswerDialogFragment(
         askBtn.setOnClickListener {
             askQuestion()
         }
+
+        attachmentTxt.setOnClickListener {
+            if (shortAnswerModelCopy.attachmentUri != null) {
+                previewAttachment(shortAnswerModelCopy.attachmentUri!!)
+            } else {
+                showQuestionAttachment()
+            }
+        }
     }
 
     private fun initializeModel() {
@@ -81,31 +88,28 @@ class AdminELearningShortAnswerDialogFragment(
             setDrawableOnTextView(attachmentTxt)
             attachmentTxt.text = shortAnswerModelCopy.attachmentName
             removeQuestionAttachmentBtn.isVisible = true
-            attachmentBtn.isClickable = false
         }
     }
 
-    private fun showQuestionAttachment(button: View) {
-        button.setOnClickListener {
-            AdminELearningAttachmentDialog("multiple choice") { type, name, uri ->
-                try {
-                    shortAnswerModelCopy.attachmentName = name
-                    shortAnswerModelCopy.attachmentType = type
-                    shortAnswerModelCopy.attachmentUri = uri
+    private fun showQuestionAttachment() {
+        AdminELearningAttachmentDialog("multiple choice") { type, name, uri ->
+            try {
+                shortAnswerModelCopy.attachmentName = name
+                shortAnswerModelCopy.attachmentType = type
+                shortAnswerModelCopy.attachmentUri = uri
 
-                    setDrawableOnTextView(attachmentTxt)
-                    attachmentTxt.text = shortAnswerModelCopy.attachmentName
-                    removeQuestionAttachmentBtn.isVisible = true
-                    attachmentBtn.isClickable = false
+                setDrawableOnTextView(attachmentTxt)
+                attachmentTxt.text = shortAnswerModelCopy.attachmentName
+                removeQuestionAttachmentBtn.isVisible = true
 
-                    attachmentTxt.setOnClickListener {
-                        previewAttachment(shortAnswerModelCopy.attachmentUri!!)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                attachmentTxt.setOnClickListener {
+                    previewAttachment(shortAnswerModelCopy.attachmentUri!!)
                 }
-            }.show(parentFragmentManager, "")
-        }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.show(parentFragmentManager, "")
+
     }
 
     private fun removeQuestionAttachment() {
@@ -115,8 +119,6 @@ class AdminELearningShortAnswerDialogFragment(
         removeQuestionAttachmentBtn.isVisible = false
         attachmentTxt.text = "Add attachment"
         attachmentTxt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-        attachmentTxt.isClickable = false
-        attachmentBtn.isClickable = true
     }
 
     private fun setDrawableOnTextView(textView: TextView) {
@@ -139,6 +141,7 @@ class AdminELearningShortAnswerDialogFragment(
                         file
                     )
                 }
+
                 is String -> Uri.parse(uri)
                 else -> uri
             }

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/multiLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dimen_10"
     android:layout_marginEnd="@dimen/dimen_10"
     android:layout_marginBottom="@dimen/dimen_10"
     android:background="@drawable/edit_text_bg4"
+    android:clickable="true"
+    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
     <RelativeLayout
@@ -32,7 +35,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/poppins_regular"
                 android:padding="5dp"
-                android:text="1"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_14" />
 
@@ -50,7 +53,7 @@
             android:fontFamily="@font/poppins_regular"
             android:lines="2"
             android:minLines="1"
-            android:text="Introduction to DevOps is what____?"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
@@ -74,15 +77,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="@dimen/dimen_16"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="@dimen/dimen_10"
             android:layout_toStartOf="@id/questionButton"
             android:drawablePadding="@dimen/dimen_16"
             android:ellipsize="end"
-            android:foreground="?android:attr/selectableItemBackground"
             android:lines="1"
-            android:layout_marginStart="5dp"
             android:padding="@dimen/dimen_10"
-            android:text="Add answer"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="14sp"
             app:drawableStartCompat="@drawable/ic_multi_choice" />
@@ -93,10 +95,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dimen_10"
-            android:layout_marginEnd="@dimen/dimen_10"
+            android:clickable="true"
             android:contentDescription="@string/todo"
+            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dimen_10"
             android:src="@drawable/ic_more" />
 
     </RelativeLayout>

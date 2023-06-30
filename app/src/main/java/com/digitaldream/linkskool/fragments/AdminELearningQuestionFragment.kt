@@ -150,7 +150,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun setupQuestionRecyclerView() {
-        questionAdapter = AdminELearningQuestionAdapter(requireContext(), groupItems)
+        questionAdapter = AdminELearningQuestionAdapter(
+            requireContext(),
+            parentFragmentManager,
+            groupItems
+        )
         questionRecyclerView.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
