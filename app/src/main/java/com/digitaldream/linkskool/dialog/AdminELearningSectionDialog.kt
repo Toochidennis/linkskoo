@@ -20,25 +20,26 @@ class AdminELearningSectionDialog(
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        setContentView(R.layout.dialog_insert_link)
+
         setContentView(R.layout.dialog_admin_e_learning_section)
 
-        val sectionEditText: TextInputLayout = findViewById(R.id.sectionEditText)
+
+        val sectionInput: TextInputLayout = findViewById(R.id.sectionInput)
         val cancelButton: Button = findViewById(R.id.cancelButton)
         val addButton: Button = findViewById(R.id.addButton)
 
-        sectionEditText.editText?.setText(section)
+        sectionInput.editText?.setText(section)
 
         cancelButton.setOnClickListener {
             dismiss()
         }
 
         addButton.setOnClickListener {
-            if (sectionEditText.editText?.text.toString().isNotEmpty()) {
-                onSection(sectionEditText.editText?.text.toString().trim())
+            if (sectionInput.editText?.text.toString().isNotEmpty()) {
+                onSection(sectionInput.editText?.text.toString().trim())
                 dismiss()
             } else {
-                sectionEditText.error = "Please enter a section"
+                sectionInput.error = "Please enter a section"
             }
         }
     }

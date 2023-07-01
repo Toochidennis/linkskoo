@@ -159,6 +159,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = questionAdapter
+            smoothScrollToPosition(groupItems.size - 1)
         }
     }
 

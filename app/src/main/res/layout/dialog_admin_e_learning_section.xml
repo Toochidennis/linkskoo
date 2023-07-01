@@ -17,7 +17,7 @@
         android:textSize="@dimen/text_16" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/sectionEditText"
+        android:id="@+id/sectionInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
@@ -38,7 +38,7 @@
         android:id="@+id/cancelButton"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        android:layout_below="@id/sectionEditText"
+        android:layout_below="@id/sectionInput"
         android:layout_marginTop="@dimen/dimen_16"
         android:layout_marginEnd="@dimen/dimen_16"
         android:layout_toStartOf="@id/addButton"
@@ -53,7 +53,7 @@
         android:id="@+id/addButton"
         android:layout_width="50dp"
         android:layout_height="40dp"
-        android:layout_below="@id/sectionEditText"
+        android:layout_below="@id/sectionInput"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
