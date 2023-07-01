@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/dimen_10">
+
+    <ImageView
+        android:id="@+id/dismissBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:contentDescription="@string/todo"
+        android:focusable="true"
+        android:padding="@dimen/dimen_12"
+        android:src="@drawable/ic_close"
+        app:tint="@color/test_color_7" />
+
+    <ImageView
+        android:id="@+id/timeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dismissBtn"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginEnd="@dimen/dimen_10"
+        android:layout_toStartOf="@id/timeTxt"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ic_timer" />
+
+    <TextView
+        android:id="@+id/timeTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dismissBtn"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:text="30:00"
+        android:textColor="@color/test_color_1"
+        android:textSize="@dimen/text_16" />
+
+
+    <TextView
+        android:id="@+id/sectionTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timeTxt"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:text="Part A"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sectionTxt"
+        android:contentDescription="@string/todo">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</RelativeLayout>

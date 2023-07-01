@@ -530,7 +530,7 @@ public class QuestionDialog2 extends DialogFragment implements OptionsAdapter2.O
                 type = view.findViewById(R.id.question_type);
                 type.setText(qm.getQuestionType());
                 typeImage = view.findViewById(R.id.desc_logo);
-                typeImage.setImageResource(R.drawable.ic_time);
+                typeImage.setImageResource(R.drawable.ic_timer);
                 questionNumberText = view.findViewById(R.id.question_number);
                 questionNumberText.setText(qm.getQuestionNumber());
                 questionText.requestFocus();

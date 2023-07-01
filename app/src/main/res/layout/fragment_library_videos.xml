@@ -159,7 +159,7 @@
                             android:layout_marginStart="170dp"
                             android:layout_marginTop="70dp"
                             android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
+                            android:src="@drawable/ic_timer"
                             app:tint="@color/gray" />
 
                         <TextView
@@ -270,7 +270,7 @@
                             android:layout_marginStart="170dp"
                             android:layout_marginTop="70dp"
                             android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
+                            android:src="@drawable/ic_timer"
                             app:tint="@color/gray" />
 
                         <TextView
@@ -385,7 +385,7 @@
                             android:layout_marginStart="170dp"
                             android:layout_marginTop="70dp"
                             android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
+                            android:src="@drawable/ic_timer"
                             app:tint="@color/gray" />
 
                         <TextView
@@ -500,7 +500,7 @@
                             android:layout_marginStart="170dp"
                             android:layout_marginTop="70dp"
                             android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
+                            android:src="@drawable/ic_timer"
                             app:tint="@color/gray" />
 
                         <TextView
@@ -616,7 +616,7 @@
                             android:layout_marginStart="170dp"
                             android:layout_marginTop="70dp"
                             android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_time"
+                            android:src="@drawable/ic_timer"
                             app:tint="@color/gray" />
 
                         <TextView

@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:drawableLeft="@drawable/ic_time"
+                android:drawableLeft="@drawable/ic_timer"
                 android:drawablePadding="15dp"
                 android:textSize="16sp"
                 android:gravity="center"

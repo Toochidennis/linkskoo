@@ -162,7 +162,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-
     private fun fromQuestionSettings() {
         try {
             if (!jsonFromQuestionSettings.isNullOrEmpty()) {
@@ -232,6 +231,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             )
         }
 
+    }
+
+    private fun previewQuestions() {
+        if (groupItems.isNotEmpty()) {
+
+        }
     }
 
 }
