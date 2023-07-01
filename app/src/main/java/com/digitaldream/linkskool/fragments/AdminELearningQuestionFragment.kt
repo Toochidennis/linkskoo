@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
+import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
 import com.digitaldream.linkskool.models.GroupItem
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
@@ -104,6 +106,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         topicButton.setOnClickListener {
             toQuestionSettings()
         }
+
+        previewQuestions()
     }
 
     private fun addQuestion() {
@@ -159,7 +163,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = questionAdapter
-            smoothScrollToPosition(groupItems.size - 1)
+//            smoothScrollToPosition(groupItems.size - 1)
         }
     }
 
@@ -235,8 +239,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun previewQuestions() {
-        if (groupItems.isNotEmpty()) {
-
+        previewQuestionButton.setOnClickListener {
+            if (groupItems.isNotEmpty()) {
+                AdminELearningQuestionPreviewDialogFragment(groupItems)
+                    .show(parentFragmentManager, "")
+            }else{
+                Toast.makeText(requireContext(), "kkk", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
