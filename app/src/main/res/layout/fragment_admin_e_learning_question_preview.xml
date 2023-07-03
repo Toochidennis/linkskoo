@@ -34,13 +34,12 @@
         android:visibility="gone"
         app:drawableStartCompat="@drawable/ic_timer" />
 
-
     <TextView
         android:id="@+id/sectionTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/timeTxt"
-        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_16"
         android:text=""
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -51,6 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sectionTxt"
+        android:layout_marginTop="@dimen/text_16"
+        android:layout_marginBottom="@dimen/dimen_64"
         android:contentDescription="@string/todo">
 
         <LinearLayout
@@ -63,16 +64,6 @@
                 android:id="@+id/questionRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/emptyQuestionTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/no_data"
-                android:textColor="@color/black"
-                android:visibility="gone"
-                android:textSize="@dimen/text_16" />
 
         </LinearLayout>
 
@@ -109,7 +100,6 @@
             android:text="Next"
             android:textAllCaps="false"
             android:textSize="@dimen/text_16" />
-
 
     </RelativeLayout>
 

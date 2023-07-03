@@ -1,5 +1,8 @@
 package com.digitaldream.linkskool.adapters
 
+import android.content.ClipData
+import android.os.Build
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +10,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -20,6 +24,7 @@ import com.digitaldream.linkskool.models.ShortAnswerModel
 class AdminELearningQuestionItemAdapter(
     private val fragmentManager: FragmentManager,
     private var questionList: MutableList<QuestionItem?>,
+    private val listener: OnQuestionDragListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private companion object {
@@ -47,17 +52,71 @@ class AdminELearningQuestionItemAdapter(
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val questionItem = questionList[position]
         when (holder) {
             is MultiChoiceViewHolder -> {
                 val question = (questionItem as? QuestionItem.MultiChoice)?.question ?: return
                 holder.bind(question)
+
+                holder.itemView.setOnLongClickListener { view ->
+                    val dragData = ClipData.newPlainText("", "")
+                    val shadowBuilder = View.DragShadowBuilder(view)
+                    view.startDragAndDrop(dragData, shadowBuilder, view, 0)
+                    true
+                }
+
+                holder.itemView.setOnDragListener { _, event ->
+                    if (event.action == DragEvent.ACTION_DROP) {
+                        val draggedView = event.localState as View
+                        val draggedAdapter = draggedView.tag as AdminELearningQuestionItemAdapter
+                        val sourcePosition = draggedAdapter.questionList.indexOf(questionItem)
+                        val targetPosition = holder.adapterPosition
+
+                        listener.onQuestionDropped(
+                            questionItem,
+                            sourcePosition,
+                            draggedAdapter,
+                            this,
+                            targetPosition
+                        )
+                    }
+                    true
+                }
+
             }
 
             is ShortAnswerViewHolder -> {
                 val question = (questionItem as? QuestionItem.ShortAnswer)?.question ?: return
                 holder.bind(question)
+
+                holder.itemView.setOnLongClickListener { view ->
+                    val dragData = ClipData.newPlainText("", "")
+                    val shadowBuilder = View.DragShadowBuilder(view)
+                    view.startDragAndDrop(dragData, shadowBuilder, view, 0)
+                    true
+                }
+
+                holder.itemView.setOnDragListener { _, event ->
+                    if (event.action == DragEvent.ACTION_DROP) {
+                        val draggedView = event.localState as View
+                        draggedView.tag = this
+                        val draggedAdapter = draggedView.tag as AdminELearningQuestionItemAdapter
+                        val sourcePosition = draggedAdapter.questionList.indexOf(questionItem)
+                        val targetPosition = holder.adapterPosition
+
+                        listener.onQuestionDropped(
+                            questionItem,
+                            sourcePosition,
+                            draggedAdapter,
+                            this,
+                            targetPosition
+                        )
+                    }
+                    true
+                }
+
             }
         }
     }
@@ -190,10 +249,17 @@ class AdminELearningQuestionItemAdapter(
 
         }
     }
+
+    interface OnQuestionDragListener {
+        fun onQuestionDropped(
+            question: QuestionItem,
+            sourcePosition: Int,
+            sourceAdapter: AdminELearningQuestionItemAdapter,
+            targetAdapter: AdminELearningQuestionItemAdapter,
+            targetPosition: Int
+        )
+    }
 }
-
-
-
 
 
 

@@ -152,12 +152,12 @@ class AdminELearningQuestionPreviewAdapter(
     private fun loadImage(imageUri: Any?, imageView: ImageView) {
         when (imageUri) {
             is String -> {
-                Picasso.get().load(imageUri.toString()) to imageView
+                Picasso.get().load(imageUri).into(imageView)
                 imageView.isVisible = true
             }
 
             is Uri -> {
-                Picasso.get().load(imageUri as? Uri) to imageView
+                Picasso.get().load(imageUri).into(imageView)
                 imageView.isVisible = true
             }
 

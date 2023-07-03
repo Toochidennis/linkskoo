@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,6 @@ class AdminELearningQuestionPreviewDialogFragment(
     private lateinit var timeTxt: TextView
     private lateinit var sectionTxt: TextView
     private lateinit var questionRecyclerView: RecyclerView
-    private lateinit var emptyQuestionTxt: TextView
     private lateinit var previousBtn: Button
     private lateinit var nextBtn: Button
 
@@ -43,11 +43,9 @@ class AdminELearningQuestionPreviewDialogFragment(
             timeTxt = findViewById(R.id.timeTxt)
             sectionTxt = findViewById(R.id.sectionTxt)
             questionRecyclerView = findViewById(R.id.questionRecyclerView)
-            emptyQuestionTxt = findViewById(R.id.emptyQuestionTxt)
             previousBtn = findViewById(R.id.prevBtn)
             nextBtn = findViewById(R.id.nextBtn)
         }
-
 
         showQuestion()
 
@@ -66,25 +64,75 @@ class AdminELearningQuestionPreviewDialogFragment(
         val currentSection = groupItems.getOrNull(currentSectionIndex)
         if (currentSection != null) {
             val questionList = currentSection.itemList
-            val currentQuestion = questionList.getOrNull(currentQuestionIndex)
 
-            sectionTxt.text = currentSection.title
-            sectionTxt.isVisible = !currentSection.title.isNullOrEmpty()
+            if (questionList.isNotEmpty()) {
+                sectionTxt.text = currentSection.title
+                sectionTxt.isVisible = !currentSection.title.isNullOrEmpty()
 
-            if (currentQuestion != null) {
+                val currentQuestion = questionList.getOrNull(currentQuestionIndex)
 
-                if (questionList.size > 0)
-                    enableNextButton()
-                else disableNextButton()
+                if (currentQuestion != null) {
+                    showQuestionPreview(currentQuestion)
 
-                showQuestionPreview(currentQuestion)
-                emptyQuestionTxt.isVisible = false
+                    if (groupItems.size == 1 && questionList.size == 1) {
+                        // Only one section and one question
+                        disablePreviousButton()
+                        disableNextButton()
+                    } else if (currentSectionIndex == 0 && currentQuestionIndex == 0) {
+                        // First section and first question
+                        disablePreviousButton()
+                        enableNextButton()
+                    } else if (currentSectionIndex == groupItems.size - 1 && currentQuestionIndex == questionList.size - 1) {
+                        // Last section and last question
+                        enablePreviousButton()
+                        disableNextButton()
+                    } else if (currentSectionIndex == 0 && currentQuestionIndex == questionList.size - 1) {
+                        // First section and last question
+                        enablePreviousButton()
+                        enableNextButton()
+                    } else if (currentSectionIndex == groupItems.size - 1 && currentQuestionIndex == 0) {
+                        // Last section and first question
+                        enablePreviousButton()
+                        enableNextButton()
+                    } else if (currentSectionIndex == 0 && currentQuestionIndex > 0) {
+                        // First section
+                        enablePreviousButton()
+                        enableNextButton()
+                    } else if (currentSectionIndex == groupItems.size - 1 &&
+                        currentQuestionIndex >= questionList.size - 1
+                    ) {
+                        // Last section
+                        enablePreviousButton()
+                        disableNextButton()
+                    } else if (currentQuestionIndex == 0) {
+                        // First question in the section
+                        enablePreviousButton()
+                        enableNextButton()
+                    } else if (currentQuestionIndex == questionList.size - 1) {
+                        // Last question in the section
+                        enablePreviousButton()
+                        enableNextButton()
+                    } else {
+                        // In-between section and question
+                        enablePreviousButton()
+                        enableNextButton()
+                    }
+                }
             } else {
-                disableNextButton()
-                emptyQuestionTxt.isVisible = true
+                if (groupItems[0].itemList.isNotEmpty()) {
+                    enablePreviousButton()
+                    disableNextButton()
+                } else {
+                    disablePreviousButton()
+                    disableNextButton()
+                    Toast.makeText(
+                        requireContext(), "There is no question in this section",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
         }
-
     }
 
     private fun showNextQuestion() {
@@ -97,7 +145,6 @@ class AdminELearningQuestionPreviewDialogFragment(
                 currentQuestionIndex = 0
             }
             showQuestion()
-            enablePreviousButton()
         }
 
     }
@@ -147,5 +194,3 @@ class AdminELearningQuestionPreviewDialogFragment(
 
 
 }
-
-

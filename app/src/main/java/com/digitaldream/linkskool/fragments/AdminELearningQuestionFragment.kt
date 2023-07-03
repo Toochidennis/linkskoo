@@ -10,12 +10,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningQuestionItemAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
+import com.digitaldream.linkskool.interfaces.ItemTouchHelperCallback
 import com.digitaldream.linkskool.models.GroupItem
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
@@ -29,7 +32,9 @@ import java.lang.Exception
 private const val ARG_PARAM1 = "param1"
 
 
-class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learning_question) {
+class AdminELearningQuestionFragment :
+    Fragment(R.layout.fragment_admin_e_learning_question),
+    AdminELearningQuestionAdapter.OnQuestionDragListener, AdminELearningQuestionItemAdapter.OnQuestionDragListener {
 
 
     private lateinit var topicButton: RelativeLayout
@@ -108,6 +113,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
 
         previewQuestions()
+
+        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(questionAdapter)
+        val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
+        sectionItemTouchHelper.attachToRecyclerView(questionRecyclerView)
     }
 
     private fun addQuestion() {
@@ -124,13 +133,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 else -> null
             }
 
-            if (groupItems.isNotEmpty() && groupItems.last().title != null) {
-                //Existing Section
+            if (groupItems.isNotEmpty() && groupItems.last().title != null && questionModel != null) {
+                //Existing Section ith more questions
                 groupItems.last().itemList.add(questionModel)
             } else if (groupItems.isNotEmpty() && groupItems.last().itemList.isNotEmpty() &&
                 questionModel != null
             ) {
-                //Existing question
+                //Existing question without section
                 groupItems.last().itemList.add(questionModel)
             } else if (questionModel != null) {
                 // New question without a section
@@ -142,6 +151,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 val newSectionItem = GroupItem(sectionTitle, mutableListOf<QuestionItem?>())
                 groupItems.add(newSectionItem)
             }
+
             questionAdapter.notifyDataSetChanged()
 
         }.apply {
@@ -157,7 +167,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         questionAdapter = AdminELearningQuestionAdapter(
             requireContext(),
             parentFragmentManager,
-            groupItems
+            groupItems,
+            this,
+        this
         )
         questionRecyclerView.apply {
             hasFixedSize()
@@ -243,10 +255,45 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             if (groupItems.isNotEmpty()) {
                 AdminELearningQuestionPreviewDialogFragment(groupItems)
                     .show(parentFragmentManager, "")
-            }else{
+            } else {
                 Toast.makeText(requireContext(), "kkk", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    override fun onQuestionDropped(question: QuestionItem?, fromPosition: Int, toPosition: Int) {
+        // Remove the question from the source adapter's list and notify the adapter
+        groupItems[fromPosition].itemList.removeAt(fromPosition)
+        questionAdapter.notifyItemRemoved(fromPosition)
+
+        // Add the question to the target adapter's list at the target position and notify the adapter
+        groupItems[toPosition].itemList.add(toPosition, question)
+        questionAdapter.notifyItemInserted(toPosition)
+    }
+
+    override fun onQuestionDropped(
+        question: QuestionItem,
+        sourcePosition: Int,
+        sourceAdapter: AdminELearningQuestionItemAdapter,
+        targetAdapter: AdminELearningQuestionItemAdapter,
+        targetPosition: Int
+    ) {
+
+        // Remove the question from the groupItems list of the outer adapter and notify the adapter
+        val sourceGroupItem = groupItems[sourcePosition]
+        sourceGroupItem.itemList.remove(question)
+        questionAdapter.notifyItemChanged(sourcePosition)
+
+        // Add the question to the target groupItem in the groupItems list at the target position and notify the adapter
+        val targetGroupItem = groupItems[targetPosition]
+        targetGroupItem.itemList.add(question)
+        targetAdapter.notifyItemChanged(targetPosition)
+
+    }
+
 }
+
+
+
+
+
