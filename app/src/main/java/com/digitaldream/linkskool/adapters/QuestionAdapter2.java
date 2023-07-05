@@ -483,6 +483,7 @@ public class QuestionAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
                 Collections.swap(list, i, i - 1);
             }
         }
+
         notifyItemMoved(fromPosition, toPosition);
         this.notifyDataSetChanged();
     }
