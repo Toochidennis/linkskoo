@@ -10,10 +10,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
 
     private var isDragging = false
 
-    override fun isLongPressDragEnabled(): Boolean {
-        adapter.onItemPressed()
-         return true
-    }
+    override fun isLongPressDragEnabled(): Boolean  = true
 
     override fun isItemViewSwipeEnabled(): Boolean = false
 

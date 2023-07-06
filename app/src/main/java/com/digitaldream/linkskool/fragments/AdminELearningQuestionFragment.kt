@@ -42,10 +42,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private lateinit var submitQuestionButton: LinearLayout
     private lateinit var addQuestionButton: FloatingActionButton
 
-
     private lateinit var questionAdapter: AdminQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
-    private var groupItems: MutableList<GroupItem<String, QuestionItem?>> = mutableListOf()
     private val selectedClassId = hashMapOf<String, String>()
 
     private var jsonFromQuestionSettings: String? = null
@@ -110,7 +108,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             toQuestionSettings()
         }
 
-        //   previewQuestions()
+        previewQuestions()
 
         val sectionItemTouchHelperCallback = ItemTouchHelperCallback(questionAdapter)
         val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
@@ -240,8 +238,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun previewQuestions() {
         previewQuestionButton.setOnClickListener {
-            if (groupItems.isNotEmpty()) {
-                AdminELearningQuestionPreviewDialogFragment(groupItems)
+            if (sectionItems.isNotEmpty()) {
+                AdminELearningQuestionPreviewDialogFragment.newInstance(sectionItems)
                     .show(parentFragmentManager, "")
             } else {
                 Toast.makeText(requireContext(), "kkk", Toast.LENGTH_SHORT).show()

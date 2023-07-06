@@ -38,7 +38,7 @@
         android:id="@+id/sectionTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timeTxt"
+        android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/dimen_16"
         android:text=""
         android:textAlignment="center"
@@ -49,7 +49,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sectionTxt"
+        android:layout_below="@id/timeTxt"
         android:layout_marginTop="@dimen/text_16"
         android:layout_marginBottom="@dimen/dimen_64"
         android:contentDescription="@string/todo">

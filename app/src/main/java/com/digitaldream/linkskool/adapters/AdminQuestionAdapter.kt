@@ -43,7 +43,7 @@ class AdminQuestionAdapter(
         return when (viewType) {
             VIEW_TYPE_SECTION -> {
                 val view = inflater.inflate(
-                    R.layout.fragment_e_learning_question_item, parent,
+                    R.layout.item_section, parent,
                     false
                 )
                 SectionViewHolder(view)
@@ -136,6 +136,15 @@ class AdminQuestionAdapter(
             }
 
             sectionAction(sectionBtn, sectionModel, adapterPosition)
+
+            itemView.setOnLongClickListener {
+                for (i in 0 until itemList.size) {
+                    if (itemList[i].viewType != "section") {
+                        viewHolderList[i].itemView.visibility = View.GONE
+                    }
+                }
+                true
+            }
 
         }
     }
@@ -303,14 +312,6 @@ class AdminQuestionAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onItemPressed() {
-        for (i in 0 until itemList.size) {
-            if (itemList[i].viewType != "section") {
-                viewHolderList[i].itemView.visibility = View.GONE
-            }
-        }
-    }
-
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
@@ -324,14 +325,73 @@ class AdminQuestionAdapter(
             }
         }
 
+        /*        if (fromPosition < toPosition) {
+                    val draggedSection = itemList[fromPosition]
+                    val questionsToMove = mutableListOf<SectionModel>()
+
+                    // Find the questions below the dragged section
+                    for (i in fromPosition + 1 until itemList.size) {
+                        val currentItem = itemList[i]
+                        println("current Item $currentItem")
+
+                        if (currentItem.viewType != "section") {
+                            println("Checking for others")
+                            questionsToMove.add(currentItem)
+                        }
+                    }
+
+                    // Remove the questions from their original position
+                    itemList.removeAll(questionsToMove)
+                    println("current list1  $itemList")
+
+                    // Add the questions below the dragged section
+
+                    val sectionDropIndex = itemList.indexOf(draggedSection)
+                    itemList.addAll(toPosition, questionsToMove)
+
+                    // Swap the positions of the section and the target position
+                    Collections.swap(itemList, fromPosition, toPosition)
+                    Collections.swap(viewHolderList, fromPosition, toPosition)
+                    println("current list  $itemList")
+                } else {
+                    val draggedSection = itemList[fromPosition]
+                    val questionsToMove = mutableListOf<SectionModel>()
+
+                    // Find the questions below the dragged section
+                    for (i in fromPosition - 1 downTo toPosition) {
+                        val currentItem = itemList[i]
+                        println("current Item reverse $currentItem")
+
+                        if (currentItem.viewType != "section") {
+                            println("Checking for others reverse")
+                            questionsToMove.add(currentItem)
+                        }
+                    }
+
+                    // Remove the questions from their original position
+                    itemList.removeAll(questionsToMove)
+                    println("current list2  $itemList")
+
+                    // Add the questions below the dragged section
+                    val sectionDropIndex = itemList.indexOf(draggedSection) + 1
+                    itemList.addAll(sectionDropIndex, questionsToMove)
+
+                    // Swap the positions of the section and the target position
+                    Collections.swap(itemList, fromPosition, toPosition)
+                    Collections.swap(viewHolderList, fromPosition, toPosition)
+
+                    println("current list reverse $itemList")
+                }*/
+
         notifyItemMoved(fromPosition, toPosition)
     }
 
     override fun onItemDismiss(position: Int) {
         for (i in 0 until itemList.size) {
             if (itemList[i].viewType != "section") {
-               viewHolderList[i].itemView.isVisible = true
+                viewHolderList[i].itemView.isVisible = true
             }
+            notifyItemChanged(i)
         }
     }
 
