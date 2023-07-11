@@ -14,14 +14,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningSectionAdapter
 import com.digitaldream.linkskool.adapters.AdminQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
 import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
-import com.digitaldream.linkskool.models.SectionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -144,9 +142,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 val newSection = SectionModel(sectionTitle, null, "section")
                 sectionItems.add(newSection)
             }
-
-
-            println("section list: $sectionItems")
 
             sectionAdapter.notifyDataSetChanged()
 

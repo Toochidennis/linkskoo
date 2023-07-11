@@ -51,7 +51,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
         viewHolder.itemView.scaleX = 1.0f
         viewHolder.itemView.scaleY = 1.0f
         isDragging = false
-        adapter.onItemDismiss(viewHolder.adapterPosition)
+        adapter.onItemDismiss(recyclerView)
     }
 
     override fun onChildDraw(

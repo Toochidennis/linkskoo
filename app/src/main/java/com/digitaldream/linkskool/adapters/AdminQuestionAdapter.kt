@@ -1,5 +1,8 @@
 package com.digitaldream.linkskool.adapters
 
+
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -327,12 +330,15 @@ class AdminQuestionAdapter(
             swapSections(fromPosition, toPosition)
         }
 
-        notifyItemMoved(fromPosition, toPosition)
-        notifyDataSetChanged()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            notifyItemMoved(fromPosition, toPosition)
+        }, 1000)
+
 
     }
 
-    override fun onItemDismiss(position: Int) {
+    override fun onItemDismiss(recyclerView: RecyclerView) {
         viewHolderList.forEach {
             it.itemView.isVisible = true
             val layoutParams = it.itemView.layoutParams
@@ -341,6 +347,7 @@ class AdminQuestionAdapter(
         }
 
     }
+
 
     private fun hasQuestionsBelowSection(sectionPosition: Int): Boolean {
         for (i in sectionPosition + 1 until itemList.size) {
@@ -371,7 +378,6 @@ class AdminQuestionAdapter(
 
         itemList.addAll(itemList.indexOf(draggedSection) + 1, draggedSectionItems)
         itemList.addAll(itemList.indexOf(targetSection) + 1, targetSectionItems)
-
     }
 
 
