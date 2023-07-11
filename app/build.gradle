@@ -79,7 +79,6 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.0.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'org.jsoup:jsoup:1.8.3'
-    api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.6'

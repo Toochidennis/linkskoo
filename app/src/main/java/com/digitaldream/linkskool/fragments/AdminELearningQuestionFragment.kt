@@ -14,13 +14,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.adapters.AdminELearningSectionAdapter
 import com.digitaldream.linkskool.adapters.AdminQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
 import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
-import com.digitaldream.linkskool.models.GroupItem
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
+import com.digitaldream.linkskool.models.SectionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -36,13 +37,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private lateinit var topicButton: RelativeLayout
     private lateinit var questionTitleTxt: TextView
     private lateinit var descriptionTxt: TextView
-    private lateinit var questionRecyclerView: RecyclerView
+    private lateinit var sectionRecyclerView: RecyclerView
     private lateinit var emptyQuestionTxt: TextView
     private lateinit var previewQuestionButton: LinearLayout
     private lateinit var submitQuestionButton: LinearLayout
     private lateinit var addQuestionButton: FloatingActionButton
 
-    private lateinit var questionAdapter: AdminQuestionAdapter
+    private lateinit var sectionAdapter: AdminQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
     private val selectedClassId = hashMapOf<String, String>()
 
@@ -83,7 +84,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             topicButton = findViewById(R.id.topicButton)
             questionTitleTxt = findViewById(R.id.questionTitleTxt)
             descriptionTxt = findViewById(R.id.descriptionTxt)
-            questionRecyclerView = findViewById(R.id.questionRecyclerView)
+            sectionRecyclerView = findViewById(R.id.questionRecyclerView)
             emptyQuestionTxt = findViewById(R.id.emptyQuestionTxt)
             previewQuestionButton = findViewById(R.id.previewQuestionButton)
             submitQuestionButton = findViewById(R.id.submitQuestionButton)
@@ -110,9 +111,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         previewQuestions()
 
-        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(questionAdapter)
+        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
         val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
-        sectionItemTouchHelper.attachToRecyclerView(questionRecyclerView)
+        sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
     }
 
     private fun addQuestion() {
@@ -123,26 +124,31 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             ShortAnswerModel()
         ) { question: MultiChoiceQuestion?, shortQuestion: ShortAnswerModel?, sectionTitle: String? ->
 
-            val questionModel = when {
-                question != null ->
-                    SectionModel(sectionTitle, QuestionItem.MultiChoice(question), "option")
+            val questionItem = when {
+                question != null -> SectionModel(
+                    sectionTitle, QuestionItem.MultiChoice(question), "option"
+                )
 
-                shortQuestion != null ->
-                    SectionModel(sectionTitle, QuestionItem.ShortAnswer(shortQuestion), "short")
+                shortQuestion != null -> SectionModel(
+                    sectionTitle, QuestionItem.ShortAnswer(shortQuestion), "short"
+                )
 
                 else -> null
             }
 
-            if (sectionTitle.isNullOrEmpty()) {
-                questionModel?.let {
-                    sectionItems.add(questionModel)
+            if (sectionTitle.isNullOrEmpty()){
+                questionItem?.let {
+                    sectionItems.add(it)
                 }
-            } else {
-                val sectionModel = SectionModel(sectionTitle, null, "section")
-                sectionItems.add(sectionModel)
+            }else{
+                val newSection = SectionModel(sectionTitle, null, "section")
+                sectionItems.add(newSection)
             }
 
-            questionAdapter.notifyDataSetChanged()
+
+            println("section list: $sectionItems")
+
+            sectionAdapter.notifyDataSetChanged()
 
         }.apply {
             setCancelable(true)
@@ -154,13 +160,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun setupQuestionRecyclerView() {
-        questionAdapter =
+        sectionAdapter =
             AdminQuestionAdapter(parentFragmentManager, sectionItems)
 
-        questionRecyclerView.apply {
+        sectionRecyclerView.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = questionAdapter
+            adapter = sectionAdapter
 //            smoothScrollToPosition(groupItems.size - 1)
         }
     }
@@ -247,7 +253,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-
+    //  api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
 }
 
 

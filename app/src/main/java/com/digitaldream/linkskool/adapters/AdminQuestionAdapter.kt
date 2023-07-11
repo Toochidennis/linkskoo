@@ -1,6 +1,5 @@
 package com.digitaldream.linkskool.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,14 +73,9 @@ class AdminQuestionAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val sectionModel = itemList[position]
 
-        if (position == 0) {
-            viewHolderList.clear()
-        }
-
         when (holder) {
             is SectionViewHolder -> {
                 holder.bind(sectionModel)
-                viewHolderList.add(holder)
             }
 
             is MultiChoiceViewHolder -> {
@@ -98,6 +92,8 @@ class AdminQuestionAdapter(
                 viewHolderList.add(holder)
             }
         }
+
+        println(viewHolderList)
 
     }
 
@@ -120,7 +116,6 @@ class AdminQuestionAdapter(
         private val sectionBottomBorder: LinearLayout = itemView.findViewById(R.id.separator)
         private val sectionTopBorder: LinearLayout = itemView.findViewById(R.id.separator2)
 
-        @SuppressLint("ClickableViewAccessibility")
         fun bind(sectionModel: SectionModel) {
             if (sectionModel.sectionTitle.isNullOrEmpty()) {
                 sectionTxt.isVisible = false
@@ -138,14 +133,15 @@ class AdminQuestionAdapter(
             sectionAction(sectionBtn, sectionModel, adapterPosition)
 
             itemView.setOnLongClickListener {
-                for (i in 0 until itemList.size) {
-                    if (itemList[i].viewType != "section") {
-                        viewHolderList[i].itemView.visibility = View.GONE
-                    }
+                viewHolderList.forEach { viewHolder ->
+                    viewHolder.itemView.visibility = View.GONE
+                    val layoutParams = viewHolder.itemView.layoutParams
+                    layoutParams.height = 0
+                    viewHolder.itemView.layoutParams = layoutParams
                 }
+
                 true
             }
-
         }
     }
 
@@ -171,7 +167,6 @@ class AdminQuestionAdapter(
                 questionButton, ShortAnswerModel(), multiItem,
                 adapterPosition, "multi"
             )
-
         }
     }
 
@@ -196,7 +191,6 @@ class AdminQuestionAdapter(
                 questionButton, shortAnswer, MultiChoiceQuestion(),
                 adapterPosition, "short"
             )
-
         }
     }
 
@@ -313,86 +307,93 @@ class AdminQuestionAdapter(
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(itemList, i, i + 1)
-                Collections.swap(viewHolderList, i, i + 1)
+        val draggedItem = itemList[fromPosition]
+        val targetItem = itemList[toPosition]
+
+        if (draggedItem.viewType == "section" && targetItem.viewType == "section") {
+            val hasQuestionBelowDragged = hasQuestionsBelowSection(fromPosition)
+            val hasQuestionsBelowTarget = hasQuestionsBelowSection(toPosition)
+
+            if (hasQuestionsBelowTarget || hasQuestionBelowDragged) {
+                swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
+            } else {
+                swapSections(fromPosition, toPosition)
             }
+        } else if (draggedItem.viewType == "section" &&
+            targetItem.viewType == "short" || targetItem.viewType == "option"
+        ) {
+            return
         } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(itemList, i, i - 1)
-                Collections.swap(viewHolderList, i, i - 1)
-            }
+            swapSections(fromPosition, toPosition)
         }
 
-        /*        if (fromPosition < toPosition) {
-                    val draggedSection = itemList[fromPosition]
-                    val questionsToMove = mutableListOf<SectionModel>()
-
-                    // Find the questions below the dragged section
-                    for (i in fromPosition + 1 until itemList.size) {
-                        val currentItem = itemList[i]
-                        println("current Item $currentItem")
-
-                        if (currentItem.viewType != "section") {
-                            println("Checking for others")
-                            questionsToMove.add(currentItem)
-                        }
-                    }
-
-                    // Remove the questions from their original position
-                    itemList.removeAll(questionsToMove)
-                    println("current list1  $itemList")
-
-                    // Add the questions below the dragged section
-
-                    val sectionDropIndex = itemList.indexOf(draggedSection)
-                    itemList.addAll(toPosition, questionsToMove)
-
-                    // Swap the positions of the section and the target position
-                    Collections.swap(itemList, fromPosition, toPosition)
-                    Collections.swap(viewHolderList, fromPosition, toPosition)
-                    println("current list  $itemList")
-                } else {
-                    val draggedSection = itemList[fromPosition]
-                    val questionsToMove = mutableListOf<SectionModel>()
-
-                    // Find the questions below the dragged section
-                    for (i in fromPosition - 1 downTo toPosition) {
-                        val currentItem = itemList[i]
-                        println("current Item reverse $currentItem")
-
-                        if (currentItem.viewType != "section") {
-                            println("Checking for others reverse")
-                            questionsToMove.add(currentItem)
-                        }
-                    }
-
-                    // Remove the questions from their original position
-                    itemList.removeAll(questionsToMove)
-                    println("current list2  $itemList")
-
-                    // Add the questions below the dragged section
-                    val sectionDropIndex = itemList.indexOf(draggedSection) + 1
-                    itemList.addAll(sectionDropIndex, questionsToMove)
-
-                    // Swap the positions of the section and the target position
-                    Collections.swap(itemList, fromPosition, toPosition)
-                    Collections.swap(viewHolderList, fromPosition, toPosition)
-
-                    println("current list reverse $itemList")
-                }*/
-
         notifyItemMoved(fromPosition, toPosition)
+        notifyDataSetChanged()
+
     }
 
     override fun onItemDismiss(position: Int) {
-        for (i in 0 until itemList.size) {
-            if (itemList[i].viewType != "section") {
-                viewHolderList[i].itemView.isVisible = true
-            }
-            notifyItemChanged(i)
+        viewHolderList.forEach {
+            it.itemView.isVisible = true
+            val layoutParams = it.itemView.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            it.itemView.layoutParams = layoutParams
         }
+
+    }
+
+    private fun hasQuestionsBelowSection(sectionPosition: Int): Boolean {
+        for (i in sectionPosition + 1 until itemList.size) {
+            val item = itemList[i]
+            if (item.viewType == "short" || item.viewType == "option") {
+                return true
+            } else if (item.viewType == "section") {
+                return false
+            }
+        }
+        return false
+    }
+
+    private fun swapSectionsWithAssociatedQuestions(fromPosition: Int, toPosition: Int) {
+        val draggedSection = itemList[fromPosition]
+        val targetSection = itemList[toPosition]
+
+        // swap the associated items
+        val draggedSectionItems = getAssociatedItems(draggedSection)
+        val targetSectionItems = getAssociatedItems(targetSection)
+
+        // swap sections
+        itemList[fromPosition] = targetSection
+        itemList[toPosition] = draggedSection
+
+        itemList.removeAll(draggedSectionItems)
+        itemList.removeAll(targetSectionItems)
+
+        itemList.addAll(itemList.indexOf(draggedSection) + 1, draggedSectionItems)
+        itemList.addAll(itemList.indexOf(targetSection) + 1, targetSectionItems)
+
+    }
+
+
+    private fun getAssociatedItems(sectionModel: SectionModel): MutableList<SectionModel> {
+        val sectionPosition = itemList.indexOf(sectionModel)
+        val associatedItems = mutableListOf<SectionModel>()
+
+        for (i in sectionPosition + 1 until itemList.size) {
+            val item = itemList[i]
+            if (item.viewType == "short" || item.viewType == "option") {
+                associatedItems.add(item)
+            } else if (item.viewType == "section") {
+                break
+            }
+        }
+
+        return associatedItems
+    }
+
+    private fun swapSections(fromPosition: Int, toPosition: Int) {
+        Collections.swap(itemList, fromPosition, toPosition)
     }
 
 }
+

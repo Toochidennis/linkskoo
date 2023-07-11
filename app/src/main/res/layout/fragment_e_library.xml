@@ -138,11 +138,11 @@
                                 <Button
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
-                                    android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:background="@color/test_color_3"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/white"
                                     android:textSize="11sp" />
 
                             </androidx.cardview.widget.CardView>
@@ -248,123 +248,8 @@
                                 <Button
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
-                                    android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
-                                    android:fontFamily="@font/montserrat"
-                                    android:text="@string/play"
-                                    android:textColor="@color/black"
-                                    android:textSize="11sp" />
-
-                            </androidx.cardview.widget.CardView>
-
-
-                        </androidx.cardview.widget.CardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="170dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/mathematics"
-                            android:textColor="@color/gray"
-                            android:textSize="11sp" />
-
-                        <TextView
-                            android:layout_width="170dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="170dp"
-                            android:layout_marginTop="20dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_alternates"
-                            android:lines="2"
-                            android:text="@string/subject_description"
-                            android:textColor="@color/text_bg_color"
-                            android:textSize="14sp" />
-
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="170dp"
-                            android:layout_marginTop="70dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_timer"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="190dp"
-                            android:layout_marginTop="69dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/time"
-                            android:textColor="@color/gray"
-                            android:textSize="11sp" />
-
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="170dp"
-                            android:layout_marginTop="95dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/ic_person"
-                            app:tint="@color/gray" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_marginStart="190dp"
-                            android:layout_marginTop="94dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/developer"
-                            android:textColor="@color/gray"
-                            android:textSize="11sp" />
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="150dp"
-                            android:layout_height="110dp"
-                            android:layout_gravity="start"
-                            android:backgroundTint="@color/color_2"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp"
-                            app:contentPadding="10dp">
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                app:cardCornerRadius="5dp">
-
-                                <Button
-                                    android:layout_width="70dp"
-                                    android:layout_height="23dp"
-                                    android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:background="@color/test_color_3"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -478,8 +363,123 @@
                                 <Button
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
-                                    android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:background="@color/test_color_3"
+                                    android:drawableStart="@drawable/exo_icon_play"
+                                    android:fontFamily="@font/montserrat"
+                                    android:text="@string/play"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/mathematics"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="20dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_alternates"
+                            android:lines="2"
+                            android:text="@string/subject_description"
+                            android:textColor="@color/text_bg_color"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="70dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_timer"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="69dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/time"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="170dp"
+                            android:layout_marginTop="95dp"
+                            android:contentDescription="@string/todo"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="190dp"
+                            android:layout_marginTop="94dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/developer"
+                            android:textColor="@color/gray"
+                            android:textSize="11sp" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="150dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="start"
+                            android:backgroundTint="@color/color_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:contentPadding="10dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="5dp">
+
+                                <Button
+                                    android:layout_width="70dp"
+                                    android:layout_height="23dp"
+                                    android:background="@color/test_color_3"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -594,15 +594,14 @@
                                 <Button
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
-                                    android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:background="@color/test_color_3"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
                                     android:textSize="11sp" />
 
                             </androidx.cardview.widget.CardView>
-
 
                         </androidx.cardview.widget.CardView>
 
