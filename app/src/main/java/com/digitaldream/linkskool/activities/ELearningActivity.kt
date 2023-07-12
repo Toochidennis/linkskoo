@@ -24,16 +24,6 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     )
                 }
             }
-
-            "material" -> {
-                supportFragmentManager.commit {
-                    replace(
-                        R.id.learning_container,
-                        AdminELearningMaterialDialogFragment()
-                    )
-                }
-            }
-
         }
     }
 

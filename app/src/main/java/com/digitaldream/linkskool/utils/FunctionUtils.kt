@@ -825,7 +825,7 @@ object FunctionUtils {
 
     @SuppressLint("ClickableViewAccessibility")
     @JvmStatic
-    fun smoothScrollEditText(editText: EditText){
+    fun smoothScrollEditText(editText: EditText) {
 
         editText.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
@@ -842,9 +842,13 @@ object FunctionUtils {
 
 
     @JvmStatic
-     fun compareJsonObjects(jsonObject1: JSONObject, jsonObject2: JSONObject): Boolean {
+    fun compareJsonObjects(jsonObject1: JSONObject, jsonObject2: JSONObject): Boolean {
         if (jsonObject1.length() != jsonObject2.length()) {
             return false
+        }
+
+        if (jsonObject1.length() == 0) {
+            return true
         }
 
         val keys = jsonObject1.keys()
@@ -874,7 +878,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-     fun compareJsonArrays(jsonArray1: JSONArray, jsonArray2: JSONArray): Boolean {
+    fun compareJsonArrays(jsonArray1: JSONArray, jsonArray2: JSONArray): Boolean {
         if (jsonArray1.length() != jsonArray2.length()) {
             return false
         }

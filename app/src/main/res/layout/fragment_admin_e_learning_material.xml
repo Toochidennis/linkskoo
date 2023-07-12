@@ -77,6 +77,20 @@
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_group" />
 
+        <Button
+            android:id="@+id/selectAllBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:background="@drawable/ripple_effect6"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="All classes"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_14" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/classRecyclerView"
             android:layout_width="wrap_content"
@@ -170,7 +184,7 @@
             android:id="@+id/addAttachmentButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/attachment_recyclerview"
+            android:layout_below="@id/attachmentRecyclerView"
             android:layout_marginStart="@dimen/dimen_16"
             android:layout_marginEnd="@dimen/dimen_16"
             android:layout_toEndOf="@id/attachment_icon"

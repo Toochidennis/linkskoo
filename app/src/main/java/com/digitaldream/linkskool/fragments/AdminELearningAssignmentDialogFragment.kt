@@ -82,10 +82,12 @@ class AdminELearningAssignmentDialogFragment :
     private var mEndDate: String? = null
     private var mEndTime: String? = null
     private var jsonFromTopic: String? = null
-    private var updatedJson: String? = null
+    private var updatedJson = JSONObject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
+
         arguments?.let {
             mLevelId = it.getString(ARG_PARAM1)
             mCourseId = it.getString(ARG_PARAM2)
@@ -140,8 +142,6 @@ class AdminELearningAssignmentDialogFragment :
 
         setGrade()
 
-        onExit()
-
         fileAttachment(mAttachmentBtn)
         fileAttachment(mAddAttachmentBtn)
 
@@ -151,8 +151,11 @@ class AdminELearningAssignmentDialogFragment :
             assignAssignment()
         }
 
-    }
+        mBackBtn.setOnClickListener {
+            onExit()
+        }
 
+    }
 
     private fun classList() {
         try {
@@ -478,29 +481,30 @@ class AdminELearningAssignmentDialogFragment :
                 }
             }
 
-
-            updatedJson = assignmentObject.toString()
+            updatedJson = assignmentObject
         }
     }
 
     private fun onExit() {
-        mBackBtn.setOnClickListener {
-            val json1 = JSONObject(jsonFromTopic!!)
-            val json2 = JSONObject(updatedJson!!)
+            try {
+                val json1 = JSONObject(jsonFromTopic ?: "")
+                val json2 = updatedJson
 
-            if (json1.length() != 0 && json2.length() != 0) {
-                val areContentSame = compareJsonObjects(json1, json2)
+                if (json1.length() != 0 && json2.length() != 0) {
+                    val areContentSame = compareJsonObjects(json1, json2)
 
-                if (areContentSame) {
-                    dismiss()
+                    if (areContentSame) {
+                        dismiss()
+                    } else {
+                        exitWarning()
+                    }
                 } else {
-                    exitWarning()
+                    dismiss()
                 }
-
-            } else {
-                dismiss()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        }
+
     }
 
     private fun exitWarning() {

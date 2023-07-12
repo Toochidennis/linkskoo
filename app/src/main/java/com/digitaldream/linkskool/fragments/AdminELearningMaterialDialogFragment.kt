@@ -64,10 +64,12 @@ class AdminELearningMaterialDialogFragment :
     private var mLevelId: String? = null
     private var mCourseId: String? = null
     private var jsonFromTopic: String? = null
-    private var updatedJson: String? = null
+    private var updatedJson = JSONObject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
+
         arguments?.let {
             mLevelId = it.getString(ARG_PARAM1)
             mCourseId = it.getString(ARG_PARAM2)
@@ -92,7 +94,7 @@ class AdminELearningMaterialDialogFragment :
         super.onViewCreated(view, savedInstanceState)
 
         view.apply {
-            mBackBtn = findViewById(R.id.close_btn)
+            mBackBtn = findViewById(R.id.backBtn)
             mPostBtn = findViewById(R.id.postBtn)
             mMaterialTitleEditText = findViewById(R.id.materialTitle)
             mClassRecyclerView = findViewById(R.id.classRecyclerView)
@@ -119,8 +121,9 @@ class AdminELearningMaterialDialogFragment :
             postMaterial()
         }
 
-        onExit()
-
+        mBackBtn.setOnClickListener {
+            onExit()
+        }
     }
 
     private fun classList() {
@@ -317,56 +320,72 @@ class AdminELearningMaterialDialogFragment :
         } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-            val materialObject = JSONObject()
-            val classArray = JSONArray()
-            val attachmentArray = JSONArray()
-            val materialArray = JSONArray()
+            getMaterial()
+        }
+    }
 
-            selectedClassItems.forEach { (key, value) ->
-                if (key.isNotEmpty() and value.isNotEmpty()) {
+    private fun getMaterial() {
+        val materialObject = JSONObject()
+        val classArray = JSONArray()
+        val attachmentArray = JSONArray()
+        val materialArray = JSONArray()
+
+        mFileList.isNotEmpty().let { isTrue ->
+            if (isTrue) {
+                mFileList.forEach { attachment ->
                     JSONObject().apply {
-                        put("id", key)
-                        put("name", value)
+                        put("name", attachment.name)
+                        put("type", attachment.type)
+                        put("uri", attachment.uri)
                     }.let {
-                        classArray.put(it)
+                        attachmentArray.put(it)
                     }
                 }
             }
+        }
 
-            mFileList.isNotEmpty().let { isTrue ->
-                if (isTrue) {
-                    mFileList.forEach { attachment ->
-                        JSONObject().apply {
-                            put("name", attachment.name)
-                            put("type", attachment.type)
-                            put("uri", attachment.uri)
-                        }.let {
-                            attachmentArray.put(it)
-                        }
-                    }
+        val titleText = mMaterialTitleEditText.text.toString().trim()
+        val descriptionText = mDescriptionEditText.text.toString().trim()
+        val topicText = mTopicTxt.text.toString()
+
+        JSONObject().apply {
+            put("levelId", mLevelId)
+            put("courseId", mCourseId)
+            put("title", titleText)
+            put("description", descriptionText)
+            put("topic", topicText)
+        }.let {
+            materialArray.put(it)
+        }
+
+        selectedClassItems.forEach { (key, value) ->
+            if (key.isNotEmpty() and value.isNotEmpty()) {
+                JSONObject().apply {
+                    put("id", key)
+                    put("name", value)
+                }.let {
+                    classArray.put(it)
                 }
             }
 
-            JSONObject().apply {
-                put("levelId", mLevelId)
-                put("courseId", mCourseId)
-                put("title", titleText)
-                put("description", descriptionText)
-                put("topic", topicText)
-            }.let {
-                materialArray.put(it)
-            }
+        }
 
-            materialObject.apply {
+        materialObject.apply {
+            if (materialArray.length() != 0) {
                 put("material", materialArray)
-                put("class", classArray)
-
-                if (attachmentArray.length() != 0) {
-                    put("attachment", attachmentArray)
-                }
             }
 
-            updatedJson = materialObject.toString()
+            if (classArray.length() != 0) {
+                put("class", classArray)
+            }
+
+            if (attachmentArray.length() != 0) {
+                put("attachment", attachmentArray)
+            }
+        }
+
+        if (materialObject.length() > 0) {
+            updatedJson = materialObject
         }
     }
 
@@ -423,11 +442,13 @@ class AdminELearningMaterialDialogFragment :
     }
 
     private fun onExit() {
-        mBackBtn.setOnClickListener {
-            val json1 = JSONObject(jsonFromTopic!!)
-            val json2 = JSONObject(updatedJson!!)
+        try {
+            getMaterial()
 
-            if (json1.length() != 0 && json2.length() != 0) {
+            val json1 = JSONObject(jsonFromTopic!!)
+            val json2 = updatedJson
+
+            if (json2.length() != 0) {
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {
@@ -435,11 +456,14 @@ class AdminELearningMaterialDialogFragment :
                 } else {
                     exitWarning()
                 }
-
             } else {
                 dismiss()
             }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     private fun exitWarning() {

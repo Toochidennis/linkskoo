@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.fragments.AdminELearningAssignmentDialogFragment
+import com.digitaldream.linkskool.fragments.AdminELearningMaterialDialogFragment
 import org.json.JSONObject
 
 class AdminELearningCreateDialog(
@@ -67,10 +68,11 @@ class AdminELearningCreateDialog(
         }
 
         materialBtn.setOnClickListener {
-            context.startActivity(
-                Intent(context, ELearningActivity::class.java)
-                    .putExtra("from", "material")
-            )
+            AdminELearningMaterialDialogFragment
+                .newInstance(levelId, courseId, "$jsonObject")
+                .show(fragmentManager, "")
+
+            dismiss()
         }
 
         topicBtn.setOnClickListener {
