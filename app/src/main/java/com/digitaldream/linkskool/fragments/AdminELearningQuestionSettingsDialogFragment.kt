@@ -1,6 +1,5 @@
 package com.digitaldream.linkskool.fragments
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +21,7 @@ import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
+import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.FunctionUtils.smoothScrollEditText
@@ -36,8 +36,8 @@ private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 
 
-class AdminELearningQuestionSettingsFragment :
-    Fragment(R.layout.fragment_admin_e_learning_question_settings) {
+class AdminELearningQuestionSettingsDialogFragment :
+    DialogFragment(R.layout.fragment_admin_e_learning_question_settings) {
 
 
     private lateinit var mBackBtn: ImageView
@@ -52,9 +52,8 @@ class AdminELearningQuestionSettingsFragment :
     private lateinit var mEndDateTxt: TextView
     private lateinit var mStartDateBtn: ImageView
     private lateinit var mEndDateBtn: ImageView
-    private lateinit var mTopicBtn: TextView
+    private lateinit var mTopicTxt: TextView
     private lateinit var mDateSeparator: LinearLayout
-
 
     private var mClassList = mutableListOf<ClassNameTable>()
     private val selectedItems = hashMapOf<String, String>()
@@ -70,6 +69,7 @@ class AdminELearningQuestionSettingsFragment :
     private var mEndTime: String? = null
     private var mQuestionTopic: String? = null
     private var jsonFromQuestion: String? = null
+    private var updatedSettings: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +87,7 @@ class AdminELearningQuestionSettingsFragment :
 
         @JvmStatic
         fun newInstance(param1: String, param2: String, param3: String = "") =
-            AdminELearningQuestionSettingsFragment().apply {
+            AdminELearningQuestionSettingsDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -113,7 +113,7 @@ class AdminELearningQuestionSettingsFragment :
             mEndDateTxt = findViewById(R.id.endDateTxt)
             mStartDateBtn = findViewById(R.id.startDateBtn)
             mEndDateBtn = findViewById(R.id.endDateBtn)
-            mTopicBtn = findViewById(R.id.topicBtn)
+            mTopicTxt = findViewById(R.id.topicBtn)
             mDateSeparator = findViewById(R.id.separator)
         }
 
@@ -123,16 +123,14 @@ class AdminELearningQuestionSettingsFragment :
 
         setDate()
 
+        onExit()
+
         showSoftInput(requireContext(), mQuestionTitleEditText)
         smoothScrollEditText(mQuestionTitleEditText)
         smoothScrollEditText(mDescriptionEditText)
 
         mApplyBtn.setOnClickListener {
             applySettings()
-        }
-
-        mBackBtn.setOnClickListener {
-            onDiscard()
         }
 
     }
@@ -151,6 +149,12 @@ class AdminELearningQuestionSettingsFragment :
                 mTagList.add(TagModel(item.classId, item.className))
             }
 
+            if (selectedItems.isNotEmpty()) {
+                mTagList.forEach { tagModel ->
+                    if (selectedItems[tagModel.tagId] == tagModel.tagName)
+                        tagModel.isSelected = true
+                }
+            }
 
             if (mTagList.isEmpty()) {
                 mRecyclerView.isVisible = false
@@ -222,20 +226,20 @@ class AdminELearningQuestionSettingsFragment :
     private fun applySettings() {
         val titleText = mQuestionTitleEditText.text.toString().trim()
         val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicBtn.text.toString()
+        val topicText = mTopicTxt.text.toString()
 
         if (titleText.isEmpty()) {
-            mQuestionTitleEditText.error = "Please enter a question title"
+            mQuestionTitleEditText.error = "Please enter question title"
         } else if (selectedItems.size == 0) {
             Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Please set  date", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
         } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-            val jsonObject = JSONObject()
+            val settingsObject = JSONObject()
             val classArray = JSONArray()
 
             selectedItems.forEach { (key, value) ->
@@ -260,56 +264,66 @@ class AdminELearningQuestionSettingsFragment :
                 put("endTime", mEndTime)
                 put("topic", topicText)
             }.let {
-                jsonObject.put("settings", it)
-                jsonObject.put("class", classArray)
-            }
+                settingsObject.put("settings", it)
+                settingsObject.put("class", classArray)
 
-            requireActivity().supportFragmentManager.commit {
-                replace(
-                    R.id.learning_container, AdminELearningQuestionFragment.newInstance
-                        (jsonObject.toString())
-                )
+
+                updatedSettings = settingsObject.toString()
+
+                requireActivity().supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container, AdminELearningQuestionFragment.newInstance
+                            (settingsObject.toString())
+                    )
+                }
             }
         }
 
     }
 
     private fun onEdit() {
-        if (!jsonFromQuestion.isNullOrEmpty()) {
-            jsonFromQuestion?.let {
-                JSONObject(it).run {
-                    val settingsObject = getJSONObject("settings")
-                    val classArray = getJSONArray("class")
+        try {
+            if (!jsonFromQuestion.isNullOrEmpty()) {
+                jsonFromQuestion?.let {
+                    JSONObject(it).run {
+                        val settingsObject = getJSONObject("settings")
+                        val classArray = getJSONArray("class")
 
-                    mQuestionTitle = settingsObject.getString("title")
-                    mQuestionDescription = settingsObject.getString("description")
-                    mStartDate = settingsObject.getString("startDate")
-                    mEndDate = settingsObject.getString("endDate")
-                    mStartTime = settingsObject.getString("startTime")
-                    mEndTime = settingsObject.getString("endTime")
-                    mQuestionTopic = settingsObject.getString("topic")
 
-                    for (i in 0 until classArray.length()) {
-                        selectedItems[classArray.getJSONObject(i).getString("id")] =
-                            classArray.getJSONObject(i).getString("name")
+                        settingsObject.let {
+
+                        }
+
+                        mQuestionTitle = settingsObject.getString("title")
+                        mQuestionDescription = settingsObject.getString("description")
+                        mStartDate = settingsObject.getString("startDate")
+                        mEndDate = settingsObject.getString("endDate")
+                        mStartTime = settingsObject.getString("startTime")
+                        mEndTime = settingsObject.getString("endTime")
+                        mQuestionTopic = settingsObject.getString("topic")
+
+                        for (i in 0 until classArray.length()) {
+                            selectedItems[classArray.getJSONObject(i).getString("id")] =
+                                classArray.getJSONObject(i).getString("name")
+                        }
+
                     }
-
                 }
+
+                mQuestionTitleEditText.setText(mQuestionTitle)
+                mDescriptionEditText.setText(mQuestionDescription)
+                mTopicTxt.text = mQuestionTopic
+
+                val start = "Start ${formatDate2(mStartDate!!, "custom1")} $mStartTime"
+                val end = "Due ${formatDate2(mEndDate!!, "custom1")} $mEndTime"
+                mStartDateTxt.text = start
+                mEndDateTxt.text = end
+
+                showDate()
             }
-
-            mQuestionTitleEditText.setText(mQuestionTitle)
-            mDescriptionEditText.setText(mQuestionDescription)
-            mTopicBtn.text = mQuestionTopic ?: "Topic"
-
-            val start = "Start ${formatDate2(mStartDate!!, "custom1")} $mStartTime"
-            val end = "Due ${formatDate2(mEndDate!!, "custom1")} $mEndTime"
-            mStartDateTxt.text = start
-            mEndDateTxt.text = end
-
-            showDate()
-
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
     }
 
     private fun showDate() {
@@ -319,12 +333,32 @@ class AdminELearningQuestionSettingsFragment :
         mDateSeparator.isVisible = true
     }
 
-    private fun onDiscard() {
-        AlertDialog.Builder(requireContext()).apply {
+    private fun onExit() {
+        mBackBtn.setOnClickListener {
+            val json1 = JSONObject(jsonFromQuestion!!)
+            val json2 = JSONObject(updatedSettings!!)
+
+            if (json1.length() != 0 && json2.length() != 0) {
+                val areContentSame = compareJsonObjects(json1, json2)
+
+                if (areContentSame) {
+                    dismiss()
+                } else {
+                    exitWarning()
+                }
+
+            } else {
+                dismiss()
+            }
+        }
+    }
+
+    private fun exitWarning() {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
             setPositiveButton("Yes") { _, _ ->
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                dismiss()
             }
             setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
@@ -332,5 +366,6 @@ class AdminELearningQuestionSettingsFragment :
             show()
         }.create()
     }
+
 
 }

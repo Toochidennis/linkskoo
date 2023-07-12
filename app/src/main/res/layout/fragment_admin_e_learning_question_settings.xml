@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".fragments.AdminELearningQuestionSettingsFragment">
+    tools:context=".fragments.AdminELearningQuestionSettingsDialogFragment">
 
     <RelativeLayout
         android:id="@+id/appBar"
@@ -25,6 +25,7 @@
             android:contentDescription="@string/todo"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dimen_10"
             android:src="@drawable/ic_close"
             app:tint="@color/test_color_7" />
 

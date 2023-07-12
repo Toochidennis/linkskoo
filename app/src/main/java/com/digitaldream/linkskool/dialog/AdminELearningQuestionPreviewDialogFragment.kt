@@ -36,8 +36,8 @@ class AdminELearningQuestionPreviewDialogFragment :
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
 
-        arguments?.let {
-            (it.getSerializable(ARG_PARAM) as? MutableList<SectionModel>
+        arguments?.let {bundle->
+            (bundle.getSerializable(ARG_PARAM) as? MutableList<SectionModel>
                 ?: mutableListOf()).also { sectionItems = it }
         }
     }
@@ -79,8 +79,6 @@ class AdminELearningQuestionPreviewDialogFragment :
 
 
     private fun showQuestion() {
-        println("section: $sectionItems")
-
         val currentSection = sectionItems.getOrNull(currentSectionIndex)
         if (currentSection != null) {
             sectionTxt.text = currentSection.sectionTitle

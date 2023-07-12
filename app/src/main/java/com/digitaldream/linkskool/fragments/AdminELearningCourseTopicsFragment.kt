@@ -14,7 +14,8 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class AdminELearningCourseTopicsFragment : Fragment(R.layout.fragment_admin_e_learning_course_topics) {
+class AdminELearningCourseTopicsFragment :
+    Fragment(R.layout.fragment_admin_e_learning_course_topics) {
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
@@ -54,7 +55,10 @@ class AdminELearningCourseTopicsFragment : Fragment(R.layout.fragment_admin_e_le
             }
 
             addBtn.setOnClickListener {
-                AdminELearningCreateDialog(requireContext(), mLevelId!!, mCourseId!!).apply {
+                AdminELearningCreateDialog(
+                    requireContext(), parentFragmentManager, mLevelId!!,
+                    mCourseId!!
+                ) {}.apply {
                     setCancelable(true)
                     show()
                 }.window?.setLayout(

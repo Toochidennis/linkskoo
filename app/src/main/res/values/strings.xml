@@ -152,4 +152,5 @@
     <string name="confirm">Confirm</string>
     <string name="and"><![CDATA[&]]></string>
     <string name="close">Close</string>
+    <string name="navigate_back">Navigate back</string>
 </resources>

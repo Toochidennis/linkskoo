@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -43,6 +44,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private lateinit var sectionAdapter: AdminQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
+    private var sectionItemsBackUp = mutableListOf<SectionModel>()
     private val selectedClassId = hashMapOf<String, String>()
 
     private var jsonFromQuestionSettings: String? = null
@@ -109,9 +111,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         previewQuestions()
 
-        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
-        val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
-        sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
+        onTouchHelper()
+
     }
 
     private fun addQuestion() {
@@ -134,11 +135,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 else -> null
             }
 
-            if (sectionTitle.isNullOrEmpty()){
+            if (sectionTitle.isNullOrEmpty()) {
                 questionItem?.let {
                     sectionItems.add(it)
                 }
-            }else{
+            } else {
                 val newSection = SectionModel(sectionTitle, null, "section")
                 sectionItems.add(newSection)
             }
@@ -162,7 +163,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = sectionAdapter
-//            smoothScrollToPosition(groupItems.size - 1)
+            smoothScrollToPosition(if (sectionItems.isNotEmpty()) sectionItems.size - 1 else 0)
         }
     }
 
@@ -230,7 +231,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         requireActivity().supportFragmentManager.commit {
             replace(
-                R.id.learning_container, AdminELearningQuestionSettingsFragment
+                R.id.learning_container,
+                AdminELearningQuestionSettingsDialogFragment
                     .newInstance(levelId!!, "", jsonObject.toString())
             )
         }
@@ -243,12 +245,32 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 AdminELearningQuestionPreviewDialogFragment.newInstance(sectionItems)
                     .show(parentFragmentManager, "")
             } else {
-                Toast.makeText(requireContext(), "kkk", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(), "There are no questions to preview yet", Toast
+                        .LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    //  api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
+    private fun dismissDialog(){
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Are you sure to exit?")
+            setMessage("Your unsaved changes will be lost")
+            setPositiveButton("Yes") { _, _ ->
+            }
+            setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            show()
+        }.create()
+    }
+
+    private fun onTouchHelper(){
+        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
+        val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
+        sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
+    }
 }
 
 

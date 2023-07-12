@@ -13,7 +13,7 @@ class AdminELearningQuestionSettingsAdapter(
     private val selectedItems: HashMap<String, String>,
     private val itemList: MutableList<TagModel>,
     private val selectAllBtn: Button,
-    ) : RecyclerView.Adapter<AdminELearningQuestionSettingsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AdminELearningQuestionSettingsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -38,82 +38,64 @@ class AdminELearningQuestionSettingsAdapter(
             itemName.text = tag.tagName
             itemView.isSelected = tag.isSelected
 
-            if (selectedItems.size == itemList.size) {
-                buttonBackground(selectAllBtn, "select")
-                buttonBackground(itemName, "select")
-                tag.isSelected = true
-            } else if (selectedItems.size != 0){
-                val isSelected = selectedItems.containsKey(tag.tagId) &&
-                        selectedItems[tag.tagId] == tag.tagName
-                buttonBackground(itemName, if (isSelected) "select" else "deselect")
-                tag.isSelected = true
+            if (itemView.isSelected) {
+                changeButtonBackground(itemName, "select")
+                selectedItems[tag.tagId] = tag.tagName
+                if (selectedItems.size == itemList.size) {
+                    changeButtonBackground(selectAllBtn, "select")
+                }
+            } else {
+                changeButtonBackground(itemName, "deselect")
             }
-
-//            if (itemView.isSelected) {
-//                buttonBackground(itemName, "select")
-//                selectedItems[tag.tagId] = tag.tagName
-//                if (selectedItems.size == itemList.size) {
-//                    buttonBackground(selectAllBtn, "select")
-//                }
-//            } else {
-//                buttonBackground(itemName, "deselect")
-//            }
-
 
             itemView.setOnClickListener {
                 tag.isSelected = !tag.isSelected
                 itemView.isSelected = tag.isSelected
 
                 if (itemView.isSelected) {
-                    buttonBackground(itemName, "select")
+                    changeButtonBackground(itemName, "select")
                     selectedItems[tag.tagId] = tag.tagName
                     if (selectedItems.size == itemList.size) {
-                        buttonBackground(selectAllBtn, "select")
+                        changeButtonBackground(selectAllBtn, "select")
                     }
                 } else {
                     if (tag.tagId.isNotEmpty() && selectedItems.contains(tag.tagId)) {
                         selectedItems.remove(tag.tagId)
 
-                        buttonBackground(itemName, "deselect")
-                        buttonBackground(selectAllBtn, "deselect")
+                        changeButtonBackground(itemName, "deselect")
+                        changeButtonBackground(selectAllBtn, "deselect")
                     }
                 }
             }
 
             selectAllBtn.setOnClickListener {
                 if (!selectAllBtn.isSelected) {
-                    selectAll(selectAllBtn)
-                    selectAll(itemName)
+                    selectAll()
                 } else {
-                    deselectAll(selectAllBtn)
-                    deselectAll(itemName)
+                    deselectAll(selectAllBtn, itemName)
                 }
             }
         }
     }
 
-    private fun selectAll(button: Button) {
-        selectedItems.clear()
+    private fun selectAll() {
         itemList.forEach { item ->
             item.isSelected = true
-            buttonBackground(button, "select")
-            selectedItems[item.tagId] = item.tagName
         }
         notifyDataSetChanged()
     }
 
-    private fun deselectAll(button: Button) {
+    private fun deselectAll(selectAllBtn: Button, itemName: Button) {
         itemList.forEach { item ->
-            if (item.isSelected) {
-                item.isSelected = false
-                buttonBackground(button, "deselect")
-            }
+            item.isSelected = false
+            changeButtonBackground(selectAllBtn, "deselect")
+            changeButtonBackground(itemName, "deselect")
         }
         selectedItems.clear()
         notifyDataSetChanged()
     }
 
-    private fun buttonBackground(button: Button, from: String) {
+    private fun changeButtonBackground(button: Button, from: String) {
         if (from == "select") {
             button.apply {
                 setBackgroundResource(R.drawable.ripple_effect10)

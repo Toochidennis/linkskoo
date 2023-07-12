@@ -1069,8 +1069,6 @@ public class TestUpload extends AppCompatActivity implements TestSettingHeaderAd
         dialog.show();
         String url = Login.urlBase + "/addQuiz.php";
 
-        Log.i("URL", url);
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

@@ -27,8 +27,6 @@ class AdminELearningCourseOutlineAdapter(
 
         return ViewHolder(view)
     }
-
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemModel = itemList[position]
         holder.bindItem(itemModel)

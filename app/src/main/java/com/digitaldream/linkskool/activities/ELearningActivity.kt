@@ -12,8 +12,8 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val levelId =  intent.getStringExtra("levelId")
-        val courseId =  intent.getStringExtra("courseId")
+        val levelId = intent.getStringExtra("levelId")
+        val courseId = intent.getStringExtra("courseId")
 
         when (intent.getStringExtra("from")) {
             "view_post" -> {
@@ -25,29 +25,11 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 }
             }
 
-            "assignment"->{
+            "material" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningAssignmentFragment.newInstance(levelId!!, courseId!!)
-                    )
-                }
-            }
-
-            "question"->{
-                supportFragmentManager.commit {
-                    replace(
-                        R.id.learning_container,
-                        AdminELearningQuestionSettingsFragment.newInstance(levelId!!, courseId!!)
-                    )
-                }
-            }
-
-            "material"->{
-                supportFragmentManager.commit {
-                    replace(
-                        R.id.learning_container,
-                        AdminELearningMaterialFragment()
+                        AdminELearningMaterialDialogFragment()
                     )
                 }
             }

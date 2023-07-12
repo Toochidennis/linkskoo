@@ -96,8 +96,6 @@ class AdminQuestionAdapter(
             }
         }
 
-        println(viewHolderList)
-
     }
 
     override fun getItemCount() = itemList.size
@@ -321,6 +319,7 @@ class AdminQuestionAdapter(
                 swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
             } else {
                 swapSections(fromPosition, toPosition)
+                println("wat")
             }
         } else if (draggedItem.viewType == "section" &&
             targetItem.viewType == "short" || targetItem.viewType == "option"
@@ -330,12 +329,7 @@ class AdminQuestionAdapter(
             swapSections(fromPosition, toPosition)
         }
 
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            notifyItemMoved(fromPosition, toPosition)
-        }, 1000)
-
-
+        notifyItemMoved(fromPosition, toPosition)
     }
 
     override fun onItemDismiss(recyclerView: RecyclerView) {
@@ -346,6 +340,12 @@ class AdminQuestionAdapter(
             it.itemView.layoutParams = layoutParams
         }
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            recyclerView.post {
+                notifyDataSetChanged()
+            }
+
+        }, 1000)
     }
 
 

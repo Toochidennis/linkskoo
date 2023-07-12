@@ -840,6 +840,65 @@ object FunctionUtils {
         }
     }
 
+
+    @JvmStatic
+     fun compareJsonObjects(jsonObject1: JSONObject, jsonObject2: JSONObject): Boolean {
+        if (jsonObject1.length() != jsonObject2.length()) {
+            return false
+        }
+
+        val keys = jsonObject1.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            if (!jsonObject2.has(key)) {
+                return false
+            }
+
+            val value1 = jsonObject1.get(key)
+            val value2 = jsonObject2.get(key)
+
+            if (value1 is JSONObject && value2 is JSONObject) {
+                if (!compareJsonObjects(value1, value2)) {
+                    return false
+                }
+            } else if (value1 is JSONArray && value2 is JSONArray) {
+                if (!compareJsonArrays(value1, value2)) {
+                    return false
+                }
+            } else if (value1 != value2) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    @JvmStatic
+     fun compareJsonArrays(jsonArray1: JSONArray, jsonArray2: JSONArray): Boolean {
+        if (jsonArray1.length() != jsonArray2.length()) {
+            return false
+        }
+
+        for (i in 0 until jsonArray1.length()) {
+            val value1 = jsonArray1[i]
+            val value2 = jsonArray2[i]
+
+            if (value1 is JSONObject && value2 is JSONObject) {
+                if (!compareJsonObjects(value1, value2)) {
+                    return false
+                }
+            } else if (value1 is JSONArray && value2 is JSONArray) {
+                if (!compareJsonArrays(value1, value2)) {
+                    return false
+                }
+            } else if (value1 != value2) {
+                return false
+            }
+        }
+
+        return true
+    }
+
 }
 
 interface VolleyCallback {

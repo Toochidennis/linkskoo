@@ -11,13 +11,19 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.fragments.AdminELearningAssignmentDialogFragment
+import org.json.JSONObject
 
 class AdminELearningCreateDialog(
     context: Context,
+    private val fragmentManager: FragmentManager,
     private val levelId: String,
-    private val courseId: String
+    private val courseId: String,
+    private val jsonObject: JSONObject = JSONObject(),
+    private val onCreateContent: (contentObject: JSONObject) -> Unit
 ) : Dialog(context) {
 
     private lateinit var assignmentBtn: TextView
@@ -44,24 +50,20 @@ class AdminELearningCreateDialog(
         reuseBtn = findViewById(R.id.reuse_btn)
         topicBtn = findViewById(R.id.topic_btn)
 
-
         assignmentBtn.setOnClickListener {
-            context.startActivity(
-                Intent(context, ELearningActivity::class.java)
-                    .putExtra("from", "assignment")
-                    .putExtra("levelId", levelId)
-                    .putExtra("courseId", courseId)
+            AdminELearningAssignmentDialogFragment
+                .newInstance(levelId, courseId, "$jsonObject")
+                .show(fragmentManager, "")
 
-            )
+            dismiss()
         }
 
         questionBtn.setOnClickListener {
-            context.startActivity(
-                Intent(context, ELearningActivity::class.java)
-                    .putExtra("from", "question")
-                    .putExtra("levelId", levelId)
-                    .putExtra("courseId", courseId)
-            )
+            AdminELearningAssignmentDialogFragment
+                .newInstance(levelId, courseId, "$jsonObject")
+                .show(fragmentManager, "")
+
+            dismiss()
         }
 
         materialBtn.setOnClickListener {
