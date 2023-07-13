@@ -32,7 +32,6 @@ private const val ARG_PARAM1 = "param1"
 
 class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learning_question) {
 
-
     private lateinit var topicButton: RelativeLayout
     private lateinit var questionTitleTxt: TextView
     private lateinit var descriptionTxt: TextView
@@ -232,8 +231,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         requireActivity().supportFragmentManager.commit {
             replace(
                 R.id.learning_container,
-                AdminELearningQuestionSettingsDialogFragment
-                    .newInstance(levelId!!, "", jsonObject.toString())
+                AdminELearningQuestionSettingsFragment
+                    .newInstance(levelId!!, "", jsonObject.toString(), "edit")
             )
         }
 

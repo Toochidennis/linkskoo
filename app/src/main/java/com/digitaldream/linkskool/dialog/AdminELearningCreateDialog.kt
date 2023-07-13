@@ -9,13 +9,13 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.fragments.AdminELearningAssignmentDialogFragment
 import com.digitaldream.linkskool.fragments.AdminELearningMaterialDialogFragment
+import com.digitaldream.linkskool.fragments.AdminELearningQuestionSettingsFragment
 import org.json.JSONObject
 
 class AdminELearningCreateDialog(
@@ -60,9 +60,12 @@ class AdminELearningCreateDialog(
         }
 
         questionBtn.setOnClickListener {
-            AdminELearningAssignmentDialogFragment
-                .newInstance(levelId, courseId, "$jsonObject")
-                .show(fragmentManager, "")
+            context.startActivity(
+                Intent(context, ELearningActivity::class.java)
+                    .putExtra("from", "question")
+                    .putExtra("levelId", levelId)
+                    .putExtra("courseId", courseId)
+            )
 
             dismiss()
         }

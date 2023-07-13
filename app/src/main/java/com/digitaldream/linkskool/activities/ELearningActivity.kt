@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.fragments.*
+import org.json.JSONObject
 
 
 class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
@@ -21,6 +22,17 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     replace(
                         R.id.learning_container,
                         AdminELearningCourseTopicsFragment.newInstance(levelId!!, courseId!!)
+                    )
+                }
+            }
+
+            "question" -> {
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningQuestionSettingsFragment.newInstance(
+                            levelId!!, courseId!!, "${JSONObject()}"
+                        )
                     )
                 }
             }

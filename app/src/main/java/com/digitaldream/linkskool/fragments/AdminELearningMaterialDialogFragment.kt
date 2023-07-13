@@ -320,11 +320,11 @@ class AdminELearningMaterialDialogFragment :
         } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-            getMaterial()
+            getMaterial("post")
         }
     }
 
-    private fun getMaterial() {
+    private fun getMaterial(from: String) {
         val materialObject = JSONObject()
         val classArray = JSONArray()
         val attachmentArray = JSONArray()
@@ -344,20 +344,6 @@ class AdminELearningMaterialDialogFragment :
             }
         }
 
-        val titleText = mMaterialTitleEditText.text.toString().trim()
-        val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
-
-        JSONObject().apply {
-            put("levelId", mLevelId)
-            put("courseId", mCourseId)
-            put("title", titleText)
-            put("description", descriptionText)
-            put("topic", topicText)
-        }.let {
-            materialArray.put(it)
-        }
-
         selectedClassItems.forEach { (key, value) ->
             if (key.isNotEmpty() and value.isNotEmpty()) {
                 JSONObject().apply {
@@ -369,6 +355,42 @@ class AdminELearningMaterialDialogFragment :
             }
 
         }
+
+        val titleText = mMaterialTitleEditText.text.toString().trim()
+        val descriptionText = mDescriptionEditText.text.toString().trim()
+        val topicText = mTopicTxt.text.toString()
+
+        if (from == "post") {
+            JSONObject().apply {
+                put("levelId", mLevelId)
+                put("courseId", mCourseId)
+                put("title", titleText)
+                put("description", descriptionText)
+                put("topic", topicText)
+            }.let {
+                materialArray.put(it)
+            }
+        } else {
+            JSONObject().apply {
+                if (titleText.isNotEmpty()) {
+                    put("levelId", mLevelId)
+                    put("courseId", mCourseId)
+                    put("title", titleText)
+                }
+
+                if (descriptionText.isNotEmpty()) {
+                    put("description", descriptionText)
+                }
+
+                if (topicText.isNotEmpty() && topicText != "Topic") {
+                    put("topic", topicText)
+                }
+            }.let {
+                if (it.length() != 0)
+                    materialArray.put(it)
+            }
+        }
+
 
         materialObject.apply {
             if (materialArray.length() != 0) {
@@ -384,9 +406,7 @@ class AdminELearningMaterialDialogFragment :
             }
         }
 
-        if (materialObject.length() > 0) {
-            updatedJson = materialObject
-        }
+        updatedJson = materialObject
     }
 
     private fun onEdit() {
@@ -443,7 +463,7 @@ class AdminELearningMaterialDialogFragment :
 
     private fun onExit() {
         try {
-            getMaterial()
+            getMaterial("exit")
 
             val json1 = JSONObject(jsonFromTopic!!)
             val json2 = updatedJson
@@ -473,7 +493,7 @@ class AdminELearningMaterialDialogFragment :
             setPositiveButton("Yes") { _, _ ->
                 dismiss()
             }
-            setNegativeButton("No") { dialog, _ ->
+            setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             show()

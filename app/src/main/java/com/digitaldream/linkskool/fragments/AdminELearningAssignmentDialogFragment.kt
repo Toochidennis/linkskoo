@@ -428,41 +428,52 @@ class AdminELearningAssignmentDialogFragment :
         } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-            val assignmentObject = JSONObject()
-            val classArray = JSONArray()
-            val attachmentArray = JSONArray()
-            val assignmentArray = JSONArray()
+            getAssignment("assign")
+        }
+    }
 
-            selectedClassItems.forEach { (key, value) ->
-                if (key.isNotEmpty() and value.isNotEmpty()) {
+    private fun getAssignment(from: String) {
+        val assignmentObject = JSONObject()
+        val classArray = JSONArray()
+        val attachmentArray = JSONArray()
+        val assignmentArray = JSONArray()
+
+        selectedClassItems.forEach { (key, value) ->
+            if (key.isNotEmpty() and value.isNotEmpty()) {
+                JSONObject().apply {
+                    put("id", key)
+                    put("name", value)
+                }.let {
+                    classArray.put(it)
+                }
+            }
+        }
+
+        mFileList.isNotEmpty().let { isTrue ->
+            if (isTrue) {
+                mFileList.forEach { attachment ->
                     JSONObject().apply {
-                        put("id", key)
-                        put("name", value)
+                        put("name", attachment.name)
+                        put("type", attachment.type)
+                        put("uri", attachment.uri)
                     }.let {
-                        classArray.put(it)
+                        attachmentArray.put(it)
                     }
                 }
             }
+        }
 
-            mFileList.isNotEmpty().let { isTrue ->
-                if (isTrue) {
-                    mFileList.forEach { attachment ->
-                        JSONObject().apply {
-                            put("name", attachment.name)
-                            put("type", attachment.type)
-                            put("uri", attachment.uri)
-                        }.let {
-                            attachmentArray.put(it)
-                        }
-                    }
-                }
-            }
+        val titleText = mAssignmentTitleEditText.text.toString().trim()
+        val descriptionText = mDescriptionEditText.text.toString().trim()
+        val topicText = mTopicBtn.text.toString()
 
+        if (from == "assign") {
             JSONObject().apply {
                 put("levelId", mLevelId)
                 put("courseId", mCourseId)
                 put("title", titleText)
                 put("description", descriptionText)
+                put("grade", mGradeTxt.text)
                 put("startDate", mStartDate)
                 put("endDate", mEndDate)
                 put("startTime", mStartTime)
@@ -471,39 +482,73 @@ class AdminELearningAssignmentDialogFragment :
             }.let {
                 assignmentArray.put(it)
             }
-
-            assignmentObject.apply {
-                put("assignment", assignmentArray)
-                put("class", classArray)
-
-                if (attachmentArray.length() != 0) {
-                    put("attachment", attachmentArray)
+        } else {
+            JSONObject().apply {
+                if (titleText.isNotEmpty()) {
+                    put("levelId", mLevelId)
+                    put("courseId", mCourseId)
+                    put("title", titleText)
                 }
+
+                if (descriptionText.isNotEmpty()) {
+                    put("description", descriptionText)
+                    put("grade", mGradeTxt.text)
+                }
+
+                if (!mStartDate.isNullOrEmpty() && !mEndDate.isNullOrEmpty()) {
+                    put("startDate", mStartDate)
+                    put("endDate", mEndDate)
+                    put("startTime", mStartTime)
+                    put("endTime", mEndTime)
+                }
+
+                if (topicText.isNotEmpty() && topicText != "Topic") {
+                    put("topic", topicText)
+                }
+            }.let {
+                if (it.length() != 0)
+                    assignmentArray.put(it)
+            }
+        }
+
+        assignmentObject.apply {
+            if (assignmentArray.length() != 0) {
+                put("assignment", assignmentArray)
             }
 
-            updatedJson = assignmentObject
+            if (classArray.length() != 0) {
+                put("class", classArray)
+            }
+
+            if (attachmentArray.length() != 0) {
+                put("attachment", attachmentArray)
+            }
         }
+
+        updatedJson = assignmentObject
     }
 
     private fun onExit() {
-            try {
-                val json1 = JSONObject(jsonFromTopic ?: "")
-                val json2 = updatedJson
+        try {
+            getAssignment("exit")
 
-                if (json1.length() != 0 && json2.length() != 0) {
-                    val areContentSame = compareJsonObjects(json1, json2)
+            val json1 = JSONObject(jsonFromTopic!!)
+            val json2 = updatedJson
 
-                    if (areContentSame) {
-                        dismiss()
-                    } else {
-                        exitWarning()
-                    }
-                } else {
+            if (json2.length() != 0) {
+                val areContentSame = compareJsonObjects(json1, json2)
+
+                if (areContentSame) {
                     dismiss()
+                } else {
+                    exitWarning()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } else {
+                dismiss()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -514,7 +559,7 @@ class AdminELearningAssignmentDialogFragment :
             setPositiveButton("Yes") { _, _ ->
                 dismiss()
             }
-            setNegativeButton("No") { dialog, _ ->
+            setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             show()

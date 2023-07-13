@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +12,12 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
@@ -34,10 +36,11 @@ import org.json.JSONObject
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
 
-class AdminELearningQuestionSettingsDialogFragment :
-    DialogFragment(R.layout.fragment_admin_e_learning_question_settings) {
+class AdminELearningQuestionSettingsFragment :
+    Fragment(R.layout.fragment_admin_e_learning_question_settings) {
 
 
     private lateinit var mBackBtn: ImageView
@@ -69,8 +72,8 @@ class AdminELearningQuestionSettingsDialogFragment :
     private var mEndTime: String? = null
     private var mQuestionTopic: String? = null
     private var jsonFromQuestion: String? = null
-    private var updatedSettings: String? = null
-
+    private var updatedJson = JSONObject()
+    private var from: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +81,7 @@ class AdminELearningQuestionSettingsDialogFragment :
             mLevelId = it.getString(ARG_PARAM1)
             mCourseId = it.getString(ARG_PARAM2)
             jsonFromQuestion = it.getString(ARG_PARAM3)
+            from = it.getString(ARG_PARAM4)
         }
 
     }
@@ -86,12 +90,13 @@ class AdminELearningQuestionSettingsDialogFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String, param3: String = "") =
-            AdminELearningQuestionSettingsDialogFragment().apply {
+        fun newInstance(param1: String, param2: String, param3: String = "", param4: String = "") =
+            AdminELearningQuestionSettingsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                     putString(ARG_PARAM3, param3)
+                    putString(ARG_PARAM4, param4)
                 }
             }
     }
@@ -267,13 +272,12 @@ class AdminELearningQuestionSettingsDialogFragment :
                 settingsObject.put("settings", it)
                 settingsObject.put("class", classArray)
 
+                updatedJson = settingsObject
 
-                updatedSettings = settingsObject.toString()
-
-                requireActivity().supportFragmentManager.commit {
+                parentFragmentManager.commit {
                     replace(
-                        R.id.learning_container, AdminELearningQuestionFragment.newInstance
-                            (settingsObject.toString())
+                        R.id.learning_container,
+                        AdminELearningQuestionFragment.newInstance(settingsObject.toString())
                     )
                 }
             }
@@ -284,23 +288,20 @@ class AdminELearningQuestionSettingsDialogFragment :
     private fun onEdit() {
         try {
             if (!jsonFromQuestion.isNullOrEmpty()) {
-                jsonFromQuestion?.let {
-                    JSONObject(it).run {
+                jsonFromQuestion?.let { json ->
+                    JSONObject(json).run {
                         val settingsObject = getJSONObject("settings")
                         val classArray = getJSONArray("class")
 
-
                         settingsObject.let {
-
+                            mQuestionTitle = it.getString("title")
+                            mQuestionDescription = it.getString("description")
+                            mStartDate = it.getString("startDate")
+                            mEndDate = it.getString("endDate")
+                            mStartTime = it.getString("startTime")
+                            mEndTime = it.getString("endTime")
+                            mQuestionTopic = it.getString("topic")
                         }
-
-                        mQuestionTitle = settingsObject.getString("title")
-                        mQuestionDescription = settingsObject.getString("description")
-                        mStartDate = settingsObject.getString("startDate")
-                        mEndDate = settingsObject.getString("endDate")
-                        mStartTime = settingsObject.getString("startTime")
-                        mEndTime = settingsObject.getString("endTime")
-                        mQuestionTopic = settingsObject.getString("topic")
 
                         for (i in 0 until classArray.length()) {
                             selectedItems[classArray.getJSONObject(i).getString("id")] =
@@ -335,20 +336,24 @@ class AdminELearningQuestionSettingsDialogFragment :
 
     private fun onExit() {
         mBackBtn.setOnClickListener {
-            val json1 = JSONObject(jsonFromQuestion!!)
-            val json2 = JSONObject(updatedSettings!!)
+            try {
+                val json1 = JSONObject(jsonFromQuestion!!)
+                val json2 = updatedJson
 
-            if (json1.length() != 0 && json2.length() != 0) {
-                val areContentSame = compareJsonObjects(json1, json2)
+                if (json2.length() != 0) {
+                    val areContentSame = compareJsonObjects(json1, json2)
 
-                if (areContentSame) {
-                    dismiss()
+                    if (areContentSame) {
+                        exitDestination()
+                    } else {
+                        exitWarning()
+                    }
+
                 } else {
-                    exitWarning()
+                    exitDestination()
                 }
-
-            } else {
-                dismiss()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -358,14 +363,29 @@ class AdminELearningQuestionSettingsDialogFragment :
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
             setPositiveButton("Yes") { _, _ ->
-                dismiss()
+                exitDestination()
             }
-            setNegativeButton("No") { dialog, _ ->
+            setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             show()
         }.create()
     }
 
+    private fun exitDestination() {
+        if (from == "edit") {
+            parentFragmentManager.commit {
+                replace(
+                    R.id.learning_container,
+                    AdminELearningQuestionFragment.newInstance("")
+                )
+            }
+        } else {
+            onBackPressed()
+        }
+    }
 
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.onBackPressed()
+    }
 }
