@@ -117,7 +117,7 @@
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
                                     android:clickable="true"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:focusable="true"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
@@ -228,7 +228,7 @@
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
                                     android:clickable="true"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:focusable="true"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
@@ -344,7 +344,7 @@
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -459,7 +459,7 @@
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -575,7 +575,7 @@
                                     android:layout_width="70dp"
                                     android:layout_height="23dp"
                                     android:background="@color/color_3"
-                                    android:drawableStart="@drawable/ic_play_arrow_white_24dp"
+                                    android:drawableStart="@drawable/exo_icon_play"
                                     android:fontFamily="@font/montserrat"
                                     android:text="@string/play"
                                     android:textColor="@color/white"
@@ -1018,7 +1018,7 @@
                                 android:layout_height="25dp"
                                 android:layout_gravity="center"
                                 android:contentDescription="@string/todo"
-                                android:src="@drawable/ic_play_arrow_white_24dp"
+                                android:src="@drawable/exo_icon_play"
                                 app:tint="@color/color_4" />
 
                         </androidx.cardview.widget.CardView>
@@ -1097,7 +1097,7 @@
                                 android:layout_height="25dp"
                                 android:layout_gravity="center"
                                 android:contentDescription="@string/todo"
-                                android:src="@drawable/ic_play_arrow_white_24dp"
+                                android:src="@drawable/exo_icon_play"
                                 app:tint="@color/color_4" />
 
                         </androidx.cardview.widget.CardView>
@@ -1176,7 +1176,7 @@
                                 android:layout_height="25dp"
                                 android:layout_gravity="center"
                                 android:contentDescription="@string/todo"
-                                android:src="@drawable/ic_play_arrow_white_24dp"
+                                android:src="@drawable/exo_icon_play"
                                 app:tint="@color/color_4" />
 
                         </androidx.cardview.widget.CardView>
@@ -1256,7 +1256,7 @@
                                 android:layout_height="25dp"
                                 android:layout_gravity="center"
                                 android:contentDescription="@string/todo"
-                                android:src="@drawable/ic_play_arrow_white_24dp"
+                                android:src="@drawable/exo_icon_play"
                                 app:tint="@color/color_4" />
 
                         </androidx.cardview.widget.CardView>
