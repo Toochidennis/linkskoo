@@ -153,4 +153,8 @@
     <string name="and"><![CDATA[&]]></string>
     <string name="close">Close</string>
     <string name="navigate_back">Navigate back</string>
+    <string name="create_topic">Create topic</string>
+    <string name="topics_group_assignment_under_one_category">Topics group assignment under one category</string>
+    <string name="done">Done</string>
+    <string name="select_topic">Select topic</string>
 </resources>

@@ -12,15 +12,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="Add topic"
+        android:text="@string/create_topic"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_16" />
+        android:textSize="@dimen/text_16"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/dimen_16"
+        android:text="@string/topics_group_assignment_under_one_category"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_12" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/linkEditText"
+        android:id="@+id/topicEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/description"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dimen_16"
@@ -36,9 +48,9 @@
 
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="55dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/linkEditText"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/topicEditText"
         android:layout_marginTop="@dimen/dimen_16"
         android:layout_marginEnd="@dimen/dimen_16"
         android:layout_toStartOf="@id/addButton"
@@ -51,9 +63,9 @@
 
     <Button
         android:id="@+id/addButton"
-        android:layout_width="45dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/linkEditText"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/topicEditText"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"

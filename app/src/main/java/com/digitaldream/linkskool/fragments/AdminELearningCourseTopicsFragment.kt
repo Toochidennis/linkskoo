@@ -58,7 +58,7 @@ class AdminELearningCourseTopicsFragment :
                 AdminELearningCreateDialog(
                     requireContext(), parentFragmentManager, mLevelId!!,
                     mCourseId!!
-                ) {}.apply {
+                ).apply {
                     setCancelable(true)
                     show()
                 }.window?.setLayout(

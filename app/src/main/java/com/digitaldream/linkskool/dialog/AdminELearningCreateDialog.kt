@@ -15,7 +15,6 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.fragments.AdminELearningAssignmentDialogFragment
 import com.digitaldream.linkskool.fragments.AdminELearningMaterialDialogFragment
-import com.digitaldream.linkskool.fragments.AdminELearningQuestionSettingsFragment
 import org.json.JSONObject
 
 class AdminELearningCreateDialog(
@@ -23,8 +22,6 @@ class AdminELearningCreateDialog(
     private val fragmentManager: FragmentManager,
     private val levelId: String,
     private val courseId: String,
-    private val jsonObject: JSONObject = JSONObject(),
-    private val onCreateContent: (contentObject: JSONObject) -> Unit
 ) : Dialog(context) {
 
     private lateinit var assignmentBtn: TextView
@@ -53,7 +50,7 @@ class AdminELearningCreateDialog(
 
         assignmentBtn.setOnClickListener {
             AdminELearningAssignmentDialogFragment
-                .newInstance(levelId, courseId, "$jsonObject")
+                .newInstance(levelId, courseId, JSONObject().toString())
                 .show(fragmentManager, "")
 
             dismiss()
@@ -72,14 +69,14 @@ class AdminELearningCreateDialog(
 
         materialBtn.setOnClickListener {
             AdminELearningMaterialDialogFragment
-                .newInstance(levelId, courseId, "$jsonObject")
+                .newInstance(levelId, courseId, JSONObject().toString())
                 .show(fragmentManager, "")
 
             dismiss()
         }
 
         topicBtn.setOnClickListener {
-            AdminELearningAddTopicDialog(context).apply {
+            AdminELearningCreateTopicDialog(context).apply {
                 setCancelable(true)
                 show()
             }.window?.setLayout(
@@ -87,7 +84,6 @@ class AdminELearningCreateDialog(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-
 
     }
 }

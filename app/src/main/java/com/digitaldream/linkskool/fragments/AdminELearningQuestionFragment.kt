@@ -19,6 +19,8 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
@@ -28,6 +30,8 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
@@ -125,7 +129,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         previewQuestions()
 
         submitQuestionButton.setOnClickListener {
-            submitQuestions()
+            prepareQuestions()
         }
 
         onTouchHelper()
@@ -259,7 +263,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-    private fun submitQuestions() {
+    private fun prepareQuestions() {
         if (sectionItems.isNotEmpty()) {
             val questionArray = JSONArray()
             val settingsArray = JSONArray()
@@ -412,15 +416,40 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
             println("assessment: $assessmentObject")
 
+            submitQuestions(assessmentObject)
+
         } else {
-            Toast.makeText(requireContext(), "There are no questions to submit",
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(), "There are no questions to submit",
+                Toast.LENGTH_SHORT
+            ).show()
         }
+    }
+
+    private fun submitQuestions(questions: JSONObject) {
+        val url = "${getString(R.string.base_url)}/addQuiz.php"
+        val hashMap = HashMap<String, String>().apply {
+            put("assessment", questions.toString())
+        }
+
+        requestToServer(
+            Request.Method.POST,
+            url,
+            requireContext(),
+            hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    println("response $response")
+                }
+
+                override fun onError(error: VolleyError) {
+                }
+            })
     }
 
     private fun convertUriOrFileToImage(imageUri: Any?): Any? {
         val outputStream = ByteArrayOutputStream()
-        var byteArray = ByteArray(4096)
+        var byteArray = ByteArray(1024)
 
         when (imageUri) {
             is File -> {
