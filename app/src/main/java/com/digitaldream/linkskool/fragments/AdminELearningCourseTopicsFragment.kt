@@ -12,6 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 
 class AdminELearningCourseTopicsFragment :
@@ -19,6 +20,7 @@ class AdminELearningCourseTopicsFragment :
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
+    private var mCourseName: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +28,7 @@ class AdminELearningCourseTopicsFragment :
         arguments?.let {
             mLevelId = it.getString(ARG_PARAM1)
             mCourseId = it.getString(ARG_PARAM2)
+            mCourseName = it.getString(ARG_PARAM3)
         }
     }
 
@@ -33,11 +36,12 @@ class AdminELearningCourseTopicsFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: String, param2: String, param3: String) =
             AdminELearningCourseTopicsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM3, param3)
                 }
             }
     }
@@ -57,7 +61,7 @@ class AdminELearningCourseTopicsFragment :
             addBtn.setOnClickListener {
                 AdminELearningCreateDialog(
                     requireContext(), parentFragmentManager, mLevelId!!,
-                    mCourseId!!
+                    mCourseId!!, mCourseName!!
                 ).apply {
                     setCancelable(true)
                     show()

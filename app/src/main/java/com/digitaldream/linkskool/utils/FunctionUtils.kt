@@ -13,16 +13,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.SystemClock
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
+import android.util.Base64
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
@@ -452,7 +455,7 @@ object FunctionUtils {
         url: String,
         context: Context,
         values: HashMap<String, String>,
-        volleyCallback: VolleyCallback,
+        volleyCallback: VolleyCallback? = null
     ) {
         val sharedPreferences =
             context.getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
@@ -480,11 +483,11 @@ object FunctionUtils {
             mUrl,
             { response: String ->
                 Timber.tag("response").d(response)
-                volleyCallback.onResponse(response)
+                volleyCallback?.onResponse(response)
                 progressFlower.dismiss()
 
             }, { error: VolleyError ->
-                volleyCallback.onError(error)
+                volleyCallback?.onError(error)
                 progressFlower.dismiss()
             }) {
 
@@ -901,6 +904,41 @@ object FunctionUtils {
         }
 
         return true
+    }
+
+    @JvmStatic
+     fun convertUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
+        val outputStream = ByteArrayOutputStream()
+        var byteArray = ByteArray(1024)
+
+        when (imageUri) {
+            is File -> {
+                val file = File(imageUri.absolutePath)
+                val originalBitmap = BitmapFactory.decodeFile(file.path)
+                originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                byteArray = outputStream.toByteArray()
+                outputStream.close()
+
+                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                return base64Image.toByteArray()
+            }
+
+            is Uri -> {
+                val inputStream: InputStream? =
+                    context.contentResolver.openInputStream(imageUri)
+                val originalBitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.use {
+                    originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                    byteArray = outputStream.toByteArray()
+                }
+                outputStream.close()
+
+                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                return base64Image.toByteArray()
+            }
+
+            else -> return imageUri
+        }
     }
 
 }

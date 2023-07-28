@@ -37,6 +37,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 private const val ARG_PARAM4 = "param4"
+private const val ARG_PARAM5 = "param5"
 
 
 class AdminELearningQuestionSettingsFragment :
@@ -64,6 +65,7 @@ class AdminELearningQuestionSettingsFragment :
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
+    private var mCourseName: String? = null
     private var mQuestionTitle: String? = null
     private var mQuestionDescription: String? = null
     private var mStartDate: String? = null
@@ -82,6 +84,7 @@ class AdminELearningQuestionSettingsFragment :
             mCourseId = it.getString(ARG_PARAM2)
             jsonFromQuestion = it.getString(ARG_PARAM3)
             from = it.getString(ARG_PARAM4)
+            mCourseName = it.getString(ARG_PARAM5)
         }
 
     }
@@ -90,13 +93,20 @@ class AdminELearningQuestionSettingsFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String, param3: String = "", param4: String = "") =
+        fun newInstance(
+            param1: String,
+            param2: String,
+            param3: String = "",
+            param4: String = "",
+            param5: String
+        ) =
             AdminELearningQuestionSettingsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                     putString(ARG_PARAM3, param3)
                     putString(ARG_PARAM4, param4)
+                    putString(ARG_PARAM5, param5)
                 }
             }
     }
@@ -265,6 +275,7 @@ class AdminELearningQuestionSettingsFragment :
             JSONObject().apply {
                 put("levelId", mLevelId)
                 put("courseId", mCourseId)
+                put("courseName",mCourseName)
                 put("title", titleText)
                 put("description", descriptionText)
                 put("startDate", mStartDate)
@@ -388,7 +399,7 @@ class AdminELearningQuestionSettingsFragment :
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
-                    AdminELearningQuestionFragment.newInstance("")
+                    AdminELearningQuestionFragment()
                 )
             }
         } else {

@@ -284,7 +284,7 @@ class AdminELearningAssignmentDialogFragment :
     private fun fileAttachment(button: View) {
         button.setOnClickListener {
             AdminELearningAttachmentDialog { type: String, name: String, uri: Any? ->
-                mFileList.add(AttachmentModel(name, type, uri))
+                mFileList.add(AttachmentModel(name,"", type, uri))
                 setUpAdapter()
 
             }.show(parentFragmentManager, "")

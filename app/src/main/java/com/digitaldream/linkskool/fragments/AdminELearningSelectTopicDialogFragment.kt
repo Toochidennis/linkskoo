@@ -49,8 +49,8 @@ class AdminELearningSelectTopicDialogFragment(
             topicRecyclerView = findViewById(R.id.topicRecyclerview)
         }
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        /*val sharedPreferences =
+            requireContext().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)*/
 
         newTopicEditText.apply {
             if (!existingTopic.isNullOrEmpty()) {

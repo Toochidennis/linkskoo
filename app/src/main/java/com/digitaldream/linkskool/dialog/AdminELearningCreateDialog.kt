@@ -22,6 +22,7 @@ class AdminELearningCreateDialog(
     private val fragmentManager: FragmentManager,
     private val levelId: String,
     private val courseId: String,
+    private val courseName: String,
 ) : Dialog(context) {
 
     private lateinit var assignmentBtn: TextView
@@ -62,6 +63,7 @@ class AdminELearningCreateDialog(
                     .putExtra("from", "question")
                     .putExtra("levelId", levelId)
                     .putExtra("courseId", courseId)
+                    .putExtra("courseName", courseName)
             )
 
             dismiss()
@@ -69,7 +71,7 @@ class AdminELearningCreateDialog(
 
         materialBtn.setOnClickListener {
             AdminELearningMaterialDialogFragment
-                .newInstance(levelId, courseId, JSONObject().toString())
+                .newInstance(levelId, courseId, JSONObject().toString(), courseName)
                 .show(fragmentManager, "")
 
             dismiss()

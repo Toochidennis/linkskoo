@@ -1,11 +1,7 @@
 package com.digitaldream.linkskool.fragments
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -30,14 +26,12 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
 
 
 private const val ARG_PARAM1 = "param1"
@@ -62,6 +56,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var questionTitle: String? = null
     private var levelId: String? = null
     private var courseId: String? = null
+    private var courseName: String? = null
     private var questionDescription: String? = null
     private var startDate: String? = null
     private var startTime: String? = null
@@ -70,6 +65,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var questionTopic: String? = null
     private var year: String? = null
     private var term: String? = null
+    private var userId: String? = null
+    private var userName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +78,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String) =
+        fun newInstance(param1: String = "") =
             AdminELearningQuestionFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
@@ -113,6 +110,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         year = sharedPreferences.getString("school_year", "")
         term = sharedPreferences.getString("term", "")
+        userId = sharedPreferences.getString("user_id", "")
+        userName = sharedPreferences.getString("user", "")
 
         fromQuestionSettings()
 
@@ -205,6 +204,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         questionTopic = settingsObject.getString("topic")
                         levelId = settingsObject.getString("levelId")
                         courseId = settingsObject.getString("courseId")
+                        courseName = settingsObject.getString("courseName")
 
                         questionTitleTxt.text = questionTitle
                         descriptionTxt.text = questionDescription
@@ -238,7 +238,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             replace(
                 R.id.learning_container,
                 AdminELearningQuestionSettingsFragment
-                    .newInstance(levelId!!, "", jsonObject.toString(), "edit")
+                    .newInstance(levelId!!, "", jsonObject.toString(), "edit", "")
             )
         }
     }
@@ -266,7 +266,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private fun prepareQuestions() {
         if (sectionItems.isNotEmpty()) {
             val questionArray = JSONArray()
-            val settingsArray = JSONArray()
             val assessmentObject = JSONObject()
 
             sectionItems.forEach { sectionModel ->
@@ -292,7 +291,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 put("question_type", sectionModel.viewType)
 
                                 if (multiChoice.attachmentName.isNotBlank()) {
-                                    val image = convertUriOrFileToImage(multiChoice.attachmentUri)
+                                    val image =
+                                        convertUriOrFileToBase64(
+                                            multiChoice.attachmentUri,
+                                            requireContext()
+                                        )
                                     put("question_file_name", multiChoice.attachmentName)
                                     put("question_image", image)
 
@@ -317,7 +320,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
                                         if (option.attachmentUri != null) {
                                             val image =
-                                                convertUriOrFileToImage(option.attachmentUri)
+                                                convertUriOrFileToBase64(
+                                                    option.attachmentUri,
+                                                    requireContext()
+                                                )
                                             put("image", image)
 
                                             if (option.attachmentName !=
@@ -361,7 +367,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 put("question_file_name", shortAnswer.attachmentName)
 
                                 if (shortAnswer.attachmentUri != null) {
-                                    val image = convertUriOrFileToImage(shortAnswer.attachmentUri)
+                                    val image = convertUriOrFileToBase64(
+                                        shortAnswer.attachmentUri,
+                                        requireContext()
+                                    )
                                     put("question_image", image)
 
                                     if (shortAnswer.attachmentName !=
@@ -394,23 +403,25 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 }
             }
 
-            JSONObject().apply {
+
+            val settingsObject = JSONObject().apply {
+                put("author_id", userId)
+                put("author_name", userName)
                 put("title", questionTitle)
                 put("description", questionDescription)
                 put("level", levelId)
                 put("class", selectedClassArray)
-                put("courseId", courseId)
+                put("course", courseId)
+                put("course_name", courseName)
                 put("topic", questionTopic)
-                put("start_date", "$startDate $startTime")
-                put("end_date", "$endDate $endTime")
+                put("start_date", "$startDate $startTime:00")
+                put("end_date", "$endDate $endTime:00")
                 put("year", year)
                 put("term", term)
-            }.let {
-                settingsArray.put(it)
             }
 
             assessmentObject.apply {
-                put("settings", settingsArray)
+                put("settings", settingsObject)
                 put("questions", questionArray)
             }
 
@@ -432,53 +443,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("assessment", questions.toString())
         }
 
-        requestToServer(
-            Request.Method.POST,
-            url,
-            requireContext(),
-            hashMap,
-            object : VolleyCallback {
-                override fun onResponse(response: String) {
-                    println("response $response")
-                }
-
-                override fun onError(error: VolleyError) {
-                }
-            })
-    }
-
-    private fun convertUriOrFileToImage(imageUri: Any?): Any? {
-        val outputStream = ByteArrayOutputStream()
-        var byteArray = ByteArray(1024)
-
-        when (imageUri) {
-            is File -> {
-                val file = File(imageUri.absolutePath)
-                val originalBitmap = BitmapFactory.decodeFile(file.path)
-                originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                byteArray = outputStream.toByteArray()
-                outputStream.close()
-
-                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                return base64Image.toByteArray()
-            }
-
-            is Uri -> {
-                val inputStream: InputStream? =
-                    requireActivity().contentResolver.openInputStream(imageUri)
-                val originalBitmap = BitmapFactory.decodeStream(inputStream)
-                inputStream?.use {
-                    originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                    byteArray = outputStream.toByteArray()
-                }
-                outputStream.close()
-
-                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                return base64Image.toByteArray()
-            }
-
-            else -> return imageUri
-        }
+        requestToServer(Request.Method.POST, url, requireContext(), hashMap)
     }
 
     private fun dismissDialog() {

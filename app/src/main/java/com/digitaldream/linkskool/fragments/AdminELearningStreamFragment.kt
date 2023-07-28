@@ -82,6 +82,7 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
                         .putExtra("from", "view_post")
                         .putExtra("levelId", mLevelId)
                         .putExtra("courseId", mCourseId)
+                        .putExtra("courseName", mCourseName)
                 )
             }
 

@@ -15,13 +15,15 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
 
         val levelId = intent.getStringExtra("levelId")
         val courseId = intent.getStringExtra("courseId")
+        val courseName = intent.getStringExtra("courseName")
 
         when (intent.getStringExtra("from")) {
             "view_post" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningCourseTopicsFragment.newInstance(levelId!!, courseId!!)
+                        AdminELearningCourseTopicsFragment.newInstance(levelId!!, courseId!!,
+                            courseName!!)
                     )
                 }
             }
@@ -31,7 +33,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     replace(
                         R.id.learning_container,
                         AdminELearningQuestionSettingsFragment.newInstance(
-                            levelId!!, courseId!!, "${JSONObject()}"
+                            levelId!!, courseId!!, JSONObject().toString(),"", courseName!!,
                         )
                     )
                 }
