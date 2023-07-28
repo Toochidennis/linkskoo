@@ -1,6 +1,11 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -26,6 +31,9 @@ import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
 
 
 private const val ARG_PARAM1 = "param1"
@@ -44,7 +52,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private lateinit var sectionAdapter: AdminQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
     private var sectionItemsBackUp = mutableListOf<SectionModel>()
-    private val selectedClassId = hashMapOf<String, String>()
+    private var selectedClassArray = JSONArray()
 
     private var jsonFromQuestionSettings: String? = null
     private var questionTitle: String? = null
@@ -56,6 +64,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var endDate: String? = null
     private var endTime: String? = null
     private var questionTopic: String? = null
+    private var year: String? = null
+    private var term: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +105,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             }
         }
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        year = sharedPreferences.getString("school_year", "")
+        term = sharedPreferences.getString("term", "")
 
         fromQuestionSettings()
 
@@ -110,6 +124,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         previewQuestions()
 
+        submitQuestionButton.setOnClickListener {
+            submitQuestions()
+        }
+
         onTouchHelper()
 
     }
@@ -124,11 +142,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
             val questionItem = when {
                 question != null -> SectionModel(
-                    sectionTitle, QuestionItem.MultiChoice(question), "option"
+                    sectionTitle, QuestionItem.MultiChoice(question), "multiple_choice"
                 )
 
                 shortQuestion != null -> SectionModel(
-                    sectionTitle, QuestionItem.ShortAnswer(shortQuestion), "short"
+                    sectionTitle, QuestionItem.ShortAnswer(shortQuestion), "short_answer"
                 )
 
                 else -> null
@@ -172,7 +190,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 jsonFromQuestionSettings?.let {
                     JSONObject(it).run {
                         val settingsObject = getJSONObject("settings")
-                        val classArray = getJSONArray("class")
+                        selectedClassArray = getJSONArray("class")
 
                         questionTitle = settingsObject.getString("title")
                         questionDescription = settingsObject.getString("description")
@@ -187,10 +205,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         questionTitleTxt.text = questionTitle
                         descriptionTxt.text = questionDescription
 
-                        for (i in 0 until classArray.length()) {
-                            selectedClassId[classArray.getJSONObject(i).getString("id")] =
-                                classArray.getJSONObject(i).getString("name")
-                        }
                     }
                 }
 
@@ -202,18 +216,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun toQuestionSettings() {
         val jsonObject = JSONObject()
-        val classArray = JSONArray()
-
-        selectedClassId.forEach { (key, value) ->
-            if (key.isNotEmpty() && value.isNotEmpty()) {
-                JSONObject().apply {
-                    put("id", key)
-                    put("name", value)
-                }.let {
-                    classArray.put(it)
-                }
-            }
-        }
 
         JSONObject().apply {
             put("title", questionTitle)
@@ -225,17 +227,22 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("topic", questionTopic)
         }.let {
             jsonObject.put("settings", it)
-            jsonObject.put("class", classArray)
+            jsonObject.put("class", selectedClassArray)
         }
 
-        requireActivity().supportFragmentManager.commit {
+        parentFragmentManager.commit {
             replace(
                 R.id.learning_container,
                 AdminELearningQuestionSettingsFragment
                     .newInstance(levelId!!, "", jsonObject.toString(), "edit")
             )
         }
+    }
 
+    private fun onTouchHelper() {
+        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
+        val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
+        sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
     }
 
     private fun previewQuestions() {
@@ -245,14 +252,207 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     .show(parentFragmentManager, "")
             } else {
                 Toast.makeText(
-                    requireContext(), "There are no questions to preview yet", Toast
+                    requireContext(), "There are no questions to preview", Toast
                         .LENGTH_SHORT
                 ).show()
             }
         }
     }
 
-    private fun dismissDialog(){
+    private fun submitQuestions() {
+        if (sectionItems.isNotEmpty()) {
+            val questionArray = JSONArray()
+            val settingsArray = JSONArray()
+            val assessmentObject = JSONObject()
+
+            sectionItems.forEach { sectionModel ->
+                if (!sectionModel.sectionTitle.isNullOrEmpty()) {
+                    JSONObject().apply {
+                        put("question_title", sectionModel.sectionTitle)
+                        put("question_type", sectionModel.viewType)
+                        put("question_file_name", "")
+                        put("question_image", "")
+                    }.let {
+                        questionArray.put(it)
+                    }
+                } else {
+                    if (sectionModel.questionItem != null) {
+                        val questionItem = sectionModel.questionItem
+
+                        if (questionItem is QuestionItem.MultiChoice) {
+                            val multiChoice = questionItem.question
+                            val optionsList = multiChoice.options
+
+                            JSONObject().apply {
+                                put("question_title", multiChoice.questionText)
+                                put("question_type", sectionModel.viewType)
+
+                                if (multiChoice.attachmentName.isNotBlank()) {
+                                    val image = convertUriOrFileToImage(multiChoice.attachmentUri)
+                                    put("question_file_name", multiChoice.attachmentName)
+                                    put("question_image", image)
+
+                                    if (multiChoice.attachmentName !=
+                                        multiChoice.previousAttachmentName &&
+                                        multiChoice.previousAttachmentName.isNotBlank()
+                                    )
+                                        put(
+                                            "question_old_file_name",
+                                            multiChoice.previousAttachmentName
+                                        )
+                                    else
+                                        put("question_old_file_name", "")
+                                }
+
+                                val optionsArray = JSONArray()
+                                optionsList?.forEach { option ->
+                                    JSONObject().apply {
+                                        put("order", option.optionOrder)
+                                        put("text", option.optionText)
+                                        put("file_name", option.attachmentName)
+
+                                        if (option.attachmentUri != null) {
+                                            val image =
+                                                convertUriOrFileToImage(option.attachmentUri)
+                                            put("image", image)
+
+                                            if (option.attachmentName !=
+                                                option.previousAttachmentName &&
+                                                option.previousAttachmentName.isNotBlank()
+                                            ) {
+                                                put(
+                                                    "old_file_name",
+                                                    option.previousAttachmentName
+                                                )
+                                            } else {
+                                                put("old_file_name", "")
+                                            }
+                                        } else {
+                                            put("image", "")
+                                            put("old_file_name", "")
+                                        }
+
+                                    }.let {
+                                        optionsArray.put(it)
+                                    }
+                                }
+
+                                put("options", optionsArray)
+
+                                JSONObject().apply {
+                                    put("order", multiChoice.checkedPosition)
+                                    put("text", multiChoice.correctAnswer)
+                                }.let {
+                                    put("correct", it)
+                                }
+                            }.let {
+                                questionArray.put(it)
+                            }
+                        } else if (questionItem is QuestionItem.ShortAnswer) {
+                            val shortAnswer = questionItem.question
+
+                            JSONObject().apply {
+                                put("question_title", shortAnswer.questionText)
+                                put("question_type", sectionModel.viewType)
+                                put("question_file_name", shortAnswer.attachmentName)
+
+                                if (shortAnswer.attachmentUri != null) {
+                                    val image = convertUriOrFileToImage(shortAnswer.attachmentUri)
+                                    put("question_image", image)
+
+                                    if (shortAnswer.attachmentName !=
+                                        shortAnswer.previousAttachmentName &&
+                                        shortAnswer.previousAttachmentName.isNotBlank()
+                                    ) {
+                                        put(
+                                            "question_old_file_name",
+                                            shortAnswer.previousAttachmentName
+                                        )
+                                    } else {
+                                        put("question_old_file_name", "")
+                                    }
+                                } else {
+                                    put("question_image", "")
+                                    put("question_old_file_name", "")
+                                }
+
+                                JSONObject().apply {
+                                    put("order", "")
+                                    put("text", shortAnswer.answerText)
+                                }.let {
+                                    put("correct", it)
+                                }
+                            }.let {
+                                questionArray.put(it)
+                            }
+                        }
+                    }
+                }
+            }
+
+            JSONObject().apply {
+                put("title", questionTitle)
+                put("description", questionDescription)
+                put("level", levelId)
+                put("class", selectedClassArray)
+                put("courseId", courseId)
+                put("topic", questionTopic)
+                put("start_date", "$startDate $startTime")
+                put("end_date", "$endDate $endTime")
+                put("year", year)
+                put("term", term)
+            }.let {
+                settingsArray.put(it)
+            }
+
+            assessmentObject.apply {
+                put("settings", settingsArray)
+                put("questions", questionArray)
+            }
+
+            println("assessment: $assessmentObject")
+
+        } else {
+            Toast.makeText(requireContext(), "There are no questions to submit",
+                Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun convertUriOrFileToImage(imageUri: Any?): Any? {
+        val outputStream = ByteArrayOutputStream()
+        var byteArray = ByteArray(4096)
+
+        when (imageUri) {
+            is File -> {
+                val file = File(imageUri.absolutePath)
+                val originalBitmap = BitmapFactory.decodeFile(file.path)
+                originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                byteArray = outputStream.toByteArray()
+                outputStream.close()
+
+                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                return base64Image.toByteArray()
+            }
+
+            is Uri -> {
+                val inputStream: InputStream? =
+                    requireActivity().contentResolver.openInputStream(imageUri)
+                val originalBitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.use {
+                    originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                    byteArray = outputStream.toByteArray()
+                }
+                outputStream.close()
+
+                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                return base64Image.toByteArray()
+            }
+
+            else -> return imageUri
+        }
+    }
+
+    private fun dismissDialog() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
@@ -265,11 +465,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }.create()
     }
 
-    private fun onTouchHelper(){
-        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
-        val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
-        sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
-    }
 }
 
 

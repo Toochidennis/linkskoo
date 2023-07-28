@@ -102,8 +102,6 @@ class AdminELearningMultiChoiceDialogFragment(
                 showQuestionAttachment()
             }
         }
-
-
     }
 
     private fun initializeQuestionModel() {
@@ -187,9 +185,8 @@ class AdminELearningMultiChoiceDialogFragment(
                         when (menuItem.itemId) {
                             R.id.attach -> {
                                 AdminELearningAttachmentDialog("multiple choice")
-                                { type: String, name: String, uri: Any? ->
+                                { _, name: String, uri: Any? ->
                                     model.attachmentName = name
-                                    model.attachmentType = type
                                     model.attachmentUri = uri
                                     model.optionText = ""
                                     model.optionOrder = "$position"
@@ -287,10 +284,9 @@ class AdminELearningMultiChoiceDialogFragment(
 
     private fun showQuestionAttachment() {
         AdminELearningAttachmentDialog("multiple choice")
-        { type: String, name: String, uri: Any? ->
+        { _, name: String, uri: Any? ->
             try {
                 questionModelCopy.attachmentName = name
-                questionModelCopy.attachmentType = type
                 questionModelCopy.attachmentUri = uri
 
                 setDrawableOnTextView(mAttachmentTxt)
@@ -306,7 +302,6 @@ class AdminELearningMultiChoiceDialogFragment(
     private fun removeQuestionAttachment() {
         questionModelCopy.attachmentUri = null
         questionModelCopy.attachmentName = ""
-        questionModelCopy.attachmentType = ""
         mRemoveQuestionAttachmentBtn.isVisible = false
         mAttachmentTxt.text = "Add attachment"
         mAttachmentTxt.setCompoundDrawablesWithIntrinsicBounds(
@@ -344,15 +339,12 @@ class AdminELearningMultiChoiceDialogFragment(
             }.let {
                 startActivity(it)
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(
                 requireContext(), "Error occurred while viewing file", Toast.LENGTH_SHORT
             ).show()
-
         }
-
     }
 
     private fun onDiscard() {
@@ -387,11 +379,9 @@ class AdminELearningMultiChoiceDialogFragment(
             questionModelCopy.options = mOptionList
 
             onQuestionSet(questionModelCopy)
-            println("question $questionModelCopy")
 
             dismiss()
         }
-
     }
 
     private fun updateRadioButtonState(position: Int) {

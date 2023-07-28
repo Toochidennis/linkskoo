@@ -92,10 +92,9 @@ class AdminELearningShortAnswerDialogFragment(
     }
 
     private fun showQuestionAttachment() {
-        AdminELearningAttachmentDialog("multiple choice") { type, name, uri ->
+        AdminELearningAttachmentDialog("multiple choice") { _, name, uri ->
             try {
                 shortAnswerModelCopy.attachmentName = name
-                shortAnswerModelCopy.attachmentType = type
                 shortAnswerModelCopy.attachmentUri = uri
 
                 setDrawableOnTextView(attachmentTxt)
@@ -115,7 +114,6 @@ class AdminELearningShortAnswerDialogFragment(
     private fun removeQuestionAttachment() {
         shortAnswerModelCopy.attachmentUri = null
         shortAnswerModelCopy.attachmentName = ""
-        shortAnswerModelCopy.attachmentType = ""
         removeQuestionAttachmentBtn.isVisible = false
         attachmentTxt.text = "Add attachment"
         attachmentTxt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)

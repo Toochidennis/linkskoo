@@ -105,8 +105,8 @@ class AdminQuestionAdapter(
 
         return when (sectionModel.viewType) {
             "section" -> VIEW_TYPE_SECTION
-            "option" -> VIEW_TYPE_QUESTION
-            "short" -> VIEW_TYPE_SHORT_QUESTION
+            "multiple_choice" -> VIEW_TYPE_QUESTION
+            "short_answer" -> VIEW_TYPE_SHORT_QUESTION
             else -> position
         }
     }
@@ -319,10 +319,9 @@ class AdminQuestionAdapter(
                 swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
             } else {
                 swapSections(fromPosition, toPosition)
-                println("wat")
             }
         } else if (draggedItem.viewType == "section" &&
-            targetItem.viewType == "short" || targetItem.viewType == "option"
+            targetItem.viewType == "short_answer" || targetItem.viewType == "multiple_choice"
         ) {
             return
         } else {
@@ -352,7 +351,7 @@ class AdminQuestionAdapter(
     private fun hasQuestionsBelowSection(sectionPosition: Int): Boolean {
         for (i in sectionPosition + 1 until itemList.size) {
             val item = itemList[i]
-            if (item.viewType == "short" || item.viewType == "option") {
+            if (item.viewType == "short_answer" || item.viewType == "multiple_choice") {
                 return true
             } else if (item.viewType == "section") {
                 return false
@@ -387,7 +386,7 @@ class AdminQuestionAdapter(
 
         for (i in sectionPosition + 1 until itemList.size) {
             val item = itemList[i]
-            if (item.viewType == "short" || item.viewType == "option") {
+            if (item.viewType == "short_answer" || item.viewType == "multiple_choice") {
                 associatedItems.add(item)
             } else if (item.viewType == "section") {
                 break

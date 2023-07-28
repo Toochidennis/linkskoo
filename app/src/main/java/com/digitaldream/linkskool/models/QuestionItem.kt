@@ -9,9 +9,9 @@ sealed class QuestionItem {
 
 data class MultiChoiceQuestion(
     var questionText: String = "",
-    var attachmentType: String = "",
     var attachmentName: String = "",
     var attachmentUri: Any? = null,
+    var previousAttachmentName: String = "",
     var options: MutableList<MultipleChoiceOption>? = null,
     var checkedPosition: Int = RecyclerView.NO_POSITION,
     var correctAnswer: String? = null,
@@ -19,17 +19,17 @@ data class MultiChoiceQuestion(
 
 data class ShortAnswerModel(
     var questionText: String = "",
-    var attachmentType: String = "",
     var attachmentName: String = "",
     var attachmentUri: Any? = null,
+    var previousAttachmentName: String = "",
     var answerText: String = ""
 )
 
 data class MultipleChoiceOption(
     var optionText: String = "",
     var optionOrder: String = "",
-    var attachmentType: String = "",
     var attachmentName: String = "",
     var attachmentUri: Any? = null,
+    var previousAttachmentName: String = "",
 )
 
