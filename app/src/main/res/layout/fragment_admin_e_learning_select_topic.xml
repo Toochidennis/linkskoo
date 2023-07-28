@@ -8,6 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="match_parent">
 
         <RelativeLayout
@@ -98,9 +99,8 @@
             android:layout_below="@id/separator2"
             android:autofillHints=""
             android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_add"
+            android:drawableStart="@drawable/ic_add_black"
             android:drawablePadding="@dimen/dimen_16"
-            android:drawableTint="@color/gray"
             android:hint="New topic"
             android:inputType="text"
             android:padding="@dimen/dimen_16"
@@ -111,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/newTopicEditText"
-            android:padding="@dimen/dimen_16" />
+            android:clipToPadding="true"/>
 
     </RelativeLayout>
 

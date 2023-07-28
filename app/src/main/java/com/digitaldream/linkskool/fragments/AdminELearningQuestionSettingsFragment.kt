@@ -138,6 +138,10 @@ class AdminELearningQuestionSettingsFragment :
             applySettings()
         }
 
+        mTopicTxt.setOnClickListener {
+            selectTopic()
+        }
+
     }
 
 
@@ -332,6 +336,13 @@ class AdminELearningQuestionSettingsFragment :
         mEndDateBtn.isVisible = true
         mEndDateTxt.isVisible = true
         mDateSeparator.isVisible = true
+    }
+
+
+    private fun selectTopic() {
+        AdminELearningSelectTopicDialogFragment { topic ->
+            println("topic $topic")
+        }.show(parentFragmentManager, "")
     }
 
     private fun onExit() {
