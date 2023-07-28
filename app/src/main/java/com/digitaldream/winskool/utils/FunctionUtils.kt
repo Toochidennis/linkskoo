@@ -391,7 +391,8 @@ object FunctionUtils {
         val randomId = UUID.randomUUID().toString()
         try {
             val file = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     .absolutePath + "/receipt$randomId.pdf"
             )
 
