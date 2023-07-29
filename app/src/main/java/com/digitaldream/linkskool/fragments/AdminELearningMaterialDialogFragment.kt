@@ -340,14 +340,11 @@ class AdminELearningMaterialDialogFragment :
         } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-            prepareMaterial()
-            println("material $updatedJson")
             postMaterial()
         }
     }
 
-    private fun prepareMaterial() {
-        val materialObject = JSONObject()
+    private fun prepareMaterial(): HashMap<String, String> {
         val filesArray = JSONArray()
         val classArray = JSONArray()
 
@@ -355,7 +352,7 @@ class AdminELearningMaterialDialogFragment :
         val descriptionText = mDescriptionEditText.text.toString().trim()
         val topicText = mTopicTxt.text.toString()
 
-        JSONObject().apply {
+        return HashMap<String, String>().apply {
             put("title", titleText)
             put("description", descriptionText)
             put("topic", topicText)
@@ -387,7 +384,7 @@ class AdminELearningMaterialDialogFragment :
                 }
             }
 
-            put("files", filesArray)
+            put("files", filesArray.toString())
 
             selectedClassItems.forEach { (key, value) ->
                 if (key.isNotEmpty() and value.isNotEmpty()) {
@@ -400,29 +397,24 @@ class AdminELearningMaterialDialogFragment :
                 }
             }
 
-            put("class", classArray)
-            put("course", mCourseId)
-            put("course_name", mCourseName)
-            put("author_id", userId)
-            put("author_name", userName)
-            put("year", year)
-            put("term", term)
-        }.let {
-            materialObject.put("material", it)
+            put("class", classArray.toString())
+            put("level", mLevelId!!)
+            put("course", mCourseId!!)
+            put("course_name", mCourseName!!)
+            put("author_id", userId!!)
+            put("author_name", userName!!)
+            put("year", year!!)
+            put("term", term!!)
         }
 
-        updatedJson = materialObject
     }
 
     private fun postMaterial() {
-        val url ="${getString(R.string.base_url)}/addContent.php"
-        val hashMap = HashMap<String, String>().apply {
-            put("material", updatedJson.toString())
-        }
+        val url = "${getString(R.string.base_url)}/addContent.php"
+        val hashMap = prepareMaterial()
 
-        requestToServer(Request.Method.POST,url, requireContext(), hashMap)
+        requestToServer(Request.Method.POST, url, requireContext(), hashMap)
     }
-
 
     private fun onEdit() {
 
@@ -431,7 +423,7 @@ class AdminELearningMaterialDialogFragment :
     private fun onExit() {
         try {
             val json1 = JSONObject(jsonFromTopic!!)
-            val json2 = updatedJson
+            val json2 = JSONObject()
 
             if (json2.length() != 0) {
                 val areContentSame = compareJsonObjects(json1, json2)

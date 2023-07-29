@@ -47,7 +47,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
 
     private static final String TAG = "VideoPlayerRecyclerView";
 
-    private enum VolumeState {ON, OFF};
+    private enum VolumeState {ON, OFF}
 
     // ui
     private ImageView thumbnail, volumeControl;
