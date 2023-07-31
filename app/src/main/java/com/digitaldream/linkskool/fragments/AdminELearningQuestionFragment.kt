@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
@@ -30,6 +31,7 @@ import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
@@ -563,11 +565,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     putString("question_object", assessmentObject.toString())
                 }.apply()
 
-        } else {
-            Toast.makeText(
-                requireContext(), "There are no questions to submit",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
@@ -580,23 +577,43 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
 
         if (newAssessmentObject.length() != 0) {
-            sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap)
-            SystemClock.sleep(1000)
-            onBackPressed()
+            sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
+                object : VolleyCallback {
+                    override fun onResponse(response: String) {
+                        Toast.makeText(
+                            requireContext(), "Questions submitted successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        SystemClock.sleep(1000)
+                        onBackPressed()
+                    }
+
+                    override fun onError(error: VolleyError) {
+
+                    }
+                })
+
+        } else {
+            Toast.makeText(
+                requireContext(), "There are no questions to submit",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     private fun onExit() {
         try {
-            val json1 = JSONObject(questionObject ?: "")
             prepareQuestions()
 
-            if (json1.length() != 0) {
+            if (!questionObject.isNullOrEmpty() && newAssessmentObject.length() != 0) {
+                val json1 = JSONObject(questionObject!!)
                 val areContentSame = compareJsonObjects(json1, newAssessmentObject)
+
                 if (areContentSame) {
-                    exitWarning()
-                } else {
                     onBackPressed()
+                } else {
+                    exitWithWarning()
                 }
             } else {
                 onBackPressed()
@@ -607,7 +624,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     }
 
-    private fun exitWarning() {
+    private fun exitWithWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")

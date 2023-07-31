@@ -395,7 +395,7 @@ class AdminELearningQuestionSettingsFragment :
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
-                    AdminELearningQuestionFragment.newInstance(jsonFromQuestion!!, "")
+                    AdminELearningQuestionFragment.newInstance(jsonFromQuestion!!, "settings")
                 )
             }
         } else {
