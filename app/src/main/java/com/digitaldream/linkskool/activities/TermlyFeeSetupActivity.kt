@@ -18,7 +18,7 @@ import com.digitaldream.linkskool.adapters.TermFeeAdapter
 import com.digitaldream.linkskool.dialog.OnInputListener
 import com.digitaldream.linkskool.dialog.TermlyFeeDialog
 import com.digitaldream.linkskool.models.TermFeesDataModel
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONException
 import org.json.JSONObject
@@ -133,7 +133,7 @@ class TermlyFeeSetupActivity : AppCompatActivity(R.layout.activity_termly_fee_se
                     ".php?list=1&&level=$sLevelId&&term=$mTerm&&year=$mYear"
         val hashMap = hashMapOf<String, String>()
 
-        requestToServer(Request.Method.GET, url, this, hashMap,
+        sendRequesToServer(Request.Method.GET, url, this, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

@@ -14,7 +14,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.TermFeesDataModel
 import com.digitaldream.linkskool.utils.FunctionUtils
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONArray
 import org.json.JSONException
@@ -183,7 +183,7 @@ class TermFeeAdapter(
             hashMap["year"] = year!!
             hashMap["term"] = term!!
 
-            requestToServer(Request.Method.POST, url, sContext, hashMap,
+            sendRequesToServer(Request.Method.POST, url, sContext, hashMap,
                 object : VolleyCallback {
                     override fun onResponse(response: String) {
                         try {

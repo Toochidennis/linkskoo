@@ -20,7 +20,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.OnItemClickListener
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.*
 
@@ -133,7 +133,7 @@ class AddReceiptDialog(
         stringMap["year"] = sYear
         stringMap["term"] = sTerm
 
-        requestToServer(Request.Method.POST, url, sContext, stringMap,
+        sendRequesToServer(Request.Method.POST, url, sContext, stringMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()

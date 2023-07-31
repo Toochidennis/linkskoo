@@ -32,10 +32,9 @@ import com.digitaldream.linkskool.models.ChartModel
 import com.digitaldream.linkskool.models.TimeFrameDataModel
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
-import com.digitaldream.linkskool.utils.FunctionUtils.formatOrdinalTerms
 import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.digitaldream.linkskool.utils.FunctionUtils.plotLineChart
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONObject
@@ -149,7 +148,7 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
             put("filter", "")
         }
 
-        requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
@@ -299,7 +298,7 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
 
         when {
             timeFrameDataModel.grouping != null -> {
-                requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+                sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
                     object : VolleyCallback {
                         override fun onResponse(response: String) {
                             try {
@@ -390,7 +389,7 @@ class ReceiptsHistoryFragment : Fragment(R.layout.fragment_receipts_history), On
             }
 
             else -> {
-                requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+                sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
                     object : VolleyCallback {
                         override fun onResponse(response: String) {
                             try {

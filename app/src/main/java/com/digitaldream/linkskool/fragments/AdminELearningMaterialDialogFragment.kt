@@ -29,7 +29,7 @@ import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
@@ -413,7 +413,7 @@ class AdminELearningMaterialDialogFragment :
         val url = "${getString(R.string.base_url)}/addContent.php"
         val hashMap = prepareMaterial()
 
-        requestToServer(Request.Method.POST, url, requireContext(), hashMap)
+        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap)
     }
 
     private fun onEdit() {

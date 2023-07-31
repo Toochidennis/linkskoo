@@ -1,6 +1,5 @@
 package com.digitaldream.linkskool.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,6 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
@@ -94,19 +92,19 @@ class AdminELearningQuestionSettingsFragment :
 
         @JvmStatic
         fun newInstance(
-            param1: String,
-            param2: String,
-            param3: String = "",
-            param4: String = "",
-            param5: String
+            levelId: String,
+            courseId: String,
+            json: String = "",
+            from: String = "",
+            courseName: String
         ) =
             AdminELearningQuestionSettingsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                    putString(ARG_PARAM3, param3)
-                    putString(ARG_PARAM4, param4)
-                    putString(ARG_PARAM5, param5)
+                    putString(ARG_PARAM1, levelId)
+                    putString(ARG_PARAM2, courseId)
+                    putString(ARG_PARAM3, json)
+                    putString(ARG_PARAM4, from)
+                    putString(ARG_PARAM5, courseName)
                 }
             }
     }
@@ -275,13 +273,11 @@ class AdminELearningQuestionSettingsFragment :
             JSONObject().apply {
                 put("levelId", mLevelId)
                 put("courseId", mCourseId)
-                put("courseName",mCourseName)
+                put("courseName", mCourseName)
                 put("title", titleText)
                 put("description", descriptionText)
-                put("startDate", mStartDate)
-                put("endDate", mEndDate)
-                put("startTime", mStartTime)
-                put("endTime", mEndTime)
+                put("startDate", "$mStartDate $mStartTime:00")
+                put("endDate", "$mEndDate $mEndTime:00")
                 put("topic", topicText)
             }.let {
                 settingsObject.put("settings", it)
@@ -292,12 +288,14 @@ class AdminELearningQuestionSettingsFragment :
                 parentFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningQuestionFragment.newInstance(settingsObject.toString())
+                        AdminELearningQuestionFragment.newInstance(
+                            settingsObject.toString(),
+                            "settings"
+                        )
                     )
                 }
             }
         }
-
     }
 
     private fun onEdit() {
@@ -313,8 +311,6 @@ class AdminELearningQuestionSettingsFragment :
                             mQuestionDescription = it.getString("description")
                             mStartDate = it.getString("startDate")
                             mEndDate = it.getString("endDate")
-                            mStartTime = it.getString("startTime")
-                            mEndTime = it.getString("endTime")
                             mQuestionTopic = it.getString("topic")
                         }
 
@@ -330,8 +326,8 @@ class AdminELearningQuestionSettingsFragment :
                 mDescriptionEditText.setText(mQuestionDescription)
                 mTopicTxt.text = mQuestionTopic
 
-                val start = "Start ${formatDate2(mStartDate!!, "custom1")} $mStartTime"
-                val end = "Due ${formatDate2(mEndDate!!, "custom1")} $mEndTime"
+                val start = "Start ${formatDate2(mStartDate!!, "custom1")}"
+                val end = "Due ${formatDate2(mEndDate!!, "custom1")}"
                 mStartDateTxt.text = start
                 mEndDateTxt.text = end
 
@@ -399,7 +395,7 @@ class AdminELearningQuestionSettingsFragment :
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
-                    AdminELearningQuestionFragment()
+                    AdminELearningQuestionFragment.newInstance(jsonFromQuestion!!, "")
                 )
             }
         } else {

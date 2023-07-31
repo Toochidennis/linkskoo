@@ -25,7 +25,7 @@ import com.digitaldream.linkskool.interfaces.ResultListener
 import com.digitaldream.linkskool.models.AdminResultDashboardModel
 import com.digitaldream.linkskool.models.ChartModel
 import com.digitaldream.linkskool.utils.FunctionUtils.plotLineChart
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import org.achartengine.GraphicalView
@@ -183,7 +183,7 @@ class AdminResultDashboardActivity : AppCompatActivity(R.layout.activity_admin_r
         val url = "${getString(R.string.base_url)}/jsonTerms.php?class=$sClassId"
         val hashMap = HashMap<String, String>()
 
-        requestToServer(Request.Method.GET, url, this, hashMap,
+        sendRequesToServer(Request.Method.GET, url, this, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

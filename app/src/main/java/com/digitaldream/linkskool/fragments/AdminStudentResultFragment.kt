@@ -27,7 +27,7 @@ import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.StudentTable
 import com.digitaldream.linkskool.utils.ColumnChart
 import com.digitaldream.linkskool.utils.FunctionUtils.capitaliseFirstLetter
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
@@ -172,7 +172,7 @@ class AdminStudentResultFragment : Fragment(), OnItemClickListener {
         val hashMap = hashMapOf<String, String>()
         hashMap["id"] = sStudentId
 
-        requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

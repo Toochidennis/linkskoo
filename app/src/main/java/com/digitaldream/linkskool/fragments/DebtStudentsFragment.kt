@@ -24,7 +24,7 @@ import com.digitaldream.linkskool.adapters.OnItemClickListener
 import com.digitaldream.linkskool.dialog.AdminClassesDialog
 import com.digitaldream.linkskool.interfaces.ResultListener
 import com.digitaldream.linkskool.models.AdminPaymentModel
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONObject
 
@@ -182,7 +182,7 @@ class DebtStudentsFragment : Fragment(), OnItemClickListener {
         val url = "${getString(R.string.base_url)}/manageReceipts.php?debt_class=$classId"
 
         // make a request to the server
-        requestToServer(Request.Method.GET, url, requireActivity(), hashMap,
+        sendRequesToServer(Request.Method.GET, url, requireActivity(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
 

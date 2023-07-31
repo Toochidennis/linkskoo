@@ -2,6 +2,7 @@ package com.digitaldream.linkskool.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -16,25 +17,26 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
-import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
 import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
+import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
-import com.digitaldream.linkskool.utils.VolleyCallback
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
 
 
 private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 
 class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learning_question) {
 
@@ -49,7 +51,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private lateinit var sectionAdapter: AdminQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
-    private var sectionItemsBackUp = mutableListOf<SectionModel>()
     private var selectedClassArray = JSONArray()
 
     private var jsonFromQuestionSettings: String? = null
@@ -59,29 +60,33 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var courseName: String? = null
     private var questionDescription: String? = null
     private var startDate: String? = null
-    private var startTime: String? = null
     private var endDate: String? = null
-    private var endTime: String? = null
     private var questionTopic: String? = null
     private var year: String? = null
     private var term: String? = null
     private var userId: String? = null
     private var userName: String? = null
+    private var from: String? = null
+
+    private var questionObject: String? = null
+    private var newAssessmentObject = JSONObject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             jsonFromQuestionSettings = it.getString(ARG_PARAM1)
+            from = it.getString(ARG_PARAM2)
         }
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String = "") =
+        fun newInstance(param1: String = "", param2: String = "") =
             AdminELearningQuestionFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
                 }
             }
     }
@@ -103,15 +108,17 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             toolbar.apply {
                 title = "Question"
                 setNavigationIcon(R.drawable.arrow_left)
-                setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+                setNavigationOnClickListener { onExit() }
             }
         }
+
         val sharedPreferences =
             requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         year = sharedPreferences.getString("school_year", "")
         term = sharedPreferences.getString("term", "")
         userId = sharedPreferences.getString("user_id", "")
         userName = sharedPreferences.getString("user", "")
+        questionObject = sharedPreferences.getString("question_object", "")
 
         fromQuestionSettings()
 
@@ -123,16 +130,16 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         topicButton.setOnClickListener {
             toQuestionSettings()
+
         }
 
         previewQuestions()
 
         submitQuestionButton.setOnClickListener {
-            prepareQuestions()
+            submitQuestions()
         }
 
         onTouchHelper()
-
     }
 
     private fun addQuestion() {
@@ -189,7 +196,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun fromQuestionSettings() {
         try {
-            if (!jsonFromQuestionSettings.isNullOrEmpty()) {
+            if (from == "settings") {
                 jsonFromQuestionSettings?.let {
                     JSONObject(it).run {
                         val settingsObject = getJSONObject("settings")
@@ -199,8 +206,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         questionDescription = settingsObject.getString("description")
                         startDate = settingsObject.getString("startDate")
                         endDate = settingsObject.getString("endDate")
-                        startTime = settingsObject.getString("startTime")
-                        endTime = settingsObject.getString("endTime")
                         questionTopic = settingsObject.getString("topic")
                         levelId = settingsObject.getString("levelId")
                         courseId = settingsObject.getString("courseId")
@@ -209,9 +214,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         questionTitleTxt.text = questionTitle
                         descriptionTxt.text = questionDescription
 
+                        setQuestionsIfExist()
                     }
                 }
-
+            } else {
+                setQuestionsIfExist()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -226,19 +233,24 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("description", questionDescription)
             put("startDate", startDate)
             put("endDate", endDate)
-            put("startTime", startTime)
-            put("endTime", endTime)
             put("topic", questionTopic)
         }.let {
             jsonObject.put("settings", it)
             jsonObject.put("class", selectedClassArray)
         }
 
+        prepareQuestions()
+
         parentFragmentManager.commit {
             replace(
                 R.id.learning_container,
                 AdminELearningQuestionSettingsFragment
-                    .newInstance(levelId!!, "", jsonObject.toString(), "edit", "")
+                    .newInstance(
+                        levelId!!, courseId!!,
+                        jsonObject.toString(),
+                        "edit",
+                        courseName!!
+                    )
             )
         }
     }
@@ -263,6 +275,118 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+    private fun setQuestionsIfExist() {
+        if (!questionObject.isNullOrEmpty()) {
+            JSONObject(questionObject!!).run {
+                val settingsObject = getJSONObject("settings")
+                if (from != "settings") {
+                    settingsObject.let {
+                        questionTitle = it.getString("title")
+                        questionDescription = it.getString("description")
+                        startDate = it.getString("start_date")
+                        endDate = it.getString("end_date")
+                        questionTopic = it.getString("topic")
+                        levelId = it.getString("level")
+                        courseId = it.getString("course")
+                        courseName = it.getString("course_name")
+                        selectedClassArray = it.getJSONArray("class")
+
+                        questionTitleTxt.text = questionTitle
+                        descriptionTxt.text = questionDescription
+                    }
+                }
+
+                if (has("questions")) {
+                    val questionsArray = getJSONArray("questions")
+
+                    for (i in 0 until questionsArray.length()) {
+                        val questionObject = questionsArray.getJSONObject(i)
+
+                        questionObject.let {
+                            val questionTitle = it.getString("question_title")
+                            val questionFileName = it.getString("question_file_name")
+                            val questionImage = it.getString("question_image")
+                            val questionOldFileName = it.getString("question_old_file_name")
+
+                            when (val questionType = it.getString("question_type")) {
+                                "section" -> {
+                                    val section =
+                                        SectionModel(questionTitle, null, questionType)
+                                    sectionItems.add(section)
+                                }
+
+                                "multiple_choice" -> {
+                                    val optionsArray = it.getJSONArray("options")
+                                    val optionsList = mutableListOf<MultipleChoiceOption>()
+
+                                    for (j in 0 until optionsArray.length()) {
+                                        val optionsObject = optionsArray.getJSONObject(j)
+
+                                        optionsObject.let { option ->
+                                            val order = option.getString("order")
+                                            val text = option.getString("text")
+                                            val fileName = option.getString("file_name")
+                                            val oldFileName = option.getString("old_file_name")
+                                            val image = option.getString("image")
+
+                                            val optionModel = MultipleChoiceOption(
+                                                text, order, fileName, image, oldFileName
+                                            )
+
+                                            optionsList.add(optionModel)
+                                        }
+                                    }
+
+                                    it.getJSONObject("correct").let { answer ->
+                                        val answerOrder = answer.getString("order")
+                                        val correctAnswer = answer.getString("text")
+
+                                        val multiChoiceQuestion = MultiChoiceQuestion(
+                                            questionTitle,
+                                            questionFileName,
+                                            questionImage,
+                                            questionOldFileName,
+                                            optionsList,
+                                            answerOrder.toInt(),
+                                            correctAnswer
+                                        )
+
+                                        val questionSection = SectionModel(
+                                            "",
+                                            QuestionItem.MultiChoice(multiChoiceQuestion),
+                                            questionType
+                                        )
+
+                                        sectionItems.add(questionSection)
+                                    }
+
+                                }
+
+                                else -> {
+                                    it.getJSONObject("correct").let { answer ->
+                                        val correctAnswer = answer.getString("text")
+
+                                        val shortAnswerModel = ShortAnswerModel(
+                                            questionTitle, questionFileName, questionImage,
+                                            questionOldFileName, correctAnswer
+                                        )
+
+                                        val questionSection = SectionModel(
+                                            "", QuestionItem.ShortAnswer(shortAnswerModel),
+                                            questionType
+                                        )
+
+                                        sectionItems.add(questionSection)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun prepareQuestions() {
         if (sectionItems.isNotEmpty()) {
             val questionArray = JSONArray()
@@ -273,6 +397,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     JSONObject().apply {
                         put("question_title", sectionModel.sectionTitle)
                         put("question_type", sectionModel.viewType)
+                        put("question_old_file_name", "")
                         put("question_file_name", "")
                         put("question_image", "")
                     }.let {
@@ -289,14 +414,14 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                             JSONObject().apply {
                                 put("question_title", multiChoice.questionText)
                                 put("question_type", sectionModel.viewType)
+                                put("question_file_name", multiChoice.attachmentName)
 
-                                if (multiChoice.attachmentName.isNotBlank()) {
+                                if (multiChoice.attachmentUri != null) {
                                     val image =
                                         convertUriOrFileToBase64(
                                             multiChoice.attachmentUri,
                                             requireContext()
                                         )
-                                    put("question_file_name", multiChoice.attachmentName)
                                     put("question_image", image)
 
                                     if (multiChoice.attachmentName !=
@@ -309,6 +434,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                         )
                                     else
                                         put("question_old_file_name", "")
+                                } else {
+                                    put("question_image", "")
+                                    put("question_old_file_name", "")
                                 }
 
                                 val optionsArray = JSONArray()
@@ -403,7 +531,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 }
             }
 
-
             val settingsObject = JSONObject().apply {
                 put("author_id", userId)
                 put("author_name", userName)
@@ -414,8 +541,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 put("course", courseId)
                 put("course_name", courseName)
                 put("topic", questionTopic)
-                put("start_date", "$startDate $startTime:00")
-                put("end_date", "$endDate $endTime:00")
+                put("start_date", "$startDate")
+                put("end_date", "$endDate")
                 put("year", year)
                 put("term", term)
             }
@@ -427,7 +554,14 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
             println("assessment: $assessmentObject")
 
-            submitQuestions(assessmentObject)
+            newAssessmentObject = assessmentObject
+
+            requireContext()
+                .getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+                .edit()
+                .apply {
+                    putString("question_object", assessmentObject.toString())
+                }.apply()
 
         } else {
             Toast.makeText(
@@ -437,26 +571,64 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-    private fun submitQuestions(questions: JSONObject) {
+    private fun submitQuestions() {
+        prepareQuestions()
+
         val url = "${getString(R.string.base_url)}/addQuiz.php"
         val hashMap = HashMap<String, String>().apply {
-            put("assessment", questions.toString())
+            put("assessment", newAssessmentObject.toString())
         }
 
-        requestToServer(Request.Method.POST, url, requireContext(), hashMap)
+        if (newAssessmentObject.length() != 0) {
+            sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap)
+            SystemClock.sleep(1000)
+            onBackPressed()
+        }
     }
 
-    private fun dismissDialog() {
+    private fun onExit() {
+        try {
+            val json1 = JSONObject(questionObject ?: "")
+            prepareQuestions()
+
+            if (json1.length() != 0) {
+                val areContentSame = compareJsonObjects(json1, newAssessmentObject)
+                if (areContentSame) {
+                    exitWarning()
+                } else {
+                    onBackPressed()
+                }
+            } else {
+                onBackPressed()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun exitWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
             setPositiveButton("Yes") { _, _ ->
+                onBackPressed()
             }
-            setNegativeButton("No") { dialog, _ ->
+            setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             show()
         }.create()
+    }
+
+    private fun onBackPressed() {
+        requireContext()
+            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE).edit()
+            .apply {
+                putString("question_object", "")
+            }.apply()
+
+        requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
 }

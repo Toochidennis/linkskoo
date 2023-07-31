@@ -255,11 +255,17 @@ object FunctionUtils {
                 Locale.getDefault()
             )
 
-            val parseDate = simpleDateFormat.parse("$date 00:00:00")!!
+
+            val parseDate = if (date.length <= 10) {
+                simpleDateFormat.parse("$date 00:00:00")!!
+            } else {
+                simpleDateFormat.parse(date)!!
+            }
+
             val sdf = when (format) {
                 "default" -> SimpleDateFormat("MMM, dd", Locale.getDefault())
                 "custom" -> SimpleDateFormat("dd MMM", Locale.getDefault())
-                else -> SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
+                else -> SimpleDateFormat("EEE, dd MMM HH:mm", Locale.getDefault())
             }
             formattedDate = sdf.format(parseDate)
 
@@ -450,7 +456,7 @@ object FunctionUtils {
 
 
     @JvmStatic
-    fun requestToServer(
+    fun sendRequesToServer(
         method: Int,
         url: String,
         context: Context,
@@ -907,7 +913,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-     fun convertUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
+    fun convertUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
         val outputStream = ByteArrayOutputStream()
         var byteArray = ByteArray(1024)
 

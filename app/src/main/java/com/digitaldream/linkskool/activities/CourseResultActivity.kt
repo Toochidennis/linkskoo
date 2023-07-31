@@ -20,7 +20,7 @@ import com.digitaldream.linkskool.dialog.TermResultDialog
 import com.digitaldream.linkskool.models.ChartModel
 import com.digitaldream.linkskool.models.CourseResultModel
 import com.digitaldream.linkskool.utils.FunctionUtils
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.achartengine.GraphicalView
 import org.json.JSONObject
@@ -108,7 +108,7 @@ class CourseResultActivity : AppCompatActivity(R.layout.activity_course_result),
                 ".php?class=$mClassId&&year=$mYear&&term=$mTerm"
         val hashMap = hashMapOf<String, String>()
 
-        requestToServer(Request.Method.GET, url, this, hashMap,
+        sendRequesToServer(Request.Method.GET, url, this, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

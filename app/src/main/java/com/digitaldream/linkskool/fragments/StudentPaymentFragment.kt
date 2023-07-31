@@ -29,7 +29,7 @@ import com.digitaldream.linkskool.dialog.OnInputListener
 import com.digitaldream.linkskool.dialog.PaymentEmailDialog
 import com.digitaldream.linkskool.models.StudentPaymentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
@@ -193,7 +193,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         val url = Login.urlBase + "/manageReceipts.php?list=$mStudentId"
         val hashMap = hashMapOf<String, String>()
 
-        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+        sendRequesToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     if (response == "[]") {

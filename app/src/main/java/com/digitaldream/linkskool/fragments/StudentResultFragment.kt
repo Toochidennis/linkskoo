@@ -27,7 +27,7 @@ import com.digitaldream.linkskool.models.AdminStudentResultFragmentModel
 import com.digitaldream.linkskool.models.ChartValue
 import com.digitaldream.linkskool.utils.ColumnChart
 import com.digitaldream.linkskool.utils.FunctionUtils.capitaliseFirstLetter
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import org.json.JSONObject
@@ -117,7 +117,7 @@ class StudentResultFragment : Fragment(), OnItemClickListener {
         hashMap["id"] = mStudentId!!
 
         //make request to server
-        requestToServer(Request.Method.POST, url, requireContext(), hashMap,
+        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

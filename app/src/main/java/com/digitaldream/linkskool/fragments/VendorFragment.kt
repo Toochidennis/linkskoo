@@ -25,7 +25,7 @@ import com.digitaldream.linkskool.adapters.OnItemClickListener
 import com.digitaldream.linkskool.adapters.VendorFragmentAdapter
 import com.digitaldream.linkskool.dialog.VendorDialog
 import com.digitaldream.linkskool.models.VendorModel
-import com.digitaldream.linkskool.utils.FunctionUtils.requestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
@@ -137,7 +137,7 @@ class VendorFragment : Fragment(), OnItemClickListener {
         val url = "${getString(R.string.base_url)}/manageVendor.php?list=2"
         val hashMap = hashMapOf<String, String>()
 
-        requestToServer(Request.Method.GET, url, requireContext(), hashMap,
+        sendRequesToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) = try {
                     JSONArray(response).run {
