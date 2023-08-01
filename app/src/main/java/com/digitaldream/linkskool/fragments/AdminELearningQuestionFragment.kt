@@ -248,6 +248,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("description", questionDescription)
             put("startDate", startDate)
             put("endDate", endDate)
+            put("courseName", courseName)
+            put("courseId", courseId)
+            put("levelId", levelId)
             put("topic", questionTopic)
         }.let {
             jsonObject.put("settings", it)
@@ -621,11 +624,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             if (!questionObject.isNullOrEmpty() && newAssessmentObject.length() != 0) {
                 val json1 = newAssessmentObject
                 val json2 = JSONObject(questionObject!!)
-
-                println("existing data $json2 new data $json1")
                 val areContentSame = compareJsonObjects(json1, json2)
-
-                println(areContentSame)
 
                 if (areContentSame) {
                     onBackPressed()

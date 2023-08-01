@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -83,6 +85,13 @@ class AdminELearningQuestionSettingsFragment :
             mCourseName = it.getString(ARG_PARAM5)
         }
 
+        val callBack = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onExit()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callBack)
     }
 
 
@@ -111,6 +120,33 @@ class AdminELearningQuestionSettingsFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpView(view)
+
+        onEdit()
+
+        classList()
+
+        setDate()
+
+        showSoftInput(requireContext(), mQuestionTitleEditText)
+        smoothScrollEditText(mQuestionTitleEditText)
+        smoothScrollEditText(mDescriptionEditText)
+
+        mApplyBtn.setOnClickListener {
+            applySettings()
+        }
+
+        mTopicTxt.setOnClickListener {
+            selectTopic()
+        }
+
+        mBackBtn.setOnClickListener {
+            onExit()
+        }
+
+    }
+
+    private fun setUpView(view: View) {
         view.apply {
             mBackBtn = findViewById(R.id.close_btn)
             mApplyBtn = findViewById(R.id.apply_btn)
@@ -127,27 +163,6 @@ class AdminELearningQuestionSettingsFragment :
             mTopicTxt = findViewById(R.id.topicBtn)
             mDateSeparator = findViewById(R.id.separator)
         }
-
-        onEdit()
-
-        classList()
-
-        setDate()
-
-        onExit()
-
-        showSoftInput(requireContext(), mQuestionTitleEditText)
-        smoothScrollEditText(mQuestionTitleEditText)
-        smoothScrollEditText(mDescriptionEditText)
-
-        mApplyBtn.setOnClickListener {
-            applySettings()
-        }
-
-        mTopicTxt.setOnClickListener {
-            selectTopic()
-        }
-
     }
 
 
@@ -236,64 +251,6 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
-    private fun applySettings() {
-        val titleText = mQuestionTitleEditText.text.toString().trim()
-        val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
-
-        if (titleText.isEmpty()) {
-            mQuestionTitleEditText.error = "Please enter question title"
-        } else if (selectedItems.size == 0) {
-            Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
-        } else if (descriptionText.isEmpty()) {
-            mDescriptionEditText.error = "Please enter a description"
-        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
-        } else if (topicText.isEmpty()) {
-            Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
-        } else {
-            val settingsObject = JSONObject()
-            val classArray = JSONArray()
-
-            selectedItems.forEach { (key, value) ->
-                if (key.isNotEmpty() && value.isNotEmpty()) {
-                    JSONObject().apply {
-                        put("id", key)
-                        put("name", value)
-                    }.let {
-                        classArray.put(it)
-                    }
-                }
-            }
-
-            JSONObject().apply {
-                put("levelId", mLevelId)
-                put("courseId", mCourseId)
-                put("courseName", mCourseName)
-                put("title", titleText)
-                put("description", descriptionText)
-                put("startDate", mStartDate)
-                put("endDate", mEndDate)
-                put("topic", topicText)
-            }.let {
-                settingsObject.put("settings", it)
-                settingsObject.put("class", classArray)
-
-                updatedJson = settingsObject
-
-                parentFragmentManager.commit {
-                    replace(
-                        R.id.learning_container,
-                        AdminELearningQuestionFragment.newInstance(
-                            settingsObject.toString(),
-                            "settings"
-                        )
-                    )
-                }
-            }
-        }
-    }
-
     private fun onEdit() {
         try {
             if (!jsonFromQuestion.isNullOrEmpty()) {
@@ -348,32 +305,104 @@ class AdminELearningQuestionSettingsFragment :
         }.show(parentFragmentManager, "")
     }
 
-    private fun onExit() {
-        mBackBtn.setOnClickListener {
-            try {
-                val json1 = JSONObject(jsonFromQuestion!!)
-                val json2 = updatedJson
+    private fun prepareSettings() {
+        val settingsObject = JSONObject()
+        val classArray = JSONArray()
 
-                if (json2.length() != 0) {
-                    val areContentSame = compareJsonObjects(json1, json2)
+        val titleText = mQuestionTitleEditText.text.toString().trim()
+        val descriptionText = mDescriptionEditText.text.toString().trim()
+        val topicText = mTopicTxt.text.toString()
 
-                    if (areContentSame) {
-                        exitDestination()
-                    } else {
-                        exitWarning()
-                    }
-
-                } else {
-                    exitDestination()
+        selectedItems.forEach { (key, value) ->
+            if (key.isNotEmpty() && value.isNotEmpty()) {
+                JSONObject().apply {
+                    put("id", key)
+                    put("name", value)
+                }.let {
+                    classArray.put(it)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            }
+        }
+
+        JSONObject().apply {
+            put("title", titleText)
+            put("description", descriptionText)
+            put("startDate", mStartDate)
+            put("endDate", mEndDate)
+            put("levelId", mLevelId)
+            put("courseId", mCourseId)
+            put("courseName", mCourseName)
+            put("topic", topicText)
+        }.let {
+            settingsObject.put("settings", it)
+            settingsObject.put("class", classArray)
+
+            updatedJson = settingsObject
+        }
+    }
+
+    private fun applySettings() {
+        val titleText = mQuestionTitleEditText.text.toString().trim()
+        val descriptionText = mDescriptionEditText.text.toString().trim()
+        val topicText = mTopicTxt.text.toString()
+
+        if (titleText.isEmpty()) {
+            mQuestionTitleEditText.error = "Please enter question title"
+        } else if (selectedItems.size == 0) {
+            Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
+        } else if (descriptionText.isEmpty()) {
+            mDescriptionEditText.error = "Please enter a description"
+        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
+        } else if (topicText.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
+        } else {
+            prepareSettings()
+
+            parentFragmentManager.commit {
+                replace(
+                    R.id.learning_container,
+                    AdminELearningQuestionFragment.newInstance(
+                        updatedJson.toString(),
+                        "settings"
+                    )
+                )
             }
         }
     }
 
-    private fun exitWarning() {
-        androidx.appcompat.app.AlertDialog.Builder(requireContext()).apply {
+
+    private fun onExit() {
+        try {
+            prepareSettings()
+
+            if (!jsonFromQuestion.isNullOrEmpty() && updatedJson.length() != 0) {
+                val json1 = updatedJson
+                val json2 = JSONObject(jsonFromQuestion!!)
+
+                println("existing data $json2 new data $json1")
+
+                val areContentSame = compareJsonObjects(json1, json2)
+
+                if (areContentSame) {
+                    exitDestination()
+                } else {
+                    exitWithWarning()
+                }
+            } else if (updatedJson.length() != 0) {
+                exitWithWarning()
+            } else {
+                exitDestination()
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun exitWithWarning() {
+        AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
             setPositiveButton("Yes") { _, _ ->
@@ -400,6 +429,6 @@ class AdminELearningQuestionSettingsFragment :
     }
 
     private fun onBackPressed() {
-        requireActivity().onBackPressedDispatcher.onBackPressed()
+        requireActivity().finish()
     }
 }
