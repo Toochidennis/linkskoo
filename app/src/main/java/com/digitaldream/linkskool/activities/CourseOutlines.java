@@ -530,15 +530,12 @@ public class CourseOutlines extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                swipeRefreshLayout1.setRefreshing(false);
-                swipeRefreshLayout2.setRefreshing(false);
-            }
+        }, error -> {
+            swipeRefreshLayout1.setRefreshing(false);
+            swipeRefreshLayout2.setRefreshing(false);
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", pin);
                 params.put("username", username);
@@ -791,91 +788,84 @@ public class CourseOutlines extends AppCompatActivity {
                 itemHolder.icon.setImageResource(R.drawable.ic_flash);
             }
 
-            itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            itemHolder.itemView.setOnClickListener(v -> {
 
-                    if (childList.get(position).getType() == null || childList.get(
-                            position).getType().equalsIgnoreCase("null") || childList.get(
-                            position).getType().equalsIgnoreCase("1")) {
+                if (childList.get(position).getType() == null || childList.get(
+                        position).getType().equalsIgnoreCase("null") || childList.get(
+                        position).getType().equalsIgnoreCase("1")) {
 
-                        Intent intent = new Intent(context, ContentDownload.class);
-                        intent.putExtra("topic", childList.get(position).getTitle());
-                        intent.putExtra("objective", childList.get(position).getObjective());
-                        intent.putExtra("week", childList.get(position).getWeek());
-                        intent.putExtra("noteMaterialUrl",
-                                childList.get(position).getNoteMaterialPath());
-                        intent.putExtra("otherMaterial",
-                                childList.get(position).getOtherMatherialPath());
-                        intent.putExtra("courseId", childList.get(position).getCourseId());
-                        intent.putExtra("levelId", childList.get(position).getLevelId());
-                        intent.putExtra("author", childList.get(position).getAuthor());
-                        intent.putExtra("date", childList.get(position).getDate());
-                        intent.putExtra("content_id", childList.get(position).getId());
-                        context.startActivity(intent);
-                        //((Activity)context).finish();
+                    Intent intent = new Intent(context, ContentDownload.class);
+                    intent.putExtra("topic", childList.get(position).getTitle());
+                    intent.putExtra("objective", childList.get(position).getObjective());
+                    intent.putExtra("week", childList.get(position).getWeek());
+                    intent.putExtra("noteMaterialUrl",
+                            childList.get(position).getNoteMaterialPath());
+                    intent.putExtra("otherMaterial",
+                            childList.get(position).getOtherMatherialPath());
+                    intent.putExtra("courseId", childList.get(position).getCourseId());
+                    intent.putExtra("levelId", childList.get(position).getLevelId());
+                    intent.putExtra("author", childList.get(position).getAuthor());
+                    intent.putExtra("date", childList.get(position).getDate());
+                    intent.putExtra("content_id", childList.get(position).getId());
+                    context.startActivity(intent);
+                    //((Activity)context).finish();
 
-                    } else if (childList.get(position).getType().equalsIgnoreCase("2")) {
-                        Intent intent = new Intent(context, Assessment.class);
-                        intent.putExtra("topic", childList.get(position).getTitle());
-                        intent.putExtra("objective", childList.get(position).getObjective());
-                        intent.putExtra("week", childList.get(position).getWeek());
-                        intent.putExtra("id", childList.get(position).getId());
-                        intent.putExtra("url", childList.get(position).getAssessmentUrl());
-                        intent.putExtra("courseId", childList.get(position).getCourseId());
-                        intent.putExtra("levelId", childList.get(position).getLevelId());
-                        intent.putExtra("body", childList.get(position).getBody());
+                } else if (childList.get(position).getType().equalsIgnoreCase("2")) {
+                    Intent intent = new Intent(context, Assessment.class);
+                    intent.putExtra("topic", childList.get(position).getTitle());
+                    intent.putExtra("objective", childList.get(position).getObjective());
+                    intent.putExtra("week", childList.get(position).getWeek());
+                    intent.putExtra("id", childList.get(position).getId());
+                    intent.putExtra("url", childList.get(position).getAssessmentUrl());
+                    intent.putExtra("courseId", childList.get(position).getCourseId());
+                    intent.putExtra("levelId", childList.get(position).getLevelId());
+                    intent.putExtra("body", childList.get(position).getBody());
 
+                    Toast.makeText(layout.getContext(),
+                            courseOutlineList.get(position).getCourseName(),
+                            Toast.LENGTH_SHORT).show();
 
-                        //Log.i("json", childList.get(position).getCourseName
-                        // ());
+                    intent.putExtra("course", childList.get(position).getCourseName());
+                    intent.putExtra("duration", childList.get(position).getDuration());
+                    intent.putExtra("end_date", childList.get(position).getEndDate());
+                    intent.putExtra("start_date", childList.get(position).getStartDate());
+                    context.startActivity(intent);
 
-                        Toast.makeText(layout.getContext(),
-                                courseOutlineList.get(position).getCourseName(),
-                                Toast.LENGTH_SHORT).show();
+                    //((Activity)context).finish();
+                } else if (childList.get(position).getType().equalsIgnoreCase("3")) {
+                    Intent intent = new Intent(context, VideoContent.class);
+                    intent.putExtra("topic", childList.get(position).getTitle());
+                    intent.putExtra("objective", childList.get(position).getObjective());
+                    intent.putExtra("week", childList.get(position).getWeek());
+                    intent.putExtra("id", childList.get(position).getId());
+                    intent.putExtra("courseId", childList.get(position).getCourseId());
+                    intent.putExtra("levelId", childList.get(position).getLevelId());
+                    intent.putExtra("url", childList.get(position).getNoteMaterialPath());
+                    intent.putExtra("note", childList.get(position).getOtherMatherialPath());
+                    intent.putExtra("author", childList.get(position).getAuthor());
+                    intent.putExtra("date", childList.get(position).getDate());
+                    //intent.putExtra("content_id",childList.get(position).getId());
+                    context.startActivity(intent);
+                    //((Activity)context).finish();
 
-                        intent.putExtra("course", childList.get(position).getCourseName());
-                        intent.putExtra("duration", childList.get(position).getDuration());
-                        intent.putExtra("end_date", childList.get(position).getEndDate());
-                        intent.putExtra("start_date", childList.get(position).getStartDate());
-                        context.startActivity(intent);
-
-                        //((Activity)context).finish();
-                    } else if (childList.get(position).getType().equalsIgnoreCase("3")) {
-                        Intent intent = new Intent(context, VideoContent.class);
-                        intent.putExtra("topic", childList.get(position).getTitle());
-                        intent.putExtra("objective", childList.get(position).getObjective());
-                        intent.putExtra("week", childList.get(position).getWeek());
-                        intent.putExtra("id", childList.get(position).getId());
-                        intent.putExtra("courseId", childList.get(position).getCourseId());
-                        intent.putExtra("levelId", childList.get(position).getLevelId());
-                        intent.putExtra("url", childList.get(position).getNoteMaterialPath());
-                        intent.putExtra("note", childList.get(position).getOtherMatherialPath());
-                        intent.putExtra("author", childList.get(position).getAuthor());
-                        intent.putExtra("date", childList.get(position).getDate());
-                        //intent.putExtra("content_id",childList.get(position).getId());
-                        context.startActivity(intent);
-                        //((Activity)context).finish();
-
-                    } else if (childList.get(position).getType().equalsIgnoreCase("6")) {
-                        Intent intent = new Intent(context, Flashcard.class);
-                        intent.putExtra("title", childList.get(position).getTitle());
-                        intent.putExtra("objective", childList.get(position).getObjective());
-                        intent.putExtra("week", childList.get(position).getWeek());
-                        intent.putExtra("id", childList.get(position).getId());
-                        intent.putExtra("date", childList.get(position).getDate());
-                        String count = "";
-                        try {
-                            String url = childList.get(position).getNoteMaterialPath();
-                            String[] countArr = url.split(",");
-                            count = String.valueOf(countArr.length);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        intent.putExtra("count", count);
-
-                        context.startActivity(intent);
+                } else if (childList.get(position).getType().equalsIgnoreCase("6")) {
+                    Intent intent = new Intent(context, Flashcard.class);
+                    intent.putExtra("title", childList.get(position).getTitle());
+                    intent.putExtra("objective", childList.get(position).getObjective());
+                    intent.putExtra("week", childList.get(position).getWeek());
+                    intent.putExtra("id", childList.get(position).getId());
+                    intent.putExtra("date", childList.get(position).getDate());
+                    String count = "";
+                    try {
+                        String url = childList.get(position).getNoteMaterialPath();
+                        String[] countArr = url.split(",");
+                        count = String.valueOf(countArr.length);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    intent.putExtra("count", count);
+
+                    context.startActivity(intent);
                 }
             });
 
@@ -929,38 +919,32 @@ public class CourseOutlines extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             String url = Login.urlBase + "/get_exam.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            dialog.dismiss();
-                            Log.i("response", response);
+                    response -> {
+                        dialog.dismiss();
+                        Log.i("response", response);
 
-                            if (!response.isEmpty()) {
+                        if (!response.isEmpty()) {
 
-                                Intent intent1 = new Intent(context, TestUpload.class);
-                                intent1.putExtra("json", response);
-                                intent1.putExtra("from", "edit");
-                                intent1.putExtra("courseId", courseId);
-                                intent1.putExtra("levelId", levelId);
-                                intent1.putExtra("week", week);
-                                intent1.putExtra("id", id);
-                                intent1.putExtra("levelName", levelName);
-                                intent1.putExtra("courseName", courseName);
-                                context.startActivity(intent1);
-                            }
-
+                            Intent intent1 = new Intent(context, TestUpload.class);
+                            intent1.putExtra("json", response);
+                            intent1.putExtra("from", "edit");
+                            intent1.putExtra("courseId", courseId);
+                            intent1.putExtra("levelId", levelId);
+                            intent1.putExtra("week", week);
+                            intent1.putExtra("id", id);
+                            intent1.putExtra("levelName", levelName);
+                            intent1.putExtra("courseName", courseName);
+                            context.startActivity(intent1);
                         }
-                    }, new Response.ErrorListener() {
+
+                    }, error -> {
+                        error.printStackTrace();
+                        Toast.makeText(context, "Network Error",
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }) {
                 @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                    Toast.makeText(context, "Network Error",
-                            Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
+                protected Map<String, String> getParams() {
                     Map<String, String> param = new HashMap<>();
                     param.put("_db", db);
                     param.put("id", id);

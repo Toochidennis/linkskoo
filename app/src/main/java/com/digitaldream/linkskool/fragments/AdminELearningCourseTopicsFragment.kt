@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.dialog.AdminELearningCreateDialog
+import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -59,8 +59,8 @@ class AdminELearningCourseTopicsFragment :
             }
 
             addBtn.setOnClickListener {
-                AdminELearningCreateDialog(
-                    requireContext(), parentFragmentManager, mLevelId!!,
+                AdminELearningCreateContentDialog(
+                    requireContext(), mLevelId!!,
                     mCourseId!!, mCourseName!!
                 ).apply {
                     setCancelable(true)

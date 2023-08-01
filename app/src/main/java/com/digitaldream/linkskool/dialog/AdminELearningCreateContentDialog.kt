@@ -10,16 +10,11 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
-import com.digitaldream.linkskool.fragments.AdminELearningAssignmentDialogFragment
-import com.digitaldream.linkskool.fragments.AdminELearningMaterialDialogFragment
-import org.json.JSONObject
 
-class AdminELearningCreateDialog(
+class AdminELearningCreateContentDialog(
     context: Context,
-    private val fragmentManager: FragmentManager,
     private val levelId: String,
     private val courseId: String,
     private val courseName: String,
@@ -41,7 +36,7 @@ class AdminELearningCreateDialog(
             setGravity(Gravity.BOTTOM)
         }
 
-        setContentView(R.layout.dialog_admin_elearning_create)
+        setContentView(R.layout.dialog_admin_e_learning_create_content)
 
         assignmentBtn = findViewById(R.id.assignment_btn)
         questionBtn = findViewById(R.id.question_btn)
@@ -50,30 +45,17 @@ class AdminELearningCreateDialog(
         topicBtn = findViewById(R.id.topic_btn)
 
         assignmentBtn.setOnClickListener {
-            AdminELearningAssignmentDialogFragment
-                .newInstance(levelId, courseId, JSONObject().toString())
-                .show(fragmentManager, "")
-
+            launchActivity("assignment")
             dismiss()
         }
 
         questionBtn.setOnClickListener {
-            context.startActivity(
-                Intent(context, ELearningActivity::class.java)
-                    .putExtra("from", "question")
-                    .putExtra("levelId", levelId)
-                    .putExtra("courseId", courseId)
-                    .putExtra("courseName", courseName)
-            )
-
+            launchActivity("question")
             dismiss()
         }
 
         materialBtn.setOnClickListener {
-            AdminELearningMaterialDialogFragment
-                .newInstance(levelId, courseId, JSONObject().toString(), courseName)
-                .show(fragmentManager, "")
-
+            launchActivity("material")
             dismiss()
         }
 
@@ -86,6 +68,17 @@ class AdminELearningCreateDialog(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
+    }
+
+    private fun launchActivity(from: String) {
+        context.startActivity(
+            Intent(context, ELearningActivity::class.java)
+                .putExtra("from", from)
+                .putExtra("levelId", levelId)
+                .putExtra("courseId", courseId)
+                .putExtra("courseName", courseName)
+                .putExtra("json", "")
+        )
 
     }
 }

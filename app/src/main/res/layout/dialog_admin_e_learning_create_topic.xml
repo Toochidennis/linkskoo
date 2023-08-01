@@ -26,7 +26,7 @@
         android:layout_marginTop="@dimen/dimen_16"
         android:text="@string/topics_group_assignment_under_one_category"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_12" />
+        android:textSize="@dimen/text_14" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/topicEditText"
@@ -70,7 +70,7 @@
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:backgroundTint="@color/white"
-        android:text="Add"
+        android:text="@string/add_result"
         android:textAllCaps="false"
         android:textColor="@color/test_color_1"
         android:textSize="@dimen/text_14" />

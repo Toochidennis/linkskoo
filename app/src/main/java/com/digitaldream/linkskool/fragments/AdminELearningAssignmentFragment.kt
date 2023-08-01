@@ -1,59 +1,55 @@
 package com.digitaldream.linkskool.fragments
 
-import android.app.Dialog
-import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
-import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
+import com.digitaldream.linkskool.dialog.AdminELearningAssignmentGradeDialog
 import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
+import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
-import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
-import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 private const val ARG_PARAM4 = "param4"
 
-
-class AdminELearningMaterialDialogFragment :
-    DialogFragment(R.layout.fragment_admin_e_learning_material) {
+class AdminELearningAssignmentFragment :
+    Fragment(R.layout.fragment_admin_e_learning_assignment) {
 
     private lateinit var mBackBtn: ImageView
-    private lateinit var mPostBtn: Button
-    private lateinit var mMaterialTitleEditText: EditText
+    private lateinit var mAssignBtn: Button
+    private lateinit var mAssignmentTitleEditText: EditText
     private lateinit var mClassRecyclerView: RecyclerView
     private lateinit var mSelectAllBtn: Button
     private lateinit var mEmptyClassTxt: TextView
@@ -62,7 +58,16 @@ class AdminELearningMaterialDialogFragment :
     private lateinit var mAttachmentBtn: RelativeLayout
     private lateinit var mAttachmentRecyclerView: RecyclerView
     private lateinit var mAddAttachmentBtn: TextView
-    private lateinit var mTopicTxt: TextView
+    private lateinit var mGradeBtn: RelativeLayout
+    private lateinit var mGradeTxt: TextView
+    private lateinit var mResetGradeBtn: ImageView
+    private lateinit var mDateBtn: RelativeLayout
+    private lateinit var mStartDateTxt: TextView
+    private lateinit var mEndDateTxt: TextView
+    private lateinit var mStartDateBtn: ImageView
+    private lateinit var mEndDateBtn: ImageView
+    private lateinit var mDateSeparator: LinearLayout
+    private lateinit var mTopicBtn: TextView
 
     private var mClassList = mutableListOf<ClassNameTable>()
     private val selectedClassItems = hashMapOf<String, String>()
@@ -73,17 +78,14 @@ class AdminELearningMaterialDialogFragment :
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
-    private var mCourseName: String? = null
+    private var mStartDate: String? = null
+    private var mEndDate: String? = null
     private var jsonFromTopic: String? = null
-    private var newHashMap = mutableMapOf<Any?, Any?>()
-    private var year: String? = null
-    private var term: String? = null
-    private var userId: String? = null
-    private var userName: String? = null
+    private var mCourseName: String? = null
+    private var updatedJson = JSONObject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
 
         arguments?.let {
             mLevelId = it.getString(ARG_PARAM1)
@@ -91,13 +93,22 @@ class AdminELearningMaterialDialogFragment :
             jsonFromTopic = it.getString(ARG_PARAM3)
             mCourseName = it.getString(ARG_PARAM4)
         }
+
+        val callBack = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onExit()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callBack)
     }
+
 
     companion object {
 
         @JvmStatic
         fun newInstance(levelId: String, courseId: String, json: String, courseName: String) =
-            AdminELearningMaterialDialogFragment().apply {
+            AdminELearningAssignmentFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, levelId)
                     putString(ARG_PARAM2, courseId)
@@ -112,46 +123,52 @@ class AdminELearningMaterialDialogFragment :
 
         setUpViews(view)
 
-        val sharedPreferences =
-            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-        year = sharedPreferences.getString("school_year", "")
-        term = sharedPreferences.getString("term", "")
-        userId = sharedPreferences.getString("user_id", "")
-        userName = sharedPreferences.getString("user", "")
-
-
-
         setUpClassAdapter()
+
+        setDate()
+
+        setGrade()
 
         fileAttachment(mAttachmentBtn)
         fileAttachment(mAddAttachmentBtn)
 
-        showSoftInput(requireContext(), mMaterialTitleEditText)
+        showSoftInput(requireContext(), mAssignmentTitleEditText)
 
-        mPostBtn.setOnClickListener {
-            verifyMaterial()
+        mAssignBtn.setOnClickListener {
+            assignAssignment()
         }
 
         mBackBtn.setOnClickListener {
             onExit()
         }
+
     }
 
     private fun setUpViews(view: View) {
         view.apply {
-            mBackBtn = findViewById(R.id.backBtn)
-            mPostBtn = findViewById(R.id.postBtn)
-            mMaterialTitleEditText = findViewById(R.id.materialTitle)
-            mClassRecyclerView = findViewById(R.id.classRecyclerView)
+            mBackBtn = findViewById(R.id.close_btn)
+            mAssignBtn = findViewById(R.id.assignBtn)
+            mAssignmentTitleEditText = findViewById(R.id.assignmentTitle)
+            mClassRecyclerView = findViewById(R.id.class_recyclerview)
             mSelectAllBtn = findViewById(R.id.selectAllBtn)
             mEmptyClassTxt = findViewById(R.id.emptyClassTxt)
-            mDescriptionEditText = findViewById(R.id.descriptionEditText)
+            mDescriptionEditText = findViewById(R.id.description)
             mAttachmentTxt = findViewById(R.id.attachmentTxt)
             mAttachmentBtn = findViewById(R.id.attachmentBtn)
-            mAttachmentRecyclerView = findViewById(R.id.attachmentRecyclerView)
+            mAttachmentRecyclerView = findViewById(R.id.attachment_recyclerview)
             mAddAttachmentBtn = findViewById(R.id.addAttachmentButton)
-            mTopicTxt = findViewById(R.id.topicTxt)
+            mGradeBtn = findViewById(R.id.gradeBtn)
+            mGradeTxt = findViewById(R.id.gradeTxt)
+            mResetGradeBtn = findViewById(R.id.resetGradingBtn)
+            mDateBtn = findViewById(R.id.dateBtn)
+            mStartDateTxt = findViewById(R.id.startDateTxt)
+            mEndDateTxt = findViewById(R.id.endDateTxt)
+            mStartDateBtn = findViewById(R.id.startDateBtn)
+            mEndDateBtn = findViewById(R.id.endDateBtn)
+            mDateSeparator = findViewById(R.id.separator)
+            mTopicBtn = findViewById(R.id.topicBtn)
         }
+
     }
 
     private fun setUpClassAdapter() {
@@ -204,16 +221,89 @@ class AdminELearningMaterialDialogFragment :
         }
     }
 
+    private fun setDate() {
+        mDateBtn.setOnClickListener {
+            AdminELearningDatePickerDialog(requireContext())
+            { startDate, endDate ->
+
+                mStartDate = startDate
+                mEndDate = endDate
+
+                val start = "Start ${formatDate2(startDate, "custom1")}"
+                val end = "Due ${formatDate2(endDate, "custom1")}"
+                mStartDateTxt.text = start
+                mEndDateTxt.text = end
+
+                showDate()
+            }.apply {
+                setCancelable(true)
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        mStartDateBtn.setOnClickListener {
+            mStartDateTxt.text = "Date"
+            mStartDateBtn.isVisible = false
+            mDateSeparator.isVisible = false
+        }
+
+        mEndDateBtn.setOnClickListener {
+            mEndDateTxt.isVisible = false
+            mEndDateBtn.isVisible = false
+            mDateSeparator.isVisible = false
+        }
+    }
+
+    private fun showDate() {
+        mStartDateBtn.isVisible = true
+        mEndDateBtn.isVisible = true
+        mEndDateTxt.isVisible = true
+        mDateSeparator.isVisible = true
+    }
+
+    private fun setGrade() {
+        mGradeBtn.setOnClickListener {
+            AdminELearningAssignmentGradeDialog(requireContext()) { point ->
+
+                when (point) {
+                    "Unmarked" -> point
+                    "1" -> "$point point"
+                    else -> "$point points"
+                }.let {
+                    mGradeTxt.text = it
+                }
+
+                mResetGradeBtn.isVisible = true
+
+            }.apply {
+                show()
+                setCancelable(true)
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        mResetGradeBtn.setOnClickListener {
+            mResetGradeBtn.isVisible = false
+            mGradeTxt.text = "Unmarked"
+        }
+    }
+
     private fun fileAttachment(button: View) {
         button.setOnClickListener {
             AdminELearningAttachmentDialog { type: String, name: String, uri: Any? ->
                 mFileList.add(AttachmentModel(name, "", type, uri))
-                setUpAdapter()
+                setUpFilesAdapter()
+
             }.show(parentFragmentManager, "")
         }
     }
 
-    private fun setUpAdapter() {
+    private fun setUpFilesAdapter() {
         try {
             if (mFileList.isNotEmpty()) {
                 mAdapter = GenericAdapter(
@@ -334,139 +424,47 @@ class AdminELearningMaterialDialogFragment :
         )
     }
 
-    private fun verifyMaterial() {
-        val titleText = mMaterialTitleEditText.text.toString().trim()
+    private fun assignAssignment() {
+        val titleText = mAssignmentTitleEditText.text.toString().trim()
         val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
+        val topicText = mTopicBtn.text.toString()
 
         if (titleText.isEmpty()) {
-            mMaterialTitleEditText.error = "Please enter material title"
+            mAssignmentTitleEditText.error = "Please enter assignment title"
         } else if (selectedClassItems.size == 0) {
             Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
+        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
         } else if (topicText.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-            postMaterial()
-        }
-    }
-
-    private fun prepareMaterial(): HashMap<String, String> {
-        val filesArray = JSONArray()
-        val classArray = JSONArray()
-
-        val titleText = mMaterialTitleEditText.text.toString().trim()
-        val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
-
-        return HashMap<String, String>().apply {
-            put("title", titleText)
-            put("description", descriptionText)
-            put("topic", topicText)
-
-            mFileList.isNotEmpty().let { isTrue ->
-                if (isTrue) {
-                    mFileList.forEach { attachment ->
-                        JSONObject().apply {
-                            put("file_name", attachment.name)
-
-                            val oldFileName =
-                                if (attachment.name != attachment.oldName &&
-                                    attachment.oldName.isNotBlank()
-                                ) {
-                                    attachment.oldName
-                                } else {
-                                    ""
-                                }
-
-                            put("old_file_name", oldFileName)
-                            put("type", attachment.type)
-
-                            val image = convertUriOrFileToBase64(attachment.uri, requireContext())
-                            put("image", image)
-                        }.let {
-                            filesArray.put(it)
-                        }
-                    }
-                }
-            }
-
-            put("files", filesArray.toString())
-
-            selectedClassItems.forEach { (key, value) ->
-                if (key.isNotEmpty() and value.isNotEmpty()) {
-                    JSONObject().apply {
-                        put("id", key)
-                        put("name", value)
-                    }.let {
-                        classArray.put(it)
-                    }
-                }
-            }
-
-            put("class", classArray.toString())
-            put("level", mLevelId!!)
-            put("course", mCourseId!!)
-            put("course_name", mCourseName!!)
-            put("author_id", userId!!)
-            put("author_name", userName!!)
-            put("year", year!!)
-            put("term", term!!)
-        }
-    }
-
-    private fun setMaterialIfNotEmpty() {
-        if (!jsonFromTopic.isNullOrEmpty()) {
 
         }
     }
 
-    private fun postMaterial() {
-        val url = "${getString(R.string.base_url)}/addContent.php"
-        val hashMap = prepareMaterial()
+    private fun prepareAssignment(){
 
-        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap, object
-            : VolleyCallback {
-            override fun onResponse(response: String) {
-                Toast.makeText(
-                    requireContext(), "Material submitted successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                dismiss()
-            }
-
-            override fun onError(error: VolleyError) {
-                Toast.makeText(
-                    requireContext(), "Something went wrong please try again",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
     }
 
 
     private fun onExit() {
         try {
-            newHashMap = prepareMaterial().toMutableMap()
-            if (!jsonFromTopic.isNullOrEmpty() && newHashMap.isNotEmpty()) {
-                val json1 = JSONObject(newHashMap)
-                val json2 = JSONObject(jsonFromTopic!!)
 
-                println("existing data $json2 new data $json1")
+            val json1 = JSONObject(jsonFromTopic!!)
+            val json2 = updatedJson
 
+            if (json2.length() != 0) {
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {
-                    dismiss()
+                    onBackPressed()
                 } else {
-                    exitWithWarning()
+                    exitWarning()
                 }
-            } else if (newHashMap.isNotEmpty()) {
-                exitWithWarning()
             } else {
-                dismiss()
+                onBackPressed()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -474,12 +472,12 @@ class AdminELearningMaterialDialogFragment :
 
     }
 
-    private fun exitWithWarning() {
+    private fun exitWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
             setPositiveButton("Yes") { _, _ ->
-                dismiss()
+                onBackPressed()
             }
             setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
@@ -488,6 +486,8 @@ class AdminELearningMaterialDialogFragment :
         }.create()
     }
 
-
+    private fun onBackPressed() {
+        requireActivity().finish()
+    }
 
 }
