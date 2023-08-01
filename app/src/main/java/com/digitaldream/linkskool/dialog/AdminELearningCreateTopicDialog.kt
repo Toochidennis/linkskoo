@@ -9,10 +9,11 @@ import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import com.digitaldream.linkskool.R
+import com.google.android.material.textfield.TextInputLayout
 
 class AdminELearningCreateTopicDialog(context: Context) : Dialog(context) {
 
-    private lateinit var topicEditText: EditText
+    private lateinit var topicInputLayout: TextInputLayout
     private lateinit var cancelButton: Button
     private lateinit var addButton: Button
 
@@ -23,17 +24,17 @@ class AdminELearningCreateTopicDialog(context: Context) : Dialog(context) {
 
         setContentView(R.layout.dialog_admin_e_learning_create_topic)
 
-        topicEditText = findViewById(R.id.topicEditText)
+        topicInputLayout = findViewById(R.id.topicInputLayout)
         cancelButton = findViewById(R.id.cancelButton)
         addButton = findViewById(R.id.addButton)
 
     }
 
     private fun postTopic() {
-        val topic = topicEditText.text.toString().trim()
+        val topic = topicInputLayout.editText?.text.toString().trim()
 
         if (topic.isBlank()) {
-            topicEditText.error = "Please provide a topic"
+            topicInputLayout.editText?.error = "Please provide a topic"
         }
     }
 }

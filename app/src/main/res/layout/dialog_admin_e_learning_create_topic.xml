@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/dialog_bg"
     android:gravity="center"
     android:padding="@dimen/dimen_16">
@@ -29,20 +30,21 @@
         android:textSize="@dimen/text_14" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/topicEditText"
+        android:id="@+id/topicInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/description"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dimen_16"
+        app:boxStrokeColor="@color/test_color_1"
         android:background="@color/test_color_6">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="Topic"
-            android:inputType="textUri" />
+            android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,7 +52,7 @@
         android:id="@+id/cancelButton"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        android:layout_below="@id/topicEditText"
+        android:layout_below="@id/topicInputLayout"
         android:layout_marginTop="@dimen/dimen_16"
         android:layout_marginEnd="@dimen/dimen_16"
         android:layout_toStartOf="@id/addButton"
@@ -65,12 +67,12 @@
         android:id="@+id/addButton"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        android:layout_below="@id/topicEditText"
+        android:layout_below="@id/topicInputLayout"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dimen_16"
         android:background="@drawable/ripple_effect6"
         android:backgroundTint="@color/white"
-        android:text="@string/add_result"
+        android:text="Add"
         android:textAllCaps="false"
         android:textColor="@color/test_color_1"
         android:textSize="@dimen/text_14" />

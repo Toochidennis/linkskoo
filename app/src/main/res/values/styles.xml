@@ -93,6 +93,7 @@
         <item name="exampleColor">@color/light_blue_400</item>
     </style>
 
+
     <!--<style name="TextAppearance.AppCompat.Widget.ActionBar.Title"
         parent="@android:style/TextAppearance">
         <item name="android:textSize">11sp</item>
