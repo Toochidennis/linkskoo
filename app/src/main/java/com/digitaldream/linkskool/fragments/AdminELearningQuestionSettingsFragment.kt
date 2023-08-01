@@ -67,9 +67,7 @@ class AdminELearningQuestionSettingsFragment :
     private var mQuestionTitle: String? = null
     private var mQuestionDescription: String? = null
     private var mStartDate: String? = null
-    private var mStartTime: String? = null
     private var mEndDate: String? = null
-    private var mEndTime: String? = null
     private var mQuestionTopic: String? = null
     private var jsonFromQuestion: String? = null
     private var updatedJson = JSONObject()
@@ -205,15 +203,13 @@ class AdminELearningQuestionSettingsFragment :
     private fun setDate() {
         mDateBtn.setOnClickListener {
             AdminELearningDatePickerDialog(requireContext())
-            { startDate, endDate, startTime, endTime ->
+            { startDate, endDate ->
 
                 mStartDate = startDate
                 mEndDate = endDate
-                mStartTime = startTime
-                mEndTime = endTime
 
-                val start = "Start ${formatDate2(startDate, "custom1")} $startTime"
-                val end = "Due ${formatDate2(endDate, "custom1")} $endTime"
+                val start = "Start ${formatDate2(startDate, "custom1")}"
+                val end = "Due ${formatDate2(endDate, "custom1")}"
                 mStartDateTxt.text = start
                 mEndDateTxt.text = end
 
@@ -276,8 +272,8 @@ class AdminELearningQuestionSettingsFragment :
                 put("courseName", mCourseName)
                 put("title", titleText)
                 put("description", descriptionText)
-                put("startDate", "$mStartDate $mStartTime:00")
-                put("endDate", "$mEndDate $mEndTime:00")
+                put("startDate", mStartDate)
+                put("endDate", mEndDate)
                 put("topic", topicText)
             }.let {
                 settingsObject.put("settings", it)

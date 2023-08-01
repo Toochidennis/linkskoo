@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -79,6 +80,14 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             jsonFromQuestionSettings = it.getString(ARG_PARAM1)
             from = it.getString(ARG_PARAM2)
         }
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onExit()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     companion object {
@@ -607,14 +616,21 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             prepareQuestions()
 
             if (!questionObject.isNullOrEmpty() && newAssessmentObject.length() != 0) {
-                val json1 = JSONObject(questionObject!!)
-                val areContentSame = compareJsonObjects(json1, newAssessmentObject)
+                val json1 = newAssessmentObject
+                val json2 = JSONObject(questionObject!!)
+
+                println("existing data $json2 new data $json1")
+                val areContentSame = compareJsonObjects(json1, json2)
+
+                println(areContentSame)
 
                 if (areContentSame) {
                     onBackPressed()
                 } else {
                     exitWithWarning()
                 }
+            } else if (newAssessmentObject.length() != 0) {
+                exitWithWarning()
             } else {
                 onBackPressed()
             }
@@ -645,7 +661,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 putString("question_object", "")
             }.apply()
 
-        requireActivity().onBackPressedDispatcher.onBackPressed()
+        requireActivity().finish()
     }
 
 }

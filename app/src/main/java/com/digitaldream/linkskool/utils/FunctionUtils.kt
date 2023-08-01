@@ -856,10 +856,6 @@ object FunctionUtils {
             return false
         }
 
-        if (jsonObject1.length() == 0) {
-            return true
-        }
-
         val keys = jsonObject1.keys()
         while (keys.hasNext()) {
             val key = keys.next()

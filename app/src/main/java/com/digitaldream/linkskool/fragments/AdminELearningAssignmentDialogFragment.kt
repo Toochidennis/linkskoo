@@ -78,9 +78,7 @@ class AdminELearningAssignmentDialogFragment :
     private var mLevelId: String? = null
     private var mCourseId: String? = null
     private var mStartDate: String? = null
-    private var mStartTime: String? = null
     private var mEndDate: String? = null
-    private var mEndTime: String? = null
     private var jsonFromTopic: String? = null
     private var updatedJson = JSONObject()
 
@@ -210,15 +208,13 @@ class AdminELearningAssignmentDialogFragment :
     private fun setDate() {
         mDateBtn.setOnClickListener {
             AdminELearningDatePickerDialog(requireContext())
-            { startDate, endDate, startTime, endTime ->
+            { startDate, endDate->
 
                 mStartDate = startDate
                 mEndDate = endDate
-                mStartTime = startTime
-                mEndTime = endTime
 
-                val start = "Start ${formatDate2(startDate, "custom1")} $startTime"
-                val end = "Due ${formatDate2(endDate, "custom1")} $endTime"
+                val start = "Start ${formatDate2(startDate, "custom1")}"
+                val end = "Due ${formatDate2(endDate, "custom1")}"
                 mStartDateTxt.text = start
                 mEndDateTxt.text = end
 
@@ -476,8 +472,6 @@ class AdminELearningAssignmentDialogFragment :
                 put("grade", mGradeTxt.text)
                 put("startDate", mStartDate)
                 put("endDate", mEndDate)
-                put("startTime", mStartTime)
-                put("endTime", mEndTime)
                 put("topic", topicText)
             }.let {
                 assignmentArray.put(it)
@@ -498,8 +492,6 @@ class AdminELearningAssignmentDialogFragment :
                 if (!mStartDate.isNullOrEmpty() && !mEndDate.isNullOrEmpty()) {
                     put("startDate", mStartDate)
                     put("endDate", mEndDate)
-                    put("startTime", mStartTime)
-                    put("endTime", mEndTime)
                 }
 
                 if (topicText.isNotEmpty() && topicText != "Topic") {

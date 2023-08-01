@@ -21,8 +21,7 @@ import java.util.Locale
 class AdminELearningDatePickerDialog(
     context: Context,
     private val receiveDate: (
-        startDate: String, endDate: String,
-        startTime: String, endTime: String
+        startDate: String, endDate: String
     ) -> Unit
 ) : Dialog(context) {
 
@@ -152,10 +151,7 @@ class AdminELearningDatePickerDialog(
                             .LENGTH_SHORT
                     ).show()
                 } else {
-                    receiveDate(
-                        mStartDate!!, mEndDate!!,
-                        mStartTime!!, mEndTime!!
-                    )
+                    receiveDate("$mStartDate $mStartTime:00", "$mEndDate $mEndTime:00")
 
                     dismiss()
                 }
@@ -164,4 +160,5 @@ class AdminELearningDatePickerDialog(
             e.printStackTrace()
         }
     }
+
 }
