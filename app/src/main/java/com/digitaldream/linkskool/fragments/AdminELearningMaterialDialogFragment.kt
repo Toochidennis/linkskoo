@@ -1,9 +1,12 @@
 package com.digitaldream.linkskool.fragments
 
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -19,6 +22,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter
@@ -31,6 +35,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
+import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import org.json.JSONArray
@@ -70,7 +75,7 @@ class AdminELearningMaterialDialogFragment :
     private var mCourseId: String? = null
     private var mCourseName: String? = null
     private var jsonFromTopic: String? = null
-    private var updatedJson = JSONObject()
+    private var newHashMap = mutableMapOf<Any?, Any?>()
     private var year: String? = null
     private var term: String? = null
     private var userId: String? = null
@@ -91,13 +96,13 @@ class AdminELearningMaterialDialogFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String, param3: String, param4: String) =
+        fun newInstance(levelId: String, courseId: String, json: String, courseName: String) =
             AdminELearningMaterialDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                    putString(ARG_PARAM3, param3)
-                    putString(ARG_PARAM4, param4)
+                    putString(ARG_PARAM1, levelId)
+                    putString(ARG_PARAM2, courseId)
+                    putString(ARG_PARAM3, json)
+                    putString(ARG_PARAM4, courseName)
                 }
             }
     }
@@ -105,20 +110,7 @@ class AdminELearningMaterialDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.apply {
-            mBackBtn = findViewById(R.id.backBtn)
-            mPostBtn = findViewById(R.id.postBtn)
-            mMaterialTitleEditText = findViewById(R.id.materialTitle)
-            mClassRecyclerView = findViewById(R.id.classRecyclerView)
-            mSelectAllBtn = findViewById(R.id.selectAllBtn)
-            mEmptyClassTxt = findViewById(R.id.emptyClassTxt)
-            mDescriptionEditText = findViewById(R.id.descriptionEditText)
-            mAttachmentTxt = findViewById(R.id.attachmentTxt)
-            mAttachmentBtn = findViewById(R.id.attachmentBtn)
-            mAttachmentRecyclerView = findViewById(R.id.attachmentRecyclerView)
-            mAddAttachmentBtn = findViewById(R.id.addAttachmentButton)
-            mTopicTxt = findViewById(R.id.topicTxt)
-        }
+        setUpViews(view)
 
         val sharedPreferences =
             requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
@@ -128,9 +120,8 @@ class AdminELearningMaterialDialogFragment :
         userName = sharedPreferences.getString("user", "")
 
 
-        onEdit()
 
-        classList()
+        setUpClassAdapter()
 
         fileAttachment(mAttachmentBtn)
         fileAttachment(mAddAttachmentBtn)
@@ -146,7 +137,24 @@ class AdminELearningMaterialDialogFragment :
         }
     }
 
-    private fun classList() {
+    private fun setUpViews(view: View) {
+        view.apply {
+            mBackBtn = findViewById(R.id.backBtn)
+            mPostBtn = findViewById(R.id.postBtn)
+            mMaterialTitleEditText = findViewById(R.id.materialTitle)
+            mClassRecyclerView = findViewById(R.id.classRecyclerView)
+            mSelectAllBtn = findViewById(R.id.selectAllBtn)
+            mEmptyClassTxt = findViewById(R.id.emptyClassTxt)
+            mDescriptionEditText = findViewById(R.id.descriptionEditText)
+            mAttachmentTxt = findViewById(R.id.attachmentTxt)
+            mAttachmentBtn = findViewById(R.id.attachmentBtn)
+            mAttachmentRecyclerView = findViewById(R.id.attachmentRecyclerView)
+            mAddAttachmentBtn = findViewById(R.id.addAttachmentButton)
+            mTopicTxt = findViewById(R.id.topicTxt)
+        }
+    }
+
+    private fun setUpClassAdapter() {
         try {
             val mDatabaseHelper = DatabaseHelper(requireContext())
             val dao: Dao<ClassNameTable, Long> = DaoManager.createDao(
@@ -406,44 +414,67 @@ class AdminELearningMaterialDialogFragment :
             put("year", year!!)
             put("term", term!!)
         }
+    }
 
+    private fun setMaterialIfNotEmpty() {
+        if (!jsonFromTopic.isNullOrEmpty()) {
+
+        }
     }
 
     private fun postMaterial() {
         val url = "${getString(R.string.base_url)}/addContent.php"
         val hashMap = prepareMaterial()
 
-        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap)
+        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap, object
+            : VolleyCallback {
+            override fun onResponse(response: String) {
+                Toast.makeText(
+                    requireContext(), "Material submitted successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                dismiss()
+            }
+
+            override fun onError(error: VolleyError) {
+                Toast.makeText(
+                    requireContext(), "Something went wrong please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
-    private fun onEdit() {
-
-    }
 
     private fun onExit() {
         try {
-            val json1 = JSONObject(jsonFromTopic!!)
-            val json2 = JSONObject()
+            newHashMap = prepareMaterial().toMutableMap()
+            if (!jsonFromTopic.isNullOrEmpty() && newHashMap.isNotEmpty()) {
+                val json1 = JSONObject(newHashMap)
+                val json2 = JSONObject(jsonFromTopic!!)
 
-            if (json2.length() != 0) {
+                println("existing data $json2 new data $json1")
+
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {
                     dismiss()
                 } else {
-                    exitWarning()
+                    exitWithWarning()
                 }
+            } else if (newHashMap.isNotEmpty()) {
+                exitWithWarning()
             } else {
                 dismiss()
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
 
-    private fun exitWarning() {
+    private fun exitWithWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")
@@ -456,5 +487,7 @@ class AdminELearningMaterialDialogFragment :
             show()
         }.create()
     }
+
+
 
 }

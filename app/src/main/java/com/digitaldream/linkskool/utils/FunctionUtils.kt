@@ -13,7 +13,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -910,37 +909,44 @@ object FunctionUtils {
 
     @JvmStatic
     fun convertUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
-        val outputStream = ByteArrayOutputStream()
-        var byteArray = ByteArray(1024)
-
-        when (imageUri) {
+        val inputStream = when (imageUri) {
             is File -> {
                 val file = File(imageUri.absolutePath)
-                val originalBitmap = BitmapFactory.decodeFile(file.path)
-                originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                byteArray = outputStream.toByteArray()
-                outputStream.close()
-
-                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                return base64Image.toByteArray()
+                FileInputStream(file)
             }
 
             is Uri -> {
-                val inputStream: InputStream? =
-                    context.contentResolver.openInputStream(imageUri)
-                val originalBitmap = BitmapFactory.decodeStream(inputStream)
-                inputStream?.use {
-                    originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                    byteArray = outputStream.toByteArray()
-                }
-                outputStream.close()
-
-                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                return base64Image.toByteArray()
+                context.contentResolver.openInputStream(imageUri)
             }
 
-            else -> return imageUri
+            else -> null
         }
+
+        when (inputStream) {
+            null -> return imageUri
+
+            else -> {
+                inputStream.let { input ->
+                    try {
+                        val outputStream = ByteArrayOutputStream()
+                        val buffer = ByteArray(1024)
+                        var bytesRead: Int
+                        while (input.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream.write(buffer, 0, bytesRead)
+                        }
+
+                        val fileBytes = outputStream.toByteArray()
+                        return Base64.encodeToString(fileBytes, Base64.NO_WRAP)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        input.close()
+                    }
+                }
+            }
+
+        }
+        return imageUri
     }
 
 }

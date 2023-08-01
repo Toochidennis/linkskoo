@@ -379,9 +379,6 @@ class AdminELearningQuestionSettingsFragment :
             if (!jsonFromQuestion.isNullOrEmpty() && updatedJson.length() != 0) {
                 val json1 = updatedJson
                 val json2 = JSONObject(jsonFromQuestion!!)
-
-                println("existing data $json2 new data $json1")
-
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {

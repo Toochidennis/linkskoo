@@ -93,11 +93,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String = "", param2: String = "") =
+        fun newInstance(json: String = "", from: String = "") =
             AdminELearningQuestionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM1, json)
+                    putString(ARG_PARAM2, from)
                 }
             }
     }
@@ -605,7 +605,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     }
 
                     override fun onError(error: VolleyError) {
-
+                        Toast.makeText(
+                            requireContext(), "Something went wrong please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 })
 
