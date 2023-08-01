@@ -105,23 +105,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.apply {
-            val toolbar: Toolbar = findViewById(R.id.toolbar)
-            topicButton = findViewById(R.id.topicButton)
-            questionTitleTxt = findViewById(R.id.questionTitleTxt)
-            descriptionTxt = findViewById(R.id.descriptionTxt)
-            sectionRecyclerView = findViewById(R.id.questionRecyclerView)
-            emptyQuestionTxt = findViewById(R.id.emptyQuestionTxt)
-            previewQuestionButton = findViewById(R.id.previewQuestionButton)
-            submitQuestionButton = findViewById(R.id.submitQuestionButton)
-            addQuestionButton = findViewById(R.id.add_question_btn)
-
-            toolbar.apply {
-                title = "Question"
-                setNavigationIcon(R.drawable.arrow_left)
-                setNavigationOnClickListener { onExit() }
-            }
-        }
+        setUpViews(view)
 
         val sharedPreferences =
             requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
@@ -141,7 +125,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         topicButton.setOnClickListener {
             toQuestionSettings()
-
         }
 
         previewQuestions()
@@ -151,6 +134,27 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
 
         onTouchHelper()
+    }
+
+
+    private fun setUpViews(view: View) {
+        view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            topicButton = findViewById(R.id.topicButton)
+            questionTitleTxt = findViewById(R.id.questionTitleTxt)
+            descriptionTxt = findViewById(R.id.descriptionTxt)
+            sectionRecyclerView = findViewById(R.id.questionRecyclerView)
+            emptyQuestionTxt = findViewById(R.id.emptyQuestionTxt)
+            previewQuestionButton = findViewById(R.id.previewQuestionButton)
+            submitQuestionButton = findViewById(R.id.submitQuestionButton)
+            addQuestionButton = findViewById(R.id.add_question_btn)
+
+            toolbar.apply {
+                title = "Question"
+                setNavigationIcon(R.drawable.arrow_left)
+                setNavigationOnClickListener { onExit() }
+            }
+        }
     }
 
     private fun addQuestion() {
@@ -370,7 +374,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
                                         sectionItems.add(questionSection)
                                     }
-
                                 }
 
                                 else -> {
