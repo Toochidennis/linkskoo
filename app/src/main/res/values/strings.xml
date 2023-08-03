@@ -157,4 +157,5 @@
     <string name="topics_group_assignment_under_one_category">Topics group assignment under one category</string>
     <string name="done">Done</string>
     <string name="select_topic">Select topic</string>
+    <string name="add_content">Add content</string>
 </resources>

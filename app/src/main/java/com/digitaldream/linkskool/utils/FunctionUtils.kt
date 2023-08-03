@@ -459,7 +459,7 @@ object FunctionUtils {
         method: Int,
         url: String,
         context: Context,
-        values: HashMap<String, String>?,
+        stringHashMap: HashMap<String, String>?,
         volleyCallback: VolleyCallback? = null
     ) {
         val sharedPreferences =
@@ -477,7 +477,7 @@ object FunctionUtils {
         Timber.plant(Timber.DebugTree())
 
         val mUrl =
-            if (values.isNullOrEmpty()) {
+            if (stringHashMap.isNullOrEmpty()) {
                 "$url&&_db=$db"
             } else {
                 url
@@ -499,8 +499,8 @@ object FunctionUtils {
             override fun getParams(): MutableMap<String, String> {
                 val stringMap = mutableMapOf<String, String>()
 
-                if (!values.isNullOrEmpty()) {
-                    for ((key, value) in values) {
+                if (!stringHashMap.isNullOrEmpty()) {
+                    for ((key, value) in stringHashMap) {
                         stringMap[key] = value
                     }
                     stringMap["_db"] = db!!
@@ -551,7 +551,6 @@ object FunctionUtils {
                 setBackgroundResource(R.drawable.ripple_effect7)
                 setTextColor(Color.WHITE)
             }
-
         }
     }
 

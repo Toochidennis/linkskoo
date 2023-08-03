@@ -23,6 +23,8 @@ private const val ARG_PARAM3 = "param3"
 class AdminELearningCourseTopicsFragment :
     Fragment(R.layout.fragment_admin_e_learning_course_topics) {
 
+    private lateinit var addContentButton: FloatingActionButton
+
     private var mLevelId: String? = null
     private var mCourseId: String? = null
     private var mCourseName: String? = null
@@ -54,36 +56,47 @@ class AdminELearningCourseTopicsFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpViews(view)
+
+        addContent()
+
+        getCourseOutline()
+    }
+
+    private fun setUpViews(view: View) {
         view.apply {
             val toolbar: Toolbar = findViewById(R.id.toolbar)
-            val addBtn: FloatingActionButton = findViewById(R.id.add_btn)
+            addContentButton = findViewById(R.id.add_btn)
+
             toolbar.apply {
                 title = "Topics"
                 setNavigationIcon(R.drawable.arrow_left)
                 setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             }
 
-            addBtn.setOnClickListener {
-                AdminELearningCreateContentDialog(
-                    requireContext(), mLevelId!!,
-                    mCourseId!!, mCourseName!!
-                ).apply {
-                    setCancelable(true)
-                    show()
-                }.window?.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            }
         }
+    }
 
-        getCourseOutline()
+    private fun addContent() {
+        addContentButton.setOnClickListener {
+            AdminELearningCreateContentDialog(
+                requireContext(), mLevelId!!,
+                mCourseId!!, mCourseName!!
+            ).apply {
+                setCancelable(true)
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
     }
 
     private fun getCourseOutline() {
         val term = requireActivity()
             .getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
             .getString("term", "")
+        println("term $term")
 
         val url = "${getString(R.string.base_url)}/getOutline.php?" +
                 "course=$mCourseId&&level=$mLevelId&&term=$term"

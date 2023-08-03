@@ -29,148 +29,22 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/todo">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/topic_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/contentRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginStart="15dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp">
+                    android:clipToPadding="true"/>
 
-                    <TextView
-                        android:id="@+id/topic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginEnd="@dimen/dimen_10"
-                        android:layout_toStartOf="@id/more_btn"
-                        android:ellipsize="marquee"
-                        android:layout_marginStart="@dimen/dimen_8"
-                        android:fontFamily="@font/poppins_regular"
-                        android:singleLine="true"
-                        android:text="Docker"
-                        android:textColor="@color/test_color_1"
-                        android:textSize="28sp" />
-
-                    <ImageView
-                        android:id="@+id/more_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/dimen_8"
-                        android:layout_marginEnd="15dp"
-                        android:clickable="true"
-                        android:contentDescription="@string/todo"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:src="@drawable/ic_more"
-                        app:tint="@color/test_color_7" />
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/separator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/topic_layout"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/line_separator"
-                    android:backgroundTint="@color/test_color_1"
-                    android:orientation="horizontal" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/separator"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:padding="@dimen/dimen_10">
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="5dp"
-                        android:backgroundTint="@color/test_color_1"
-                        app:cardCornerRadius="@dimen/dimen_24"
-                        app:contentPadding="8dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/baseline_assignment_24"
-                            app:tint="@color/white" />
-
-                    </androidx.cardview.widget.CardView>
-
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_toStartOf="@id/more_btn1"
-                        android:layout_toEndOf="@id/icon"
-                        android:ellipsize="marquee"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Introduction to DevOps"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/description"
-                        android:layout_marginStart="15dp"
-                        android:layout_toEndOf="@id/icon"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="posted June 02, 2023"
-                        android:textColor="@color/test_color_7"
-                        android:textSize="12sp" />
-
-                    <ImageView
-                        android:id="@+id/more_btn1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="10dp"
-                        android:clickable="true"
-                        android:contentDescription="@string/todo"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:src="@drawable/ic_more"
-                        app:tint="@color/test_color_7" />
-
-                </RelativeLayout>
-
-            </RelativeLayout>
+            </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
@@ -188,11 +62,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/dimen_16"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_marginBottom="@dimen/dimen_32"
             android:backgroundTint="@color/test_color_1"
-            android:contentDescription="@string/todo"
+            android:clickable="true"
+            android:contentDescription="@string/add_content"
+            android:focusable="true"
             android:src="@drawable/ic_add"
             app:tint="@color/white" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
