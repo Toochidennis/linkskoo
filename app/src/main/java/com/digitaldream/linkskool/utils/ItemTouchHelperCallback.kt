@@ -1,16 +1,19 @@
 package com.digitaldream.linkskool.utils
 
-import android.graphics.Canvas
+import android.graphics.Rect
+import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
 
-class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
-    ItemTouchHelper.Callback() {
+class ItemTouchHelperCallback(
+    private val adapter: ItemTouchHelperAdapter,
+    private val recyclerView: RecyclerView
+) : ItemTouchHelper.Callback() {
 
     private var isDragging = false
-
-    override fun isLongPressDragEnabled(): Boolean  = true
+    private var draggedItemDecoration: DraggedItemDecoration? = null
+    override fun isLongPressDragEnabled(): Boolean = true
 
     override fun isItemViewSwipeEnabled(): Boolean = false
 
@@ -37,10 +40,17 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
+
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && !isDragging) {
+            viewHolder?.let {
+                draggedItemDecoration = DraggedItemDecoration(it)
+                recyclerView.addItemDecoration(draggedItemDecoration!!)
+                draggedItemDecoration?.setDragging(true)
+                recyclerView.invalidateItemDecorations()
+            }
+
             viewHolder?.itemView?.alpha = 0.7f
-            viewHolder?.itemView?.scaleX = 1.05f
-            viewHolder?.itemView?.scaleY = 1.05f
+            viewHolder?.itemView?.animate()?.scaleX(1.1f)?.scaleY(1.1f)?.setDuration(200)?.start()
             isDragging = true
         }
     }
@@ -51,23 +61,31 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
         viewHolder.itemView.scaleX = 1.0f
         viewHolder.itemView.scaleY = 1.0f
         isDragging = false
-        adapter.onItemDismiss(recyclerView)
+
+        adapter.onItemDismiss(recyclerView, draggedItemDecoration!!)
     }
 
-    override fun onChildDraw(
-        c: Canvas,
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        dX: Float,
-        dY: Float,
-        actionState: Int,
-        isCurrentlyActive: Boolean
+}
+
+class DraggedItemDecoration(private val draggedViewHolder: RecyclerView.ViewHolder) :
+    RecyclerView.ItemDecoration() {
+
+    private var isDragging = false
+
+    fun setDragging(isDragging: Boolean) {
+        this.isDragging = isDragging
+    }
+
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
     ) {
-        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            viewHolder.itemView.translationX = dX
-            viewHolder.itemView.translationY = dY
-        } else {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        if (isDragging && parent.getChildViewHolder(view) === draggedViewHolder) {
+            val draggedY = view.y
+            val topMargin = maxOf(0f, draggedY - view.height)
+            outRect.top = topMargin.toInt()
         }
     }
 }

@@ -274,7 +274,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun onTouchHelper() {
-        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
+        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter, sectionRecyclerView)
         val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
         sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
     }

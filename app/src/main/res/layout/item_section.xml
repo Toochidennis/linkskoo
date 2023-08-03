@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sectionLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -22,7 +23,6 @@
         android:layout_toStartOf="@id/sectionButton"
         android:fontFamily="@font/poppins_bold"
         android:padding="@dimen/dimen_10"
-        android:text="Part A"
         android:textColor="@color/black"
         android:textSize="@dimen/text_16" />
 
@@ -32,11 +32,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/separator2"
         android:layout_alignParentEnd="true"
-        android:padding="@dimen/dimen_10"
         android:clickable="true"
         android:contentDescription="@string/todo"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dimen_10"
         android:src="@drawable/ic_more" />
 
     <LinearLayout

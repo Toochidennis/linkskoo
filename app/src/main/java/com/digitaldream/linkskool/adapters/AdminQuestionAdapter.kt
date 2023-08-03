@@ -23,6 +23,7 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import com.digitaldream.linkskool.utils.DraggedItemDecoration
 import java.util.Collections
 
 
@@ -38,6 +39,7 @@ class AdminQuestionAdapter(
     }
 
     private val viewHolderList = mutableListOf<RecyclerView.ViewHolder>()
+    private lateinit var sectionView: RelativeLayout
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -112,12 +114,15 @@ class AdminQuestionAdapter(
     }
 
     inner class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val sectionLayout: RelativeLayout = itemView.findViewById(R.id.sectionLayout)
         private val sectionTxt: TextView = itemView.findViewById(R.id.sectionTxt)
         private val sectionBtn: ImageView = itemView.findViewById(R.id.sectionButton)
         private val sectionBottomBorder: LinearLayout = itemView.findViewById(R.id.separator)
         private val sectionTopBorder: LinearLayout = itemView.findViewById(R.id.separator2)
 
         fun bind(sectionModel: SectionModel) {
+            sectionView = sectionLayout
+
             if (sectionModel.sectionTitle.isNullOrEmpty()) {
                 sectionTxt.isVisible = false
                 sectionBtn.isVisible = false
@@ -301,7 +306,6 @@ class AdminQuestionAdapter(
         }.show(fragmentManager, "")
     }
 
-
     private fun deleteItem(position: Int) {
         itemList.removeAt(position)
         notifyDataSetChanged()
@@ -331,7 +335,10 @@ class AdminQuestionAdapter(
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    override fun onItemDismiss(recyclerView: RecyclerView) {
+    override fun onItemDismiss(
+        recyclerView: RecyclerView,
+        draggedItemDecoration: DraggedItemDecoration
+    ) {
         viewHolderList.forEach {
             it.itemView.isVisible = true
             val layoutParams = it.itemView.layoutParams
@@ -341,9 +348,13 @@ class AdminQuestionAdapter(
 
         Handler(Looper.getMainLooper()).postDelayed({
             recyclerView.post {
+                draggedItemDecoration.let {
+                    it.setDragging(false)
+                    recyclerView.invalidateItemDecorations()
+                }
+
                 notifyDataSetChanged()
             }
-
         }, 1000)
     }
 

@@ -1,12 +1,17 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -71,5 +76,35 @@ class AdminELearningCourseTopicsFragment :
                 )
             }
         }
+
+        getCourseOutline()
+    }
+
+    private fun getCourseOutline() {
+        val term = requireActivity()
+            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+            .getString("term", "")
+
+        val url = "${getString(R.string.base_url)}/getOutline.php?" +
+                "course=$mCourseId&&level=$mLevelId&&term=$term"
+
+        val hashMap = HashMap<String, String>()
+
+        sendRequesToServer(
+            Request.Method.GET,
+            url,
+            requireContext(),
+            hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            })
+
+
     }
 }
