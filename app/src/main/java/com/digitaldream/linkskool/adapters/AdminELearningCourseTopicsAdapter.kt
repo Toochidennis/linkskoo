@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.adapters
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -12,11 +13,16 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
 import com.digitaldream.linkskool.models.CourseTopicModel
 import com.digitaldream.linkskool.utils.DraggedItemDecoration
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.Collections
 
 class AdminELearningCourseTopicsAdapter(
@@ -168,7 +174,13 @@ class AdminELearningCourseTopicsAdapter(
         }
     }
 
-    private fun optionsAction(from: String, optionBtn: ImageView, topicModel: CourseTopicModel) {
+    private fun optionsAction(
+        from: String,
+        optionBtn: ImageView,
+        topicModel: CourseTopicModel,
+        itemView: View,
+        position: Int
+    ) {
         optionBtn.setOnClickListener {
             val popupMenu = PopupMenu(it.context, it)
             popupMenu.inflate(R.menu.section_menu)
@@ -176,6 +188,39 @@ class AdminELearningCourseTopicsAdapter(
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.editSection -> {
+                        when (from) {
+                            "assignment" -> {
+                                val url =
+                                    "${itemView.context.getString(R.string.base_url)}/.php?course=${
+                                        topicModel.courseId}&&level=${topicModel.levelId}"
+
+                                val content = getContent(url, itemView)
+                                launchActivity(itemView, from, content)
+                            }
+
+                            "material" -> {
+                                val url =
+                                    "${itemView.context.getString(R.string.base_url)}/.php?course=${
+                                        topicModel.courseId}&&level=${topicModel.levelId}"
+
+                                val content = getContent(url, itemView)
+                                launchActivity(itemView, from, content)
+                            }
+
+                            "question" -> {
+                                val url =
+                                    "${itemView.context.getString(R.string.base_url)}/.php?course=${
+                                        topicModel.courseId}&&level=${topicModel.levelId}"
+
+                                val content = getContent(url, itemView)
+                                launchActivity(itemView, from, content)
+                            }
+
+                            "topic" -> {
+
+                            }
+                        }
+
 
                         true
                     }
@@ -188,8 +233,44 @@ class AdminELearningCourseTopicsAdapter(
                 }
             }
         }
-
     }
+
+    private fun getContent(url: String, itemView: View): String {
+
+        var result = ""
+
+        sendRequestToServer(
+            Request.Method.GET,
+            url,
+            itemView.context,
+            null,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    result = response
+                }
+
+                override fun onError(error: VolleyError) {
+                    result = ""
+                }
+            }
+
+        )
+
+        return result
+    }
+
+    private fun launchActivity(
+        itemView: View,
+        from: String,
+        json: String
+    ) {
+        itemView.context.startActivity(
+            Intent(itemView.context, ELearningActivity::class.java)
+                .putExtra("from", from)
+                .putExtra("json", json)
+        )
+    }
+
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         val draggedItem = itemList[fromPosition]

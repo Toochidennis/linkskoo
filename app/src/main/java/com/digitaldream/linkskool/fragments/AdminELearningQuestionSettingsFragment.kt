@@ -265,6 +265,9 @@ class AdminELearningQuestionSettingsFragment :
                             mStartDate = it.getString("startDate")
                             mEndDate = it.getString("endDate")
                             mQuestionTopic = it.getString("topic")
+                            mCourseName = it.getString("courseName")
+                            mCourseId =it.getString("courseId")
+                            mLevelId = it.getString("levelId")
                         }
 
                         for (i in 0 until classArray.length()) {
