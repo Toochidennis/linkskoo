@@ -31,7 +31,7 @@ import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
@@ -592,7 +592,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
 
         if (newAssessmentObject.length() != 0) {
-            sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
+            sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
                 object : VolleyCallback {
                     override fun onResponse(response: String) {
                         Toast.makeText(

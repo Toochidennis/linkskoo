@@ -14,7 +14,7 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.AccountSetupDataModel
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONArray
 import org.json.JSONObject
@@ -153,7 +153,7 @@ class AddExpenditureFragment : Fragment() {
         val url = getString(R.string.base_url) + "/manageAccount.php?list=1"
         val hashMap = hashMapOf<String, String>()
 
-        sendRequesToServer(
+        sendRequestToServer(
             Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) = setSpinnerItem(response, "save")
@@ -285,7 +285,7 @@ class AddExpenditureFragment : Fragment() {
             put("term", term!!)
         }
 
-        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
+        sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT)

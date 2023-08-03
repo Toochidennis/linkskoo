@@ -22,7 +22,7 @@ import com.digitaldream.linkskool.dialog.AddReceiptDialog
 import com.digitaldream.linkskool.models.StudentPaymentModel
 import com.digitaldream.linkskool.models.TermFeesDataModel
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
@@ -141,7 +141,7 @@ class ReceiptStudentBudgetActivity : AppCompatActivity(R.layout.activity_receipt
         val url = getString(R.string.base_url) + "/manageReceipts.php?list=$studentId"
         val hashMap = hashMapOf<String, String>()
 
-        sendRequesToServer(Request.Method.GET, url, this, hashMap,
+        sendRequestToServer(Request.Method.GET, url, this, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     if (response == "[]") {

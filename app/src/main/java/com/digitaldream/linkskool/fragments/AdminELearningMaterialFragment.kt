@@ -32,7 +32,7 @@ import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
@@ -430,7 +430,7 @@ class AdminELearningMaterialFragment :
         val url = "${getString(R.string.base_url)}/addContent.php"
         val hashMap = prepareMaterial()
 
-        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap, object
+        sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap, object
             : VolleyCallback {
             override fun onResponse(response: String) {
                 Toast.makeText(

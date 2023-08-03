@@ -31,7 +31,7 @@ import com.digitaldream.linkskool.adapters.OnItemClickListener
 import com.digitaldream.linkskool.dialog.AdminClassesDialog
 import com.digitaldream.linkskool.models.AdminPaymentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONObject
 import java.util.Locale
@@ -134,7 +134,7 @@ class AdminPaymentDashboardFragment : Fragment(R.layout.fragment_dashboard_payme
         }
 
 
-        sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
+        sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

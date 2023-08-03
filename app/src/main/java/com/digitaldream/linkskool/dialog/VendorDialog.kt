@@ -14,7 +14,7 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.OnItemClickListener
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 
 class VendorDialog(
@@ -96,7 +96,7 @@ class VendorDialog(
         hashMap["telephone"] = sPhone
         hashMap["customer_type"] = "2"
 
-        sendRequesToServer(Request.Method.POST, url, sContext, hashMap,
+        sendRequestToServer(Request.Method.POST, url, sContext, hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     sNotify!!.onItemClick(0)

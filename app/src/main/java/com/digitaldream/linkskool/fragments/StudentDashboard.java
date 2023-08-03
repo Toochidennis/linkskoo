@@ -194,7 +194,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("id", levelId);
 
-        FunctionUtils.sendRequesToServer(Request.Method.POST, url, requireContext(), hashMap,
+        FunctionUtils.sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
                 new VolleyCallback() {
                     @Override
                     public void onResponse(@NonNull String response) {

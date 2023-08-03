@@ -24,7 +24,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.linkskool.utils.FunctionUtils.downloadPDF
 import com.digitaldream.linkskool.utils.FunctionUtils.getDate
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.sharePDF
 import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.*
@@ -139,7 +139,7 @@ class PaystackPaymentActivity : AppCompatActivity(R.layout.activity_payment_pays
         stringMap["year"] = mYear!!
         stringMap["term"] = mTerm!!
 
-        sendRequesToServer(Request.Method.POST, url, this, stringMap,
+        sendRequestToServer(Request.Method.POST, url, this, stringMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
 

@@ -22,7 +22,7 @@ import com.digitaldream.linkskool.models.TimeFrameDataModel
 import com.digitaldream.linkskool.models.VendorModel
 import com.digitaldream.linkskool.utils.FunctionUtils.getSelectedItem
 import com.digitaldream.linkskool.utils.FunctionUtils.onItemClick
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.json.JSONArray
@@ -86,7 +86,7 @@ class VendorAccountNamesBottomSheet(
         "Select Account".let { mTitle.text = it }
         mAccountList.clear()
 
-        sendRequesToServer(Request.Method.GET, url, requireContext(), hashMap,
+        sendRequestToServer(Request.Method.GET, url, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
@@ -159,7 +159,7 @@ class VendorAccountNamesBottomSheet(
 
         "Select Vendor".let { mTitle.text = it }
 
-        sendRequesToServer(Request.Method.GET, url, requireActivity(), hashMap,
+        sendRequestToServer(Request.Method.GET, url, requireActivity(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

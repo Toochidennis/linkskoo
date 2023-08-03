@@ -25,7 +25,7 @@ import com.digitaldream.linkskool.dialog.AdminClassesDialog
 import com.digitaldream.linkskool.dialog.StudentsPaidBottomSheet
 import com.digitaldream.linkskool.interfaces.ResultListener
 import com.digitaldream.linkskool.models.AdminPaymentModel
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONObject
 import java.util.Locale
@@ -187,7 +187,7 @@ class StudentsPaidFragment : Fragment(), OnItemClickListener {
         val hashMap = hashMapOf<String, String>()
         val url = "${getString(R.string.base_url)}/manageReceipts.php?class=$classId"
 
-        sendRequesToServer(Request.Method.GET, url, requireActivity(), hashMap,
+        sendRequestToServer(Request.Method.GET, url, requireActivity(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {

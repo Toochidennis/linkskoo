@@ -174,7 +174,7 @@ public class Login extends AppCompatActivity {
         hashMap.put("username", usernameText);
         hashMap.put("password", passwordText);
 
-        FunctionUtils.sendRequesToServer(Request.Method.POST, url, this, hashMap,
+        FunctionUtils.sendRequestToServer(Request.Method.POST, url, this, hashMap,
                 new VolleyCallback() {
                     @Override
                     public void onResponse(@NonNull String response) {

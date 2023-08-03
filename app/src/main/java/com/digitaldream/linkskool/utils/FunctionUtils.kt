@@ -455,11 +455,11 @@ object FunctionUtils {
 
 
     @JvmStatic
-    fun sendRequesToServer(
+    fun sendRequestToServer(
         method: Int,
         url: String,
         context: Context,
-        values: HashMap<String, String>,
+        values: HashMap<String, String>?,
         volleyCallback: VolleyCallback? = null
     ) {
         val sharedPreferences =
@@ -477,7 +477,7 @@ object FunctionUtils {
         Timber.plant(Timber.DebugTree())
 
         val mUrl =
-            if (values.isEmpty()) {
+            if (values.isNullOrEmpty()) {
                 "$url&&_db=$db"
             } else {
                 url
@@ -499,7 +499,7 @@ object FunctionUtils {
             override fun getParams(): MutableMap<String, String> {
                 val stringMap = mutableMapOf<String, String>()
 
-                if (values.isNotEmpty()) {
+                if (!values.isNullOrEmpty()) {
                     for ((key, value) in values) {
                         stringMap[key] = value
                     }
@@ -512,7 +512,6 @@ object FunctionUtils {
         }
 
         Volley.newRequestQueue(context).add(stringRequest)
-
     }
 
 

@@ -10,7 +10,7 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -88,13 +88,11 @@ class AdminELearningCourseTopicsFragment :
         val url = "${getString(R.string.base_url)}/getOutline.php?" +
                 "course=$mCourseId&&level=$mLevelId&&term=$term"
 
-        val hashMap = HashMap<String, String>()
-
-        sendRequesToServer(
+        sendRequestToServer(
             Request.Method.GET,
             url,
             requireContext(),
-            hashMap,
+            null,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
 

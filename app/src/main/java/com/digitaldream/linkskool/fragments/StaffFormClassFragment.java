@@ -115,7 +115,7 @@ public class StaffFormClassFragment extends Fragment {
         String url = Login.urlBase + "/allStaffStudent.php?staff_id=" + staffId;
         HashMap<String, String> hashMap = new HashMap<>();
 
-        FunctionUtils.sendRequesToServer(Request.Method.GET, url, requireContext(), hashMap,
+        FunctionUtils.sendRequestToServer(Request.Method.GET, url, requireContext(), hashMap,
                 new VolleyCallback() {
                     @Override
                     public void onResponse(@NonNull String response) {

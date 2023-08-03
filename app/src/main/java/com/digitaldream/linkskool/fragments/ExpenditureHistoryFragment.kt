@@ -32,7 +32,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.digitaldream.linkskool.utils.FunctionUtils.plotLineChart
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequesToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONObject
@@ -147,7 +147,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
         }
 
 
-        sendRequesToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
+        sendRequestToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     try {
@@ -292,7 +292,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
 
         when {
             timeFrameDataModel.grouping != null -> {
-                sendRequesToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
+                sendRequestToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
                     object : VolleyCallback {
                         override fun onResponse(response: String) {
                             try {
@@ -383,7 +383,7 @@ class ExpenditureHistoryFragment : Fragment(R.layout.fragment_history_expenditur
             }
 
             else -> {
-                sendRequesToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
+                sendRequestToServer(Request.Method.POST, mUrl!!, requireContext(), hashMap,
                     object : VolleyCallback {
                         override fun onResponse(response: String) {
                             try {
