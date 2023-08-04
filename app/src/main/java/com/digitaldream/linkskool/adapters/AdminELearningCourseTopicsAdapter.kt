@@ -121,7 +121,6 @@ class AdminELearningCourseTopicsAdapter(
 
                 true
             }
-
         }
     }
 
@@ -192,7 +191,8 @@ class AdminELearningCourseTopicsAdapter(
                             "assignment" -> {
                                 val url =
                                     "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId}&&level=${topicModel.levelId}"
+                                        topicModel.courseId
+                                    }&&level=${topicModel.levelId}"
 
                                 val content = getContent(url, itemView)
                                 launchActivity(itemView, from, content)
@@ -201,7 +201,8 @@ class AdminELearningCourseTopicsAdapter(
                             "material" -> {
                                 val url =
                                     "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId}&&level=${topicModel.levelId}"
+                                        topicModel.courseId
+                                    }&&level=${topicModel.levelId}"
 
                                 val content = getContent(url, itemView)
                                 launchActivity(itemView, from, content)
@@ -210,7 +211,8 @@ class AdminELearningCourseTopicsAdapter(
                             "question" -> {
                                 val url =
                                     "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId}&&level=${topicModel.levelId}"
+                                        topicModel.courseId
+                                    }&&level=${topicModel.levelId}"
 
                                 val content = getContent(url, itemView)
                                 launchActivity(itemView, from, content)
@@ -220,7 +222,6 @@ class AdminELearningCourseTopicsAdapter(
 
                             }
                         }
-
 
                         true
                     }
@@ -253,7 +254,6 @@ class AdminELearningCourseTopicsAdapter(
                     result = ""
                 }
             }
-
         )
 
         return result
@@ -318,7 +318,7 @@ class AdminELearningCourseTopicsAdapter(
 
                 notifyDataSetChanged()
             }
-        }, 1000)
+        }, 500)
 
     }
 

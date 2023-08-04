@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -77,7 +78,7 @@ class AdminELearningMultiChoiceDialogFragment(
 
         initializeQuestionModel()
         initializeOptions()
-        options()
+        setUpOptionsAdapter()
 
         mDismissBtn.setOnClickListener {
             onDiscard()
@@ -129,7 +130,7 @@ class AdminELearningMultiChoiceDialogFragment(
     }
 
 
-    private fun options() {
+    private fun setUpOptionsAdapter() {
         mOptionsAdapter = GenericAdapter(
             mOptionList,
             R.layout.fragment_admin_e_learning_multi_choice_item,
@@ -226,6 +227,8 @@ class AdminELearningMultiChoiceDialogFragment(
                     popUpMenu.setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.detach -> {
+                                removeAttachmentBtn.isVisible = false
+                                showAttachmentPopUpBtn.isVisible = true
                                 removeOption(position)
                                 true
                             }
@@ -271,16 +274,26 @@ class AdminELearningMultiChoiceDialogFragment(
     }
 
     private fun removeOption(position: Int) {
+        println("position $position  size ${mOptionList.size}")
+        val focusedEditText = mOptionsRecyclerView.findFocus() as? EditText
+        focusedEditText?.clearFocus()
+
         mOptionList.removeAt(position)
+        if (selectedPosition == position)
+            selectedPosition = RecyclerView.NO_POSITION
+
         mOptionsAdapter.notifyItemRemoved(position)
+
     }
+
 
     private fun addOption() {
         val optionText = ""
         val option = MultipleChoiceOption(optionText)
         mOptionList.add(option)
-        mOptionsAdapter.notifyItemRangeInserted(mOptionList.size - 1, 1)
+        mOptionsAdapter.notifyItemInserted(mOptionList.size - 1)
     }
+
 
     private fun showQuestionAttachment() {
         AdminELearningAttachmentDialog("multiple choice")

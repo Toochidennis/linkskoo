@@ -119,18 +119,7 @@ class AdminQuestionAdapter(
         private val sectionTopBorder: LinearLayout = itemView.findViewById(R.id.separator2)
 
         fun bind(sectionModel: SectionModel) {
-            if (sectionModel.sectionTitle.isNullOrEmpty()) {
-                sectionTxt.isVisible = false
-                sectionBtn.isVisible = false
-                sectionBottomBorder.isVisible = false
-                sectionTopBorder.isVisible = false
-            } else {
-                sectionTxt.text = sectionModel.sectionTitle
-                sectionTxt.isVisible = true
-                sectionBtn.isVisible = true
-                sectionBottomBorder.isVisible = true
-                sectionTopBorder.isVisible = true
-            }
+            sectionTxt.text = sectionModel.sectionTitle
 
             sectionAction(sectionBtn, sectionModel, adapterPosition)
 
@@ -351,7 +340,7 @@ class AdminQuestionAdapter(
 
                 notifyDataSetChanged()
             }
-        }, 1000)
+        }, 500)
     }
 
 
