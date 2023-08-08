@@ -74,7 +74,7 @@ class AdminELearningMultiChoiceDialogFragment(
         setUpRecyclerView()
 
         mDismissBtn.setOnClickListener {
-            onDiscard()
+            onExit()
         }
 
         mAddOptionBtn.setOnClickListener {
@@ -96,7 +96,6 @@ class AdminELearningMultiChoiceDialogFragment(
                 showQuestionAttachment()
             }
         }
-
     }
 
     private fun initializeQuestionModel() {
@@ -198,7 +197,7 @@ class AdminELearningMultiChoiceDialogFragment(
         }
     }
 
-    private fun onDiscard() {
+    private fun onExit() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")

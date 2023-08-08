@@ -133,7 +133,6 @@ class AdminELearningCourseTopicsAdapter(
             descriptionTxt.text = assignment.title
             val date = formatDate2(assignment.date, "custom")
             dateTxt.text = date
-
         }
     }
 
@@ -271,7 +270,6 @@ class AdminELearningCourseTopicsAdapter(
         )
     }
 
-
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         val draggedItem = itemList[fromPosition]
         val targetItem = itemList[toPosition]
@@ -357,10 +355,10 @@ class AdminELearningCourseTopicsAdapter(
 
 
     private fun getAssociatedItems(topicModel: CourseTopicModel): MutableList<CourseTopicModel> {
-        val sectionPosition = itemList.indexOf(topicModel)
+        val topicPosition = itemList.indexOf(topicModel)
         val associatedItems = mutableListOf<CourseTopicModel>()
 
-        for (i in sectionPosition + 1 until itemList.size) {
+        for (i in topicPosition + 1 until itemList.size) {
             val item = itemList[i]
             if (item.viewType == "assignment" || item.viewType == "material"
                 || item.viewType == "question"
