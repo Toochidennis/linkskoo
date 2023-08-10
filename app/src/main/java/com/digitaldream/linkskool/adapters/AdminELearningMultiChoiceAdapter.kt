@@ -116,7 +116,7 @@ class AdminELearningMultiChoiceAdapter(
                 previewAttachment(option.attachmentUri!!, itemView)
             }
 
-            radioButtonAction(option, radioButton, adapterPosition)
+            radioButtonAction(radioButton, adapterPosition)
 
             showAttachmentPopUpBtn.setOnClickListener { view ->
                 val popUpMenu = PopupMenu(view.context, view)
@@ -229,7 +229,6 @@ class AdminELearningMultiChoiceAdapter(
 
 
     private fun radioButtonAction(
-        option: MultipleChoiceOption,
         radioButton: RadioButton,
         position: Int
     ) {
@@ -237,8 +236,10 @@ class AdminELearningMultiChoiceAdapter(
             if (radioButton.isChecked) {
                 selectedPosition = position
                 questionModelCopy.checkedPosition = selectedPosition
+
+                val optionModel = newItemList[position]
                 questionModelCopy.correctAnswer =
-                    option.optionText.ifEmpty { option.attachmentName }
+                    optionModel?.optionText?.ifEmpty { optionModel.attachmentName }
 
                 updateRadioButtonState(position)
             }

@@ -72,6 +72,7 @@ import java.io.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.zip.GZIPOutputStream
 
 object FunctionUtils {
     //var counter = 0
@@ -908,43 +909,38 @@ object FunctionUtils {
     @JvmStatic
     fun convertUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
         val inputStream = when (imageUri) {
-            is File -> {
-                val file = File(imageUri.absolutePath)
-                FileInputStream(file)
-            }
-
-            is Uri -> {
-                context.contentResolver.openInputStream(imageUri)
-            }
-
+            is File -> FileInputStream(imageUri)
+            is Uri -> context.contentResolver.openInputStream(imageUri)
             else -> null
         }
 
-        when (inputStream) {
-            null -> return imageUri
-
-            else -> {
-                inputStream.let { input ->
-                    try {
-                        val outputStream = ByteArrayOutputStream()
-                        val buffer = ByteArray(1024)
-                        var bytesRead: Int
-                        while (input.read(buffer).also { bytesRead = it } != -1) {
-                            outputStream.write(buffer, 0, bytesRead)
-                        }
-
-                        val fileBytes = outputStream.toByteArray()
-                        return Base64.encodeToString(fileBytes, Base64.NO_WRAP)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-                        input.close()
-                    }
+        return inputStream?.use { input ->
+            try {
+                val outputStream = ByteArrayOutputStream()
+                val buffer = ByteArray(1024)
+                var bytesRead: Int
+                while (input.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
                 }
-            }
 
+                val fileBytes = outputStream.toByteArray()
+
+                //val compressedBytes= compress(fileBytes)
+
+                Base64.encodeToString(fileBytes, Base64.DEFAULT)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                imageUri
+            }
         }
-        return imageUri
+    }
+
+    private fun compress(input: ByteArray): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        val gzipOutputStream = GZIPOutputStream(outputStream)
+        gzipOutputStream.write(input)
+        gzipOutputStream.close()
+        return outputStream.toByteArray()
     }
 
 }

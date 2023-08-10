@@ -6,13 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.adapters.AdminELearningCourseTopicsAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
+import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.json.JSONArray
 
 
 private const val ARG_PARAM1 = "param1"
@@ -23,7 +28,11 @@ private const val ARG_PARAM3 = "param3"
 class AdminELearningCourseTopicsFragment :
     Fragment(R.layout.fragment_admin_e_learning_course_topics) {
 
+    private lateinit var contentRecyclerView: RecyclerView
     private lateinit var addContentButton: FloatingActionButton
+
+    private lateinit var contentAdapter: AdminELearningCourseTopicsAdapter
+    private var contentList = mutableListOf<ContentModel>()
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
@@ -61,19 +70,21 @@ class AdminELearningCourseTopicsFragment :
         addContent()
 
         getCourseOutline()
+
+        setUpRecyclerView()
     }
 
     private fun setUpViews(view: View) {
         view.apply {
             val toolbar: Toolbar = findViewById(R.id.toolbar)
+            contentRecyclerView = findViewById(R.id.contentRecyclerView)
             addContentButton = findViewById(R.id.add_btn)
 
             toolbar.apply {
-                title = "Topics"
+                "$mCourseName topics".let { title = it }
                 setNavigationIcon(R.drawable.arrow_left)
                 setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             }
-
         }
     }
 
@@ -93,13 +104,14 @@ class AdminELearningCourseTopicsFragment :
     }
 
     private fun getCourseOutline() {
-        val term = requireActivity()
+        val currentTerm = requireActivity()
             .getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
             .getString("term", "")
-        println("term $term")
 
         val url = "${getString(R.string.base_url)}/getOutline.php?" +
-                "course=$mCourseId&&level=$mLevelId&&term=$term"
+                "course=$mCourseId&&level=$mLevelId&&term=$currentTerm"
+
+        //  val url = "${getString(R.string.base_url)}/getContent.php?id=368&&type=2"
 
         sendRequestToServer(
             Request.Method.GET,
@@ -108,14 +120,72 @@ class AdminELearningCourseTopicsFragment :
             null,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
+                    try {
+                        if (response != "[]") {
+                            with(JSONArray(response)) {
+                                for (i in 0 until length()) {
+                                    val contentObject = getJSONObject(i)
+
+                                    contentObject.let {
+                                        val id = it.getString("id")
+                                        val title = it.getString("title")
+                                        val description = it.getString("body")
+                                        val courseId = it.getString("course_id")
+                                        val levelId = it.getString("level")
+                                        val authorId = it.getString("author_id")
+                                        val authorName = it.getString("author_name")
+                                        val term = it.getString("term")
+                                        val date = it.getString("upload_date")
+                                        val type = it.getString("type")
+
+                                        when (it.getString("content_type")) {
+                                            "Quiz" -> {
+                                                val content = ContentModel(
+                                                    id, title,
+                                                    description,
+                                                    courseId,
+                                                    levelId,
+                                                    authorId, authorName, date, term, type,
+                                                    "question"
+                                                )
+
+                                                contentList.add(content)
+                                                //contentList.sortBy {  }
+                                            }
+
+                                            else -> null
+                                        }
+                                    }
+
+                                }
+                            }
+
+                            contentAdapter.notifyDataSetChanged()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
                 }
 
                 override fun onError(error: VolleyError) {
 
                 }
-            })
-
-
+            }
+        )
     }
+
+
+    private fun setUpRecyclerView() {
+        contentAdapter = AdminELearningCourseTopicsAdapter(contentList)
+
+        contentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = contentAdapter
+        }
+    }
+
+
 }

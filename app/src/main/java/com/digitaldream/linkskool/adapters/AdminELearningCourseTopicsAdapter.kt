@@ -18,7 +18,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
-import com.digitaldream.linkskool.models.CourseTopicModel
+import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.DraggedItemDecoration
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
@@ -26,7 +26,7 @@ import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.Collections
 
 class AdminELearningCourseTopicsAdapter(
-    private val itemList: MutableList<CourseTopicModel>
+    private val itemList: MutableList<ContentModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperAdapter {
 
     companion object {
@@ -108,7 +108,7 @@ class AdminELearningCourseTopicsAdapter(
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
         private val separator: LinearLayout = itemView.findViewById(R.id.separator)
 
-        fun bind(topic: CourseTopicModel) {
+        fun bind(topic: ContentModel) {
             topicTxt.text = topic.title
 
             itemView.setOnLongClickListener {
@@ -129,10 +129,10 @@ class AdminELearningCourseTopicsAdapter(
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
 
-        fun bind(assignment: CourseTopicModel) {
+        fun bind(assignment: ContentModel) {
             descriptionTxt.text = assignment.title
             val date = formatDate2(assignment.date, "custom")
-            dateTxt.text = date
+            "Posted $date".let {dateTxt.text = it}
         }
     }
 
@@ -142,7 +142,7 @@ class AdminELearningCourseTopicsAdapter(
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
 
-        fun bind(material: CourseTopicModel) {
+        fun bind(material: ContentModel) {
             materialImage.setImageDrawable(
                 ContextCompat
                     .getDrawable(itemView.context, R.drawable.ic_material)
@@ -150,7 +150,7 @@ class AdminELearningCourseTopicsAdapter(
 
             descriptionTxt.text = material.title
             val date = formatDate2(material.date, "custom")
-            dateTxt.text = date
+            "Posted $date".let {dateTxt.text = it}
         }
     }
 
@@ -160,7 +160,7 @@ class AdminELearningCourseTopicsAdapter(
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
 
-        fun bind(question: CourseTopicModel) {
+        fun bind(question: ContentModel) {
             materialImage.setImageDrawable(
                 ContextCompat
                     .getDrawable(itemView.context, R.drawable.ic_question)
@@ -168,14 +168,14 @@ class AdminELearningCourseTopicsAdapter(
 
             descriptionTxt.text = question.title
             val date = formatDate2(question.date, "custom")
-            dateTxt.text = date
+            "Posted $date".let {dateTxt.text = it}
         }
     }
 
     private fun optionsAction(
         from: String,
         optionBtn: ImageView,
-        topicModel: CourseTopicModel,
+        topicModel: ContentModel,
         itemView: View,
         position: Int
     ) {
@@ -190,8 +190,7 @@ class AdminELearningCourseTopicsAdapter(
                             "assignment" -> {
                                 val url =
                                     "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId
-                                    }&&level=${topicModel.levelId}"
+                                        topicModel.courseId}&&level=${topicModel.levelId}"
 
                                 val content = getContent(url, itemView)
                                 launchActivity(itemView, from, content)
@@ -199,9 +198,8 @@ class AdminELearningCourseTopicsAdapter(
 
                             "material" -> {
                                 val url =
-                                    "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId
-                                    }&&level=${topicModel.levelId}"
+                                    "${itemView.context.getString(R.string.base_url)}/getContent" +
+                                            ".php?course=${topicModel.courseId}&&level=${topicModel.levelId}"
 
                                 val content = getContent(url, itemView)
                                 launchActivity(itemView, from, content)
@@ -210,8 +208,7 @@ class AdminELearningCourseTopicsAdapter(
                             "question" -> {
                                 val url =
                                     "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId
-                                    }&&level=${topicModel.levelId}"
+                                        topicModel.courseId}&&level=${topicModel.levelId}"
 
                                 val content = getContent(url, itemView)
                                 launchActivity(itemView, from, content)
@@ -293,7 +290,6 @@ class AdminELearningCourseTopicsAdapter(
         }
 
         notifyItemMoved(fromPosition, toPosition)
-
     }
 
     override fun onItemDismiss(
@@ -354,9 +350,9 @@ class AdminELearningCourseTopicsAdapter(
     }
 
 
-    private fun getAssociatedItems(topicModel: CourseTopicModel): MutableList<CourseTopicModel> {
+    private fun getAssociatedItems(topicModel: ContentModel): MutableList<ContentModel> {
         val topicPosition = itemList.indexOf(topicModel)
-        val associatedItems = mutableListOf<CourseTopicModel>()
+        val associatedItems = mutableListOf<ContentModel>()
 
         for (i in topicPosition + 1 until itemList.size) {
             val item = itemList[i]

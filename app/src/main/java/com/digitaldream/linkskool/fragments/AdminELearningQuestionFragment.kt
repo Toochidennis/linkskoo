@@ -609,6 +609,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                             requireContext(), "Something went wrong please try again",
                             Toast.LENGTH_SHORT
                         ).show()
+                        println(error)
                     }
                 })
 
