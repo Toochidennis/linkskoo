@@ -13,15 +13,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
-import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley.newRequestQueue
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
-import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.Collections
 
 class AdminELearningCourseOutlineAdapter(
@@ -186,31 +184,38 @@ class AdminELearningCourseOutlineAdapter(
                         when (from) {
                             "assignment" -> {
                                 val url =
-                                    "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId
-                                    }&&level=${topicModel.levelId}"
+                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
+                                            "id=${topicModel.id}&type=${topicModel.type}"
 
-                                val content = getContent(url, itemView)
-                                launchActivity(itemView, from, content)
+                                getContent(url, itemView) { response ->
+                                    if (response.isBlank()) {
+                                        launchActivity(itemView, from, response)
+                                    }
+                                }
                             }
 
                             "material" -> {
                                 val url =
-                                    "${itemView.context.getString(R.string.base_url)}/getContent" +
-                                            ".php?course=${topicModel.courseId}&&level=${topicModel.levelId}"
+                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
+                                            "id=${topicModel.id}&type=${topicModel.type}"
 
-                                val content = getContent(url, itemView)
-                                launchActivity(itemView, from, content)
+                                getContent(url, itemView) { response ->
+                                    if (response.isBlank()) {
+                                        launchActivity(itemView, from, response)
+                                    }
+                                }
                             }
 
                             "question" -> {
                                 val url =
-                                    "${itemView.context.getString(R.string.base_url)}/.php?course=${
-                                        topicModel.courseId
-                                    }&&level=${topicModel.levelId}"
+                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
+                                            "id=${topicModel.id}&type=${topicModel.type}"
 
-                                val content = getContent(url, itemView)
-                                launchActivity(itemView, from, content)
+                                getContent(url, itemView) { response ->
+                                    if (response.isBlank()) {
+                                        launchActivity(itemView, from, response)
+                                    }
+                                }
                             }
 
                             "topic" -> {
@@ -231,44 +236,38 @@ class AdminELearningCourseOutlineAdapter(
         }
     }
 
-    private fun getContent(url: String, itemView: View): String {
-
-        var result = ""
-
-        sendRequestToServer(
-            Request.Method.GET,
+    private fun getContent(
+        url: String,
+        itemView: View,
+        onResponse: (response: String) -> Unit
+    ) {
+        val stringRequest = object : StringRequest(
+            Method.GET,
             url,
-            itemView.context,
-            null,
-            object : VolleyCallback {
-                override fun onResponse(response: String) {
-                    result = response
-                }
-
-                override fun onError(error: VolleyError) {
-                    result = ""
-                }
+            { response: String ->
+                onResponse(response)
+            },
+            {
+                onResponse("")
             }
-        )
+        ) {}
 
-        return result
+        newRequestQueue(itemView.context).add(stringRequest)
     }
 
-    private fun launchActivity(
-        itemView: View,
-        from: String,
-        json: String
-    ) {
+
+    private fun launchActivity(itemView: View, from: String, response: String) {
         itemView.context.startActivity(
             Intent(itemView.context, ELearningActivity::class.java)
                 .putExtra("from", from)
-                .putExtra("json", json)
+                .putExtra("json", response)
         )
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         val draggedItem = itemList[fromPosition]
         val targetItem = itemList[toPosition]
+
         println("1")
 
         if (draggedItem.viewType == "topic" && targetItem.viewType == "topic") {
@@ -280,12 +279,12 @@ class AdminELearningCourseOutlineAdapter(
                 swapTopicsWithAssociatedItems(fromPosition, toPosition)
                 println("3")
             } else {
-                println("3")
+                println("4")
                 swapTopics(fromPosition, toPosition)
             }
         } else if (draggedItem.viewType == "topic" &&
-            targetItem.viewType == "assignment" || targetItem.viewType == "material" ||
-            targetItem.viewType == "question"
+            (targetItem.viewType == "assignment" || targetItem.viewType == "material" ||
+                    targetItem.viewType == "question")
         ) {
             println("5")
             return

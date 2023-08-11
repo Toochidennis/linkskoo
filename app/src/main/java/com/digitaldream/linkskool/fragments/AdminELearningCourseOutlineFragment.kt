@@ -115,8 +115,6 @@ class AdminELearningCourseOutlineFragment :
         val url = "${getString(R.string.base_url)}/getOutline.php?" +
                 "course=$mCourseId&&level=$mLevelId&&term=$currentTerm"
 
-        //  val url = "${getString(R.string.base_url)}/getContent.php?id=368&&type=2"
-
         sendRequestToServer(
             Request.Method.GET,
             url,
@@ -200,6 +198,7 @@ class AdminELearningCourseOutlineFragment :
 
                                 }
                             }
+                            println(contentList)
 
                             contentAdapter.notifyDataSetChanged()
                         }
