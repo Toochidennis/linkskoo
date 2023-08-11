@@ -6,15 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningCourseTopicsAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningCourseOutlineAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
@@ -25,13 +27,13 @@ private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 
 
-class AdminELearningCourseTopicsFragment :
-    Fragment(R.layout.fragment_admin_e_learning_course_topics) {
+class AdminELearningCourseOutlineFragment :
+    Fragment(R.layout.fragment_admin_e_learning_course_outline) {
 
     private lateinit var contentRecyclerView: RecyclerView
     private lateinit var addContentButton: FloatingActionButton
 
-    private lateinit var contentAdapter: AdminELearningCourseTopicsAdapter
+    private lateinit var contentAdapter: AdminELearningCourseOutlineAdapter
     private var contentList = mutableListOf<ContentModel>()
 
     private var mLevelId: String? = null
@@ -53,7 +55,7 @@ class AdminELearningCourseTopicsFragment :
 
         @JvmStatic
         fun newInstance(param1: String, param2: String, param3: String) =
-            AdminELearningCourseTopicsFragment().apply {
+            AdminELearningCourseOutlineFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -72,6 +74,8 @@ class AdminELearningCourseTopicsFragment :
         getCourseOutline()
 
         setUpRecyclerView()
+
+        onTouchHelper()
     }
 
     private fun setUpViews(view: View) {
@@ -81,7 +85,7 @@ class AdminELearningCourseTopicsFragment :
             addContentButton = findViewById(R.id.add_btn)
 
             toolbar.apply {
-                "$mCourseName topics".let { title = it }
+                "$mCourseName outline".let { title = it }
                 setNavigationIcon(R.drawable.arrow_left)
                 setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             }
@@ -139,7 +143,47 @@ class AdminELearningCourseTopicsFragment :
                                         val type = it.getString("type")
 
                                         when (it.getString("content_type")) {
-                                            "Quiz" -> {
+                                            "Topic" -> {
+                                                val content = ContentModel(
+                                                    id, title,
+                                                    description,
+                                                    courseId,
+                                                    levelId,
+                                                    authorId, authorName, date, term, type,
+                                                    "topic"
+                                                )
+
+                                                contentList.add(content)
+                                            }
+
+                                            "Assignment" -> {
+                                                val content = ContentModel(
+                                                    id, title,
+                                                    description,
+                                                    courseId,
+                                                    levelId,
+                                                    authorId, authorName, date, term, type,
+                                                    "assignment"
+                                                )
+
+                                                contentList.add(content)
+
+                                            }
+
+                                            "Material" -> {
+                                                val content = ContentModel(
+                                                    id, title,
+                                                    description,
+                                                    courseId,
+                                                    levelId,
+                                                    authorId, authorName, date, term, type,
+                                                    "material"
+                                                )
+
+                                                contentList.add(content)
+                                            }
+
+                                            else -> {
                                                 val content = ContentModel(
                                                     id, title,
                                                     description,
@@ -150,10 +194,7 @@ class AdminELearningCourseTopicsFragment :
                                                 )
 
                                                 contentList.add(content)
-                                                //contentList.sortBy {  }
                                             }
-
-                                            else -> null
                                         }
                                     }
 
@@ -178,13 +219,20 @@ class AdminELearningCourseTopicsFragment :
 
 
     private fun setUpRecyclerView() {
-        contentAdapter = AdminELearningCourseTopicsAdapter(contentList)
+        contentAdapter = AdminELearningCourseOutlineAdapter(contentList)
 
         contentRecyclerView.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = contentAdapter
         }
+    }
+
+
+    private fun onTouchHelper(){
+        val touchCallback = ItemTouchHelperCallback(contentAdapter)
+        val touchHelper = ItemTouchHelper(touchCallback)
+        touchHelper.attachToRecyclerView(contentRecyclerView)
     }
 
 

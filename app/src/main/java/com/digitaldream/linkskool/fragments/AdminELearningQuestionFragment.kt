@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminQuestionAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
 import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
@@ -34,6 +34,10 @@ import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -52,7 +56,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private lateinit var submitQuestionButton: LinearLayout
     private lateinit var addQuestionButton: FloatingActionButton
 
-    private lateinit var sectionAdapter: AdminQuestionAdapter
+    private lateinit var sectionAdapter: AdminELearningQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
     private var selectedClassArray = JSONArray()
 
@@ -199,7 +203,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun setupQuestionRecyclerView() {
         sectionAdapter =
-            AdminQuestionAdapter(parentFragmentManager, sectionItems)
+            AdminELearningQuestionAdapter(parentFragmentManager, sectionItems)
 
         sectionRecyclerView.apply {
             hasFixedSize()
@@ -274,7 +278,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun onTouchHelper() {
-        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter, sectionRecyclerView)
+        val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
         val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
         sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
     }
@@ -583,6 +587,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun submitQuestions() {
         prepareQuestions()
 
@@ -600,8 +605,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        SystemClock.sleep(1000)
-                        onBackPressed()
+                        GlobalScope.launch {
+                            delay(100L)
+                            onBackPressed()
+                        }
                     }
 
                     override fun onError(error: VolleyError) {

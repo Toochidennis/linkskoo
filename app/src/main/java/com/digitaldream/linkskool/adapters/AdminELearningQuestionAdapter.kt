@@ -1,11 +1,13 @@
 package com.digitaldream.linkskool.adapters
 
 
+import android.animation.ValueAnimator
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
@@ -24,10 +26,14 @@ import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.digitaldream.linkskool.utils.DraggedItemDecoration
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Collections
 
 
-class AdminQuestionAdapter(
+class AdminELearningQuestionAdapter(
     private val fragmentManager: FragmentManager,
     private val itemList: MutableList<SectionModel>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperAdapter {
@@ -114,9 +120,7 @@ class AdminQuestionAdapter(
 
     inner class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val sectionTxt: TextView = itemView.findViewById(R.id.sectionTxt)
-        private val sectionBtn: ImageView = itemView.findViewById(R.id.sectionButton)
-        private val sectionBottomBorder: LinearLayout = itemView.findViewById(R.id.separator)
-        private val sectionTopBorder: LinearLayout = itemView.findViewById(R.id.separator2)
+        private val sectionBtn: ImageButton = itemView.findViewById(R.id.sectionButton)
 
         fun bind(sectionModel: SectionModel) {
             sectionTxt.text = sectionModel.sectionTitle
@@ -124,13 +128,7 @@ class AdminQuestionAdapter(
             sectionAction(sectionBtn, sectionModel, adapterPosition)
 
             itemView.setOnLongClickListener {
-                viewHolderList.forEach { viewHolder ->
-                    viewHolder.itemView.visibility = View.GONE
-                    val layoutParams = viewHolder.itemView.layoutParams
-                    layoutParams.height = 0
-                    viewHolder.itemView.layoutParams = layoutParams
-                }
-
+                animateSwapping(0)
                 true
             }
         }
@@ -141,7 +139,7 @@ class AdminQuestionAdapter(
         private val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
         private val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
         private val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
-        private val questionButton: ImageView = itemView.findViewById(R.id.questionButton)
+        private val questionButton: ImageButton = itemView.findViewById(R.id.questionButton)
 
         fun bind(multiItem: MultiChoiceQuestion) {
             val questionCount = (adapterPosition + 1).toString()
@@ -166,7 +164,7 @@ class AdminQuestionAdapter(
         private val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
         private val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
         private val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
-        private val questionButton: ImageView = itemView.findViewById(R.id.questionButton)
+        private val questionButton: ImageButton = itemView.findViewById(R.id.questionButton)
 
         fun bind(shortAnswer: ShortAnswerModel) {
             val questionCount = (adapterPosition + 1).toString()
@@ -296,47 +294,56 @@ class AdminQuestionAdapter(
         notifyDataSetChanged()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         val draggedItem = itemList[fromPosition]
         val targetItem = itemList[toPosition]
 
+        println("1")
         if (draggedItem.viewType == "section" && targetItem.viewType == "section") {
             val hasQuestionBelowDragged = hasQuestionsBelowSection(fromPosition)
             val hasQuestionsBelowTarget = hasQuestionsBelowSection(toPosition)
 
+            println("2")
             if (hasQuestionsBelowTarget || hasQuestionBelowDragged) {
-                swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
+                GlobalScope.launch {
+                    delay(100L)
+                    swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
+                }
+
+                println("3")
             } else {
+                println("4")
                 swapSections(fromPosition, toPosition)
             }
         } else if (draggedItem.viewType == "section" &&
             targetItem.viewType == "short_answer" || targetItem.viewType == "multiple_choice"
         ) {
+            println("5")
             return
         } else {
+            println("6")
             swapSections(fromPosition, toPosition)
         }
 
+        println("7")
         notifyItemMoved(fromPosition, toPosition)
     }
 
     override fun onItemDismiss(
-        recyclerView: RecyclerView,
-        draggedItemDecoration: DraggedItemDecoration
+        recyclerView: RecyclerView
     ) {
-        viewHolderList.forEach {
-            it.itemView.isVisible = true
-            val layoutParams = it.itemView.layoutParams
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            it.itemView.layoutParams = layoutParams
-        }
+        val density = recyclerView.context.resources.displayMetrics.density
+        val targetHeight = (102f * density).toInt()
+
+        animateSwapping(targetHeight)
 
         Handler(Looper.getMainLooper()).postDelayed({
             recyclerView.post {
-                draggedItemDecoration.let {
-                    it.setDragging(false)
-                    recyclerView.invalidateItemDecorations()
-                }
+//                draggedItemDecoration.let {
+//                    it.setDragging(false)
+//                    recyclerView.invalidateItemDecorations()
+//                }
 
                 notifyDataSetChanged()
             }
@@ -394,6 +401,20 @@ class AdminQuestionAdapter(
 
     private fun swapSections(fromPosition: Int, toPosition: Int) {
         Collections.swap(itemList, fromPosition, toPosition)
+    }
+
+    private fun animateSwapping(targetHeight: Int) {
+        viewHolderList.forEach { viewHolder ->
+            val layoutParams = viewHolder.itemView.layoutParams
+            val animator = ValueAnimator.ofInt(layoutParams.height, targetHeight)
+            animator.addUpdateListener { valueAnimator ->
+                val value = valueAnimator.animatedValue as Int
+                layoutParams.height = value
+                viewHolder.itemView.layoutParams = layoutParams
+            }
+            animator.duration = 200 // Set the desired animation duration
+            animator.start()
+        }
     }
 
 }

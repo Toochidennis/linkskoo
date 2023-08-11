@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningCourseOutlineAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningCreateCourseOutlineAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
@@ -26,7 +26,7 @@ import com.j256.ormlite.dao.DaoManager
 private const val ARG_PARAM1 = "param1"
 
 
-class AdminELearningAddCourseOutlineDialogFragment :
+class AdminELearningCreateCourseOutlineDialogFragment :
     DialogFragment(R.layout.dialog_fragment_admin_e_learning_add_course_outline) {
 
     private lateinit var mBackBtn: ImageView
@@ -62,7 +62,7 @@ class AdminELearningAddCourseOutlineDialogFragment :
 
         @JvmStatic
         fun newInstance(param1: String) =
-            AdminELearningAddCourseOutlineDialogFragment().apply {
+            AdminELearningCreateCourseOutlineDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                 }
@@ -142,7 +142,7 @@ class AdminELearningAddCourseOutlineDialogFragment :
                 mSelectAllBtn.isVisible = false
                 mTagView.isVisible = true
             } else {
-                AdminELearningCourseOutlineAdapter(
+                AdminELearningCreateCourseOutlineAdapter(
                     requireContext(),
                     selectedItems,
                     mTagList,

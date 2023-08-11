@@ -60,13 +60,7 @@ class AdminELearningCreateContentDialog(
         }
 
         topicBtn.setOnClickListener {
-            AdminELearningCreateTopicDialog(context).apply {
-                setCancelable(true)
-                show()
-            }.window?.setLayout(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+            launchActivity("topic")
         }
     }
 

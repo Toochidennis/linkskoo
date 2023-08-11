@@ -8,7 +8,6 @@ import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
 
 class ItemTouchHelperCallback(
     private val adapter: ItemTouchHelperAdapter,
-    private val recyclerView: RecyclerView
 ) : ItemTouchHelper.Callback() {
 
     private var isDragging = false
@@ -42,12 +41,12 @@ class ItemTouchHelperCallback(
         super.onSelectedChanged(viewHolder, actionState)
 
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && !isDragging) {
-            viewHolder?.let {
-                draggedItemDecoration = DraggedItemDecoration(it)
-                recyclerView.addItemDecoration(draggedItemDecoration!!)
-                draggedItemDecoration?.setDragging(true)
-                recyclerView.invalidateItemDecorations()
-            }
+//            viewHolder?.let {
+//                draggedItemDecoration = DraggedItemDecoration(it)
+//                recyclerView.addItemDecoration(draggedItemDecoration!!)
+//                draggedItemDecoration?.setDragging(true)
+//                recyclerView.invalidateItemDecorations()
+//            }
 
             viewHolder?.itemView?.alpha = 0.7f
             viewHolder?.itemView?.animate()?.scaleX(1.1f)?.scaleY(1.1f)?.setDuration(200)?.start()
@@ -62,7 +61,7 @@ class ItemTouchHelperCallback(
         viewHolder.itemView.scaleY = 1.0f
         isDragging = false
 
-        adapter.onItemDismiss(recyclerView, draggedItemDecoration!!)
+        adapter.onItemDismiss(recyclerView)
     }
 
 }

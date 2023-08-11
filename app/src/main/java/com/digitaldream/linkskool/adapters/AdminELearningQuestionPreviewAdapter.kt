@@ -150,20 +150,29 @@ class AdminELearningQuestionPreviewAdapter(
     }
 
     private fun loadImage(imageUri: Any?, imageView: ImageView) {
-        when (imageUri) {
-            is String -> {
-                Picasso.get().load(imageUri).into(imageView)
-                imageView.isVisible = true
+        try {
+            when (imageUri) {
+                is String -> {
+                    if (imageUri.isNotEmpty()) {
+                        Picasso.get().load(imageUri).into(imageView)
+                        imageView.isVisible = true
+                    } else {
+                        imageView.isVisible = false
+                    }
+
+                }
+
+                is Uri -> {
+                    Picasso.get().load(imageUri).into(imageView)
+                    imageView.isVisible = true
+                }
+
+                else -> imageView.isVisible = false
+
             }
 
-            is Uri -> {
-                Picasso.get().load(imageUri).into(imageView)
-                imageView.isVisible = true
-            }
-
-            else -> {
-                imageView.isVisible = false
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".fragments.AdminELearningCourseTopicsFragment">
+    tools:context=".fragments.AdminELearningCourseOutlineFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -23,27 +23,27 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/appBar"
         android:contentDescription="@string/todo">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:contentDescription="@string/todo">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/white"
-                android:padding="6dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_16">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/contentRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="true"/>
+                    android:layout_height="match_parent"
+                    android:clipToPadding="true" />
 
             </LinearLayout>
 
@@ -70,5 +70,6 @@
             android:focusable="true"
             android:src="@drawable/ic_add"
             app:tint="@color/white" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

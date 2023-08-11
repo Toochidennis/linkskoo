@@ -366,8 +366,10 @@ class AdminELearningMaterialFragment :
 
         return HashMap<String, String>().apply {
             put("title", titleText)
+            put("type", "1")
             put("description", descriptionText)
             put("topic", topicText)
+            put("objectives", "")
 
             mFileList.isNotEmpty().let { isTrue ->
                 if (isTrue) {
@@ -413,6 +415,9 @@ class AdminELearningMaterialFragment :
             put("level", mLevelId!!)
             put("course", mCourseId!!)
             put("course_name", mCourseName!!)
+            put("start_date", "")
+            put("end_date", "")
+            put("grade", "")
             put("author_id", userId!!)
             put("author_name", userName!!)
             put("year", year!!)
@@ -438,7 +443,7 @@ class AdminELearningMaterialFragment :
                     Toast.LENGTH_SHORT
                 ).show()
 
-               SystemClock.sleep(1000)
+                SystemClock.sleep(1000)
                 onBackPressed()
             }
 

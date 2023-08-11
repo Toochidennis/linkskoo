@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -20,6 +21,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter
@@ -30,11 +33,15 @@ import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
+import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
+import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
@@ -67,7 +74,7 @@ class AdminELearningAssignmentFragment :
     private lateinit var mStartDateBtn: ImageView
     private lateinit var mEndDateBtn: ImageView
     private lateinit var mDateSeparator: LinearLayout
-    private lateinit var mTopicBtn: TextView
+    private lateinit var mTopicTxt: TextView
 
     private var mClassList = mutableListOf<ClassNameTable>()
     private val selectedClassItems = hashMapOf<String, String>()
@@ -83,6 +90,16 @@ class AdminELearningAssignmentFragment :
     private var jsonFromTopic: String? = null
     private var mCourseName: String? = null
     private var updatedJson = JSONObject()
+    private var newHashMap = mutableMapOf<Any?, Any?>()
+    private var year: String? = null
+    private var term: String? = null
+    private var userId: String? = null
+    private var userName: String? = null
+
+    private var topicText: String? = null
+    private var descriptionText: String? = null
+    private var titleText: String? = null
+    private var gradeText: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +139,13 @@ class AdminELearningAssignmentFragment :
         super.onViewCreated(view, savedInstanceState)
 
         setUpViews(view)
+
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        year = sharedPreferences.getString("school_year", "")
+        term = sharedPreferences.getString("term", "")
+        userId = sharedPreferences.getString("user_id", "")
+        userName = sharedPreferences.getString("user", "")
 
         setUpClassAdapter()
 
@@ -166,7 +190,7 @@ class AdminELearningAssignmentFragment :
             mStartDateBtn = findViewById(R.id.startDateBtn)
             mEndDateBtn = findViewById(R.id.endDateBtn)
             mDateSeparator = findViewById(R.id.separator)
-            mTopicBtn = findViewById(R.id.topicBtn)
+            mTopicTxt = findViewById(R.id.topicBtn)
         }
 
     }
@@ -425,33 +449,133 @@ class AdminELearningAssignmentFragment :
     }
 
     private fun assignAssignment() {
-        val titleText = mAssignmentTitleEditText.text.toString().trim()
-        val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicBtn.text.toString()
+        getFieldsText()
 
-        if (titleText.isEmpty()) {
+        if (titleText.isNullOrBlank()) {
             mAssignmentTitleEditText.error = "Please enter assignment title"
         } else if (selectedClassItems.size == 0) {
             Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
-        } else if (descriptionText.isEmpty()) {
+        } else if (descriptionText.isNullOrBlank()) {
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
-        } else if (topicText.isEmpty()) {
+        } else if (topicText.isNullOrBlank()) {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
         } else {
-
+            postAssignment()
         }
     }
 
-    private fun prepareAssignment(){
 
+    private fun prepareAssignment(): HashMap<String, String> {
+        val filesArray = JSONArray()
+        val classArray = JSONArray()
+
+        return HashMap<String, String>().apply {
+            put("title", titleText!!)
+            put("type", "3")
+            put("description", descriptionText!!)
+            put("topic", topicText!!)
+            put("objectives", "")
+
+            mFileList.isNotEmpty().let { isTrue ->
+                if (isTrue) {
+                    mFileList.forEach { attachment ->
+                        JSONObject().apply {
+                            put("file_name", attachment.name)
+
+                            val oldFileName =
+                                if (attachment.name != attachment.oldName &&
+                                    attachment.oldName.isNotBlank()
+                                ) {
+                                    attachment.oldName
+                                } else {
+                                    ""
+                                }
+
+                            put("old_file_name", oldFileName)
+                            put("type", attachment.type)
+
+                            val image = FunctionUtils.convertUriOrFileToBase64(
+                                attachment.uri,
+                                requireContext()
+                            )
+                            put("image", image)
+                        }.let {
+                            filesArray.put(it)
+                        }
+                    }
+                }
+            }
+
+            put("files", filesArray.toString())
+
+            selectedClassItems.forEach { (key, value) ->
+                if (key.isNotEmpty() and value.isNotEmpty()) {
+                    JSONObject().apply {
+                        put("id", key)
+                        put("name", value)
+                    }.let {
+                        classArray.put(it)
+                    }
+                }
+            }
+
+            put("class", classArray.toString())
+            put("level", mLevelId!!)
+            put("course", mCourseId!!)
+            put("course_name", mCourseName!!)
+            put("start_date", mStartDate!!)
+            put("end_date", mEndDate!!)
+            put("grade", gradeText!!)
+            put("author_id", userId!!)
+            put("author_name", userName!!)
+            put("year", year!!)
+            put("term", term!!)
+        }
+    }
+
+    private fun getFieldsText() {
+        titleText = mAssignmentTitleEditText.text.toString().trim()
+        descriptionText = mDescriptionEditText.text.toString().trim()
+        topicText = mTopicTxt.text.toString()
+        gradeText = mGradeTxt.text.toString()
+    }
+
+    private fun postAssignment() {
+        val url = "${getString(R.string.base_url)}/addContent.php"
+        val hashMap = prepareAssignment()
+
+        sendRequestToServer(
+            Request.Method.POST,
+            url,
+            requireContext(),
+            hashMap,
+            object
+                : VolleyCallback {
+                override fun onResponse(response: String) {
+//                    Toast.makeText(
+//                        requireContext(), "Material submitted successfully",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//
+//                    SystemClock.sleep(1000)
+//                    onBackPressed()
+
+                }
+
+                override fun onError(error: VolleyError) {
+                    Toast.makeText(
+                        requireContext(), "Something went wrong please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
 
     private fun onExit() {
         try {
-
             val json1 = JSONObject(jsonFromTopic!!)
             val json2 = updatedJson
 
@@ -461,7 +585,7 @@ class AdminELearningAssignmentFragment :
                 if (areContentSame) {
                     onBackPressed()
                 } else {
-                    exitWarning()
+                    exitWithWarning()
                 }
             } else {
                 onBackPressed()
@@ -472,7 +596,7 @@ class AdminELearningAssignmentFragment :
 
     }
 
-    private fun exitWarning() {
+    private fun exitWithWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
             setMessage("Your unsaved changes will be lost")

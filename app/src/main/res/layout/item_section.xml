@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sectionLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -26,16 +25,16 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_16" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sectionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator2"
         android:layout_alignParentEnd="true"
+        android:background="@drawable/ripple_effect11"
         android:clickable="true"
         android:contentDescription="@string/todo"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dimen_10"
         android:src="@drawable/ic_more" />
 
@@ -46,12 +45,5 @@
         android:layout_below="@id/sectionTxt"
         android:background="@drawable/line_separator"
         android:orientation="horizontal" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/questionRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/separator"
-        android:layout_marginTop="@dimen/dimen_10" />
 
 </RelativeLayout>

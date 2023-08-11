@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.dialog.AdminELearningCreateTopicFragment
 import com.digitaldream.linkskool.fragments.AdminELearningAssignmentFragment
-import com.digitaldream.linkskool.fragments.AdminELearningCourseTopicsFragment
+import com.digitaldream.linkskool.fragments.AdminELearningCourseOutlineFragment
 import com.digitaldream.linkskool.fragments.AdminELearningMaterialFragment
 import com.digitaldream.linkskool.fragments.AdminELearningQuestionSettingsFragment
 
@@ -25,7 +26,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningCourseTopicsFragment.newInstance(
+                        AdminELearningCourseOutlineFragment.newInstance(
                             levelId!!, courseId!!,
                             courseName!!
                         )
@@ -57,7 +58,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 }
             }
 
-            "assignment"->{
+            "assignment" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
@@ -65,6 +66,20 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                             .newInstance(
                                 levelId!!, courseId!!,
                                 json!!, courseName!!
+                            )
+                    )
+                }
+            }
+
+            "topic" -> {
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningCreateTopicFragment
+                            .newInstance(
+                                courseId!!,
+                                levelId!!,
+                                courseName!!
                             )
                     )
                 }
