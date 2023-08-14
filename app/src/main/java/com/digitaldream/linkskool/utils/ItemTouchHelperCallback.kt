@@ -48,8 +48,8 @@ class ItemTouchHelperCallback(
 //                recyclerView.invalidateItemDecorations()
 //            }
 
-            viewHolder?.itemView?.alpha = .9f
-            viewHolder?.itemView?.animate()?.scaleX(.9f)?.scaleY(.9f)?.setDuration(200)?.start()
+            viewHolder?.itemView?.alpha = .7f
+            viewHolder?.itemView?.animate()?.scaleX(.99f)?.scaleY(.99f)?.setDuration(200)?.start()
             isDragging = true
         }
     }

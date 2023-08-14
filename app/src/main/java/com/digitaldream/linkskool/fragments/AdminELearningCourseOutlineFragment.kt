@@ -209,7 +209,6 @@ class AdminELearningCourseOutlineFragment :
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-
                 }
 
                 override fun onError(error: VolleyError) {

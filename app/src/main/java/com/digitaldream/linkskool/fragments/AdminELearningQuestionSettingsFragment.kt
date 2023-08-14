@@ -266,7 +266,7 @@ class AdminELearningQuestionSettingsFragment :
                             mEndDate = it.getString("endDate")
                             mQuestionTopic = it.getString("topic")
                             mCourseName = it.getString("courseName")
-                            mCourseId =it.getString("courseId")
+                            mCourseId = it.getString("courseId")
                             mLevelId = it.getString("levelId")
                         }
 
@@ -302,8 +302,18 @@ class AdminELearningQuestionSettingsFragment :
     }
 
 
-    private fun selectTopic() {
-        AdminELearningSelectTopicDialogFragment { topic ->
+    private fun selectTopic() = if (selectedItems.isEmpty()) {
+        showText("Please select a class")
+    } else {
+        AdminELearningSelectTopicDialogFragment(
+            courseId = mCourseId!!,
+            levelId = mLevelId!!,
+            courseName = mCourseName!!,
+            selectedClass = selectedItems
+        ) { topic ->
+
+            mTopicTxt.text = topic
+
             println("topic $topic")
         }.show(parentFragmentManager, "")
     }
@@ -352,13 +362,13 @@ class AdminELearningQuestionSettingsFragment :
         if (titleText.isEmpty()) {
             mQuestionTitleEditText.error = "Please enter question title"
         } else if (selectedItems.size == 0) {
-            Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
+            showText("Please select a class")
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
-        } else if (topicText.isEmpty()) {
-            Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
+            showText("Please set date")
+        } else if (topicText.isNotBlank() && topicText == "Topic") {
+            showText("Please select a topic")
         } else {
             prepareSettings()
 
@@ -374,6 +384,9 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
+    private fun showText(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
 
     private fun onExit() {
         try {
