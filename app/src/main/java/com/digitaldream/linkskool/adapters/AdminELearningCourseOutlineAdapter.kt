@@ -10,9 +10,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley.newRequestQueue
 import com.digitaldream.linkskool.R
@@ -20,6 +24,8 @@ import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.Collections
 
 class AdminELearningCourseOutlineAdapter(
@@ -128,6 +134,8 @@ class AdminELearningCourseOutlineAdapter(
             descriptionTxt.text = assignment.title
             val date = formatDate2(assignment.date, "custom")
             "Posted $date".let { dateTxt.text = it }
+
+            optionsAction("assignment", optionBtn, assignment, itemView, adapterPosition)
         }
     }
 
@@ -164,6 +172,10 @@ class AdminELearningCourseOutlineAdapter(
             descriptionTxt.text = question.title
             val date = formatDate2(question.date, "custom")
             "Posted $date".let { dateTxt.text = it }
+
+            optionBtn.setOnClickListener {
+                optionsAction("question", optionBtn, question, itemView, adapterPosition)
+            }
         }
     }
 
@@ -189,7 +201,8 @@ class AdminELearningCourseOutlineAdapter(
 
                                 getContent(url, itemView) { response ->
                                     if (response.isBlank()) {
-                                        launchActivity(itemView, from, response)
+                                        println(response)
+                                        // launchActivity(itemView, from, response)
                                     }
                                 }
                             }
@@ -201,7 +214,8 @@ class AdminELearningCourseOutlineAdapter(
 
                                 getContent(url, itemView) { response ->
                                     if (response.isBlank()) {
-                                        launchActivity(itemView, from, response)
+                                        println(response)
+                                        //launchActivity(itemView, from, response)
                                     }
                                 }
                             }
@@ -213,7 +227,8 @@ class AdminELearningCourseOutlineAdapter(
 
                                 getContent(url, itemView) { response ->
                                     if (response.isBlank()) {
-                                        launchActivity(itemView, from, response)
+                                        println(response)
+                                        // launchActivity(itemView, from, response)
                                     }
                                 }
                             }
@@ -233,6 +248,7 @@ class AdminELearningCourseOutlineAdapter(
                     else -> false
                 }
             }
+            popupMenu.show()
         }
     }
 
@@ -241,18 +257,24 @@ class AdminELearningCourseOutlineAdapter(
         itemView: View,
         onResponse: (response: String) -> Unit
     ) {
-        val stringRequest = object : StringRequest(
-            Method.GET,
-            url,
-            { response: String ->
-                onResponse(response)
-            },
-            {
-                onResponse("")
-            }
-        ) {}
+        println("response: response")
 
-        newRequestQueue(itemView.context).add(stringRequest)
+        sendRequestToServer(
+            Request.Method.GET,
+            url,
+            itemView.context,
+            null,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    println("response: $response")
+                    onResponse(response)
+                }
+
+                override fun onError(error: VolleyError) {
+                    Toast.makeText(itemView.context, "Something went wrong", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
 

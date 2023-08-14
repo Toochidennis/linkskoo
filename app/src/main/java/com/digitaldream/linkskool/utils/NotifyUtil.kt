@@ -5,7 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 
-const val CHANNEL_ID = "1"
+const val CHANNEL_ID = "0"
 class NotifyUtil: Application() {
 
     override fun onCreate() {

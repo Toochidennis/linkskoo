@@ -48,6 +48,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -94,23 +95,6 @@ object FunctionUtils {
 
         return stringBuilder.toString()
     }
-
-
-    /*
-        fun abbreviate(sS: String): String {
-            val strings = sS.lowercase(Locale.getDefault()).split(" ".toRegex()).toTypedArray()
-            val stringBuilder = StringBuilder()
-            for (letter in strings) {
-                try {
-                    val words = letter.substring(0, 1).uppercase(Locale.getDefault())
-                    stringBuilder.append(words)
-                } catch (sE: Exception) {
-                    sE.printStackTrace()
-                }
-            }
-            return stringBuilder.toString()
-        }
-    */
 
 
     fun setColor(): Int {
@@ -494,6 +478,7 @@ object FunctionUtils {
 
             }, { error: VolleyError ->
                 volleyCallback?.onError(error)
+                Timber.tag("error").e(error)
                 progressFlower.dismiss()
             }) {
 
@@ -511,6 +496,12 @@ object FunctionUtils {
             }
 
         }
+
+        stringRequest.retryPolicy = DefaultRetryPolicy(
+            5000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
 
         Volley.newRequestQueue(context).add(stringRequest)
     }
@@ -533,7 +524,6 @@ object FunctionUtils {
                     progressFlower.dismiss()
             }
         }
-
     }
 
 
@@ -579,12 +569,10 @@ object FunctionUtils {
         frontView.cameraDistance = cameraDistance
         backView.cameraDistance = cameraDistance
 
-
         val flipRightAnimator =
             AnimatorInflater.loadAnimator(context, R.animator.out_animator) as AnimatorSet
         val flipLeftAnimator =
             AnimatorInflater.loadAnimator(context, R.animator.in_animator) as AnimatorSet
-
 
         when (direction) {
             "right" -> {
@@ -598,7 +586,6 @@ object FunctionUtils {
                         frontView.isVisible = false
                         backView.isVisible = true
                     }
-
                 }
             }
 
@@ -616,10 +603,7 @@ object FunctionUtils {
 
                 }
             }
-
         }
-
-
     }
 
 
@@ -779,7 +763,6 @@ object FunctionUtils {
             currentGroup.add(it)
         }
 
-
         /**
          * After iterating through all the items, the currentGroup will contain the last group of
          * items with the same key. If currentGroup is not empty at this point, it means there are
@@ -846,7 +829,6 @@ object FunctionUtils {
             }
         }
     }
-
 
     @JvmStatic
     fun compareJsonObjects(jsonObject1: JSONObject, jsonObject2: JSONObject): Boolean {

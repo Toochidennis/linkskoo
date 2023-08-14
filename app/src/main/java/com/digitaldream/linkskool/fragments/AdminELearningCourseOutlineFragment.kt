@@ -15,6 +15,7 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningCourseOutlineAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
 import com.digitaldream.linkskool.models.ContentModel
+import com.digitaldream.linkskool.utils.FunctionUtils.capitaliseFirstLetter
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
 import com.digitaldream.linkskool.utils.VolleyCallback
@@ -84,8 +85,10 @@ class AdminELearningCourseOutlineFragment :
             contentRecyclerView = findViewById(R.id.contentRecyclerView)
             addContentButton = findViewById(R.id.add_btn)
 
+            val courseName = capitaliseFirstLetter(mCourseName ?: "")
+
             toolbar.apply {
-                "$mCourseName outline".let { title = it }
+                "$courseName Outline".let { title = it }
                 setNavigationIcon(R.drawable.arrow_left)
                 setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             }
@@ -228,7 +231,7 @@ class AdminELearningCourseOutlineFragment :
     }
 
 
-    private fun onTouchHelper(){
+    private fun onTouchHelper() {
         val touchCallback = ItemTouchHelperCallback(contentAdapter)
         val touchHelper = ItemTouchHelper(touchCallback)
         touchHelper.attachToRecyclerView(contentRecyclerView)

@@ -224,7 +224,6 @@ class AdminELearningQuestionAdapter(
         }
     }
 
-
     private fun questionButtonAction(
         questionBtn: ImageView,
         shortAnswer: ShortAnswerModel,
@@ -310,14 +309,13 @@ class AdminELearningQuestionAdapter(
                     delay(100L)
                     swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
                 }
-
                 println("3")
             } else {
                 println("4")
                 swapSections(fromPosition, toPosition)
             }
         } else if (draggedItem.viewType == "section" &&
-            targetItem.viewType == "short_answer" || targetItem.viewType == "multiple_choice"
+            (targetItem.viewType == "short_answer" || targetItem.viewType == "multiple_choice")
         ) {
             println("5")
             return
