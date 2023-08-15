@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -37,6 +36,10 @@ import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -138,6 +141,10 @@ class AdminELearningMaterialFragment :
 
         mBackBtn.setOnClickListener {
             onExit()
+        }
+
+        mTopicTxt.setOnClickListener {
+            selectTopic()
         }
     }
 
@@ -305,7 +312,7 @@ class AdminELearningMaterialFragment :
             }
 
             else -> {
-                Toast.makeText(requireContext(), "Can't open file", Toast.LENGTH_SHORT).show()
+                showText("Can't open file")
             }
         }
     }
@@ -346,11 +353,11 @@ class AdminELearningMaterialFragment :
         if (titleText.isEmpty()) {
             mMaterialTitleEditText.error = "Please enter material title"
         } else if (selectedClassItems.size == 0) {
-            Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
+            showText("Please select a class")
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
-        } else if (topicText.isEmpty()) {
-            Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
+        } else if (topicText.isNotBlank() && topicText == "Topic") {
+            showText("Please select a topic")
         } else {
             postMaterial()
         }
@@ -431,6 +438,7 @@ class AdminELearningMaterialFragment :
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun postMaterial() {
         val url = "${getString(R.string.base_url)}/addContent.php"
         val hashMap = prepareMaterial()
@@ -438,22 +446,40 @@ class AdminELearningMaterialFragment :
         sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap, object
             : VolleyCallback {
             override fun onResponse(response: String) {
-                Toast.makeText(
-                    requireContext(), "Material submitted successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showText("Material submitted successfully")
 
-                SystemClock.sleep(1000)
-                onBackPressed()
+                GlobalScope.launch {
+                    delay(1000)
+                    onBackPressed()
+                }
             }
 
             override fun onError(error: VolleyError) {
-                Toast.makeText(
-                    requireContext(), "Something went wrong please try again",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showText("Something went wrong please try again")
             }
         })
+    }
+
+
+    private fun selectTopic() = if (selectedClassItems.isEmpty()) {
+        showText("Please select a class")
+    } else {
+        AdminELearningSelectTopicDialogFragment(
+            courseId = mCourseId!!,
+            levelId = mLevelId!!,
+            courseName = mCourseName!!,
+            selectedClass = selectedClassItems
+        ) { topic ->
+
+            mTopicTxt.text = topic
+
+            println("topic $topic")
+        }.show(parentFragmentManager, "")
+    }
+
+
+    private fun showText(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -463,8 +489,6 @@ class AdminELearningMaterialFragment :
             if (!jsonFromTopic.isNullOrEmpty() && newHashMap.isNotEmpty()) {
                 val json1 = JSONObject(newHashMap)
                 val json2 = JSONObject(jsonFromTopic!!)
-
-                println("existing data $json2 new data $json1")
 
                 val areContentSame = compareJsonObjects(json1, json2)
 

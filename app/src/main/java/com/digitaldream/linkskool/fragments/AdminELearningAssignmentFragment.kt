@@ -120,7 +120,6 @@ class AdminELearningAssignmentFragment :
         requireActivity().onBackPressedDispatcher.addCallback(this, callBack)
     }
 
-
     companion object {
 
         @JvmStatic
@@ -164,6 +163,10 @@ class AdminELearningAssignmentFragment :
 
         mBackBtn.setOnClickListener {
             onExit()
+        }
+
+        mTopicTxt.setOnClickListener {
+            selectTopic()
         }
 
     }
@@ -269,7 +272,7 @@ class AdminELearningAssignmentFragment :
         }
 
         mStartDateBtn.setOnClickListener {
-            mStartDateTxt.text = "Date"
+            "Date".let { mStartDateTxt.text = it }
             mStartDateBtn.isVisible = false
             mDateSeparator.isVisible = false
         }
@@ -313,7 +316,7 @@ class AdminELearningAssignmentFragment :
 
         mResetGradeBtn.setOnClickListener {
             mResetGradeBtn.isVisible = false
-            mGradeTxt.text = "Unmarked"
+            "Unmarked".let { mGradeTxt.text = it }
         }
     }
 
@@ -415,7 +418,7 @@ class AdminELearningAssignmentFragment :
             }
 
             else -> {
-                Toast.makeText(requireContext(), "Can't open file", Toast.LENGTH_SHORT).show()
+                showText("Can't open file")
             }
         }
     }
@@ -454,13 +457,13 @@ class AdminELearningAssignmentFragment :
         if (titleText.isNullOrBlank()) {
             mAssignmentTitleEditText.error = "Please enter assignment title"
         } else if (selectedClassItems.size == 0) {
-            Toast.makeText(requireContext(), "Please select a class", Toast.LENGTH_SHORT).show()
+            showText("Please select a class")
         } else if (descriptionText.isNullOrBlank()) {
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Please set date", Toast.LENGTH_SHORT).show()
-        } else if (topicText.isNullOrBlank()) {
-            Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
+            showText("Please set date")
+        } else if (!topicText.isNullOrBlank() && topicText == "Topic") {
+            showText("Please select a topic")
         } else {
             postAssignment()
         }
@@ -565,12 +568,30 @@ class AdminELearningAssignmentFragment :
                 }
 
                 override fun onError(error: VolleyError) {
-                    Toast.makeText(
-                        requireContext(), "Something went wrong please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showText("Something went wrong please try again")
                 }
             })
+    }
+
+    private fun selectTopic() = if (selectedClassItems.isEmpty()) {
+        showText("Please select a class")
+    } else {
+        AdminELearningSelectTopicDialogFragment(
+            courseId = mCourseId!!,
+            levelId = mLevelId!!,
+            courseName = mCourseName!!,
+            selectedClass = selectedClassItems
+        ) { topic ->
+
+            mTopicTxt.text = topic
+
+            println("topic $topic")
+        }.show(parentFragmentManager, "")
+    }
+
+
+    private fun showText(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
 

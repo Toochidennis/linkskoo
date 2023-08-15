@@ -51,7 +51,7 @@ class AdminELearningCreateTopicFragment :
     private var courseId: String? = null
     private var levelId: String? = null
     private var courseName: String? = null
-    private var from: String? = null
+    private var existingTopic: String? = null
     private var year: String? = null
     private var term: String? = null
     private var userId: String? = null
@@ -67,7 +67,7 @@ class AdminELearningCreateTopicFragment :
             courseId = it.getString(ARG_PARAM1)
             levelId = it.getString(ARG_PARAM2)
             courseName = it.getString(ARG_PARAM3)
-            from = it.getString(ARG_PARAM4)
+            existingTopic = it.getString(ARG_PARAM4)
         }
 
     }
@@ -78,14 +78,14 @@ class AdminELearningCreateTopicFragment :
             courseId: String = "",
             levelId: String = "",
             courseName: String = "",
-            from: String = ""
+            existingTopic: String = ""
         ) =
             AdminELearningCreateTopicFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, courseId)
                     putString(ARG_PARAM2, levelId)
                     putString(ARG_PARAM3, courseName)
-                    putString(ARG_PARAM4, from)
+                    putString(ARG_PARAM4, existingTopic)
                 }
             }
 
@@ -126,6 +126,10 @@ class AdminELearningCreateTopicFragment :
             objectivesEditText = findViewById(R.id.objectivesEditText)
             createTopicBtn = findViewById(R.id.createTopicButton)
         }
+    }
+
+    private fun setExistingTopic(){
+
 
     }
 
@@ -179,7 +183,6 @@ class AdminELearningCreateTopicFragment :
         }
     }
 
-
     private fun verifyTopic() {
         topic = topicEditText.text.toString().trim()
         objectives = objectivesEditText.text.toString().trim()
@@ -194,7 +197,6 @@ class AdminELearningCreateTopicFragment :
             postTopic()
         }
     }
-
 
     private fun prepareTopic(): HashMap<String, String> {
         val classArray = JSONArray()

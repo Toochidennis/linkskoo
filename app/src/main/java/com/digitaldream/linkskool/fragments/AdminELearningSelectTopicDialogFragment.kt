@@ -70,6 +70,7 @@ class AdminELearningSelectTopicDialogFragment(
         term = sharedPreferences.getString("term", "")
         year = sharedPreferences.getString("school_year", "")
 
+        fetchTopics()
 
         backBtn.setOnClickListener {
             dismiss()
@@ -82,8 +83,6 @@ class AdminELearningSelectTopicDialogFragment(
         handleNewTopicSelection()
 
         handleNoTopicSelection()
-
-        fetchTopics()
 
         smoothScrollEditText(newObjectiveEditText)
 
@@ -212,7 +211,6 @@ class AdminELearningSelectTopicDialogFragment(
         }
     }
 
-
     private fun fetchTopics() {
         val url = "${getString(R.string.base_url)}/getOutline.php?" +
                 "course=$courseId&level=$levelId&term=$term&type=4"
@@ -327,8 +325,7 @@ class AdminELearningSelectTopicDialogFragment(
             url,
             requireContext(),
             hashMap,
-            object
-                : VolleyCallback {
+            object : VolleyCallback {
                 override fun onResponse(response: String) {
                     isTopicSelected(existingTopic)
                     dismiss()

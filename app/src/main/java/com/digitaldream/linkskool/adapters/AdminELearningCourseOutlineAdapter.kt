@@ -14,11 +14,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley.newRequestQueue
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
@@ -122,6 +119,8 @@ class AdminELearningCourseOutlineAdapter(
 
                 true
             }
+            
+            optionsAction("topic",optionBtn,topic,itemView,adapterPosition)
         }
     }
 
@@ -234,7 +233,16 @@ class AdminELearningCourseOutlineAdapter(
                             }
 
                             "topic" -> {
+                                val url =
+                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
+                                            "id=${topicModel.id}&type=${topicModel.type}"
 
+                                getContent(url, itemView) { response ->
+                                    if (response.isBlank()) {
+                                        println(response)
+                                       // launchActivity(itemView, from, response)
+                                    }
+                                }
                             }
                         }
 
@@ -282,6 +290,9 @@ class AdminELearningCourseOutlineAdapter(
         itemView.context.startActivity(
             Intent(itemView.context, ELearningActivity::class.java)
                 .putExtra("from", from)
+                .putExtra("courseName", "")
+                .putExtra("levelId", "")
+                .putExtra("courseId", "")
                 .putExtra("json", response)
         )
     }
