@@ -462,9 +462,7 @@ class AdminELearningAssignmentFragment :
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
             showText("Please set date")
-        } else if (!topicText.isNullOrBlank() && topicText == "Topic") {
-            showText("Please select a topic")
-        } else {
+        }  else {
             postAssignment()
         }
     }
@@ -478,8 +476,8 @@ class AdminELearningAssignmentFragment :
             put("title", titleText!!)
             put("type", "3")
             put("description", descriptionText!!)
-            put("topic", topicText!!)
-            put("objectives", "")
+            put("topic", if (topicText == "Topic") "No topic" else topicText!!)
+            put("objective", "")
 
             mFileList.isNotEmpty().let { isTrue ->
                 if (isTrue) {

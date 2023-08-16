@@ -314,7 +314,6 @@ class AdminELearningQuestionSettingsFragment :
 
             mTopicTxt.text = topic
 
-            println("topic $topic")
         }.show(parentFragmentManager, "")
     }
 
@@ -345,7 +344,7 @@ class AdminELearningQuestionSettingsFragment :
             put("levelId", mLevelId)
             put("courseId", mCourseId)
             put("courseName", mCourseName)
-            put("topic", topicText)
+            put("topic", if (topicText == "Topic") "No topic" else topicText)
         }.let {
             settingsObject.put("settings", it)
             settingsObject.put("class", classArray)
@@ -367,8 +366,6 @@ class AdminELearningQuestionSettingsFragment :
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
             showText("Please set date")
-        } else if (topicText.isNotBlank() && topicText == "Topic") {
-            showText("Please select a topic")
         } else {
             prepareSettings()
 
@@ -411,7 +408,6 @@ class AdminELearningQuestionSettingsFragment :
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     private fun exitWithWarning() {

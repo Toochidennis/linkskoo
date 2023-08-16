@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -52,9 +53,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private lateinit var descriptionTxt: TextView
     private lateinit var sectionRecyclerView: RecyclerView
     private lateinit var emptyQuestionTxt: TextView
-    private lateinit var previewQuestionButton: LinearLayout
-    private lateinit var submitQuestionButton: LinearLayout
-    private lateinit var addQuestionButton: FloatingActionButton
+    private lateinit var previewQuestionButton: ImageButton
+    private lateinit var submitQuestionButton: ImageButton
+    private lateinit var addQuestionButton: ImageButton
 
     private lateinit var sectionAdapter: AdminELearningQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
@@ -149,9 +150,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             descriptionTxt = findViewById(R.id.descriptionTxt)
             sectionRecyclerView = findViewById(R.id.questionRecyclerView)
             emptyQuestionTxt = findViewById(R.id.emptyQuestionTxt)
-            previewQuestionButton = findViewById(R.id.previewQuestionButton)
-            submitQuestionButton = findViewById(R.id.submitQuestionButton)
-            addQuestionButton = findViewById(R.id.add_question_btn)
+            previewQuestionButton = findViewById(R.id.previewQuestionsButton)
+            submitQuestionButton = findViewById(R.id.submitQuestionsButton)
+            addQuestionButton = findViewById(R.id.addQuestionsButton)
 
             toolbar.apply {
                 title = "Question"
@@ -676,5 +677,14 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         requireActivity().finish()
     }
+
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        requireContext()
+//            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE).edit()
+//            .apply {
+//                putString("question_object", "")
+//            }.apply()
+//    }
 
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,6 @@
     tools:context=".fragments.AdminELearningCourseOutlineFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -23,53 +22,32 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/appBar"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_64"
+        android:clipToPadding="false"
         android:contentDescription="@string/todo">
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contentRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/todo">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="@dimen/dimen_16">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/contentRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="true" />
-
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
+            android:clipToPadding="false"
+            android:padding="@dimen/dimen_16" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/dimen_16"
+        android:layout_marginBottom="@dimen/dimen_32"
+        android:backgroundTint="@color/test_color_1"
+        android:clickable="true"
+        android:contentDescription="@string/add_content"
+        android:focusable="true"
+        android:src="@drawable/ic_add"
+        app:tint="@color/white" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/dimen_16"
-            android:layout_marginBottom="@dimen/dimen_32"
-            android:backgroundTint="@color/test_color_1"
-            android:clickable="true"
-            android:contentDescription="@string/add_content"
-            android:focusable="true"
-            android:src="@drawable/ic_add"
-            app:tint="@color/white" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

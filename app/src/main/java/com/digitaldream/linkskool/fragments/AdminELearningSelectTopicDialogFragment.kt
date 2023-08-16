@@ -288,7 +288,7 @@ class AdminELearningSelectTopicDialogFragment(
             put("type", "4")
             put("description", "")
             put("topic", "")
-            put("objectives", objectives)
+            put("objective", objectives)
             put("files", "")
 
             selectedClass.forEach { (key, value) ->

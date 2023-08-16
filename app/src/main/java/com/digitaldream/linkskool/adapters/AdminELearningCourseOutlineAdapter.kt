@@ -119,8 +119,8 @@ class AdminELearningCourseOutlineAdapter(
 
                 true
             }
-            
-            optionsAction("topic",optionBtn,topic,itemView,adapterPosition)
+
+            optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
         }
     }
 
@@ -240,7 +240,7 @@ class AdminELearningCourseOutlineAdapter(
                                 getContent(url, itemView) { response ->
                                     if (response.isBlank()) {
                                         println(response)
-                                       // launchActivity(itemView, from, response)
+                                        // launchActivity(itemView, from, response)
                                     }
                                 }
                             }
@@ -308,7 +308,7 @@ class AdminELearningCourseOutlineAdapter(
             val hasContentsBelowTargetTopic = hasQuestionsBelowTopic(toPosition)
             println("2")
 
-            if (hasContentsBelowTargetTopic || hasContentsBelowDraggedTopic) {
+            if (hasContentsBelowDraggedTopic ||hasContentsBelowTargetTopic) {
                 swapTopicsWithAssociatedItems(fromPosition, toPosition)
                 println("3")
             } else {
@@ -376,8 +376,9 @@ class AdminELearningCourseOutlineAdapter(
         val targetTopicItems = getAssociatedItems(targetTopic)
 
         // swap topics
-        itemList[fromPosition] = targetTopic
-        itemList[toPosition] = draggedTopic
+        // itemList[fromPosition] = targetTopic
+        // itemList[toPosition] = draggedTopic
+        Collections.swap(itemList, fromPosition, toPosition)
 
         itemList.removeAll(draggedTopicItems)
         itemList.removeAll(targetTopicItems)
@@ -408,4 +409,5 @@ class AdminELearningCourseOutlineAdapter(
     private fun swapTopics(fromPosition: Int, toPosition: Int) {
         Collections.swap(itemList, fromPosition, toPosition)
     }
+
 }

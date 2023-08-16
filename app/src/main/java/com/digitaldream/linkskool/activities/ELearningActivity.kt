@@ -79,12 +79,12 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                             .newInstance(
                                 courseId!!,
                                 levelId!!,
-                                courseName!!
+                                courseName!!,
+                                json!!
                             )
                     )
                 }
             }
         }
     }
-
 }

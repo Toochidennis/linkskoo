@@ -79,8 +79,7 @@ class AdminELearningCreateTopicFragment :
             levelId: String = "",
             courseName: String = "",
             existingTopic: String = ""
-        ) =
-            AdminELearningCreateTopicFragment().apply {
+        ) = AdminELearningCreateTopicFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, courseId)
                     putString(ARG_PARAM2, levelId)
@@ -88,7 +87,6 @@ class AdminELearningCreateTopicFragment :
                     putString(ARG_PARAM4, existingTopic)
                 }
             }
-
     }
 
 
@@ -129,7 +127,6 @@ class AdminELearningCreateTopicFragment :
     }
 
     private fun setExistingTopic(){
-
 
     }
 
@@ -206,7 +203,7 @@ class AdminELearningCreateTopicFragment :
             put("type", "4")
             put("description", "")
             put("topic", "")
-            put("objectives", objectives!!)
+            put("objective", objectives!!)
             put("files", "")
 
             selectedClassItems.forEach { (key, value) ->

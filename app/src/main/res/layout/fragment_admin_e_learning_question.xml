@@ -20,98 +20,90 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <RelativeLayout
+        android:id="@+id/topicButton"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
-        android:layout_marginBottom="100dp"
-        android:contentDescription="@string/todo">
+        android:layout_marginStart="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginEnd="@dimen/dimen_10"
+        android:background="@drawable/edit_text_bg4"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dimen_10">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/test_color_1"
+            app:cardCornerRadius="@dimen/dimen_24"
+            app:contentPadding="8dp">
 
-            <RelativeLayout
-                android:id="@+id/topicButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_10"
-                android:background="@drawable/edit_text_bg4"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:padding="@dimen/dimen_10">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/test_color_1"
-                    app:cardCornerRadius="@dimen/dimen_24"
-                    app:contentPadding="8dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_question"
-                        app:tint="@color/white" />
-
-                </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/questionTitleTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="15dp"
-                    android:layout_toEndOf="@id/icon"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/poppins_regular"
-                    android:lines="2"
-                    android:minLines="1"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/descriptionTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/questionTitleTxt"
-                    android:layout_marginStart="15dp"
-                    android:layout_toEndOf="@id/icon"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/poppins_regular"
-                    android:lines="2"
-                    android:minLines="1"
-                    android:text=""
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/questionRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <TextView
-                android:id="@+id/emptyQuestionTxt"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dimen_64"
-                android:text="No question set yet!"
-                android:textSize="@dimen/text_16"
-                android:visibility="gone" />
-        </LinearLayout>
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_question"
+                app:tint="@color/white" />
 
-    </androidx.core.widget.NestedScrollView>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/questionTitleTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:layout_toEndOf="@id/icon"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_regular"
+            android:lines="2"
+            android:minLines="1"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/descriptionTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/questionTitleTxt"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:layout_toEndOf="@id/icon"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_regular"
+            android:lines="2"
+            android:minLines="1"
+            android:text=""
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topicButton"
+        android:clipToPadding="false" />
+
+    <TextView
+        android:id="@+id/emptyQuestionTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topicButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_64"
+        android:text="@string/no_question_set_yet"
+        android:textSize="@dimen/text_16"
+        android:visibility="gone" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -119,76 +111,47 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/previewQuestionsButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_16">
+            android:layout_gravity="bottom|start"
+            android:background="@drawable/ripple_effect11"
+            android:clickable="true"
+            android:contentDescription="@string/add_content"
+            android:focusable="true"
+            android:padding="@dimen/dimen_32"
+            android:src="@drawable/ic_preview"
+            android:tooltipText="Preview questions"
+            app:tint="@color/test_color_1" />
 
-            <LinearLayout
-                android:id="@+id/previewQuestionButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="@dimen/dimen_16">
+        <ImageButton
+            android:id="@+id/addQuestionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:background="@drawable/ripple_effect11"
+            android:clickable="true"
+            android:contentDescription="@string/add_content"
+            android:focusable="true"
+            android:padding="@dimen/dimen_32"
+            android:src="@drawable/ic_add"
+            android:tooltipText="Add questions"
+            app:tint="@color/test_color_1" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Preview"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_14"
-                    app:drawableTint="@color/test_color_2"
-                    app:drawableTopCompat="@drawable/ic_preview" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dimen_16"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center">
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/add_question_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/test_color_3"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/ic_add" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/submitQuestionButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="@dimen/dimen_16">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Submit"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_14"
-                    app:drawableTint="@color/test_color_1"
-                    app:drawableTopCompat="@drawable/ic_submit" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/submitQuestionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/ripple_effect11"
+            android:clickable="true"
+            android:contentDescription="@string/add_content"
+            android:focusable="true"
+            android:padding="@dimen/dimen_32"
+            android:src="@drawable/ic_send"
+            android:tooltipText="Submit questions"
+            app:tint="@color/test_color_1" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

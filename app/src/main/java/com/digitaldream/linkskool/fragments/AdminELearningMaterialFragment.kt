@@ -356,9 +356,7 @@ class AdminELearningMaterialFragment :
             showText("Please select a class")
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
-        } else if (topicText.isNotBlank() && topicText == "Topic") {
-            showText("Please select a topic")
-        } else {
+        }else {
             postMaterial()
         }
     }
@@ -375,8 +373,8 @@ class AdminELearningMaterialFragment :
             put("title", titleText)
             put("type", "1")
             put("description", descriptionText)
-            put("topic", topicText)
-            put("objectives", "")
+            put("topic", if (topicText == "Topic") "No topic" else topicText)
+            put("objective", "")
 
             mFileList.isNotEmpty().let { isTrue ->
                 if (isTrue) {
@@ -472,8 +470,6 @@ class AdminELearningMaterialFragment :
         ) { topic ->
 
             mTopicTxt.text = topic
-
-            println("topic $topic")
         }.show(parentFragmentManager, "")
     }
 
