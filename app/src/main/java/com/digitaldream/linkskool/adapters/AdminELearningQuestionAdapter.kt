@@ -338,10 +338,6 @@ class AdminELearningQuestionAdapter(
 
         Handler(Looper.getMainLooper()).postDelayed({
             recyclerView.post {
-//                draggedItemDecoration.let {
-//                    it.setDragging(false)
-//                    recyclerView.invalidateItemDecorations()
-//                }
 
                 notifyDataSetChanged()
             }

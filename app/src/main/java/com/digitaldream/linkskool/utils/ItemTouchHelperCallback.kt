@@ -1,7 +1,5 @@
 package com.digitaldream.linkskool.utils
 
-import android.graphics.Rect
-import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
@@ -11,7 +9,6 @@ class ItemTouchHelperCallback(
 ) : ItemTouchHelper.Callback() {
 
     private var isDragging = false
-    private var draggedItemDecoration: DraggedItemDecoration? = null
     override fun isLongPressDragEnabled(): Boolean = true
 
     override fun isItemViewSwipeEnabled(): Boolean = false
@@ -41,13 +38,6 @@ class ItemTouchHelperCallback(
         super.onSelectedChanged(viewHolder, actionState)
 
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && !isDragging) {
-//            viewHolder?.let {
-//                draggedItemDecoration = DraggedItemDecoration(it)
-//                recyclerView.addItemDecoration(draggedItemDecoration!!)
-//                draggedItemDecoration?.setDragging(true)
-//                recyclerView.invalidateItemDecorations()
-//            }
-
             viewHolder?.itemView?.alpha = .7f
             viewHolder?.itemView?.animate()?.scaleX(.99f)?.scaleY(.99f)?.setDuration(200)?.start()
             isDragging = true
@@ -62,29 +52,5 @@ class ItemTouchHelperCallback(
         isDragging = false
 
         adapter.onItemDismiss(recyclerView)
-    }
-
-}
-
-class DraggedItemDecoration(private val draggedViewHolder: RecyclerView.ViewHolder) :
-    RecyclerView.ItemDecoration() {
-
-    private var isDragging = false
-
-    fun setDragging(isDragging: Boolean) {
-        this.isDragging = isDragging
-    }
-
-    override fun getItemOffsets(
-        outRect: Rect,
-        view: View,
-        parent: RecyclerView,
-        state: RecyclerView.State
-    ) {
-        if (isDragging && parent.getChildViewHolder(view) === draggedViewHolder) {
-            val draggedY = view.y
-            val topMargin = maxOf(0f, draggedY - view.height)
-            outRect.top = topMargin.toInt()
-        }
     }
 }

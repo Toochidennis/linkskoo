@@ -32,11 +32,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/separator2"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
         android:background="@drawable/ripple_effect11"
         android:clickable="true"
         android:contentDescription="@string/todo"
         android:focusable="true"
-        android:padding="@dimen/dimen_16"
+        android:padding="@dimen/dimen_12"
         android:src="@drawable/ic_more" />
 
     <LinearLayout
