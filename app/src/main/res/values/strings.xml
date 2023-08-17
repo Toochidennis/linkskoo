@@ -160,4 +160,6 @@
     <string name="add_content">Add content</string>
     <string name="more_options">More options</string>
     <string name="no_question_set_yet">No question set yet!</string>
+    <string name="tab_layout">Tab layout</string>
+    <string name="view_pager">View pager</string>
 </resources>

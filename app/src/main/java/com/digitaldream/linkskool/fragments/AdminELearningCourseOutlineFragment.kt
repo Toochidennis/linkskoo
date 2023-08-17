@@ -27,7 +27,6 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 
-
 class AdminELearningCourseOutlineFragment :
     Fragment(R.layout.fragment_admin_e_learning_course_outline) {
 
@@ -229,12 +228,10 @@ class AdminELearningCourseOutlineFragment :
         }
     }
 
-
     private fun onTouchHelper() {
         val touchCallback = ItemTouchHelperCallback(contentAdapter)
         val touchHelper = ItemTouchHelper(touchCallback)
         touchHelper.attachToRecyclerView(contentRecyclerView)
     }
-
 
 }

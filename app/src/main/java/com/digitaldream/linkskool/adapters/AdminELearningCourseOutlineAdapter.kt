@@ -134,6 +134,10 @@ class AdminELearningCourseOutlineAdapter(
             "Posted $date".let { dateTxt.text = it }
 
             optionsAction("assignment", optionBtn, assignment, itemView, adapterPosition)
+
+            itemView.setOnClickListener {
+                launchActivity(itemView, "question_preview", "")
+            }
         }
     }
 

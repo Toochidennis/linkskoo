@@ -40,7 +40,6 @@ public class AttendanceActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-
         Intent intent = getIntent();
         mStudentLevelId = intent.getStringExtra("levelId");
         mStudentClassId = intent.getStringExtra("classId");

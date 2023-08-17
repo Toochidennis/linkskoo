@@ -39,7 +39,7 @@
             android:contentDescription="@string/todo"
             android:padding="@dimen/dimen_10"
             android:src="@drawable/ic_more"
-            app:tint="@color/test_color_7" />
+            app:tint="@color/test_color_1" />
 
     </RelativeLayout>
 

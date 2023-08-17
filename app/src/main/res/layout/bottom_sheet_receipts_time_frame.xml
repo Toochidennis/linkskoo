@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@id/tab_layout"
-        android:contentDescription="@string/todo" />
+        android:contentDescription="@string/view_pager"/>
 
 
     <androidx.cardview.widget.CardView

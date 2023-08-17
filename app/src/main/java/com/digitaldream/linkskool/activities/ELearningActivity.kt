@@ -6,6 +6,7 @@ import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.dialog.AdminELearningCreateTopicFragment
 import com.digitaldream.linkskool.fragments.AdminELearningAssignmentFragment
+import com.digitaldream.linkskool.fragments.AdminELearningAssignmentPreviewFragment
 import com.digitaldream.linkskool.fragments.AdminELearningCourseOutlineFragment
 import com.digitaldream.linkskool.fragments.AdminELearningMaterialFragment
 import com.digitaldream.linkskool.fragments.AdminELearningQuestionSettingsFragment
@@ -82,6 +83,15 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                                 courseName!!,
                                 json!!
                             )
+                    )
+                }
+            }
+
+            "assignment_preview"->{
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningAssignmentPreviewFragment()
                     )
                 }
             }

@@ -17,16 +17,7 @@ import com.google.android.material.tabs.TabLayout
 
 class ReceiptTimeFrameBottomSheet(
     private val sTimeFrameDataModel: TimeFrameDataModel
-) : BottomSheetDialogFragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return  inflater.inflate(R.layout.bottom_sheet_receipts_time_frame, container, false)
-    }
+) : BottomSheetDialogFragment(R.layout.bottom_sheet_receipts_time_frame) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
