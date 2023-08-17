@@ -136,7 +136,7 @@ class AdminELearningCourseOutlineAdapter(
             optionsAction("assignment", optionBtn, assignment, itemView, adapterPosition)
 
             itemView.setOnClickListener {
-                launchActivity(itemView, "question_preview", "")
+                launchActivity(itemView, "assignment_preview", "")
             }
         }
     }

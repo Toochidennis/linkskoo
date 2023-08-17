@@ -1,9 +1,15 @@
 package com.digitaldream.linkskool.fragments
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.viewpager.widget.ViewPager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
@@ -18,6 +24,7 @@ class AdminELearningAssignmentPreviewFragment :
 
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
+    private lateinit var menuHost: MenuHost
 
 
     private var param1: String? = null
@@ -52,29 +59,67 @@ class AdminELearningAssignmentPreviewFragment :
 
     private fun setUpView(view: View) {
         view.apply {
-            val toolbar:Toolbar = findViewById(R.id.toolbar)
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
             tabLayout = findViewById(R.id.tabLayout)
             viewPager = findViewById(R.id.viewPager)
 
-            toolbar.apply {
-               setNavigationIcon(R.drawable.arrow_left)
-                setNavigationOnClickListener {
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                }
+            (activity as AppCompatActivity).setSupportActionBar(toolbar)
+            val actionBar = (activity as AppCompatActivity).supportActionBar
+            menuHost = requireActivity()
+
+            setUpMenu()
+
+            actionBar!!.apply {
+                setHomeButtonEnabled(true)
+                title = ""
+                setDisplayHomeAsUpEnabled(true)
             }
+
         }
     }
 
     private fun setUpPager() {
-        SectionPagerAdapter(parentFragmentManager).apply {
+        SectionPagerAdapter(childFragmentManager).apply {
             addFragment(AdminELearningAssignmentInstructionsFragment(), "Instructions")
-            addFragment(AdminELearningAssignmentStudentWorkFragment(), "Student Work")
+            addFragment(AdminELearningAssignmentStudentWorkFragment(), "Student work")
         }.let {
             viewPager.apply {
                 adapter = it
                 tabLayout.setupWithViewPager(viewPager, true)
             }
         }
+    }
+
+    private fun setUpMenu() {
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.e_learning_preview_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.refresh -> {
+                        setUpPager()
+                        
+                        true
+                    }
+
+                    R.id.edit -> {
+                        true
+                    }
+
+                    R.id.delete -> {
+                        true
+                    }
+
+                    else -> {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        false
+                    }
+
+                }
+            }
+        })
     }
 
 }

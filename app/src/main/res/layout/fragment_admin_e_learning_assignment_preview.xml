@@ -11,25 +11,25 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        android:background="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:elevation="1dp">
 
-        <include
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:popupTheme="@style/Theme.AppCompat.Light" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            style="@style/CustomTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/tab_layout" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TableLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/tab_layout"
-        app:tabBackground="@color/white"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/test_color_1"
-        app:tabInlineLabel="true"
-        app:tabMode="fixed"
-        app:tabTextAppearance="@style/TabStyle2" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
