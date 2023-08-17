@@ -111,7 +111,6 @@ class AdminELearningCourseOutlineAdapter(
 
             itemView.setOnLongClickListener {
                 viewHolderList.forEach { viewHolder ->
-                    viewHolder.itemView.visibility = View.GONE
                     val layoutParams = viewHolder.itemView.layoutParams
                     layoutParams.height = 0
                     viewHolder.itemView.layoutParams = layoutParams
@@ -265,8 +264,6 @@ class AdminELearningCourseOutlineAdapter(
         itemView: View,
         onResponse: (response: String) -> Unit
     ) {
-        println("response: response")
-
         sendRequestToServer(
             Request.Method.GET,
             url,
@@ -274,13 +271,14 @@ class AdminELearningCourseOutlineAdapter(
             null,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
-                    println("response: $response")
                     onResponse(response)
                 }
 
                 override fun onError(error: VolleyError) {
-                    Toast.makeText(itemView.context, "Something went wrong", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        itemView.context, "Something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
     }
@@ -301,40 +299,29 @@ class AdminELearningCourseOutlineAdapter(
         val draggedItem = itemList[fromPosition]
         val targetItem = itemList[toPosition]
 
-        println("1")
-
         if (draggedItem.viewType == "topic" && targetItem.viewType == "topic") {
             val hasContentsBelowDraggedTopic = hasQuestionsBelowTopic(fromPosition)
             val hasContentsBelowTargetTopic = hasQuestionsBelowTopic(toPosition)
-            println("2")
 
-            if (hasContentsBelowDraggedTopic ||hasContentsBelowTargetTopic) {
+            if (hasContentsBelowTargetTopic || hasContentsBelowDraggedTopic) {
                 swapTopicsWithAssociatedItems(fromPosition, toPosition)
-                println("3")
             } else {
-                println("4")
                 swapTopics(fromPosition, toPosition)
             }
         } else if (draggedItem.viewType == "topic" &&
             (targetItem.viewType == "assignment" || targetItem.viewType == "material" ||
                     targetItem.viewType == "question")
         ) {
-            println("5")
             return
         } else {
             swapTopics(fromPosition, toPosition)
-            println("6")
         }
 
-        println("7")
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    override fun onItemDismiss(
-        recyclerView: RecyclerView
-    ) {
+    override fun onItemDismiss(recyclerView: RecyclerView) {
         viewHolderList.forEach {
-            it.itemView.isVisible = true
             val layoutParams = it.itemView.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             it.itemView.layoutParams = layoutParams
@@ -342,11 +329,6 @@ class AdminELearningCourseOutlineAdapter(
 
         Handler(Looper.getMainLooper()).postDelayed({
             recyclerView.post {
-//                draggedItemDecoration.let {
-//                    it.setDragging(false)
-//                    recyclerView.invalidateItemDecorations()
-//                }
-
                 notifyDataSetChanged()
             }
         }, 500)
@@ -371,14 +353,14 @@ class AdminELearningCourseOutlineAdapter(
         val draggedTopic = itemList[fromPosition]
         val targetTopic = itemList[toPosition]
 
-        // swap the associated items
+        // get the associated items
         val draggedTopicItems = getAssociatedItems(draggedTopic)
         val targetTopicItems = getAssociatedItems(targetTopic)
 
         // swap topics
         // itemList[fromPosition] = targetTopic
         // itemList[toPosition] = draggedTopic
-        Collections.swap(itemList, fromPosition, toPosition)
+        swapTopics(fromPosition, toPosition)
 
         itemList.removeAll(draggedTopicItems)
         itemList.removeAll(targetTopicItems)

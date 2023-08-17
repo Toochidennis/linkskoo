@@ -1,107 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/multiLayout"
     android:layout_width="match_parent"
-    android:layout_height="102dp"
-    android:layout_marginStart="@dimen/dimen_10"
-    android:layout_marginEnd="@dimen/dimen_10"
-    android:layout_marginBottom="@dimen/dimen_10"
-    android:background="@drawable/edit_text_bg4"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingTop="@dimen/dimen_10"
+    android:paddingBottom="@dimen/dimen_10">
 
-    <RelativeLayout
-        android:id="@+id/description_layout"
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_10">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:backgroundTint="@color/test_color_1"
+        app:cardCornerRadius="@dimen/dimen_24"
+        app:contentPadding="8dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/count_icon"
-            android:layout_width="@dimen/dimen_32"
-            android:layout_height="@dimen/dimen_32"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="5dp"
-            android:backgroundTint="@color/test_color_3"
-            app:cardCornerRadius="@dimen/dimen_32">
-
-            <TextView
-                android:id="@+id/questionCountTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/poppins_regular"
-                android:padding="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_14" />
-
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/questionTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_10"
-            android:layout_toEndOf="@id/count_icon"
-            android:ellipsize="end"
-            android:fontFamily="@font/poppins_regular"
-            android:lines="2"
-            android:minLines="1"
-            android:text=""
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/description_layout"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/separator">
-
-        <TextView
-            android:id="@+id/answerTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="@dimen/dimen_10"
-            android:layout_toStartOf="@id/questionButton"
-            android:drawablePadding="@dimen/dimen_16"
-            android:ellipsize="end"
-            android:lines="1"
-            android:padding="@dimen/dimen_10"
-            android:text=""
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:drawableStartCompat="@drawable/ic_multi_choice" />
-
-        <ImageButton
-            android:id="@+id/questionButton"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/ripple_effect11"
-            android:clickable="true"
             android:contentDescription="@string/todo"
-            android:focusable="true"
-            android:padding="@dimen/dimen_10"
-            android:src="@drawable/ic_more" />
+            android:src="@drawable/ic_multi_choice"
+            app:tint="@color/white" />
 
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/questionTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@id/moreBtn"
+        android:layout_toEndOf="@id/icon"
+        android:ellipsize="marquee"
+        android:fontFamily="@font/poppins_regular"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <ImageButton
+        android:id="@+id/moreBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ripple_effect11"
+        android:contentDescription="@string/more_options"
+        android:padding="@dimen/dimen_10"
+        android:src="@drawable/ic_more"
+        app:tint="@color/test_color_7" />
 
 </RelativeLayout>

@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -48,7 +49,7 @@ private const val ARG_PARAM2 = "param2"
 
 class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learning_question) {
 
-    private lateinit var topicButton: RelativeLayout
+    private lateinit var topicButton: CardView
     private lateinit var questionTitleTxt: TextView
     private lateinit var descriptionTxt: TextView
     private lateinit var sectionRecyclerView: RecyclerView
@@ -678,13 +679,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         requireActivity().finish()
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        requireContext()
-//            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE).edit()
-//            .apply {
-//                putString("question_object", "")
-//            }.apply()
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        requireContext()
+            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE).edit()
+            .apply {
+                putString("question_object", "")
+            }.apply()
+    }
 
 }

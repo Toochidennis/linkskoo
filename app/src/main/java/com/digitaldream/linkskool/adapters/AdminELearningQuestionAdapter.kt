@@ -9,11 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -25,13 +23,11 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
-import com.digitaldream.linkskool.utils.DraggedItemDecoration
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Collections
-
 
 class AdminELearningQuestionAdapter(
     private val fragmentManager: FragmentManager,
@@ -127,28 +123,29 @@ class AdminELearningQuestionAdapter(
 
             sectionAction(sectionBtn, sectionModel, adapterPosition)
 
+            itemView.setOnClickListener {
+                sectionEdit(sectionModel, itemView)
+            }
+
             itemView.setOnLongClickListener {
-                animateSwapping(0)
+                viewHolderList.forEach { viewHolder ->
+                    val layoutParams = viewHolder.itemView.layoutParams
+                    layoutParams.height = 0
+                    viewHolder.itemView.layoutParams = layoutParams
+                }
                 true
             }
         }
     }
 
     inner class MultiChoiceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val questionLayout: RelativeLayout = itemView.findViewById(R.id.multiLayout)
         private val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
-        private val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
-        private val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
-        private val questionButton: ImageButton = itemView.findViewById(R.id.questionButton)
+        private val questionButton: ImageButton = itemView.findViewById(R.id.moreBtn)
 
         fun bind(multiItem: MultiChoiceQuestion) {
-            val questionCount = (adapterPosition + 1).toString()
-            val numberOfOptions = "Options (${multiItem.options?.size})"
-            questionTextView.text = multiItem.questionText
-            questionCountTextView.text = questionCount
-            answerTextView.text = numberOfOptions
+            "Multiple choice".let { questionTextView.text = it }
 
-            questionLayout.setOnClickListener {
+            itemView.setOnClickListener {
                 multiChoiceItemClick(multiItem, adapterPosition)
             }
 
@@ -160,19 +157,13 @@ class AdminELearningQuestionAdapter(
     }
 
     inner class ShortQuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val questionLayout: RelativeLayout = itemView.findViewById(R.id.shortLayout)
         private val questionTextView: TextView = itemView.findViewById(R.id.questionTxt)
-        private val questionCountTextView: TextView = itemView.findViewById(R.id.questionCountTxt)
-        private val answerTextView: TextView = itemView.findViewById(R.id.answerTxt)
-        private val questionButton: ImageButton = itemView.findViewById(R.id.questionButton)
+        private val questionButton: ImageButton = itemView.findViewById(R.id.moreBtn)
 
         fun bind(shortAnswer: ShortAnswerModel) {
-            val questionCount = (adapterPosition + 1).toString()
-            questionTextView.text = shortAnswer.questionText
-            questionCountTextView.text = questionCount
-            answerTextView.text = shortAnswer.answerText
+            "Short answer".let { questionTextView.text = it }
 
-            questionLayout.setOnClickListener {
+            itemView.setOnClickListener {
                 shortAnswerItemClick(shortAnswer, adapterPosition)
             }
 
@@ -194,20 +185,7 @@ class AdminELearningQuestionAdapter(
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.editSection -> {
-
-                        item.sectionTitle?.let {
-                            AdminELearningSectionDialog(view.context, it) { updateSection ->
-                                item.sectionTitle = updateSection
-                                notifyDataSetChanged()
-                            }.apply {
-                                setCancelable(true)
-                                show()
-                            }.window?.setLayout(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
-                        }
-
+                        sectionEdit(item, view)
                         true
                     }
 
@@ -221,6 +199,22 @@ class AdminELearningQuestionAdapter(
             }
 
             popupMenu.show()
+        }
+    }
+
+    private fun sectionEdit(sectionModel: SectionModel, view: View) {
+        sectionModel.sectionTitle?.let {
+            AdminELearningSectionDialog(view.context, it) { updateSection ->
+                sectionModel.sectionTitle = updateSection
+
+                notifyDataSetChanged()
+            }.apply {
+                setCancelable(true)
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
     }
 
@@ -298,43 +292,36 @@ class AdminELearningQuestionAdapter(
         val draggedItem = itemList[fromPosition]
         val targetItem = itemList[toPosition]
 
-        println("1")
         if (draggedItem.viewType == "section" && targetItem.viewType == "section") {
             val hasQuestionBelowDragged = hasQuestionsBelowSection(fromPosition)
             val hasQuestionsBelowTarget = hasQuestionsBelowSection(toPosition)
 
-            println("2")
             if (hasQuestionsBelowTarget || hasQuestionBelowDragged) {
                 GlobalScope.launch {
                     delay(100L)
                     swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
                 }
-                println("3")
             } else {
-                println("4")
                 swapSections(fromPosition, toPosition)
             }
         } else if (draggedItem.viewType == "section" &&
             (targetItem.viewType == "short_answer" || targetItem.viewType == "multiple_choice")
         ) {
-            println("5")
             return
         } else {
-            println("6")
+
             swapSections(fromPosition, toPosition)
         }
 
-        println("7")
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    override fun onItemDismiss(
-        recyclerView: RecyclerView
-    ) {
-        val density = recyclerView.context.resources.displayMetrics.density
-        val targetHeight = (102f * density).toInt()
-
-        animateSwapping(targetHeight)
+    override fun onItemDismiss(recyclerView: RecyclerView) {
+        viewHolderList.forEach { viewHolder ->
+            val layoutParams = viewHolder.itemView.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            viewHolder.itemView.layoutParams = layoutParams
+        }
 
         Handler(Looper.getMainLooper()).postDelayed({
             recyclerView.post {
@@ -395,20 +382,6 @@ class AdminELearningQuestionAdapter(
 
     private fun swapSections(fromPosition: Int, toPosition: Int) {
         Collections.swap(itemList, fromPosition, toPosition)
-    }
-
-    private fun animateSwapping(targetHeight: Int) {
-        viewHolderList.forEach { viewHolder ->
-            val layoutParams = viewHolder.itemView.layoutParams
-            val animator = ValueAnimator.ofInt(layoutParams.height, targetHeight)
-            animator.addUpdateListener { valueAnimator ->
-                val value = valueAnimator.animatedValue as Int
-                layoutParams.height = value
-                viewHolder.itemView.layoutParams = layoutParams
-            }
-            animator.duration = 200 // Set the desired animation duration
-            animator.start()
-        }
     }
 
 }

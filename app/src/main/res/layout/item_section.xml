@@ -2,42 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dimen_10"
-    android:background="@color/white">
-
-    <LinearLayout
-        android:id="@+id/separator2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+    android:background="@color/white"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/sectionTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator2"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="@dimen/dimen_10"
         android:layout_toStartOf="@id/sectionButton"
         android:fontFamily="@font/poppins_regular"
-        android:padding="@dimen/dimen_10"
-        android:textColor="@color/black"
+        android:paddingTop="@dimen/dimen_10"
+        android:paddingBottom="@dimen/dimen_10"
+        android:textColor="@color/test_color_1"
         android:textSize="@dimen/text_24" />
 
     <ImageButton
         android:id="@+id/sectionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator2"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="6dp"
         android:background="@drawable/ripple_effect11"
         android:clickable="true"
         android:contentDescription="@string/todo"
         android:focusable="true"
-        android:padding="@dimen/dimen_12"
+        android:padding="@dimen/dimen_10"
         android:src="@drawable/ic_more" />
 
     <LinearLayout
@@ -46,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/sectionTxt"
         android:background="@drawable/line_separator"
+        android:backgroundTint="@color/test_color_1"
         android:orientation="horizontal" />
 
 </RelativeLayout>
