@@ -15,12 +15,11 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
 import com.google.android.material.tabs.TabLayout
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class AdminELearningAssignmentPreviewFragment :
-    Fragment(R.layout.fragment_admin_e_learning_assignment_preview) {
+class AdminELearningAssignmentDetailsFragment :
+    Fragment(R.layout.fragment_admin_e_learning_assignment_details) {
 
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
@@ -42,7 +41,7 @@ class AdminELearningAssignmentPreviewFragment :
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AdminELearningAssignmentPreviewFragment().apply {
+            AdminELearningAssignmentDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -74,7 +73,6 @@ class AdminELearningAssignmentPreviewFragment :
                 title = ""
                 setDisplayHomeAsUpEnabled(true)
             }
-
         }
     }
 
@@ -100,7 +98,7 @@ class AdminELearningAssignmentPreviewFragment :
                 return when (menuItem.itemId) {
                     R.id.refresh -> {
                         setUpPager()
-                        
+
                         true
                     }
 

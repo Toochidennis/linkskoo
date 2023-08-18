@@ -44,21 +44,21 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
             when (intent.getStringExtra("from")) {
 
                 "dashboard" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, AdminPaymentDashboardFragment()
+                    R.id.paymentLayout, AdminPaymentDashboardFragment()
                 ).commit()
 
                 "expenditure" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container,
+                    R.id.paymentLayout,
                     ExpenditureHistoryFragment()
                 ).commit()
 
                 "receipt" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container,
+                    R.id.paymentLayout,
                     ReceiptsHistoryFragment()
                 ).commit()
 
                 "student_receipt" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, StudentTransactionReceiptFragment
+                    R.id.paymentLayout, StudentTransactionReceiptFragment
                         .newInstance(
                             amount!!,
                             reference!!,
@@ -70,7 +70,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                 ).commit()
 
                 "admin_receipt" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, ReceiptsDetailsFragment
+                    R.id.paymentLayout, ReceiptsDetailsFragment
                         .newInstance(
                             amount!!,
                             name!!,
@@ -85,7 +85,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                 ).commit()
 
                 "admin_expenditure" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, ReceiptsDetailsFragment
+                    R.id.paymentLayout, ReceiptsDetailsFragment
                         .newInstance(
                             amount!!,
                             customerName!!,
@@ -100,11 +100,11 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
                 ).commit()
 
                 "add_expenditure" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, VendorFragment()
+                    R.id.paymentLayout, VendorFragment()
                 ).commit()
 
                 "vendor" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, AddExpenditureFragment.newInstance(
+                    R.id.paymentLayout, AddExpenditureFragment.newInstance(
                         customerName!!,
                         customerPhone!!,
                         customerReference!!,
@@ -114,31 +114,31 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
 
                 "fee_details" -> supportFragmentManager.beginTransaction().replace(
                     /* containerViewId = */
-                    R.id.payment_container, /* fragment = */
+                    R.id.paymentLayout, /* fragment = */
                     StudentFeesDetailsFragment.newInstance(term!!),
                 ).commit()
 
                 "settings" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, PaymentSettingsFragment()
+                    R.id.paymentLayout, PaymentSettingsFragment()
                 ).commit()
 
                 "fee_settings" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, FeeTypeSetupFragment()
+                    R.id.paymentLayout, FeeTypeSetupFragment()
                 ).commit()
 
                 "account_settings" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, AccountSetupFragment()
+                    R.id.paymentLayout, AccountSetupFragment()
                 ).commit()
 
 
                 "see_all" -> supportFragmentManager.beginTransaction().replace(
-                    R.id.payment_container, AdminTransactionHistoryFragment()
+                    R.id.paymentLayout, AdminTransactionHistoryFragment()
                 ).commit()
 
 
                 "receipt_class_name" -> supportFragmentManager.commit {
                     replace(
-                        R.id.payment_container, ReceiptStudentNameFragment.newInstance(
+                        R.id.paymentLayout, ReceiptStudentNameFragment.newInstance(
                             classId!!, className!!, levelName!!,
                         )
                     )
@@ -146,7 +146,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
 
                 "st" -> supportFragmentManager.commit {
                     replace(
-                        R.id.payment_container, AdminStudentResultFragment.newInstance(
+                        R.id.paymentLayout, AdminStudentResultFragment.newInstance(
                             studentId!!,
                             classId!!
                         )
@@ -155,7 +155,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
 
                 "student_profile" -> supportFragmentManager.commit {
                     replace(
-                        R.id.payment_container,
+                        R.id.paymentLayout,
                         StudentResultDownloadFragment.newInstance(
                             studentName!!,
                             studentId!!,
@@ -168,7 +168,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
 
                 "paid" -> supportFragmentManager.commit {
                     replace(
-                        R.id.payment_container,
+                        R.id.paymentLayout,
                         StudentsPaidFragment.newInstance(
                             className!!,
                             classId!!
@@ -178,7 +178,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
 
                 "debt" -> supportFragmentManager.commit {
                     replace(
-                        R.id.payment_container,
+                        R.id.paymentLayout,
                         DebtStudentsFragment.newInstance(
                             classId!!,
                             className!!
@@ -188,7 +188,7 @@ open class PaymentActivity : AppCompatActivity(R.layout.activity_payment) {
 
                 "debt_details" -> supportFragmentManager.commit {
                     replace(
-                        R.id.payment_container,
+                        R.id.paymentLayout,
                         DebtStudentsDetailsFragment.newInstance(
                             studentName!!,
                             studentId!!,

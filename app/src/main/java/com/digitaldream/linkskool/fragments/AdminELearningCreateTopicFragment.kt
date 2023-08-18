@@ -1,4 +1,4 @@
-package com.digitaldream.linkskool.dialog
+package com.digitaldream.linkskool.fragments
 
 import android.content.Context
 import android.os.Bundle

@@ -8,24 +8,19 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
+        style="@style/CustomTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:contentDescription="@string/todo"
-        app:tabBackground="@color/white"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/test_color_1"
-        app:tabInlineLabel="true"
-        app:tabMode="fixed"
-        app:tabTextAppearance="@style/TabStyle2" />
+        android:layout_marginTop="@dimen/dimen_16"
+        android:contentDescription="@string/todo" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@id/tab_layout"
-        android:contentDescription="@string/view_pager"/>
-
+        android:contentDescription="@string/view_pager" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/confirm_btn"

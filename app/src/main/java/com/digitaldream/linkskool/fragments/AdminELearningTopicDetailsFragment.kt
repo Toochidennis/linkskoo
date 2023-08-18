@@ -7,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.digitaldream.linkskool.R
 
-
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-
-class AdminELearningAssignmentInstructionsFragment : Fragment(R.layout.fragment_admin_e_learning_assignment_instructions) {
+class AdminELearningTopicDetailsFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
@@ -25,21 +23,23 @@ class AdminELearningAssignmentInstructionsFragment : Fragment(R.layout.fragment_
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_admin_e_learning_topic_details, container, false)
+    }
 
     companion object {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AdminELearningAssignmentInstructionsFragment().apply {
+            AdminELearningTopicDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 }

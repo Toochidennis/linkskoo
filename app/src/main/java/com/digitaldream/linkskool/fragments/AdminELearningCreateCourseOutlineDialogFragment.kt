@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RelativeLayout
@@ -29,7 +30,7 @@ private const val ARG_PARAM1 = "param1"
 class AdminELearningCreateCourseOutlineDialogFragment :
     DialogFragment(R.layout.dialog_fragment_admin_e_learning_add_course_outline) {
 
-    private lateinit var mBackBtn: ImageView
+    private lateinit var mBackBtn: ImageButton
     private lateinit var mDoneBtn: Button
     private lateinit var mCourseOutlineEditText: EditText
     private lateinit var mTagClassBtn: RadioButton
@@ -57,7 +58,6 @@ class AdminELearningCreateCourseOutlineDialogFragment :
         }
     }
 
-
     companion object {
 
         @JvmStatic
@@ -68,7 +68,6 @@ class AdminELearningCreateCourseOutlineDialogFragment :
                 }
             }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,7 +94,11 @@ class AdminELearningCreateCourseOutlineDialogFragment :
             tagList("teacher")
         }
 
+        mBackBtn.setOnClickListener {
+            dismiss()
+        }
     }
+
 
     private fun tagList(from: String) {
         try {

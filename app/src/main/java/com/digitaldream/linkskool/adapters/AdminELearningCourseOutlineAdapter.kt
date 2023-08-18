@@ -136,7 +136,7 @@ class AdminELearningCourseOutlineAdapter(
             optionsAction("assignment", optionBtn, assignment, itemView, adapterPosition)
 
             itemView.setOnClickListener {
-                launchActivity(itemView, "assignment_preview", "")
+                launchActivity(itemView, "assignment_details", "")
             }
         }
     }
@@ -156,6 +156,10 @@ class AdminELearningCourseOutlineAdapter(
             descriptionTxt.text = material.title
             val date = formatDate2(material.date, "custom")
             "Posted $date".let { dateTxt.text = it }
+
+            itemView.setOnClickListener {
+                launchActivity(itemView, "material_details", "")
+            }
         }
     }
 
@@ -362,9 +366,9 @@ class AdminELearningCourseOutlineAdapter(
         val targetTopicItems = getAssociatedItems(targetTopic)
 
         // swap topics
-        // itemList[fromPosition] = targetTopic
-        // itemList[toPosition] = draggedTopic
-        swapTopics(fromPosition, toPosition)
+        itemList[fromPosition] = targetTopic
+        itemList[toPosition] = draggedTopic
+        // swapTopics(fromPosition, toPosition)
 
         itemList.removeAll(draggedTopicItems)
         itemList.removeAll(targetTopicItems)

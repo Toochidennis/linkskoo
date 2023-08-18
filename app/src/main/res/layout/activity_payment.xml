@@ -7,7 +7,7 @@
     tools:context=".activities.PaymentActivity">
 
     <FrameLayout
-        android:id="@+id/payment_container"
+        android:id="@+id/paymentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
