@@ -32,4 +32,5 @@
 
     <dimen name="chart_line_thickness">2dp</dimen>
     <dimen name="chart_point_radius">5dp</dimen>
+    <dimen name="text_10">10sp</dimen>
 </resources>

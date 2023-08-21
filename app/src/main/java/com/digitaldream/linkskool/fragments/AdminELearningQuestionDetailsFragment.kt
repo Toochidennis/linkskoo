@@ -94,7 +94,7 @@ class AdminELearningQuestionDetailsFragment :
     private fun setUpMenu() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.e_learning_preview_menu, menu)
+                menuInflater.inflate(R.menu.menu_e_learning_details, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

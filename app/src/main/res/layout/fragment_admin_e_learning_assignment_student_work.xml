@@ -118,6 +118,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/markedLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -127,6 +128,7 @@
         android:padding="@dimen/dimen_16">
 
         <CheckBox
+            android:id="@+id/markedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_16" />
@@ -137,7 +139,8 @@
             android:layout_marginStart="@dimen/dimen_16"
             android:text="Marked"
             android:textAllCaps="true"
-            android:textSize="@dimen/text_12" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_10" />
 
     </LinearLayout>
 
