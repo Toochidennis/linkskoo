@@ -13,12 +13,12 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.flipAnimation
 
-class AdminELearningCreateCourseOutlineAdapter(
+class AdminELearningCreateClassAdapter(
     private val context: Context,
     private val selectedItems: HashMap<String, String>,
     private val itemList: MutableList<TagModel>,
     private val button: Button,
-) : RecyclerView.Adapter<AdminELearningCreateCourseOutlineAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AdminELearningCreateClassAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(

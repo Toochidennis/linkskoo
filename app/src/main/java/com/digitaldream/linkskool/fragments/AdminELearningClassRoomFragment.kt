@@ -17,8 +17,7 @@ private const val COURSE_ID = "course_id"
 private const val LEVEL_NAME = "level_name"
 private const val LEVEL_ID = "level_id"
 
-class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning_stream) {
-
+class AdminELearningClassRoomFragment : Fragment(R.layout.fragment_admin_e_learning_class_room) {
 
     private lateinit var mCourseNameTxt: TextView
     private lateinit var mLevelNameTxt: TextView
@@ -45,7 +44,7 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
 
         @JvmStatic
         fun newInstance(courseName: String, courseId: String, levelName: String, levelId: String) =
-            AdminELearningStreamFragment().apply {
+            AdminELearningClassRoomFragment().apply {
                 arguments = Bundle().apply {
                     putString(COURSE_NAME, courseName)
                     putString(COURSE_ID, courseId)
@@ -90,7 +89,7 @@ class AdminELearningStreamFragment : Fragment(R.layout.fragment_admin_e_learning
 
 
         mAddCourseOutlineBtn.setOnClickListener {
-            AdminELearningCreateCourseOutlineDialogFragment.newInstance(mLevelId!!)
+            AdminELearningCreateClassDialogFragment.newInstance(mLevelId!!)
                 .show(parentFragmentManager, "")
         }
 

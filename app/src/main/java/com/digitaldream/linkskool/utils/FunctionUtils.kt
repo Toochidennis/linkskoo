@@ -26,6 +26,7 @@ import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.Base64
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -445,7 +446,7 @@ object FunctionUtils {
         url: String,
         context: Context,
         stringHashMap: HashMap<String, String>?,
-        volleyCallback: VolleyCallback? = null
+        volleyCallback: VolleyCallback
     ) {
         val sharedPreferences =
             context.getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
@@ -462,22 +463,18 @@ object FunctionUtils {
         Timber.plant(Timber.DebugTree())
 
         val mUrl =
-            if (stringHashMap.isNullOrEmpty()) {
-                "$url&&_db=$db"
-            } else {
-                url
-            }
+            if (stringHashMap.isNullOrEmpty()) "$url&&_db=$db" else url
 
         val stringRequest = object : StringRequest(
             method,
             mUrl,
             { response: String ->
-                Timber.tag("response").d(response)
-                volleyCallback?.onResponse(response)
+                Log.d("response", response)
+                volleyCallback.onResponse(response)
                 progressFlower.dismiss()
 
             }, { error: VolleyError ->
-                volleyCallback?.onError(error)
+                volleyCallback.onError(error)
                 Timber.tag("error").e(error)
                 progressFlower.dismiss()
             }) {
@@ -498,7 +495,7 @@ object FunctionUtils {
         }
 
         stringRequest.retryPolicy = DefaultRetryPolicy(
-            5000,
+            4000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )

@@ -66,6 +66,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var questionTitle: String? = null
     private var levelId: String? = null
     private var courseId: String? = null
+    private var topicId: String? = null
     private var courseName: String? = null
     private var questionDescription: String? = null
     private var startDate: String? = null
@@ -173,10 +174,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
             val questionItem = when {
                 question != null -> SectionModel(
+                    "",
                     sectionTitle, QuestionItem.MultiChoice(question), "multiple_choice"
                 )
 
                 shortQuestion != null -> SectionModel(
+                    "",
                     sectionTitle, QuestionItem.ShortAnswer(shortQuestion), "short_answer"
                 )
 
@@ -188,7 +191,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     sectionItems.add(it)
                 }
             } else {
-                val newSection = SectionModel(sectionTitle, null, "section")
+                val newSection = SectionModel("", sectionTitle, null, "section")
                 sectionItems.add(newSection)
             }
 
@@ -228,6 +231,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         startDate = settingsObject.getString("startDate")
                         endDate = settingsObject.getString("endDate")
                         questionTopic = settingsObject.getString("topic")
+                        topicId = settingsObject.getString("topicId")
                         levelId = settingsObject.getString("levelId")
                         courseId = settingsObject.getString("courseId")
                         courseName = settingsObject.getString("courseName")
@@ -258,6 +262,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("courseId", courseId)
             put("levelId", levelId)
             put("topic", questionTopic)
+            put("topicId", topicId)
         }.let {
             jsonObject.put("settings", it)
             jsonObject.put("class", selectedClassArray)
@@ -327,6 +332,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         val questionObject = questionsArray.getJSONObject(i)
 
                         questionObject.let {
+                            val questionId = it.getString("question_id")
                             val questionTitle = it.getString("question_title")
                             val questionFileName = it.getString("question_file_name")
                             val questionImage = it.getString("question_image")
@@ -335,7 +341,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                             when (val questionType = it.getString("question_type")) {
                                 "section" -> {
                                     val section =
-                                        SectionModel(questionTitle, null, questionType)
+                                        SectionModel(questionId, questionTitle, null, questionType)
                                     sectionItems.add(section)
                                 }
 
@@ -366,6 +372,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                         val correctAnswer = answer.getString("text")
 
                                         val multiChoiceQuestion = MultiChoiceQuestion(
+                                            "",
                                             questionTitle,
                                             questionFileName,
                                             questionImage,
@@ -376,7 +383,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                         )
 
                                         val questionSection = SectionModel(
-                                            "",
+                                            questionId, "",
                                             QuestionItem.MultiChoice(multiChoiceQuestion),
                                             questionType
                                         )
@@ -395,6 +402,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                         )
 
                                         val questionSection = SectionModel(
+                                            questionId,
                                             "", QuestionItem.ShortAnswer(shortAnswerModel),
                                             questionType
                                         )
@@ -418,6 +426,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             sectionItems.forEach { sectionModel ->
                 if (!sectionModel.sectionTitle.isNullOrEmpty()) {
                     JSONObject().apply {
+                        put("question_id", sectionModel.sectionId ?: "")
                         put("question_title", sectionModel.sectionTitle)
                         put("question_type", sectionModel.viewType)
                         put("question_old_file_name", "")
@@ -435,6 +444,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                             val optionsList = multiChoice.options
 
                             JSONObject().apply {
+                                put("question_id", multiChoice.questionId ?: "")
                                 put("question_title", multiChoice.questionText)
                                 put("question_type", sectionModel.viewType)
                                 put("question_file_name", multiChoice.attachmentName)
@@ -513,6 +523,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                             val shortAnswer = questionItem.question
 
                             JSONObject().apply {
+                                put("question_id", shortAnswer.questionId ?: "")
                                 put("question_title", shortAnswer.questionText)
                                 put("question_type", sectionModel.viewType)
                                 put("question_file_name", shortAnswer.attachmentName)
@@ -564,6 +575,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 put("course", courseId)
                 put("course_name", courseName)
                 put("topic", questionTopic)
+                put("topic_id", topicId)
                 put("start_date", "$startDate")
                 put("end_date", "$endDate")
                 put("year", year)
@@ -677,15 +689,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             }.apply()
 
         requireActivity().finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        requireContext()
-            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE).edit()
-            .apply {
-                putString("question_object", "")
-            }.apply()
     }
 
 }

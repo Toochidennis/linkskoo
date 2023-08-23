@@ -61,6 +61,7 @@ class AdminELearningCreateContentDialog(
 
         topicBtn.setOnClickListener {
             launchActivity("topic")
+            dismiss()
         }
     }
 

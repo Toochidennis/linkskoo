@@ -12,7 +12,6 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
@@ -25,7 +24,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import java.util.Collections
 
-class AdminELearningCourseOutlineAdapter(
+class AdminELearningClassAdapter(
     private val itemList: MutableList<ContentModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperAdapter {
 
@@ -35,6 +34,7 @@ class AdminELearningCourseOutlineAdapter(
         private const val VIEW_TYPE_MATERIAL = 3
         private const val VIEW_TYPE_QUESTION = 4
     }
+
 
     private val viewHolderList = mutableListOf<RecyclerView.ViewHolder>()
 
@@ -399,5 +399,6 @@ class AdminELearningCourseOutlineAdapter(
     private fun swapTopics(fromPosition: Int, toPosition: Int) {
         Collections.swap(itemList, fromPosition, toPosition)
     }
+
 
 }

@@ -32,7 +32,7 @@ class AdminELearningSelectTopicDialogFragment(
     private var levelId: String,
     private var courseName: String,
     private var selectedClass: HashMap<String, String>,
-    private val isTopicSelected: (topic: String?) -> Unit
+    private val isTopicSelected: (topicId: String, topic: String?) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_select_topic) {
 
     private lateinit var backBtn: ImageButton
@@ -51,6 +51,7 @@ class AdminELearningSelectTopicDialogFragment(
     private var term: String? = null
     private var year: String? = null
     private var existingTopic: String? = null
+    private var existingTopicId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,8 @@ class AdminELearningSelectTopicDialogFragment(
         term = sharedPreferences.getString("term", "")
         year = sharedPreferences.getString("school_year", "")
 
+        setUpTopicAdapter()
+
         fetchTopics()
 
         backBtn.setOnClickListener {
@@ -77,6 +80,7 @@ class AdminELearningSelectTopicDialogFragment(
         }
 
         doneBtn.setOnClickListener {
+            it.isEnabled = false
             handleDoneButton()
         }
 
@@ -153,9 +157,9 @@ class AdminELearningSelectTopicDialogFragment(
             R.layout.item_fragment_select_topic,
             bindItem = { itemView, model, _ ->
                 val topicTxt: TextView = itemView.findViewById(R.id.topicTxt)
-                topicTxt.text = model.topic
+                topicTxt.text = model.topicText
 
-                val isSelected = existingTopic == model.topic
+                val isSelected = existingTopic == model.topicText
                 itemView.isSelected = isSelected
 
                 if (isSelected) {
@@ -165,7 +169,7 @@ class AdminELearningSelectTopicDialogFragment(
                 }
 
                 itemView.setOnClickListener {
-                    handleTopicSelection(model.topic)
+                    handleTopicSelection(model.topicId, model.topicText)
                 }
 
             }
@@ -182,9 +186,10 @@ class AdminELearningSelectTopicDialogFragment(
         }
     }
 
-    private fun handleTopicSelection(newSelectedTopic: String) {
+    private fun handleTopicSelection(newSelectedId: String, newSelectedTopic: String) {
         if (newSelectedTopic != existingTopic) {
             existingTopic = newSelectedTopic
+            existingTopicId = newSelectedId
             removeDrawableOnTextView(noTopicBtn)
             unCheckEditText()
             topicAdapter.notifyDataSetChanged()
@@ -226,14 +231,13 @@ class AdminELearningSelectTopicDialogFragment(
                         if (response != "[]") {
                             with(JSONArray(response)) {
                                 for (i in 0 until length()) {
-                                    val contentObject = getJSONObject(i)
 
-                                    contentObject.let {
+                                    getJSONObject(i).let {
+                                        val id = it.getString("id")
                                         val title = it.getString("title")
-                                        val type = it.getString("type")
 
-                                        if (type == "4") {
-                                            topicList.add(TopicModel(title))
+                                        if (it.getString("type") == "4") {
+                                            topicList.add(TopicModel(id, title))
                                         }
                                     }
                                 }
@@ -267,13 +271,13 @@ class AdminELearningSelectTopicDialogFragment(
             if (newObjectiveEditText.text.toString().isBlank()) {
                 newObjectiveEditText.error = "Please provide objectives"
             } else {
-                existingTopic = newTopicEditText.text.toString().trim()
                 val objectives = newObjectiveEditText.text.toString().trim()
+                existingTopic = newTopicEditText.text.toString().trim()
 
                 postTopic(objectives)
             }
         } else if (!existingTopic.isNullOrEmpty()) {
-            isTopicSelected(existingTopic)
+            isTopicSelected(existingTopicId!!, existingTopic)
             dismiss()
         } else {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
@@ -327,8 +331,19 @@ class AdminELearningSelectTopicDialogFragment(
             hashMap,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
-                    isTopicSelected(existingTopic)
-                    dismiss()
+                    try {
+                        JSONObject(response).run {
+                            val details = getJSONObject("details")
+                            val topicId = details.getString("id")
+                            val topicText = details.getString("title")
+
+                            isTopicSelected(topicId, topicText)
+
+                            dismiss()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
 
                 override fun onError(error: VolleyError) {

@@ -97,6 +97,7 @@ class AdminELearningAssignmentFragment :
     private var userName: String? = null
 
     private var topicText: String? = null
+    private var topicId: String? = null
     private var descriptionText: String? = null
     private var titleText: String? = null
     private var gradeText: String? = null
@@ -462,7 +463,7 @@ class AdminELearningAssignmentFragment :
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
             showText("Please set date")
-        }  else {
+        } else {
             postAssignment()
         }
     }
@@ -476,7 +477,8 @@ class AdminELearningAssignmentFragment :
             put("title", titleText!!)
             put("type", "3")
             put("description", descriptionText!!)
-            put("topic", if (topicText == "Topic") "No topic" else topicText!!)
+            put("topic", if (topicText == "Topic") "" else topicText!!)
+            put("topic_id", topicId ?: "0")
             put("objective", "")
 
             mFileList.isNotEmpty().let { isTrue ->
@@ -497,11 +499,12 @@ class AdminELearningAssignmentFragment :
                             put("old_file_name", oldFileName)
                             put("type", attachment.type)
 
-                            val image = FunctionUtils.convertUriOrFileToBase64(
+                            val file = FunctionUtils.convertUriOrFileToBase64(
                                 attachment.uri,
                                 requireContext()
                             )
-                            put("image", image)
+
+                            put("file", file)
                         }.let {
                             filesArray.put(it)
                         }
@@ -579,11 +582,11 @@ class AdminELearningAssignmentFragment :
             levelId = mLevelId!!,
             courseName = mCourseName!!,
             selectedClass = selectedClassItems
-        ) { topic ->
+        ) { topicId, topicText ->
 
-            mTopicTxt.text = topic
+            this.topicId = topicId
+            mTopicTxt.text = topicText
 
-            println("topic $topic")
         }.show(parentFragmentManager, "")
     }
 

@@ -82,6 +82,7 @@ class AdminELearningMaterialFragment :
     private var term: String? = null
     private var userId: String? = null
     private var userName: String? = null
+    private var topicId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -348,7 +349,6 @@ class AdminELearningMaterialFragment :
     private fun verifyMaterial() {
         val titleText = mMaterialTitleEditText.text.toString().trim()
         val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
 
         if (titleText.isEmpty()) {
             mMaterialTitleEditText.error = "Please enter material title"
@@ -373,7 +373,8 @@ class AdminELearningMaterialFragment :
             put("title", titleText)
             put("type", "1")
             put("description", descriptionText)
-            put("topic", if (topicText == "Topic") "No topic" else topicText)
+            put("topic", if (topicText == "Topic") "" else topicText)
+            put("topic_id", topicId ?: "")
             put("objective", "")
 
             mFileList.isNotEmpty().let { isTrue ->
@@ -394,8 +395,8 @@ class AdminELearningMaterialFragment :
                             put("old_file_name", oldFileName)
                             put("type", attachment.type)
 
-                            val image = convertUriOrFileToBase64(attachment.uri, requireContext())
-                            put("image", image)
+                            val file = convertUriOrFileToBase64(attachment.uri, requireContext())
+                            put("file", file)
                         }.let {
                             filesArray.put(it)
                         }
@@ -441,15 +442,17 @@ class AdminELearningMaterialFragment :
         val url = "${getString(R.string.base_url)}/addContent.php"
         val hashMap = prepareMaterial()
 
-        sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap, object
-            : VolleyCallback {
-            override fun onResponse(response: String) {
-                showText("Material submitted successfully")
+        println(hashMap)
 
-                GlobalScope.launch {
-                    delay(1000)
-                    onBackPressed()
-                }
+        sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
+            object : VolleyCallback {
+            override fun onResponse(response: String) {
+                showText("Material added")
+
+//                GlobalScope.launch {
+//                    delay(1000)
+//                    onBackPressed()
+//                }
             }
 
             override fun onError(error: VolleyError) {
@@ -467,9 +470,10 @@ class AdminELearningMaterialFragment :
             levelId = mLevelId!!,
             courseName = mCourseName!!,
             selectedClass = selectedClassItems
-        ) { topic ->
+        ) { topicId, topicText ->
 
-            mTopicTxt.text = topic
+            this.topicId = topicId
+            mTopicTxt.text = topicText
         }.show(parentFragmentManager, "")
     }
 

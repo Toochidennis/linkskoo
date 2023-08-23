@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -15,7 +14,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningCreateCourseOutlineAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningCreateClassAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
@@ -27,8 +26,8 @@ import com.j256.ormlite.dao.DaoManager
 private const val ARG_PARAM1 = "param1"
 
 
-class AdminELearningCreateCourseOutlineDialogFragment :
-    DialogFragment(R.layout.dialog_fragment_admin_e_learning_add_course_outline) {
+class AdminELearningCreateClassDialogFragment :
+    DialogFragment(R.layout.dialog_fragment_admin_e_learning_create_class) {
 
     private lateinit var mBackBtn: ImageButton
     private lateinit var mDoneBtn: Button
@@ -62,7 +61,7 @@ class AdminELearningCreateCourseOutlineDialogFragment :
 
         @JvmStatic
         fun newInstance(param1: String) =
-            AdminELearningCreateCourseOutlineDialogFragment().apply {
+            AdminELearningCreateClassDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                 }
@@ -145,7 +144,7 @@ class AdminELearningCreateCourseOutlineDialogFragment :
                 mSelectAllBtn.isVisible = false
                 mTagView.isVisible = true
             } else {
-                AdminELearningCreateCourseOutlineAdapter(
+                AdminELearningCreateClassAdapter(
                     requireContext(),
                     selectedItems,
                     mTagList,

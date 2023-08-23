@@ -74,6 +74,7 @@ class AdminELearningQuestionSettingsFragment :
     private var jsonFromQuestion: String? = null
     private var updatedJson = JSONObject()
     private var from: String? = null
+    private var topicId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -268,6 +269,7 @@ class AdminELearningQuestionSettingsFragment :
                             mCourseName = it.getString("courseName")
                             mCourseId = it.getString("courseId")
                             mLevelId = it.getString("levelId")
+                            topicId = it.getString("topicId")
                         }
 
                         for (i in 0 until classArray.length()) {
@@ -310,9 +312,10 @@ class AdminELearningQuestionSettingsFragment :
             levelId = mLevelId!!,
             courseName = mCourseName!!,
             selectedClass = selectedItems
-        ) { topic ->
+        ) { topicId, topicText ->
 
-            mTopicTxt.text = topic
+            this.topicId = topicId
+            mTopicTxt.text = topicText
 
         }.show(parentFragmentManager, "")
     }
@@ -344,7 +347,8 @@ class AdminELearningQuestionSettingsFragment :
             put("levelId", mLevelId)
             put("courseId", mCourseId)
             put("courseName", mCourseName)
-            put("topic", if (topicText == "Topic") "No topic" else topicText)
+            put("topic", if (topicText == "Topic") "" else topicText)
+            put("topicId", topicId ?: "0")
         }.let {
             settingsObject.put("settings", it)
             settingsObject.put("class", classArray)

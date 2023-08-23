@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningCourseOutlineAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningClassAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningCreateContentDialog
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.capitaliseFirstLetter
@@ -27,13 +27,13 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 
-class AdminELearningCourseOutlineFragment :
-    Fragment(R.layout.fragment_admin_e_learning_course_outline) {
+class AdminELearningClassFragment :
+    Fragment(R.layout.fragment_admin_e_learning_class) {
 
     private lateinit var contentRecyclerView: RecyclerView
     private lateinit var addContentButton: FloatingActionButton
 
-    private lateinit var contentAdapter: AdminELearningCourseOutlineAdapter
+    private lateinit var contentAdapter: AdminELearningClassAdapter
     private var contentList = mutableListOf<ContentModel>()
 
     private var mLevelId: String? = null
@@ -55,7 +55,7 @@ class AdminELearningCourseOutlineFragment :
 
         @JvmStatic
         fun newInstance(param1: String, param2: String, param3: String) =
-            AdminELearningCourseOutlineFragment().apply {
+            AdminELearningClassFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -87,7 +87,7 @@ class AdminELearningCourseOutlineFragment :
             val courseName = capitaliseFirstLetter(mCourseName ?: "")
 
             toolbar.apply {
-                "$courseName Outline".let { title = it }
+                "$courseName Class".let { title = it }
                 setNavigationIcon(R.drawable.arrow_left)
                 setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             }
@@ -141,6 +141,7 @@ class AdminELearningCourseOutlineFragment :
                                         val term = it.getString("term")
                                         val date = it.getString("upload_date")
                                         val type = it.getString("type")
+                                        val category = it.getString("category")
 
                                         when (it.getString("content_type")) {
                                             "Topic" -> {
@@ -150,7 +151,8 @@ class AdminELearningCourseOutlineFragment :
                                                     courseId,
                                                     levelId,
                                                     authorId, authorName, date, term, type,
-                                                    "topic"
+                                                    "topic",
+                                                    title
                                                 )
 
                                                 contentList.add(content)
@@ -163,7 +165,8 @@ class AdminELearningCourseOutlineFragment :
                                                     courseId,
                                                     levelId,
                                                     authorId, authorName, date, term, type,
-                                                    "assignment"
+                                                    "assignment",
+                                                    category
                                                 )
 
                                                 contentList.add(content)
@@ -177,7 +180,8 @@ class AdminELearningCourseOutlineFragment :
                                                     courseId,
                                                     levelId,
                                                     authorId, authorName, date, term, type,
-                                                    "material"
+                                                    "material",
+                                                    category
                                                 )
 
                                                 contentList.add(content)
@@ -190,19 +194,21 @@ class AdminELearningCourseOutlineFragment :
                                                     courseId,
                                                     levelId,
                                                     authorId, authorName, date, term, type,
-                                                    "question"
+                                                    "question",
+                                                    category
                                                 )
 
                                                 contentList.add(content)
                                             }
                                         }
                                     }
-
                                 }
                             }
+
+                            sortDataList()
+
                             println(contentList)
 
-                            contentAdapter.notifyDataSetChanged()
                         }
 
                     } catch (e: Exception) {
@@ -219,7 +225,7 @@ class AdminELearningCourseOutlineFragment :
 
 
     private fun setUpRecyclerView() {
-        contentAdapter = AdminELearningCourseOutlineAdapter(contentList)
+        contentAdapter = AdminELearningClassAdapter(contentList)
 
         contentRecyclerView.apply {
             hasFixedSize()
@@ -232,6 +238,17 @@ class AdminELearningCourseOutlineFragment :
         val touchCallback = ItemTouchHelperCallback(contentAdapter)
         val touchHelper = ItemTouchHelper(touchCallback)
         touchHelper.attachToRecyclerView(contentRecyclerView)
+    }
+
+    private fun sortDataList() {
+//        contentList.sortedWith(compareBy(
+//            { it.category.isEmpty() },
+//            { it.type != "topic" },
+//            { it.category },
+//            {it.title}
+//        ))
+
+        contentAdapter.notifyDataSetChanged()
     }
 
 }

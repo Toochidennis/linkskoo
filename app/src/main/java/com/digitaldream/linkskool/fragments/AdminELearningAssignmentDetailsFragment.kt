@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
 import com.digitaldream.linkskool.models.ActionBarViewModel
+import com.digitaldream.linkskool.utils.CustomViewPager2
 import com.google.android.material.tabs.TabLayout
 
 private const val ARG_PARAM1 = "param1"
@@ -25,7 +26,7 @@ class AdminELearningAssignmentDetailsFragment :
     Fragment(R.layout.fragment_admin_e_learning_assignment_details) {
 
     private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: CustomViewPager2
     private lateinit var menuHost: MenuHost
     private var actionBar: ActionBar? = null
     private var customActionBarView: View? = null
@@ -65,12 +66,16 @@ class AdminELearningAssignmentDetailsFragment :
         defaultActionBar()
         setUpPager()
 
-        actionBarViewModel.customActionBarVisible.observe(requireActivity()){showCustomActionBar->
-            if (showCustomActionBar){
+        actionBarViewModel.customActionBarVisible.observe(requireActivity()) { showCustomActionBar ->
+            viewPager.setCustomBarVisibility(showCustomActionBar)
+
+            for (i in 0 until tabLayout.tabCount){
+                tabLayout.getTabAt(i)?.view?.isClickable = !showCustomActionBar
+            }
+
+            if (showCustomActionBar) {
                 setUpCustomActionBar()
-                viewPager.isClickable = false
-            }else{
-                viewPager.isClickable = true
+            } else {
                 defaultActionBar()
             }
         }
@@ -159,6 +164,4 @@ class AdminELearningAssignmentDetailsFragment :
             }
         })
     }
-
-
 }

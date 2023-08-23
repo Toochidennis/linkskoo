@@ -1,3 +1,3 @@
 package com.digitaldream.linkskool.models
 
-data class TopicModel(var topic: String)
+data class TopicModel(val topicId: String, val topicText: String)
