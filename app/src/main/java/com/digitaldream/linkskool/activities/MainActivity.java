@@ -18,9 +18,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.digitaldream.linkskool.BuildConfig;
 import com.digitaldream.linkskool.R;
 import com.digitaldream.linkskool.config.DatabaseHelper;
 import com.digitaldream.linkskool.config.ForceUpdateAsync;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
     //private final String url = "http://www.linkskool.com/newportal/api/mobile.php";
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -101,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         inFromBottom.setInterpolator(new AccelerateInterpolator());
 
         sImageView.startAnimation(inFromBottom);
+
         inFromBottom.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

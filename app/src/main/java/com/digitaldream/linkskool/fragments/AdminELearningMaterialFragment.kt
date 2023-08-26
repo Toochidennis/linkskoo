@@ -30,16 +30,13 @@ import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
-import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.encodeUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -395,7 +392,7 @@ class AdminELearningMaterialFragment :
                             put("old_file_name", oldFileName)
                             put("type", attachment.type)
 
-                            val file = convertUriOrFileToBase64(attachment.uri, requireContext())
+                            val file = encodeUriOrFileToBase64(attachment.uri, requireContext())
                             put("file", file)
                         }.let {
                             filesArray.put(it)

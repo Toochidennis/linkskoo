@@ -1,13 +1,12 @@
 package com.digitaldream.linkskool.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -25,23 +24,25 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
-import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
-import com.digitaldream.linkskool.utils.FunctionUtils.convertUriOrFileToBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.encodeUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.ItemTouchHelperCallback
 import com.digitaldream.linkskool.utils.VolleyCallback
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 
 private const val ARG_PARAM1 = "param1"
@@ -78,8 +79,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var userName: String? = null
     private var from: String? = null
 
-    private var questionObject: String? = null
+    private var questionData: String? = null
     private var newAssessmentObject = JSONObject()
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private val jsonFileName = "question_data.json"
+    private lateinit var jsonFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,10 +105,10 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     companion object {
 
         @JvmStatic
-        fun newInstance(json: String = "", from: String = "") =
+        fun newInstance(settings: String = "", from: String = "") =
             AdminELearningQuestionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, json)
+                    putString(ARG_PARAM1, settings)
                     putString(ARG_PARAM2, from)
                 }
             }
@@ -114,13 +119,17 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         setUpViews(view)
 
-        val sharedPreferences =
+        sharedPreferences =
             requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
         year = sharedPreferences.getString("school_year", "")
         term = sharedPreferences.getString("term", "")
         userId = sharedPreferences.getString("user_id", "")
         userName = sharedPreferences.getString("user", "")
-        questionObject = sharedPreferences.getString("question_object", "")
+        //      questionData = sharedPreferences.getString("question_data", "")
+
+        jsonFile = File(requireActivity().filesDir, jsonFileName)
+
+        loadJSonData()
 
         fromQuestionSettings()
 
@@ -220,7 +229,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun fromQuestionSettings() {
         try {
-            if (from == "settings") {
+            if (from == "settings")
                 jsonFromQuestionSettings?.let {
                     JSONObject(it).run {
                         val settingsObject = getJSONObject("settings")
@@ -238,19 +247,28 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
                         questionTitleTxt.text = questionTitle
                         descriptionTxt.text = questionDescription
-
-                        setQuestionsIfExist()
                     }
+
+                    setQuestionsIfExist()
                 }
-            } else {
+            else
                 setQuestionsIfExist()
-            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showToast("Error loading settings")
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun toQuestionSettings() {
+        createQuestionsObject()
+
         val jsonObject = JSONObject()
 
         JSONObject().apply {
@@ -268,19 +286,166 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             jsonObject.put("class", selectedClassArray)
         }
 
-        prepareQuestions()
-
         parentFragmentManager.commit {
             replace(
                 R.id.learning_container,
-                AdminELearningQuestionSettingsFragment
-                    .newInstance(
-                        levelId!!, courseId!!,
-                        jsonObject.toString(),
-                        "edit",
-                        courseName!!
-                    )
+                AdminELearningQuestionSettingsFragment.newInstance(
+                    levelId!!,
+                    courseId!!,
+                    courseName!!,
+                    "edit",
+                    jsonObject.toString()
+                )
             )
+        }
+    }
+
+    private fun setQuestionsIfExist() {
+        if (!questionData.isNullOrEmpty()) {
+            questionData?.let { data ->
+                JSONObject(data).run {
+                    val settingsObject = getJSONObject("settings")
+                    if (from != "settings") {
+                        settingsObject.let {
+                            questionTitle = it.getString("title")
+                            questionDescription = it.getString("description")
+                            startDate = it.getString("start_date")
+                            endDate = it.getString("end_date")
+                            questionTopic = it.getString("topic")
+                            levelId = it.getString("level")
+                            courseId = it.getString("course")
+                            courseName = it.getString("course_name")
+                            selectedClassArray = it.getJSONArray("class")
+
+                            questionTitleTxt.text = questionTitle
+                            descriptionTxt.text = questionDescription
+                        }
+                    }
+
+                    if (has("questions")) {
+                        val questionsArray = getJSONArray("questions")
+
+                        for (i in 0 until questionsArray.length()) {
+                            with(questionsArray.getJSONObject(i)) {
+                                val questionId = getString("question_id")
+                                val questionTitle = getString("question_title")
+                                var questionFileName: String
+                                var questionImage: String
+                                var questionOldFileName: String
+
+                                getJSONArray("question_files").let { filesArray ->
+                                    filesArray.getJSONObject(0).let { filesObject ->
+                                        questionFileName = filesObject.getString("file_name")
+                                        questionOldFileName = filesObject.getString("old_file_name")
+                                        questionImage = filesObject.getString("file")
+                                    }
+                                }
+
+                                when (val questionType = getString("question_type")) {
+                                    "section" -> {
+                                        val section =
+                                            SectionModel(
+                                                questionId,
+                                                questionTitle,
+                                                null,
+                                                questionType
+                                            )
+                                        sectionItems.add(section)
+                                    }
+
+                                    "multiple_choice" -> {
+                                        val optionsArray = getJSONArray("options")
+                                        val optionsList = mutableListOf<MultipleChoiceOption>()
+
+                                        for (j in 0 until optionsArray.length()) {
+                                            optionsArray.getJSONObject(j).let { option ->
+                                                val order = option.getString("order")
+                                                val text = option.getString("text")
+                                                val fileName: String
+                                                val oldFileName: String
+                                                val file: String
+
+                                                with(option.getJSONArray("option_files")) {
+                                                    getJSONObject(0).let { filesObject ->
+                                                        fileName =
+                                                            filesObject.getString("file_name")
+                                                        oldFileName =
+                                                            filesObject.getString("old_file_name")
+                                                        file = filesObject.getString("file")
+                                                    }
+                                                }
+
+                                                val optionModel =
+                                                    MultipleChoiceOption(
+                                                        text,
+                                                        order,
+                                                        fileName,
+                                                        file,
+                                                        oldFileName
+                                                    )
+
+                                                optionsList.add(optionModel)
+                                            }
+                                        }
+
+                                        getJSONObject("correct").let { answer ->
+                                            val answerOrder = answer.getString("order")
+                                            val correctAnswer = answer.getString("text")
+
+                                            val multiChoiceQuestion =
+                                                MultiChoiceQuestion(
+                                                    questionId,
+                                                    questionTitle,
+                                                    questionFileName,
+                                                    questionImage,
+                                                    questionOldFileName,
+                                                    optionsList,
+                                                    answerOrder.toInt(),
+                                                    correctAnswer
+                                                )
+
+                                            val questionSection =
+                                                SectionModel(
+                                                    questionId, "",
+                                                    QuestionItem.MultiChoice(multiChoiceQuestion),
+                                                    questionType
+                                                )
+
+                                            sectionItems.add(questionSection)
+                                        }
+                                    }
+
+                                    else -> {
+                                        getJSONObject("correct").let { answer ->
+                                            val correctAnswer = answer.getString("text")
+
+                                            val shortAnswerModel =
+                                                ShortAnswerModel(
+                                                    questionId,
+                                                    questionTitle,
+                                                    questionFileName,
+                                                    questionImage,
+                                                    questionOldFileName,
+                                                    correctAnswer
+                                                )
+
+                                            val questionSection =
+                                                SectionModel(
+                                                    questionId,
+                                                    "",
+                                                    QuestionItem.ShortAnswer(shortAnswerModel),
+                                                    questionType
+                                                )
+
+                                            sectionItems.add(questionSection)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -304,124 +469,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-    private fun setQuestionsIfExist() {
-        if (!questionObject.isNullOrEmpty()) {
-            JSONObject(questionObject!!).run {
-                val settingsObject = getJSONObject("settings")
-                if (from != "settings") {
-                    settingsObject.let {
-                        questionTitle = it.getString("title")
-                        questionDescription = it.getString("description")
-                        startDate = it.getString("start_date")
-                        endDate = it.getString("end_date")
-                        questionTopic = it.getString("topic")
-                        levelId = it.getString("level")
-                        courseId = it.getString("course")
-                        courseName = it.getString("course_name")
-                        selectedClassArray = it.getJSONArray("class")
-
-                        questionTitleTxt.text = questionTitle
-                        descriptionTxt.text = questionDescription
-                    }
-                }
-
-                if (has("questions")) {
-                    val questionsArray = getJSONArray("questions")
-
-                    for (i in 0 until questionsArray.length()) {
-                        val questionObject = questionsArray.getJSONObject(i)
-
-                        questionObject.let {
-                            val questionId = it.getString("question_id")
-                            val questionTitle = it.getString("question_title")
-                            val questionFileName = it.getString("question_file_name")
-                            val questionImage = it.getString("question_image")
-                            val questionOldFileName = it.getString("question_old_file_name")
-
-                            when (val questionType = it.getString("question_type")) {
-                                "section" -> {
-                                    val section =
-                                        SectionModel(questionId, questionTitle, null, questionType)
-                                    sectionItems.add(section)
-                                }
-
-                                "multiple_choice" -> {
-                                    val optionsArray = it.getJSONArray("options")
-                                    val optionsList = mutableListOf<MultipleChoiceOption>()
-
-                                    for (j in 0 until optionsArray.length()) {
-                                        val optionsObject = optionsArray.getJSONObject(j)
-
-                                        optionsObject.let { option ->
-                                            val order = option.getString("order")
-                                            val text = option.getString("text")
-                                            val fileName = option.getString("file_name")
-                                            val oldFileName = option.getString("old_file_name")
-                                            val image = option.getString("image")
-
-                                            val optionModel = MultipleChoiceOption(
-                                                text, order, fileName, image, oldFileName
-                                            )
-
-                                            optionsList.add(optionModel)
-                                        }
-                                    }
-
-                                    it.getJSONObject("correct").let { answer ->
-                                        val answerOrder = answer.getString("order")
-                                        val correctAnswer = answer.getString("text")
-
-                                        val multiChoiceQuestion = MultiChoiceQuestion(
-                                            "",
-                                            questionTitle,
-                                            questionFileName,
-                                            questionImage,
-                                            questionOldFileName,
-                                            optionsList,
-                                            answerOrder.toInt(),
-                                            correctAnswer
-                                        )
-
-                                        val questionSection = SectionModel(
-                                            questionId, "",
-                                            QuestionItem.MultiChoice(multiChoiceQuestion),
-                                            questionType
-                                        )
-
-                                        sectionItems.add(questionSection)
-                                    }
-                                }
-
-                                else -> {
-                                    it.getJSONObject("correct").let { answer ->
-                                        val correctAnswer = answer.getString("text")
-
-                                        val shortAnswerModel = ShortAnswerModel(
-                                            questionTitle, questionFileName, questionImage,
-                                            questionOldFileName, correctAnswer
-                                        )
-
-                                        val questionSection = SectionModel(
-                                            questionId,
-                                            "", QuestionItem.ShortAnswer(shortAnswerModel),
-                                            questionType
-                                        )
-
-                                        sectionItems.add(questionSection)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun prepareQuestions() {
+    private fun createQuestionsObject() {
         if (sectionItems.isNotEmpty()) {
             val questionArray = JSONArray()
             val assessmentObject = JSONObject()
+
+            Log.d("section", "$sectionItems")
 
             sectionItems.forEach { sectionModel ->
                 if (!sectionModel.sectionTitle.isNullOrEmpty()) {
@@ -429,158 +482,28 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         put("question_id", sectionModel.sectionId ?: "")
                         put("question_title", sectionModel.sectionTitle)
                         put("question_type", sectionModel.viewType)
-                        put("question_old_file_name", "")
-                        put("question_file_name", "")
-                        put("question_image", "")
+
+                        JSONArray().apply {
+                            put(
+                                JSONObject().apply {
+                                    put("file_name", "")
+                                    put("old_file_name", "")
+                                    put("type", "")
+                                    put("file", "")
+                                }
+                            )
+                        }.let {
+                            put("question_files", it)
+                        }
                     }.let {
                         questionArray.put(it)
                     }
                 } else {
-                    if (sectionModel.questionItem != null) {
-                        val questionItem = sectionModel.questionItem
-
-                        if (questionItem is QuestionItem.MultiChoice) {
-                            val multiChoice = questionItem.question
-                            val optionsList = multiChoice.options
-
-                            JSONObject().apply {
-                                put("question_id", multiChoice.questionId ?: "")
-                                put("question_title", multiChoice.questionText)
-                                put("question_type", sectionModel.viewType)
-                                put("question_file_name", multiChoice.attachmentName)
-
-                                if (multiChoice.attachmentUri != null) {
-                                    val image =
-                                        convertUriOrFileToBase64(
-                                            multiChoice.attachmentUri,
-                                            requireContext()
-                                        )
-                                    put("question_image", image)
-
-                                    if (multiChoice.attachmentName !=
-                                        multiChoice.previousAttachmentName &&
-                                        multiChoice.previousAttachmentName.isNotBlank()
-                                    )
-                                        put(
-                                            "question_old_file_name",
-                                            multiChoice.previousAttachmentName
-                                        )
-                                    else
-                                        put("question_old_file_name", "")
-                                } else {
-                                    put("question_image", "")
-                                    put("question_old_file_name", "")
-                                }
-
-                                val optionsArray = JSONArray()
-                                optionsList?.forEach { option ->
-                                    JSONObject().apply {
-                                        put("order", option.optionOrder)
-                                        put("text", option.optionText)
-                                        put("file_name", option.attachmentName)
-
-                                        if (option.attachmentUri != null) {
-                                            val image =
-                                                convertUriOrFileToBase64(
-                                                    option.attachmentUri,
-                                                    requireContext()
-                                                )
-                                            put("image", image)
-
-                                            if (option.attachmentName !=
-                                                option.previousAttachmentName &&
-                                                option.previousAttachmentName.isNotBlank()
-                                            ) {
-                                                put(
-                                                    "old_file_name",
-                                                    option.previousAttachmentName
-                                                )
-                                            } else {
-                                                put("old_file_name", "")
-                                            }
-                                        } else {
-                                            put("image", "")
-                                            put("old_file_name", "")
-                                        }
-
-                                    }.let {
-                                        optionsArray.put(it)
-                                    }
-                                }
-
-                                put("options", optionsArray)
-
-                                JSONObject().apply {
-                                    put("order", multiChoice.checkedPosition)
-                                    put("text", multiChoice.correctAnswer)
-                                }.let {
-                                    put("correct", it)
-                                }
-                            }.let {
-                                questionArray.put(it)
-                            }
-                        } else if (questionItem is QuestionItem.ShortAnswer) {
-                            val shortAnswer = questionItem.question
-
-                            JSONObject().apply {
-                                put("question_id", shortAnswer.questionId ?: "")
-                                put("question_title", shortAnswer.questionText)
-                                put("question_type", sectionModel.viewType)
-                                put("question_file_name", shortAnswer.attachmentName)
-
-                                if (shortAnswer.attachmentUri != null) {
-                                    val image = convertUriOrFileToBase64(
-                                        shortAnswer.attachmentUri,
-                                        requireContext()
-                                    )
-                                    put("question_image", image)
-
-                                    if (shortAnswer.attachmentName !=
-                                        shortAnswer.previousAttachmentName &&
-                                        shortAnswer.previousAttachmentName.isNotBlank()
-                                    ) {
-                                        put(
-                                            "question_old_file_name",
-                                            shortAnswer.previousAttachmentName
-                                        )
-                                    } else {
-                                        put("question_old_file_name", "")
-                                    }
-                                } else {
-                                    put("question_image", "")
-                                    put("question_old_file_name", "")
-                                }
-
-                                JSONObject().apply {
-                                    put("order", "")
-                                    put("text", shortAnswer.answerText)
-                                }.let {
-                                    put("correct", it)
-                                }
-                            }.let {
-                                questionArray.put(it)
-                            }
-                        }
-                    }
+                    questionArray.put(createQuestionsJsonObject(sectionModel))
                 }
             }
 
-            val settingsObject = JSONObject().apply {
-                put("author_id", userId)
-                put("author_name", userName)
-                put("title", questionTitle)
-                put("description", questionDescription)
-                put("level", levelId)
-                put("class", selectedClassArray)
-                put("course", courseId)
-                put("course_name", courseName)
-                put("topic", questionTopic)
-                put("topic_id", topicId)
-                put("start_date", "$startDate")
-                put("end_date", "$endDate")
-                put("year", year)
-                put("term", term)
-            }
+            val settingsObject = createSettingsJsonObject()
 
             assessmentObject.apply {
                 put("settings", settingsObject)
@@ -591,19 +514,204 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
             newAssessmentObject = assessmentObject
 
-            requireContext()
-                .getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-                .edit()
-                .apply {
-                    putString("question_object", assessmentObject.toString())
-                }.apply()
+            saveJSonData(assessmentObject.toString())
+        }
+    }
 
+    private fun createSettingsJsonObject(): JSONObject {
+        return JSONObject().apply {
+            put("author_id", userId)
+            put("author_name", userName)
+            put("title", questionTitle)
+            put("description", questionDescription)
+            put("level", levelId)
+            put("class", selectedClassArray)
+            put("course", courseId)
+            put("course_name", courseName)
+            put("topic", questionTopic)
+            put("topic_id", topicId)
+            put("start_date", "$startDate")
+            put("end_date", "$endDate")
+            put("year", year)
+            put("term", term)
+        }
+    }
+
+
+    private fun createQuestionsJsonObject(sectionModel: SectionModel): JSONObject? {
+        val questionItem = sectionModel.questionItem ?: return null
+
+        when (questionItem) {
+            is QuestionItem.MultiChoice -> {
+                val multiChoice = questionItem.question
+                val optionsList = multiChoice.options
+
+                return JSONObject().apply {
+                    put("question_id", multiChoice.questionId ?: "")
+                    put("question_title", multiChoice.questionText)
+                    put("question_type", sectionModel.viewType)
+
+                    JSONArray().apply {
+                        put(
+                            JSONObject().apply {
+                                put("file_name", multiChoice.attachmentName)
+                                put(
+                                    "old_file_name",
+                                    if ((multiChoice.attachmentName !=
+                                                multiChoice.previousAttachmentName) &&
+                                        multiChoice.previousAttachmentName.isNotBlank()
+                                    )
+                                        multiChoice.previousAttachmentName
+                                    else {
+                                        ""
+                                    }
+                                )
+
+                                put("type", "")
+
+                                put(
+                                    "file",
+                                    if (multiChoice.attachmentUri != null) {
+                                        runBlocking(Dispatchers.IO) {
+                                            encodeUriOrFileToBase64(
+                                                multiChoice.attachmentUri,
+                                                requireContext()
+                                            )
+                                        }
+
+                                    } else {
+                                        ""
+                                    }
+                                )
+                            }
+                        )
+                    }.let {
+                        put("question_files", it)
+                    }
+
+                    val optionsArray = JSONArray()
+                    optionsList?.forEach { option ->
+                        JSONObject().apply {
+                            put("order", option.optionOrder)
+                            put("text", option.optionText)
+
+                            JSONArray().apply {
+                                put(
+                                    JSONObject().apply {
+                                        put("file_name", option.attachmentName)
+                                        put(
+                                            "old_file_name",
+                                            if ((option.attachmentName !=
+                                                        option.previousAttachmentName) &&
+                                                option.previousAttachmentName.isNotBlank()
+                                            ) {
+                                                option.previousAttachmentName
+                                            } else {
+                                                ""
+                                            }
+                                        )
+
+                                        put("type", "")
+
+                                        put(
+                                            "file",
+                                            if (option.attachmentUri != null) {
+                                                runBlocking(Dispatchers.IO) {
+                                                    encodeUriOrFileToBase64(
+                                                        option.attachmentUri,
+                                                        requireContext()
+                                                    )
+                                                }
+                                            } else {
+                                                ""
+                                            }
+                                        )
+                                    }
+                                )
+                            }.let {
+                                put("option_files", it)
+                            }
+                        }.let {
+                            optionsArray.put(it)
+                        }
+                    }
+
+                    put("options", optionsArray)
+
+                    JSONObject().apply {
+                        put("order", multiChoice.checkedPosition)
+                        put("text", multiChoice.correctAnswer)
+                    }.let {
+                        put("correct", it)
+                    }
+                }
+            }
+
+            is QuestionItem.ShortAnswer -> {
+                val shortAnswer = questionItem.question
+
+                return JSONObject().apply {
+                    put("question_id", shortAnswer.questionId ?: "")
+                    put("question_title", shortAnswer.questionText)
+                    put("question_type", sectionModel.viewType)
+
+                    JSONArray().apply {
+                        put(
+                            JSONObject().apply {
+
+                                put("file_name", shortAnswer.attachmentName)
+
+                                put(
+                                    "old_file_name",
+                                    if ((shortAnswer.attachmentName !=
+                                                shortAnswer.previousAttachmentName) &&
+                                        shortAnswer.previousAttachmentName.isNotBlank()
+                                    ) {
+                                        shortAnswer.previousAttachmentName
+                                    } else {
+                                        ""
+                                    }
+                                )
+
+                                put("type", "")
+
+                                put(
+                                    "file",
+                                    if (shortAnswer.attachmentUri != null) {
+                                        runBlocking(Dispatchers.IO) {
+                                            encodeUriOrFileToBase64(
+                                                shortAnswer.attachmentUri,
+                                                requireContext()
+                                            )
+                                        }
+                                    } else {
+                                        ""
+                                    }
+                                )
+                            }
+                        )
+                    }.let {
+                        put("question_files", it)
+                    }
+
+                    JSONObject().apply {
+                        put("order", "")
+                        put("text", shortAnswer.answerText)
+                    }.let {
+                        put("correct", it)
+                    }
+                }
+            }
+
+            else -> {
+                return null
+            }
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun submitQuestions() {
-        prepareQuestions()
+        createQuestionsObject()
 
         val url = "${getString(R.string.base_url)}/addQuiz.php"
         val hashMap = HashMap<String, String>().apply {
@@ -644,11 +752,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun onExit() {
         try {
-            prepareQuestions()
+            createQuestionsObject()
 
-            if (!questionObject.isNullOrEmpty() && newAssessmentObject.length() != 0) {
+            if (!questionData.isNullOrEmpty() && newAssessmentObject.length() != 0) {
                 val json1 = newAssessmentObject
-                val json2 = JSONObject(questionObject!!)
+                val json2 = JSONObject(questionData!!)
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {
@@ -682,13 +790,39 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun onBackPressed() {
-        requireContext()
-            .getSharedPreferences("loginDetail", Context.MODE_PRIVATE).edit()
-            .apply {
-                putString("question_object", "")
-            }.apply()
-
+        deleteJsonData()
         requireActivity().finish()
     }
 
+
+    private fun saveJSonData(data: String) {
+        try {
+            jsonFile.writeText(data)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun loadJSonData() {
+        try {
+            questionData = jsonFile.readText()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun deleteJsonData() {
+        try {
+            if (jsonFile.exists()) {
+                jsonFile.delete()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // deleteJsonData()
+    }
 }

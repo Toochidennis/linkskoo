@@ -22,6 +22,10 @@ import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Collections
 
 class AdminELearningClassAdapter(
@@ -42,22 +46,22 @@ class AdminELearningClassAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_TOPIC -> {
-                val view = inflater.inflate(R.layout.item_course_topic, parent, false)
+                val view = inflater.inflate(R.layout.item_topic_layout, parent, false)
                 TopicViewHolder(view)
             }
 
             VIEW_TYPE_ASSIGNMENT -> {
-                val view = inflater.inflate(R.layout.item_course_fragment, parent, false)
+                val view = inflater.inflate(R.layout.item_content_layout, parent, false)
                 AssignmentViewHolder(view)
             }
 
             VIEW_TYPE_MATERIAL -> {
-                val view = inflater.inflate(R.layout.item_course_fragment, parent, false)
+                val view = inflater.inflate(R.layout.item_content_layout, parent, false)
                 MaterialViewHolder(view)
             }
 
             VIEW_TYPE_QUESTION -> {
-                val view = inflater.inflate(R.layout.item_course_fragment, parent, false)
+                val view = inflater.inflate(R.layout.item_content_layout, parent, false)
                 QuestionViewHolder(view)
             }
 
@@ -72,18 +76,18 @@ class AdminELearningClassAdapter(
             is TopicViewHolder -> holder.bind(content)
 
             is AssignmentViewHolder -> {
-                holder.bind(content)
                 viewHolderList.add(holder)
+                holder.bind(content)
             }
 
             is MaterialViewHolder -> {
-                holder.bind(content)
                 viewHolderList.add(holder)
+                holder.bind(content)
             }
 
             is QuestionViewHolder -> {
-                holder.bind(content)
                 viewHolderList.add(holder)
+                holder.bind(content)
             }
         }
     }
@@ -115,11 +119,10 @@ class AdminELearningClassAdapter(
                     layoutParams.height = 0
                     viewHolder.itemView.layoutParams = layoutParams
                 }
-
                 true
             }
 
-            optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
+         //   optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
         }
     }
 
@@ -303,6 +306,7 @@ class AdminELearningClassAdapter(
         )
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         val draggedItem = itemList[fromPosition]
         val targetItem = itemList[toPosition]
@@ -312,7 +316,11 @@ class AdminELearningClassAdapter(
             val hasContentsBelowTargetTopic = hasQuestionsBelowTopic(toPosition)
 
             if (hasContentsBelowTargetTopic || hasContentsBelowDraggedTopic) {
-                swapTopicsWithAssociatedItems(fromPosition, toPosition)
+                GlobalScope.launch {
+                    delay(100L)
+                    swapTopicsWithAssociatedItems(fromPosition, toPosition)
+                }
+
             } else {
                 swapTopics(fromPosition, toPosition)
             }
@@ -366,9 +374,9 @@ class AdminELearningClassAdapter(
         val targetTopicItems = getAssociatedItems(targetTopic)
 
         // swap topics
-        itemList[fromPosition] = targetTopic
-        itemList[toPosition] = draggedTopic
-        // swapTopics(fromPosition, toPosition)
+       // itemList[fromPosition] = targetTopic
+     //   itemList[toPosition] = draggedTopic
+         swapTopics(fromPosition, toPosition)
 
         itemList.removeAll(draggedTopicItems)
         itemList.removeAll(targetTopicItems)

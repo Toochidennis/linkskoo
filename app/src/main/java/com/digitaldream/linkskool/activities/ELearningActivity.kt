@@ -12,10 +12,10 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val levelId = intent.getStringExtra("levelId")
-        val courseId = intent.getStringExtra("courseId")
-        val courseName = intent.getStringExtra("courseName")
-        val json = intent.getStringExtra("json")
+        val levelId = intent.getStringExtra("levelId") ?: ""
+        val courseId = intent.getStringExtra("courseId") ?: ""
+        val courseName = intent.getStringExtra("courseName") ?: ""
+        val json = intent.getStringExtra("json") ?: ""
 
         when (intent.getStringExtra("from")) {
             "view_post" -> {
@@ -23,8 +23,8 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     replace(
                         R.id.learning_container,
                         AdminELearningClassFragment.newInstance(
-                            levelId!!, courseId!!,
-                            courseName!!
+                            levelId, courseId,
+                            courseName
                         )
                     )
                 }
@@ -35,7 +35,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     replace(
                         R.id.learning_container,
                         AdminELearningQuestionSettingsFragment.newInstance(
-                            levelId!!, courseId!!, json!!, "", courseName!!,
+                            levelId, courseId, "", courseName,
                         )
                     )
                 }
@@ -47,8 +47,8 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                         R.id.learning_container,
                         AdminELearningMaterialFragment
                             .newInstance(
-                                levelId!!, courseId!!,
-                                json!!, courseName!!
+                                levelId, courseId,
+                                json, courseName
                             )
                     )
                 }
@@ -60,8 +60,8 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                         R.id.learning_container,
                         AdminELearningAssignmentFragment
                             .newInstance(
-                                levelId!!, courseId!!,
-                                json!!, courseName!!
+                                levelId, courseId,
+                                json, courseName
                             )
                     )
                 }
@@ -73,10 +73,10 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                         R.id.learning_container,
                         AdminELearningCreateTopicFragment
                             .newInstance(
-                                courseId!!,
-                                levelId!!,
-                                courseName!!,
-                                json!!
+                                courseId,
+                                levelId,
+                                courseName,
+                                json
                             )
                     )
                 }

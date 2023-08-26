@@ -3,8 +3,11 @@ package com.digitaldream.linkskool.dialog
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -19,7 +22,10 @@ import androidx.fragment.app.DialogFragment
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.net.URL
 
 class AdminELearningShortAnswerDialogFragment(
     private val shortAnswerModel: ShortAnswerModel,
@@ -140,8 +146,12 @@ class AdminELearningShortAnswerDialogFragment(
                     )
                 }
 
-                is String -> Uri.parse(uri)
+                is String -> {
+                    isValidUriOrUrl(uri)
+                }
+
                 else -> uri
+
             }
 
             Intent(Intent.ACTION_VIEW).apply {
@@ -157,6 +167,19 @@ class AdminELearningShortAnswerDialogFragment(
                 "Error occurred while viewing the file",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    private fun isValidUriOrUrl(str: String): Boolean {
+        return try {
+            Uri.parse(str)
+            true
+        } catch (e: Exception) {
+            val decodedBytes = Base64.decode(str, Base64.DEFAULT)
+            val decodeBitmap = BitmapFactory.decodeStream(ByteArrayInputStream(decodedBytes))
+
+            Log.d("image", "$decodeBitmap")
+            true
         }
     }
 

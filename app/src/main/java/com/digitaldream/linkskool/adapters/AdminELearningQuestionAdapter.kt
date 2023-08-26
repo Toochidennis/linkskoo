@@ -1,16 +1,15 @@
 package com.digitaldream.linkskool.adapters
 
 
-import android.animation.ValueAnimator
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -85,17 +84,17 @@ class AdminELearningQuestionAdapter(
             }
 
             is MultiChoiceViewHolder -> {
+                viewHolderList.add(holder)
                 val question =
                     (sectionModel.questionItem as QuestionItem.MultiChoice).question
                 holder.bind(question)
-                viewHolderList.add(holder)
             }
 
             is ShortQuestionViewHolder -> {
+                viewHolderList.add(holder)
                 val question =
                     (sectionModel.questionItem as QuestionItem.ShortAnswer).question
                 holder.bind(question)
-                viewHolderList.add(holder)
             }
         }
 
@@ -302,6 +301,7 @@ class AdminELearningQuestionAdapter(
                     swapSectionsWithAssociatedQuestions(fromPosition, toPosition)
                 }
             } else {
+
                 swapSections(fromPosition, toPosition)
             }
         } else if (draggedItem.viewType == "section" &&
@@ -309,7 +309,6 @@ class AdminELearningQuestionAdapter(
         ) {
             return
         } else {
-
             swapSections(fromPosition, toPosition)
         }
 
@@ -322,7 +321,6 @@ class AdminELearningQuestionAdapter(
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             viewHolder.itemView.layoutParams = layoutParams
         }
-
         Handler(Looper.getMainLooper()).postDelayed({
             recyclerView.post {
 

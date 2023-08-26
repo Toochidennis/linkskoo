@@ -54,7 +54,7 @@
                 android:lines="2"
                 android:minLines="1"
                 android:text=""
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_18" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:lines="2"
                 android:minLines="1"
                 android:text=""
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_16" />
 
         </LinearLayout>
@@ -78,10 +78,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/questionRecyclerView"
         android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginEnd="@dimen/dimen_16"
         android:layout_height="match_parent"
         android:layout_below="@id/topicButton"
+        android:layout_marginStart="@dimen/dimen_16"
+        android:layout_marginEnd="@dimen/dimen_16"
         android:layout_marginBottom="95dp"
         android:clipToPadding="false" />
 

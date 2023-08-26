@@ -49,7 +49,6 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
-import com.android.volley.DefaultRetryPolicy
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -426,8 +425,9 @@ object FunctionUtils {
         createPDF(sView, sActivity).close()
 
         val uri = FileProvider.getUriForFile(
-            sActivity, sActivity.packageName + "" +
-                    ".provider", output
+            sActivity,
+            "${sActivity.packageName}.provider",
+            output
         )
 
         ShareCompat.IntentBuilder(sActivity).apply {
@@ -460,8 +460,6 @@ object FunctionUtils {
         progressFlower.setCanceledOnTouchOutside(false)
         progressFlower.show()
 
-        Timber.plant(Timber.DebugTree())
-
         val mUrl =
             if (stringHashMap.isNullOrEmpty()) "$url&&_db=$db" else url
 
@@ -470,6 +468,7 @@ object FunctionUtils {
             mUrl,
             { response: String ->
                 Log.d("response", response)
+                //Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
                 progressFlower.dismiss()
 
@@ -494,11 +493,11 @@ object FunctionUtils {
 
         }
 
-        stringRequest.retryPolicy = DefaultRetryPolicy(
-            4000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
+//        stringRequest.retryPolicy = DefaultRetryPolicy(
+//            4000,
+//            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+//        )
 
         Volley.newRequestQueue(context).add(stringRequest)
     }
@@ -886,7 +885,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun convertUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
+    fun encodeUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
         val inputStream = when (imageUri) {
             is File -> FileInputStream(imageUri)
             is Uri -> context.contentResolver.openInputStream(imageUri)
@@ -896,31 +895,21 @@ object FunctionUtils {
         return inputStream?.use { input ->
             try {
                 val outputStream = ByteArrayOutputStream()
-                val buffer = ByteArray(1024)
+                val bufferedInput = BufferedInputStream(input)
+                val buffer = ByteArray(8192)
                 var bytesRead: Int
-                while (input.read(buffer).also { bytesRead = it } != -1) {
+                while (bufferedInput.read(buffer).also { bytesRead = it } != -1) {
                     outputStream.write(buffer, 0, bytesRead)
                 }
 
                 val fileBytes = outputStream.toByteArray()
-
-                //val compressedBytes= compress(fileBytes)
-
                 Base64.encodeToString(fileBytes, Base64.DEFAULT)
             } catch (e: Exception) {
-                e.printStackTrace()
                 imageUri
             }
         }
     }
 
-    private fun compress(input: ByteArray): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        val gzipOutputStream = GZIPOutputStream(outputStream)
-        gzipOutputStream.write(input)
-        gzipOutputStream.close()
-        return outputStream.toByteArray()
-    }
 
 }
 

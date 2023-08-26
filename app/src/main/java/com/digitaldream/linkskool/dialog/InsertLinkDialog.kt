@@ -10,9 +10,7 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.view.Window
 import android.widget.Button
-import android.widget.EditText
 import com.digitaldream.linkskool.R
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class InsertLinkDialog(

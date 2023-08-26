@@ -80,7 +80,6 @@ class AdminELearningSelectTopicDialogFragment(
         }
 
         doneBtn.setOnClickListener {
-            it.isEnabled = false
             handleDoneButton()
         }
 
@@ -277,7 +276,7 @@ class AdminELearningSelectTopicDialogFragment(
                 postTopic(objectives)
             }
         } else if (!existingTopic.isNullOrEmpty()) {
-            isTopicSelected(existingTopicId!!, existingTopic)
+            isTopicSelected(existingTopicId ?: "0", existingTopic)
             dismiss()
         } else {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()

@@ -499,7 +499,7 @@ class AdminELearningAssignmentFragment :
                             put("old_file_name", oldFileName)
                             put("type", attachment.type)
 
-                            val file = FunctionUtils.convertUriOrFileToBase64(
+                            val file = FunctionUtils.encodeUriOrFileToBase64(
                                 attachment.uri,
                                 requireContext()
                             )

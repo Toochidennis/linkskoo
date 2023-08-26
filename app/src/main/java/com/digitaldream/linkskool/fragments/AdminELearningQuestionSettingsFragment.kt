@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -32,19 +33,16 @@ import com.j256.ormlite.dao.DaoManager
 import org.json.JSONArray
 import org.json.JSONObject
 
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-private const val ARG_PARAM3 = "param3"
-private const val ARG_PARAM4 = "param4"
-private const val ARG_PARAM5 = "param5"
-
+private const val ARG_PARAM1 = "levelId"
+private const val ARG_PARAM2 = "courseId"
+private const val ARG_PARAM3 = "course name"
+private const val ARG_PARAM4 = "from"
+private const val ARG_PARAM5 = "settings object"
 
 class AdminELearningQuestionSettingsFragment :
     Fragment(R.layout.fragment_admin_e_learning_question_settings) {
 
-
-    private lateinit var mBackBtn: ImageView
+    private lateinit var mBackBtn: ImageButton
     private lateinit var mApplyBtn: Button
     private lateinit var mQuestionTitleEditText: EditText
     private lateinit var mRecyclerView: RecyclerView
@@ -63,27 +61,28 @@ class AdminELearningQuestionSettingsFragment :
     private val selectedItems = hashMapOf<String, String>()
     private val mTagList = mutableListOf<TagModel>()
 
-    private var mLevelId: String? = null
-    private var mCourseId: String? = null
-    private var mCourseName: String? = null
+    private var levelId: String? = null
+    private var courseId: String? = null
+    private var courseName: String? = null
+    private var from: String? = null
+    private var settingsObject: String? = null
     private var mQuestionTitle: String? = null
     private var mQuestionDescription: String? = null
     private var mStartDate: String? = null
     private var mEndDate: String? = null
     private var mQuestionTopic: String? = null
-    private var jsonFromQuestion: String? = null
     private var updatedJson = JSONObject()
-    private var from: String? = null
     private var topicId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
-            mLevelId = it.getString(ARG_PARAM1)
-            mCourseId = it.getString(ARG_PARAM2)
-            jsonFromQuestion = it.getString(ARG_PARAM3)
+            levelId = it.getString(ARG_PARAM1)
+            courseId = it.getString(ARG_PARAM2)
+            courseName = it.getString(ARG_PARAM3)
             from = it.getString(ARG_PARAM4)
-            mCourseName = it.getString(ARG_PARAM5)
+            settingsObject = it.getString(ARG_PARAM5)
         }
 
         val callBack = object : OnBackPressedCallback(true) {
@@ -95,26 +94,23 @@ class AdminELearningQuestionSettingsFragment :
         requireActivity().onBackPressedDispatcher.addCallback(this, callBack)
     }
 
-
     companion object {
-
         @JvmStatic
         fun newInstance(
             levelId: String,
             courseId: String,
-            json: String = "",
+            courseName: String,
             from: String = "",
-            courseName: String
-        ) =
-            AdminELearningQuestionSettingsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, levelId)
-                    putString(ARG_PARAM2, courseId)
-                    putString(ARG_PARAM3, json)
-                    putString(ARG_PARAM4, from)
-                    putString(ARG_PARAM5, courseName)
-                }
+            settingsObject: String = ""
+        ) = AdminELearningQuestionSettingsFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_PARAM1, levelId)
+                putString(ARG_PARAM2, courseId)
+                putString(ARG_PARAM3, courseName)
+                putString(ARG_PARAM4, from)
+                putString(ARG_PARAM5, settingsObject)
             }
+        }
     }
 
 
@@ -123,9 +119,10 @@ class AdminELearningQuestionSettingsFragment :
 
         setUpView(view)
 
+
         onEdit()
 
-        classList()
+        setUpClassAdapter()
 
         setDate()
 
@@ -166,14 +163,13 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
-
-    private fun classList() {
+    private fun setUpClassAdapter() {
         try {
             val mDatabaseHelper = DatabaseHelper(requireContext())
             val dao: Dao<ClassNameTable, Long> = DaoManager.createDao(
                 mDatabaseHelper.connectionSource, ClassNameTable::class.java
             )
-            mClassList = dao.queryBuilder().where().eq("level", mLevelId).query()
+            mClassList = dao.queryBuilder().where().eq("level", levelId).query()
             mClassList.sortBy { it.className }
 
             mClassList.forEach { item ->
@@ -240,7 +236,7 @@ class AdminELearningQuestionSettingsFragment :
         }
 
         mStartDateBtn.setOnClickListener {
-            mStartDateTxt.text = "Date"
+            "Date".let { mStartDateTxt.text = it }
             mStartDateBtn.isVisible = false
             mDateSeparator.isVisible = false
         }
@@ -254,43 +250,44 @@ class AdminELearningQuestionSettingsFragment :
 
     private fun onEdit() {
         try {
-            if (!jsonFromQuestion.isNullOrEmpty()) {
-                jsonFromQuestion?.let { json ->
-                    JSONObject(json).run {
-                        val settingsObject = getJSONObject("settings")
-                        val classArray = getJSONArray("class")
+            if (from == "edit")
+                if (!settingsObject.isNullOrBlank()) {
+                    settingsObject?.let { json ->
+                        JSONObject(json).run {
+                            val settingsObject = getJSONObject("settings")
+                            val classArray = getJSONArray("class")
 
-                        settingsObject.let {
-                            mQuestionTitle = it.getString("title")
-                            mQuestionDescription = it.getString("description")
-                            mStartDate = it.getString("startDate")
-                            mEndDate = it.getString("endDate")
-                            mQuestionTopic = it.getString("topic")
-                            mCourseName = it.getString("courseName")
-                            mCourseId = it.getString("courseId")
-                            mLevelId = it.getString("levelId")
-                            topicId = it.getString("topicId")
+                            settingsObject.let {
+                                mQuestionTitle = it.getString("title")
+                                mQuestionDescription = it.getString("description")
+                                mStartDate = it.getString("startDate")
+                                mEndDate = it.getString("endDate")
+                                mQuestionTopic = it.getString("topic")
+                                topicId = it.getString("topicId")
+                                levelId = it.getString("levelId")
+                                courseId = it.getString("courseId")
+                                courseName = it.getString("courseName")
+                            }
+
+                            for (i in 0 until classArray.length()) {
+                                selectedItems[classArray.getJSONObject(i).getString("id")] =
+                                    classArray.getJSONObject(i).getString("name")
+                            }
+
                         }
-
-                        for (i in 0 until classArray.length()) {
-                            selectedItems[classArray.getJSONObject(i).getString("id")] =
-                                classArray.getJSONObject(i).getString("name")
-                        }
-
                     }
+
+                    mQuestionTitleEditText.setText(mQuestionTitle)
+                    mDescriptionEditText.setText(mQuestionDescription)
+                    mTopicTxt.text = mQuestionTopic.takeIf { !it.isNullOrBlank() } ?: "Topic"
+
+                    val start = "Start ${formatDate2(mStartDate!!, "custom1")}"
+                    val end = "Due ${formatDate2(mEndDate!!, "custom1")}"
+                    mStartDateTxt.text = start
+                    mEndDateTxt.text = end
+
+                    showDate()
                 }
-
-                mQuestionTitleEditText.setText(mQuestionTitle)
-                mDescriptionEditText.setText(mQuestionDescription)
-                mTopicTxt.text = mQuestionTopic
-
-                val start = "Start ${formatDate2(mStartDate!!, "custom1")}"
-                val end = "Due ${formatDate2(mEndDate!!, "custom1")}"
-                mStartDateTxt.text = start
-                mEndDateTxt.text = end
-
-                showDate()
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -303,14 +300,13 @@ class AdminELearningQuestionSettingsFragment :
         mDateSeparator.isVisible = true
     }
 
-
     private fun selectTopic() = if (selectedItems.isEmpty()) {
         showText("Please select a class")
     } else {
         AdminELearningSelectTopicDialogFragment(
-            courseId = mCourseId!!,
-            levelId = mLevelId!!,
-            courseName = mCourseName!!,
+            courseId = courseId!!,
+            levelId = levelId!!,
+            courseName = courseName!!,
             selectedClass = selectedItems
         ) { topicId, topicText ->
 
@@ -344,10 +340,10 @@ class AdminELearningQuestionSettingsFragment :
             put("description", descriptionText)
             put("startDate", mStartDate)
             put("endDate", mEndDate)
-            put("levelId", mLevelId)
-            put("courseId", mCourseId)
-            put("courseName", mCourseName)
-            put("topic", if (topicText == "Topic") "" else topicText)
+            put("levelId", levelId)
+            put("courseId", courseId)
+            put("courseName", courseName)
+            put("topic", if (topicText == "Topic" || topicText == "No topic") "" else topicText)
             put("topicId", topicId ?: "0")
         }.let {
             settingsObject.put("settings", it)
@@ -360,7 +356,6 @@ class AdminELearningQuestionSettingsFragment :
     private fun applySettings() {
         val titleText = mQuestionTitleEditText.text.toString().trim()
         val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
 
         if (titleText.isEmpty()) {
             mQuestionTitleEditText.error = "Please enter question title"
@@ -376,26 +371,19 @@ class AdminELearningQuestionSettingsFragment :
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
-                    AdminELearningQuestionFragment.newInstance(
-                        updatedJson.toString(),
-                        "settings"
-                    )
+                    AdminELearningQuestionFragment.newInstance(updatedJson.toString(), "settings")
                 )
             }
         }
-    }
-
-    private fun showText(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun onExit() {
         try {
             prepareSettings()
 
-            if (!jsonFromQuestion.isNullOrEmpty() && updatedJson.length() != 0) {
+            if (!settingsObject.isNullOrBlank() && updatedJson.length() != 0) {
                 val json1 = updatedJson
-                val json2 = JSONObject(jsonFromQuestion!!)
+                val json2 = JSONObject(settingsObject!!)
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {
@@ -403,6 +391,7 @@ class AdminELearningQuestionSettingsFragment :
                 } else {
                     exitWithWarning()
                 }
+
             } else if (updatedJson.length() != 0) {
                 exitWithWarning()
             } else {
@@ -433,7 +422,7 @@ class AdminELearningQuestionSettingsFragment :
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
-                    AdminELearningQuestionFragment.newInstance(jsonFromQuestion!!, "settings")
+                    AdminELearningQuestionFragment.newInstance(settingsObject!!, "settings")
                 )
             }
         } else {
@@ -441,7 +430,13 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
+    private fun showText(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun onBackPressed() {
         requireActivity().finish()
     }
+
+
 }

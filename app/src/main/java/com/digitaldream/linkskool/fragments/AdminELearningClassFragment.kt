@@ -223,7 +223,6 @@ class AdminELearningClassFragment :
         )
     }
 
-
     private fun setUpRecyclerView() {
         contentAdapter = AdminELearningClassAdapter(contentList)
 
@@ -241,12 +240,7 @@ class AdminELearningClassFragment :
     }
 
     private fun sortDataList() {
-//        contentList.sortedWith(compareBy(
-//            { it.category.isEmpty() },
-//            { it.type != "topic" },
-//            { it.category },
-//            {it.title}
-//        ))
+        contentList.sortBy { it.category }
 
         contentAdapter.notifyDataSetChanged()
     }
