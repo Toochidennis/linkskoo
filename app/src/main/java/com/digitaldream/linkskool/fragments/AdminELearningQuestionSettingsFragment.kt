@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -52,10 +50,10 @@ class AdminELearningQuestionSettingsFragment :
     private lateinit var mDateBtn: RelativeLayout
     private lateinit var mStartDateTxt: TextView
     private lateinit var mEndDateTxt: TextView
-    private lateinit var mStartDateBtn: ImageView
-    private lateinit var mEndDateBtn: ImageView
+    private lateinit var mStartDateBtn: ImageButton
+    private lateinit var mEndDateBtn: ImageButton
     private lateinit var mTopicTxt: TextView
-    private lateinit var mDateSeparator: LinearLayout
+    private lateinit var mDateSeparator: View
 
     private var mClassList = mutableListOf<ClassNameTable>()
     private val selectedItems = hashMapOf<String, String>()
@@ -254,26 +252,21 @@ class AdminELearningQuestionSettingsFragment :
                 if (!settingsObject.isNullOrBlank()) {
                     settingsObject?.let { json ->
                         JSONObject(json).run {
-                            val settingsObject = getJSONObject("settings")
+                            mQuestionTitle = getString("title")
+                            mQuestionDescription = getString("description")
+                            mStartDate = getString("start_date")
+                            mEndDate = getString("end_date")
+                            mQuestionTopic = getString("topic")
+                            topicId = getString("topic_id")
+                            levelId = getString("level")
+                            courseId = getString("course")
+                            courseName = getString("course_name")
                             val classArray = getJSONArray("class")
-
-                            settingsObject.let {
-                                mQuestionTitle = it.getString("title")
-                                mQuestionDescription = it.getString("description")
-                                mStartDate = it.getString("startDate")
-                                mEndDate = it.getString("endDate")
-                                mQuestionTopic = it.getString("topic")
-                                topicId = it.getString("topicId")
-                                levelId = it.getString("levelId")
-                                courseId = it.getString("courseId")
-                                courseName = it.getString("courseName")
-                            }
 
                             for (i in 0 until classArray.length()) {
                                 selectedItems[classArray.getJSONObject(i).getString("id")] =
                                     classArray.getJSONObject(i).getString("name")
                             }
-
                         }
                     }
 
@@ -316,8 +309,7 @@ class AdminELearningQuestionSettingsFragment :
         }.show(parentFragmentManager, "")
     }
 
-    private fun prepareSettings() {
-        val settingsObject = JSONObject()
+    private fun createSettingsJsonObject() {
         val classArray = JSONArray()
 
         val titleText = mQuestionTitleEditText.text.toString().trim()
@@ -338,18 +330,16 @@ class AdminELearningQuestionSettingsFragment :
         JSONObject().apply {
             put("title", titleText)
             put("description", descriptionText)
-            put("startDate", mStartDate)
-            put("endDate", mEndDate)
-            put("levelId", levelId)
-            put("courseId", courseId)
-            put("courseName", courseName)
+            put("start_date", mStartDate)
+            put("end_date", mEndDate)
+            put("level", levelId)
+            put("course", courseId)
+            put("course_name", courseName)
             put("topic", if (topicText == "Topic" || topicText == "No topic") "" else topicText)
-            put("topicId", topicId ?: "0")
+            put("topic_id", topicId ?: "0")
+            put("class", classArray)
         }.let {
-            settingsObject.put("settings", it)
-            settingsObject.put("class", classArray)
-
-            updatedJson = settingsObject
+            updatedJson = it
         }
     }
 
@@ -366,7 +356,7 @@ class AdminELearningQuestionSettingsFragment :
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
             showText("Please set date")
         } else {
-            prepareSettings()
+            createSettingsJsonObject()
 
             parentFragmentManager.commit {
                 replace(
@@ -379,7 +369,7 @@ class AdminELearningQuestionSettingsFragment :
 
     private fun onExit() {
         try {
-            prepareSettings()
+            createSettingsJsonObject()
 
             if (!settingsObject.isNullOrBlank() && updatedJson.length() != 0) {
                 val json1 = updatedJson
@@ -437,6 +427,4 @@ class AdminELearningQuestionSettingsFragment :
     private fun onBackPressed() {
         requireActivity().finish()
     }
-
-
 }

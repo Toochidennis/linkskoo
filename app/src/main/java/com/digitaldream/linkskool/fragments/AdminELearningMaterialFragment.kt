@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -37,6 +38,8 @@ import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -50,7 +53,7 @@ private const val ARG_PARAM4 = "param4"
 class AdminELearningMaterialFragment :
     Fragment(R.layout.fragment_admin_e_learning_material) {
 
-    private lateinit var mBackBtn: ImageView
+    private lateinit var mBackBtn: ImageButton
     private lateinit var mPostBtn: Button
     private lateinit var mMaterialTitleEditText: EditText
     private lateinit var mClassRecyclerView: RecyclerView
@@ -392,7 +395,7 @@ class AdminELearningMaterialFragment :
                             put("old_file_name", oldFileName)
                             put("type", attachment.type)
 
-                            val file = encodeUriOrFileToBase64(attachment.uri, requireContext())
+                            val file = convertFileOrUriToBase64(attachment.uri)
                             put("file", file)
                         }.let {
                             filesArray.put(it)
@@ -420,11 +423,23 @@ class AdminELearningMaterialFragment :
             put("course_name", mCourseName!!)
             put("start_date", "")
             put("end_date", "")
-            put("grade", "")
             put("author_id", userId!!)
             put("author_name", userName!!)
             put("year", year!!)
             put("term", term!!)
+        }
+    }
+
+    private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
+        return if (fileUri is String) {
+            fileUri
+        } else {
+            runBlocking(Dispatchers.IO) {
+                encodeUriOrFileToBase64(
+                    fileUri,
+                    requireContext()
+                )
+            }
         }
     }
 

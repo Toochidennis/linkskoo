@@ -22,10 +22,13 @@ import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
+import com.google.gson.JsonParser
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import timber.log.Timber
 import java.util.Collections
 
 class AdminELearningClassAdapter(
@@ -122,7 +125,7 @@ class AdminELearningClassAdapter(
                 true
             }
 
-         //   optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
+            //   optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
         }
     }
 
@@ -163,6 +166,8 @@ class AdminELearningClassAdapter(
             itemView.setOnClickListener {
                 launchActivity(itemView, "material_details", "")
             }
+
+            optionsAction("question", optionBtn, material, itemView, adapterPosition)
         }
     }
 
@@ -182,9 +187,7 @@ class AdminELearningClassAdapter(
             val date = formatDate2(question.date, "custom")
             "Posted $date".let { dateTxt.text = it }
 
-            optionBtn.setOnClickListener {
-                optionsAction("question", optionBtn, question, itemView, adapterPosition)
-            }
+            optionsAction("question", optionBtn, question, itemView, adapterPosition)
         }
     }
 
@@ -209,9 +212,8 @@ class AdminELearningClassAdapter(
                                             "id=${topicModel.id}&type=${topicModel.type}"
 
                                 getContent(url, itemView) { response ->
-                                    if (response.isBlank()) {
-                                        println(response)
-                                        // launchActivity(itemView, from, response)
+                                    if (response.isNotBlank()) {
+                                         launchActivity(itemView, from, response)
                                     }
                                 }
                             }
@@ -235,8 +237,10 @@ class AdminELearningClassAdapter(
                                             "id=${topicModel.id}&type=${topicModel.type}"
 
                                 getContent(url, itemView) { response ->
-                                    if (response.isBlank()) {
+                                    if (response.isNotBlank()) {
                                         println(response)
+                                        response.replace("\\", "")
+                                        Timber.tag("response").d(response)
                                         // launchActivity(itemView, from, response)
                                     }
                                 }
@@ -299,9 +303,6 @@ class AdminELearningClassAdapter(
         itemView.context.startActivity(
             Intent(itemView.context, ELearningActivity::class.java)
                 .putExtra("from", from)
-                .putExtra("courseName", "")
-                .putExtra("levelId", "")
-                .putExtra("courseId", "")
                 .putExtra("json", response)
         )
     }
@@ -374,9 +375,9 @@ class AdminELearningClassAdapter(
         val targetTopicItems = getAssociatedItems(targetTopic)
 
         // swap topics
-       // itemList[fromPosition] = targetTopic
-     //   itemList[toPosition] = draggedTopic
-         swapTopics(fromPosition, toPosition)
+        // itemList[fromPosition] = targetTopic
+        //   itemList[toPosition] = draggedTopic
+        swapTopics(fromPosition, toPosition)
 
         itemList.removeAll(draggedTopicItems)
         itemList.removeAll(targetTopicItems)

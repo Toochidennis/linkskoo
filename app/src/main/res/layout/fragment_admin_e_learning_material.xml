@@ -11,19 +11,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_16"
+        android:paddingTop="@dimen/dimen_16"
+        android:paddingBottom="@dimen/dimen_16"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/ripple_effect11"
             android:clickable="true"
             android:contentDescription="@string/navigate_back"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
             android:padding="@dimen/dimen_10"
             android:src="@drawable/ic_close"
             app:tint="@color/test_color_7" />
@@ -34,11 +36,12 @@
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dimen_16"
             android:background="@drawable/ripple_effect10"
             android:clickable="true"
             android:focusable="true"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            android:paddingStart="@dimen/dimen_16"
+            android:paddingEnd="@dimen/dimen_16"
             android:text="Post"
             android:textAllCaps="false"
             android:textSize="@dimen/text_14" />
@@ -54,16 +57,15 @@
         android:cursorVisible="true"
         android:focusableInTouchMode="true"
         android:hint="Material title"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:padding="@dimen/dimen_16"
         android:textColor="@color/black"
         android:textSize="22sp" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -109,11 +111,10 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -130,18 +131,22 @@
             android:drawablePadding="@dimen/dimen_16"
             android:focusableInTouchMode="true"
             android:hint="Description"
-            android:inputType="text"
+            android:inputType="textCapSentences|textMultiLine"
+            android:lineSpacingMultiplier="1"
+            android:lines="5"
+            android:minLines="1"
+            android:overScrollMode="ifContentScrolls"
             android:padding="@dimen/dimen_16"
+            android:scrollbars="vertical"
             android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <RelativeLayout
         android:id="@+id/attachmentBtn"
@@ -200,11 +205,10 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <TextView
         android:id="@+id/topicTxt"
@@ -218,10 +222,9 @@
         android:textSize="@dimen/text_16"
         app:drawableStartCompat="@drawable/ic_topic2" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
 </LinearLayout>

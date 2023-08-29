@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.RadioButton
 import android.widget.TextView
@@ -66,10 +66,10 @@ class AdminELearningMultiChoiceAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val radioButton: RadioButton = itemView.findViewById(R.id.radioButtonOption)
         private val editText: EditText = itemView.findViewById(R.id.editTextAnswer)
-        private val showAttachmentPopUpBtn: ImageView =
+        private val showAttachmentPopUpBtn: ImageButton =
             itemView.findViewById(R.id.removeOptionButton)
         private val attachmentTxt: TextView = itemView.findViewById(R.id.attachmentName)
-        private val removeAttachmentBtn: ImageView =
+        private val removeAttachmentBtn: ImageButton =
             itemView.findViewById(R.id.removeAttachmentButton)
 
         fun bind(option: MultipleChoiceOption) {

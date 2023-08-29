@@ -311,7 +311,6 @@ class AdminELearningSelectTopicDialogFragment(
             put("course_name", courseName)
             put("start_date", "")
             put("end_date", "")
-            put("grade", "")
             put("author_id", userId!!)
             put("author_name", userName!!)
             put("year", year!!)

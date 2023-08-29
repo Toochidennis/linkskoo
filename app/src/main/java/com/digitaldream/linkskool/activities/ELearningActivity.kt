@@ -35,7 +35,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     replace(
                         R.id.learning_container,
                         AdminELearningQuestionSettingsFragment.newInstance(
-                            levelId, courseId, "", courseName,
+                            levelId, courseId, courseName,
                         )
                     )
                 }

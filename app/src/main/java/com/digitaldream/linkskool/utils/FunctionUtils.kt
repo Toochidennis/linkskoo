@@ -467,8 +467,8 @@ object FunctionUtils {
             method,
             mUrl,
             { response: String ->
-                Log.d("response", response)
-                //Timber.tag("response").d(response)
+                //Log.d("response", response)
+                Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
                 progressFlower.dismiss()
 
@@ -888,11 +888,10 @@ object FunctionUtils {
     fun encodeUriOrFileToBase64(imageUri: Any?, context: Context): Any? {
         val inputStream = when (imageUri) {
             is File -> FileInputStream(imageUri)
-            is Uri -> context.contentResolver.openInputStream(imageUri)
-            else -> null
+            else -> context.contentResolver.openInputStream(imageUri as Uri)
         }
 
-        return inputStream?.use { input ->
+        return inputStream.use { input ->
             try {
                 val outputStream = ByteArrayOutputStream()
                 val bufferedInput = BufferedInputStream(input)
@@ -905,7 +904,7 @@ object FunctionUtils {
                 val fileBytes = outputStream.toByteArray()
                 Base64.encodeToString(fileBytes, Base64.DEFAULT)
             } catch (e: Exception) {
-                imageUri
+                e.printStackTrace()
             }
         }
     }

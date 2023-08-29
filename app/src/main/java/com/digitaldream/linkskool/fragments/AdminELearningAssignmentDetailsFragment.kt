@@ -12,7 +12,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
 import com.digitaldream.linkskool.models.ActionBarViewModel
@@ -34,14 +33,14 @@ class AdminELearningAssignmentDetailsFragment :
 
     private lateinit var actionBarViewModel: ActionBarViewModel
 
-    private var param1: String? = null
-    private var param2: String? = null
+    private var json: String? = null
+    private var from: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            json = it.getString(ARG_PARAM1)
+            from = it.getString(ARG_PARAM2)
         }
 
         actionBarViewModel = ViewModelProvider(requireActivity())[ActionBarViewModel::class.java]
@@ -64,7 +63,7 @@ class AdminELearningAssignmentDetailsFragment :
         super.onViewCreated(view, savedInstanceState)
         setUpView(view)
         defaultActionBar()
-        setUpPager()
+        setUpViewPager()
 
         actionBarViewModel.customActionBarVisible.observe(requireActivity()) { showCustomActionBar ->
             viewPager.setCustomBarVisibility(showCustomActionBar)
@@ -92,13 +91,14 @@ class AdminELearningAssignmentDetailsFragment :
         }
     }
 
-    private fun setUpPager() {
+    private fun setUpViewPager() {
         SectionPagerAdapter(childFragmentManager).apply {
             addFragment(AdminELearningAssignmentInstructionsFragment(), "Instructions")
             addFragment(AdminELearningAssignmentStudentWorkFragment(), "Student work")
         }.let {
             viewPager.apply {
                 adapter = it
+                currentItem = 1
                 tabLayout.setupWithViewPager(viewPager, true)
             }
         }
@@ -132,7 +132,6 @@ class AdminELearningAssignmentDetailsFragment :
 
 
     private fun setUpMenu() {
-
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_e_learning_details, menu)
@@ -142,7 +141,7 @@ class AdminELearningAssignmentDetailsFragment :
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.refresh -> {
-                        setUpPager()
+                        // setUpPager()
 
                         true
                     }

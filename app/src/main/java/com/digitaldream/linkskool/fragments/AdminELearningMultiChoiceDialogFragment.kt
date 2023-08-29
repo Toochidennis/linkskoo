@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -31,12 +31,12 @@ class AdminELearningMultiChoiceDialogFragment(
     private val onQuestionSet: (question: MultiChoiceQuestion) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_multi_choice) {
 
-    private lateinit var mDismissBtn: ImageView
+    private lateinit var mDismissBtn: ImageButton
     private lateinit var mAskBtn: Button
     private lateinit var mQuestionEditText: EditText
     private lateinit var mAttachmentTxt: TextView
     private lateinit var mAttachmentBtn: RelativeLayout
-    private lateinit var mRemoveQuestionAttachmentBtn: ImageView
+    private lateinit var mRemoveQuestionAttachmentBtn: ImageButton
     private lateinit var mOptionsRecyclerView: RecyclerView
     private lateinit var mAddOptionBtn: TextView
 

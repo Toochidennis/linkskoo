@@ -58,21 +58,20 @@
         android:cursorVisible="true"
         android:focusableInTouchMode="true"
         android:hint="Question title"
-        android:inputType="text"
+        android:inputType="textCapSentences|textMultiLine"
         android:lineSpacingMultiplier="1"
         android:lines="2"
         android:minLines="1"
-        android:overScrollMode="always"
+        android:overScrollMode="ifContentScrolls"
         android:padding="@dimen/dimen_16"
+        android:scrollbars="vertical"
         android:textColor="@color/black"
         android:textSize="22sp" />
 
-
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,11 +117,10 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -138,22 +136,22 @@
             android:drawableStart="@drawable/ic_description"
             android:drawablePadding="@dimen/dimen_16"
             android:hint="Description"
-            android:inputType="text"
+            android:inputType="textCapSentences|textMultiLine"
             android:lineSpacingMultiplier="1"
             android:lines="5"
             android:minLines="1"
-            android:overScrollMode="always"
+            android:overScrollMode="ifContentScrolls"
             android:padding="@dimen/dimen_16"
+            android:scrollbars="vertical"
             android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <RelativeLayout
         android:id="@+id/dateBtn"
@@ -187,15 +185,14 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
-        <LinearLayout
+        <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height=".5dp"
             android:layout_below="@id/startDateTxt"
             android:layout_marginStart="@dimen/dimen_16"
             android:layout_toEndOf="@id/date_icon"
-            android:background="@drawable/line_separator"
-            android:orientation="horizontal"
+            android:background="@color/test_color_7"
             android:visibility="gone" />
 
         <TextView
@@ -214,7 +211,7 @@
             android:textSize="@dimen/text_16"
             android:visibility="gone" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/startDateBtn"
             android:layout_width="18dp"
             android:layout_height="18dp"
@@ -222,12 +219,13 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dimen_16"
             android:layout_marginEnd="@dimen/dimen_16"
+            android:background="@drawable/ripple_effect11"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_close"
             android:visibility="gone"
             app:tint="@color/test_color_7" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/endDateBtn"
             android:layout_width="18dp"
             android:layout_height="18dp"
@@ -235,6 +233,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="38dp"
             android:layout_marginEnd="@dimen/dimen_16"
+            android:background="@drawable/ripple_effect11"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_close"
             android:visibility="gone"
@@ -242,11 +241,10 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
     <TextView
         android:id="@+id/topicBtn"
@@ -259,11 +257,9 @@
         android:textSize="@dimen/text_16"
         app:drawableStartCompat="@drawable/ic_topic2" />
 
-
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
 
 </LinearLayout>

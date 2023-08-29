@@ -2,10 +2,12 @@ package com.digitaldream.linkskool.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.google.android.material.textfield.TextInputLayout
+import org.json.JSONObject
 
 
 private const val ARG_PARAM1 = "param1"
@@ -15,14 +17,24 @@ private const val ARG_PARAM2 = "param2"
 class AdminELearningAssignmentInstructionsFragment :
     Fragment(R.layout.fragment_admin_e_learning_assignment_instructions) {
 
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var dueDateTxt: TextView
+    private lateinit var titleTxt: TextView
+    private lateinit var gradeTxt: TextView
+    private lateinit var descriptionTxt: TextView
+    private lateinit var attachmentTxt: TextView
+    private lateinit var attachmentRecyclerView: RecyclerView
+    private lateinit var commentRecyclerView: RecyclerView
+    private lateinit var addCommentTxt: TextView
+    private lateinit var addCommentInput: TextInputLayout
+
+    private var json: String? = null
+    private var from: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            json = it.getString(ARG_PARAM1)
+            from = it.getString(ARG_PARAM2)
         }
     }
 
@@ -41,6 +53,26 @@ class AdminELearningAssignmentInstructionsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setUpViews(view)
+
+    }
+
+    private fun setUpViews(view: View) {
+        view.apply {
+            dueDateTxt = findViewById(R.id.assignmentDueDateTxt)
+            titleTxt = findViewById(R.id.assignmentTitleTxt)
+            gradeTxt = findViewById(R.id.assignmentGradeTxt)
+            descriptionTxt = findViewById(R.id.assignmentDescriptionTxt)
+            attachmentTxt = findViewById(R.id.attachmentTxt)
+            attachmentRecyclerView = findViewById(R.id.attachmentRecyclerView)
+            commentRecyclerView = findViewById(R.id.commentRecyclerView)
+            addCommentTxt = findViewById(R.id.addCommentTxt)
+            addCommentInput = findViewById(R.id.commentEditText)
+        }
+    }
+
+    private fun parseJson(jsonObject: String){
 
     }
 }

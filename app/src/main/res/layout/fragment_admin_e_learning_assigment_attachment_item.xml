@@ -30,14 +30,15 @@
             android:textSize="@dimen/text_16"
             app:drawableTint="@color/test_color_3" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/deleteButton"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dimen_12"
+            android:background="@drawable/ripple_effect11"
             android:contentDescription="@string/todo"
+            android:padding="@dimen/dimen_10"
             android:src="@drawable/ic_close"
             app:tint="@color/test_color_7" />
 

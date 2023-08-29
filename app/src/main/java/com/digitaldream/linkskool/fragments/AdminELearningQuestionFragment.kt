@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
 
 
 private const val ARG_PARAM1 = "param1"
@@ -80,11 +79,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var from: String? = null
 
     private var questionData: String? = null
-    private var newAssessmentObject = JSONObject()
+    private var settingsObject = JSONObject()
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val jsonFileName = "question_data.json"
-    private lateinit var jsonFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,16 +115,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         super.onViewCreated(view, savedInstanceState)
 
         setUpViews(view)
-
-        sharedPreferences =
-            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
-        year = sharedPreferences.getString("school_year", "")
-        term = sharedPreferences.getString("term", "")
-        userId = sharedPreferences.getString("user_id", "")
-        userName = sharedPreferences.getString("user", "")
-        //      questionData = sharedPreferences.getString("question_data", "")
-
-        jsonFile = File(requireActivity().filesDir, jsonFileName)
 
         loadJSonData()
 
@@ -232,18 +219,16 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             if (from == "settings")
                 jsonFromQuestionSettings?.let {
                     JSONObject(it).run {
-                        val settingsObject = getJSONObject("settings")
+                        questionTitle = getString("title")
+                        questionDescription = getString("description")
+                        startDate = getString("start_date")
+                        endDate = getString("end_date")
+                        questionTopic = getString("topic")
+                        topicId = getString("topic_id")
+                        levelId = getString("level")
+                        courseId = getString("course")
+                        courseName = getString("course_name")
                         selectedClassArray = getJSONArray("class")
-
-                        questionTitle = settingsObject.getString("title")
-                        questionDescription = settingsObject.getString("description")
-                        startDate = settingsObject.getString("startDate")
-                        endDate = settingsObject.getString("endDate")
-                        questionTopic = settingsObject.getString("topic")
-                        topicId = settingsObject.getString("topicId")
-                        levelId = settingsObject.getString("levelId")
-                        courseId = settingsObject.getString("courseId")
-                        courseName = settingsObject.getString("courseName")
 
                         questionTitleTxt.text = questionTitle
                         descriptionTxt.text = questionDescription
@@ -267,24 +252,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
     private fun toQuestionSettings() {
-        createQuestionsObject()
-
-        val jsonObject = JSONObject()
-
-        JSONObject().apply {
-            put("title", questionTitle)
-            put("description", questionDescription)
-            put("startDate", startDate)
-            put("endDate", endDate)
-            put("courseName", courseName)
-            put("courseId", courseId)
-            put("levelId", levelId)
-            put("topic", questionTopic)
-            put("topicId", topicId)
-        }.let {
-            jsonObject.put("settings", it)
-            jsonObject.put("class", selectedClassArray)
-        }
+        createAssessmentObject()
 
         parentFragmentManager.commit {
             replace(
@@ -294,7 +262,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     courseId!!,
                     courseName!!,
                     "edit",
-                    jsonObject.toString()
+                    settingsObject.toString()
                 )
             )
         }
@@ -330,15 +298,17 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 val questionId = getString("question_id")
                                 val questionTitle = getString("question_title")
                                 var questionFileName: String
-                                var questionImage: String
+                                var questionImage: String?
                                 var questionOldFileName: String
 
                                 getJSONArray("question_files").let { filesArray ->
                                     filesArray.getJSONObject(0).let { filesObject ->
                                         questionFileName = filesObject.getString("file_name")
                                         questionOldFileName = filesObject.getString("old_file_name")
-                                        questionImage = filesObject.getString("file")
+                                        questionImage =
+                                            filesObject.getString("file").ifEmpty { null }
                                     }
+
                                 }
 
                                 when (val questionType = getString("question_type")) {
@@ -363,7 +333,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                                 val text = option.getString("text")
                                                 val fileName: String
                                                 val oldFileName: String
-                                                val file: String
+                                                val file: String?
 
                                                 with(option.getJSONArray("option_files")) {
                                                     getJSONObject(0).let { filesObject ->
@@ -372,6 +342,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                                         oldFileName =
                                                             filesObject.getString("old_file_name")
                                                         file = filesObject.getString("file")
+                                                            .ifEmpty { null }
                                                     }
                                                 }
 
@@ -461,61 +432,56 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 AdminELearningQuestionPreviewDialogFragment.newInstance(sectionItems)
                     .show(parentFragmentManager, "")
             } else {
-                Toast.makeText(
-                    requireContext(), "There are no questions to preview", Toast
-                        .LENGTH_SHORT
-                ).show()
+                showToast("There are no questions to preview")
             }
         }
     }
 
-    private fun createQuestionsObject() {
-        if (sectionItems.isNotEmpty()) {
-            val questionArray = JSONArray()
-            val assessmentObject = JSONObject()
+    private fun createAssessmentObject(): JSONObject? {
+        if (sectionItems.isEmpty()) return null
 
-            Log.d("section", "$sectionItems")
+        val questionArray = JSONArray()
+        val assessmentObject = JSONObject()
 
-            sectionItems.forEach { sectionModel ->
-                if (!sectionModel.sectionTitle.isNullOrEmpty()) {
-                    JSONObject().apply {
-                        put("question_id", sectionModel.sectionId ?: "")
-                        put("question_title", sectionModel.sectionTitle)
-                        put("question_type", sectionModel.viewType)
+        sectionItems.forEach { sectionModel ->
+            if (!sectionModel.sectionTitle.isNullOrEmpty()) {
+                JSONObject().apply {
+                    put("question_id", sectionModel.sectionId ?: "")
+                    put("question_title", sectionModel.sectionTitle)
+                    put("question_type", sectionModel.viewType)
 
-                        JSONArray().apply {
-                            put(
-                                JSONObject().apply {
-                                    put("file_name", "")
-                                    put("old_file_name", "")
-                                    put("type", "")
-                                    put("file", "")
-                                }
-                            )
-                        }.let {
-                            put("question_files", it)
-                        }
+                    JSONArray().apply {
+                        put(
+                            JSONObject().apply {
+                                put("file_name", "")
+                                put("old_file_name", "")
+                                put("type", "")
+                                put("file", "")
+                            }
+                        )
                     }.let {
-                        questionArray.put(it)
+                        put("question_files", it)
                     }
-                } else {
-                    questionArray.put(createQuestionsJsonObject(sectionModel))
+                }.let {
+                    questionArray.put(it)
                 }
+            } else {
+                questionArray.put(createQuestionsJsonObject(sectionModel) ?: "{}")
             }
-
-            val settingsObject = createSettingsJsonObject()
-
-            assessmentObject.apply {
-                put("settings", settingsObject)
-                put("questions", questionArray)
-            }
-
-            println("assessment: $assessmentObject")
-
-            newAssessmentObject = assessmentObject
-
-            saveJSonData(assessmentObject.toString())
         }
+
+        settingsObject = createSettingsJsonObject()
+
+        assessmentObject.apply {
+            put("settings", settingsObject)
+            put("questions", questionArray)
+        }
+
+        println("assessment: $assessmentObject")
+
+        saveJSonData(assessmentObject.toString())
+
+        return assessmentObject
     }
 
     private fun createSettingsJsonObject(): JSONObject {
@@ -536,7 +502,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("term", term)
         }
     }
-
 
     private fun createQuestionsJsonObject(sectionModel: SectionModel): JSONObject? {
         val questionItem = sectionModel.questionItem ?: return null
@@ -572,13 +537,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 put(
                                     "file",
                                     if (multiChoice.attachmentUri != null) {
-                                        runBlocking(Dispatchers.IO) {
-                                            encodeUriOrFileToBase64(
-                                                multiChoice.attachmentUri,
-                                                requireContext()
-                                            )
-                                        }
-
+                                        convertFileOrUriToBase64(multiChoice.attachmentUri)
                                     } else {
                                         ""
                                     }
@@ -616,12 +575,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                         put(
                                             "file",
                                             if (option.attachmentUri != null) {
-                                                runBlocking(Dispatchers.IO) {
-                                                    encodeUriOrFileToBase64(
-                                                        option.attachmentUri,
-                                                        requireContext()
-                                                    )
-                                                }
+                                                convertFileOrUriToBase64(option.attachmentUri)
                                             } else {
                                                 ""
                                             }
@@ -678,12 +632,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 put(
                                     "file",
                                     if (shortAnswer.attachmentUri != null) {
-                                        runBlocking(Dispatchers.IO) {
-                                            encodeUriOrFileToBase64(
-                                                shortAnswer.attachmentUri,
-                                                requireContext()
-                                            )
-                                        }
+                                        convertFileOrUriToBase64(shortAnswer.attachmentUri)
                                     } else {
                                         ""
                                     }
@@ -709,23 +658,33 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+    private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
+        return if (fileUri is String) {
+            fileUri
+        } else {
+            runBlocking(Dispatchers.IO) {
+                encodeUriOrFileToBase64(
+                    fileUri,
+                    requireContext()
+                )
+            }
+        }
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     private fun submitQuestions() {
-        createQuestionsObject()
+        val assessmentObject = createAssessmentObject()
 
         val url = "${getString(R.string.base_url)}/addQuiz.php"
         val hashMap = HashMap<String, String>().apply {
-            put("assessment", newAssessmentObject.toString())
+            put("assessment", assessmentObject.toString())
         }
 
-        if (newAssessmentObject.length() != 0) {
+        if (assessmentObject != null && assessmentObject.length() != 0) {
             sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
                 object : VolleyCallback {
                     override fun onResponse(response: String) {
-                        Toast.makeText(
-                            requireContext(), "Questions submitted successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showToast("Question created")
 
                         GlobalScope.launch {
                             delay(100L)
@@ -734,37 +693,33 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     }
 
                     override fun onError(error: VolleyError) {
-                        Toast.makeText(
-                            requireContext(), "Something went wrong please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        println(error)
+                        Log.e("error", error.toString())
+                        showToast("Something went wrong please try again")
                     }
-                })
+                }
+            )
 
         } else {
-            Toast.makeText(
-                requireContext(), "There are no questions to submit",
-                Toast.LENGTH_SHORT
-            ).show()
+            showToast("There are no questions to submit")
         }
     }
 
     private fun onExit() {
         try {
-            createQuestionsObject()
+            val assessmentObject = createAssessmentObject()
 
-            if (!questionData.isNullOrEmpty() && newAssessmentObject.length() != 0) {
-                val json1 = newAssessmentObject
+            if (!questionData.isNullOrEmpty() && assessmentObject != null
+                && assessmentObject.length() != 0
+            ) {
                 val json2 = JSONObject(questionData!!)
-                val areContentSame = compareJsonObjects(json1, json2)
+                val areContentSame = compareJsonObjects(assessmentObject, json2)
 
                 if (areContentSame) {
                     onBackPressed()
                 } else {
                     exitWithWarning()
                 }
-            } else if (newAssessmentObject.length() != 0) {
+            } else if (assessmentObject != null && assessmentObject.length() != 0) {
                 exitWithWarning()
             } else {
                 onBackPressed()
@@ -772,7 +727,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     private fun exitWithWarning() {
@@ -794,35 +748,26 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         requireActivity().finish()
     }
 
-
     private fun saveJSonData(data: String) {
-        try {
-            jsonFile.writeText(data)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        sharedPreferences.edit().apply {
+            putString("question_data", data)
+        }.apply()
     }
 
     private fun loadJSonData() {
-        try {
-            questionData = jsonFile.readText()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        sharedPreferences =
+            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        year = sharedPreferences.getString("school_year", "")
+        term = sharedPreferences.getString("term", "")
+        userId = sharedPreferences.getString("user_id", "")
+        userName = sharedPreferences.getString("user", "")
+        questionData = sharedPreferences.getString("question_data", "")
     }
 
     private fun deleteJsonData() {
-        try {
-            if (jsonFile.exists()) {
-                jsonFile.delete()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        sharedPreferences.edit().apply {
+            putString("question_data", "")
+        }.apply()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // deleteJsonData()
-    }
 }

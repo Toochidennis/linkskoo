@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -32,12 +33,12 @@ class AdminELearningShortAnswerDialogFragment(
     private val onAskQuestion: (question: ShortAnswerModel) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_short_answer) {
 
-    private lateinit var dismissBtn: ImageView
+    private lateinit var dismissBtn: ImageButton
     private lateinit var askBtn: Button
     private lateinit var questionEditText: EditText
     private lateinit var attachmentTxt: TextView
     private lateinit var attachmentBtn: RelativeLayout
-    private lateinit var removeQuestionAttachmentBtn: ImageView
+    private lateinit var removeQuestionAttachmentBtn: ImageButton
     private lateinit var answerEditText: EditText
 
     private lateinit var shortAnswerModelCopy: ShortAnswerModel

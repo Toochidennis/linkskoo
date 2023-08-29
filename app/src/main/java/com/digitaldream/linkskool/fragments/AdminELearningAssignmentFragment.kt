@@ -8,8 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -33,14 +32,16 @@ import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
-import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
+import com.digitaldream.linkskool.utils.FunctionUtils.encodeUriOrFileToBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -54,7 +55,7 @@ private const val ARG_PARAM4 = "param4"
 class AdminELearningAssignmentFragment :
     Fragment(R.layout.fragment_admin_e_learning_assignment) {
 
-    private lateinit var mBackBtn: ImageView
+    private lateinit var mBackBtn: ImageButton
     private lateinit var mAssignBtn: Button
     private lateinit var mAssignmentTitleEditText: EditText
     private lateinit var mClassRecyclerView: RecyclerView
@@ -67,13 +68,13 @@ class AdminELearningAssignmentFragment :
     private lateinit var mAddAttachmentBtn: TextView
     private lateinit var mGradeBtn: RelativeLayout
     private lateinit var mGradeTxt: TextView
-    private lateinit var mResetGradeBtn: ImageView
+    private lateinit var mResetGradeBtn: ImageButton
     private lateinit var mDateBtn: RelativeLayout
     private lateinit var mStartDateTxt: TextView
     private lateinit var mEndDateTxt: TextView
-    private lateinit var mStartDateBtn: ImageView
-    private lateinit var mEndDateBtn: ImageView
-    private lateinit var mDateSeparator: LinearLayout
+    private lateinit var mStartDateBtn: ImageButton
+    private lateinit var mEndDateBtn: ImageButton
+    private lateinit var mDateSeparator: View
     private lateinit var mTopicTxt: TextView
 
     private var mClassList = mutableListOf<ClassNameTable>()
@@ -339,7 +340,7 @@ class AdminELearningAssignmentFragment :
                     R.layout.fragment_admin_e_learning_assigment_attachment_item,
                     bindItem = { itemView, model, position ->
                         val itemTxt: TextView = itemView.findViewById(R.id.itemTxt)
-                        val deleteButton: ImageView =
+                        val deleteButton: ImageButton =
                             itemView.findViewById(R.id.deleteButton)
 
                         itemTxt.text = model.name
@@ -424,7 +425,7 @@ class AdminELearningAssignmentFragment :
         }
     }
 
-    private fun deleteAttachment(deleteButton: ImageView, position: Int) {
+    private fun deleteAttachment(deleteButton: ImageButton, position: Int) {
         deleteButton.setOnClickListener {
             mFileList.removeAt(position)
             if (mFileList.isEmpty()) {
@@ -468,7 +469,6 @@ class AdminELearningAssignmentFragment :
         }
     }
 
-
     private fun prepareAssignment(): HashMap<String, String> {
         val filesArray = JSONArray()
         val classArray = JSONArray()
@@ -479,7 +479,7 @@ class AdminELearningAssignmentFragment :
             put("description", descriptionText!!)
             put("topic", if (topicText == "Topic") "" else topicText!!)
             put("topic_id", topicId ?: "0")
-            put("objective", "")
+            put("objective", gradeText!!)
 
             mFileList.isNotEmpty().let { isTrue ->
                 if (isTrue) {
@@ -499,10 +499,7 @@ class AdminELearningAssignmentFragment :
                             put("old_file_name", oldFileName)
                             put("type", attachment.type)
 
-                            val file = FunctionUtils.encodeUriOrFileToBase64(
-                                attachment.uri,
-                                requireContext()
-                            )
+                            val file = convertFileOrUriToBase64(attachment.uri)
 
                             put("file", file)
                         }.let {
@@ -531,11 +528,23 @@ class AdminELearningAssignmentFragment :
             put("course_name", mCourseName!!)
             put("start_date", mStartDate!!)
             put("end_date", mEndDate!!)
-            put("grade", gradeText!!)
             put("author_id", userId!!)
             put("author_name", userName!!)
             put("year", year!!)
             put("term", term!!)
+        }
+    }
+
+    private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
+        return if (fileUri is String) {
+            fileUri
+        } else {
+            runBlocking(Dispatchers.IO) {
+                encodeUriOrFileToBase64(
+                    fileUri,
+                    requireContext()
+                )
+            }
         }
     }
 
@@ -636,4 +645,26 @@ class AdminELearningAssignmentFragment :
         requireActivity().finish()
     }
 
+
+    private fun parseJsonObject(json: String): JSONObject {
+        return JSONObject().apply {
+            JSONObject(json).let {
+                put("id", it.getString("id"))
+                put("title", it.getString("title"))
+                put("topic_id", it.getString("parent"))
+                put("objective", it.getString("objective"))
+
+                val fileArray = it.getJSONArray("picref")
+                fileArray.getJSONObject(0).let { file ->
+
+                }
+
+
+            }
+        }
+    }
+
+    private fun parseJsonArray(files: JSONArray): JSONArray {
+
+    }
 }
