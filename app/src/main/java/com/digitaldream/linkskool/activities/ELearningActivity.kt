@@ -16,6 +16,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
         val courseId = intent.getStringExtra("courseId") ?: ""
         val courseName = intent.getStringExtra("courseName") ?: ""
         val json = intent.getStringExtra("json") ?: ""
+        val task = intent.getStringExtra("task") ?: ""
 
         when (intent.getStringExtra("from")) {
             "view_post" -> {
@@ -30,13 +31,22 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 }
             }
 
-            "question" -> {
+            "question_settings" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
                         AdminELearningQuestionSettingsFragment.newInstance(
                             levelId, courseId, courseName,
                         )
+                    )
+                }
+            }
+
+            "question" -> {
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningQuestionFragment.newInstance(json, task)
                     )
                 }
             }
@@ -48,7 +58,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                         AdminELearningMaterialFragment
                             .newInstance(
                                 levelId, courseId,
-                                json, courseName
+                                json, courseName, task
                             )
                     )
                 }
@@ -61,7 +71,8 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                         AdminELearningAssignmentFragment
                             .newInstance(
                                 levelId, courseId,
-                                json, courseName
+                                json, courseName,
+                                task
                             )
                     )
                 }
@@ -76,13 +87,14 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                                 courseId,
                                 levelId,
                                 courseName,
-                                json
+                                json,
+                                task
                             )
                     )
                 }
             }
 
-            "assignment_details"->{
+            "assignment_details" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
@@ -91,7 +103,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 }
             }
 
-            "question_details"->{
+            "question_details" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
@@ -100,7 +112,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 }
             }
 
-            "material_details"->{
+            "material_details" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,

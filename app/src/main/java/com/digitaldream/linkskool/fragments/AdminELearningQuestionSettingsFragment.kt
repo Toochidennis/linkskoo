@@ -69,8 +69,11 @@ class AdminELearningQuestionSettingsFragment :
     private var mStartDate: String? = null
     private var mEndDate: String? = null
     private var mQuestionTopic: String? = null
-    private var updatedJson = JSONObject()
     private var topicId: String? = null
+    private var titleText: String? = null
+    private var descriptionText: String? = null
+    private var topic: String? = null
+    private var id: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +119,6 @@ class AdminELearningQuestionSettingsFragment :
         super.onViewCreated(view, savedInstanceState)
 
         setUpView(view)
-
 
         onEdit()
 
@@ -252,6 +254,7 @@ class AdminELearningQuestionSettingsFragment :
                 if (!settingsObject.isNullOrBlank()) {
                     settingsObject?.let { json ->
                         JSONObject(json).run {
+                            id = getString("id")
                             mQuestionTitle = getString("title")
                             mQuestionDescription = getString("description")
                             mStartDate = getString("start_date")
@@ -264,8 +267,10 @@ class AdminELearningQuestionSettingsFragment :
                             val classArray = getJSONArray("class")
 
                             for (i in 0 until classArray.length()) {
-                                selectedItems[classArray.getJSONObject(i).getString("id")] =
-                                    classArray.getJSONObject(i).getString("name")
+                                classArray.getJSONObject(i).let {
+                                    selectedItems[it.getString("id")] =
+                                        it.getString("name")
+                                }
                             }
                         }
                     }
@@ -294,52 +299,50 @@ class AdminELearningQuestionSettingsFragment :
     }
 
     private fun selectTopic() = if (selectedItems.isEmpty()) {
-        showText("Please select a class")
+        showToast("Please select a class")
     } else {
         AdminELearningSelectTopicDialogFragment(
             courseId = courseId!!,
             levelId = levelId!!,
             courseName = courseName!!,
-            selectedClass = selectedItems
-        ) { topicId, topicText ->
-
-            this.topicId = topicId
+            selectedClass = selectedItems,
+            topic ?: ""
+        ) { id, topicText ->
+            topicId = id
             mTopicTxt.text = topicText
 
         }.show(parentFragmentManager, "")
     }
 
-    private fun createSettingsJsonObject() {
-        val classArray = JSONArray()
+    private fun createSettingsJsonObject(): JSONObject {
+        getFieldsText()
 
-        val titleText = mQuestionTitleEditText.text.toString().trim()
-        val descriptionText = mDescriptionEditText.text.toString().trim()
-        val topicText = mTopicTxt.text.toString()
-
-        selectedItems.forEach { (key, value) ->
-            if (key.isNotEmpty() && value.isNotEmpty()) {
-                JSONObject().apply {
-                    put("id", key)
-                    put("name", value)
-                }.let {
-                    classArray.put(it)
-                }
-            }
-        }
-
-        JSONObject().apply {
-            put("title", titleText)
-            put("description", descriptionText)
+        return JSONObject().apply {
+            put("id", id ?: "")
+            put("title", titleText!!)
+            put("description", descriptionText!!)
             put("start_date", mStartDate)
             put("end_date", mEndDate)
             put("level", levelId)
             put("course", courseId)
             put("course_name", courseName)
-            put("topic", if (topicText == "Topic" || topicText == "No topic") "" else topicText)
+            put("topic", if (topic == "Topic" || topic == "No topic") "" else topic)
             put("topic_id", topicId ?: "0")
-            put("class", classArray)
-        }.let {
-            updatedJson = it
+
+            JSONArray().apply {
+                selectedItems.forEach { (key, value) ->
+                    if (key.isNotEmpty() && value.isNotEmpty()) {
+                        JSONObject().apply {
+                            put("id", key)
+                            put("name", value)
+                        }.let {
+                            put(it)
+                        }
+                    }
+                }
+            }.let {
+                put("class", it)
+            }
         }
     }
 
@@ -350,29 +353,34 @@ class AdminELearningQuestionSettingsFragment :
         if (titleText.isEmpty()) {
             mQuestionTitleEditText.error = "Please enter question title"
         } else if (selectedItems.size == 0) {
-            showText("Please select a class")
+            showToast("Please select a class")
         } else if (descriptionText.isEmpty()) {
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            showText("Please set date")
+            showToast("Please set date")
         } else {
-            createSettingsJsonObject()
+            val json = createSettingsJsonObject()
 
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
-                    AdminELearningQuestionFragment.newInstance(updatedJson.toString(), "settings")
+                    AdminELearningQuestionFragment.newInstance(json.toString(), "settings")
                 )
             }
         }
     }
 
+    private fun getFieldsText() {
+        titleText = mQuestionTitleEditText.text.toString().trim()
+        descriptionText = mDescriptionEditText.text.toString().trim()
+        topic = mTopicTxt.text.toString()
+    }
+
     private fun onExit() {
         try {
-            createSettingsJsonObject()
+            val json1 = createSettingsJsonObject()
 
-            if (!settingsObject.isNullOrBlank() && updatedJson.length() != 0) {
-                val json1 = updatedJson
+            if (!settingsObject.isNullOrBlank() && json1.length() != 0) {
                 val json2 = JSONObject(settingsObject!!)
                 val areContentSame = compareJsonObjects(json1, json2)
 
@@ -382,7 +390,7 @@ class AdminELearningQuestionSettingsFragment :
                     exitWithWarning()
                 }
 
-            } else if (updatedJson.length() != 0) {
+            } else if (json1.length() != 0) {
                 exitWithWarning()
             } else {
                 exitDestination()
@@ -420,7 +428,7 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
-    private fun showText(message: String) {
+    private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 

@@ -50,7 +50,7 @@ class AdminELearningCreateContentDialog(
         }
 
         questionBtn.setOnClickListener {
-            launchActivity("question")
+            launchActivity("question_settings")
             dismiss()
         }
 

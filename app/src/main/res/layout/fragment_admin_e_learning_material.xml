@@ -219,6 +219,7 @@
         android:focusable="true"
         android:padding="@dimen/dimen_16"
         android:text="Topic"
+        android:textColor="@color/black"
         android:textSize="@dimen/text_16"
         app:drawableStartCompat="@drawable/ic_topic2" />
 

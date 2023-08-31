@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
@@ -32,16 +33,19 @@ class AdminELearningSelectTopicDialogFragment(
     private var levelId: String,
     private var courseName: String,
     private var selectedClass: HashMap<String, String>,
+    private var existingTopic: String,
     private val isTopicSelected: (topicId: String, topic: String?) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_select_topic) {
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var backBtn: ImageButton
     private lateinit var doneBtn: Button
     private lateinit var noTopicBtn: TextView
     private lateinit var newTopicEditText: EditText
     private lateinit var newObjectiveEditText: EditText
-    private lateinit var objectiveSeparator: LinearLayout
+    private lateinit var objectiveSeparator: View
     private lateinit var topicRecyclerView: RecyclerView
+    private lateinit var errorTxt: TextView
 
     private lateinit var topicAdapter: GenericAdapter2<TopicModel>
     private val topicList = mutableListOf<TopicModel>()
@@ -50,8 +54,8 @@ class AdminELearningSelectTopicDialogFragment(
     private var userName: String? = null
     private var term: String? = null
     private var year: String? = null
-    private var existingTopic: String? = null
-    private var existingTopicId: String? = null
+    private var selectedTopic: String? = null
+    private var selectedTopicId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +75,8 @@ class AdminELearningSelectTopicDialogFragment(
         term = sharedPreferences.getString("term", "")
         year = sharedPreferences.getString("school_year", "")
 
+        selectedTopic = existingTopic
+
         setUpTopicAdapter()
 
         fetchTopics()
@@ -89,10 +95,12 @@ class AdminELearningSelectTopicDialogFragment(
 
         smoothScrollEditText(newObjectiveEditText)
 
+        refreshData()
     }
 
     private fun setUpViews(view: View) {
         view.apply {
+            swipeRefreshLayout = findViewById(R.id.swipeRefresh)
             backBtn = findViewById(R.id.backBtn)
             doneBtn = findViewById(R.id.doneBtn)
             noTopicBtn = findViewById(R.id.noTopicBtn)
@@ -100,7 +108,10 @@ class AdminELearningSelectTopicDialogFragment(
             newObjectiveEditText = findViewById(R.id.newObjectiveEditText)
             objectiveSeparator = findViewById(R.id.separator3)
             topicRecyclerView = findViewById(R.id.topicRecyclerview)
+            errorTxt = findViewById(R.id.errorTxt)
         }
+
+        swipeRefreshLayout.setColorSchemeResources(R.color.test_color_1)
     }
 
     private fun checkEditText() {
@@ -158,7 +169,7 @@ class AdminELearningSelectTopicDialogFragment(
                 val topicTxt: TextView = itemView.findViewById(R.id.topicTxt)
                 topicTxt.text = model.topicText
 
-                val isSelected = existingTopic == model.topicText
+                val isSelected = selectedTopic == model.topicText
                 itemView.isSelected = isSelected
 
                 if (isSelected) {
@@ -186,9 +197,9 @@ class AdminELearningSelectTopicDialogFragment(
     }
 
     private fun handleTopicSelection(newSelectedId: String, newSelectedTopic: String) {
-        if (newSelectedTopic != existingTopic) {
-            existingTopic = newSelectedTopic
-            existingTopicId = newSelectedId
+        if (newSelectedTopic != selectedTopic) {
+            selectedTopic = newSelectedTopic
+            selectedTopicId = newSelectedId
             removeDrawableOnTextView(noTopicBtn)
             unCheckEditText()
             topicAdapter.notifyDataSetChanged()
@@ -199,7 +210,7 @@ class AdminELearningSelectTopicDialogFragment(
         newTopicEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 removeDrawableOnTextView(noTopicBtn)
-                existingTopic = null
+                selectedTopic = null
                 checkEditText()
                 topicAdapter.notifyDataSetChanged()
             }
@@ -209,7 +220,7 @@ class AdminELearningSelectTopicDialogFragment(
     private fun handleNoTopicSelection() {
         noTopicBtn.setOnClickListener {
             setDrawableOnTextView(noTopicBtn)
-            existingTopic = noTopicBtn.text.toString()
+            selectedTopic = noTopicBtn.text.toString()
             unCheckEditText()
             topicAdapter.notifyDataSetChanged()
         }
@@ -243,15 +254,21 @@ class AdminELearningSelectTopicDialogFragment(
                             }
 
                             setUpTopicAdapter()
+                            errorTxt.isVisible = false
+                        } else {
+                            errorTxt.isVisible = true
                         }
 
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        errorTxt.isVisible = true
+
                     }
                 }
 
                 override fun onError(error: VolleyError) {
-
+                    errorTxt.isVisible = true
+                    "Something went wrong. Swipe to refresh".let { errorTxt.text = it }
                 }
             }
         )
@@ -271,12 +288,12 @@ class AdminELearningSelectTopicDialogFragment(
                 newObjectiveEditText.error = "Please provide objectives"
             } else {
                 val objectives = newObjectiveEditText.text.toString().trim()
-                existingTopic = newTopicEditText.text.toString().trim()
+                selectedTopic = newTopicEditText.text.toString().trim()
 
                 postTopic(objectives)
             }
-        } else if (!existingTopic.isNullOrEmpty()) {
-            isTopicSelected(existingTopicId ?: "0", existingTopic)
+        } else if (!selectedTopic.isNullOrEmpty()) {
+            isTopicSelected(selectedTopicId ?: "0", selectedTopic)
             dismiss()
         } else {
             Toast.makeText(requireContext(), "Please select a topic", Toast.LENGTH_SHORT).show()
@@ -287,7 +304,7 @@ class AdminELearningSelectTopicDialogFragment(
         val classArray = JSONArray()
 
         return HashMap<String, String>().apply {
-            put("title", existingTopic!!)
+            put("title", selectedTopic!!)
             put("type", "4")
             put("description", "")
             put("topic", "")
@@ -351,5 +368,13 @@ class AdminELearningSelectTopicDialogFragment(
                     ).show()
                 }
             })
+    }
+
+    private fun refreshData() {
+        swipeRefreshLayout.setOnRefreshListener {
+            topicList.clear()
+            fetchTopics()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

@@ -2,6 +2,7 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AdminELearningSelectTopicDialogFragment">
@@ -51,7 +52,10 @@
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="@dimen/dimen_16"
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:layout_marginBottom="@dimen/dimen_16"
                 android:background="@drawable/ripple_effect10"
                 android:clickable="true"
                 android:focusable="true"
@@ -63,13 +67,12 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <View
             android:id="@+id/separator1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height=".5dp"
             android:layout_below="@+id/appBar"
-            android:background="@drawable/line_separator"
-            android:orientation="horizontal" />
+            android:background="@color/test_color_7" />
 
         <TextView
             android:id="@+id/noTopicBtn"
@@ -84,13 +87,12 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
 
-        <LinearLayout
+        <View
             android:id="@+id/separator2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height=".5dp"
             android:layout_below="@+id/noTopicBtn"
-            android:background="@drawable/line_separator"
-            android:orientation="horizontal" />
+            android:background="@color/test_color_7" />
 
         <EditText
             android:id="@+id/newTopicEditText"
@@ -102,17 +104,16 @@
             android:drawableStart="@drawable/ic_add_black"
             android:drawablePadding="@dimen/dimen_16"
             android:hint="New topic"
-            android:inputType="text"
+            android:inputType="textCapSentences"
             android:padding="@dimen/dimen_16"
             android:textSize="@dimen/text_16" />
 
-        <LinearLayout
+        <View
             android:id="@+id/separator3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height=".5dp"
             android:layout_below="@+id/newTopicEditText"
-            android:background="@drawable/line_separator"
-            android:orientation="horizontal"
+            android:background="@color/test_color_7"
             android:visibility="gone" />
 
         <EditText
@@ -125,7 +126,7 @@
             android:drawableStart="@drawable/ic_add_black"
             android:drawablePadding="@dimen/dimen_16"
             android:hint="Objectives"
-            android:inputType="textMultiLine"
+            android:inputType="textCapSentences|textMultiLine"
             android:lineSpacingMultiplier="1"
             android:lines="10"
             android:minLines="1"
@@ -140,6 +141,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/newObjectiveEditText"
             android:clipToPadding="true" />
+
+        <TextView
+            android:id="@+id/errorTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newObjectiveEditText"
+            android:layout_marginTop="@dimen/dimen_64"
+            android:text="@string/no_data"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

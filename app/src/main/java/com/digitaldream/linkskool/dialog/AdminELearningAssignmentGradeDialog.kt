@@ -44,13 +44,16 @@ class AdminELearningAssignmentGradeDialog(
             if (mPointBtn.isChecked) {
                 if (mPointEditText.text.toString().isNotEmpty()) {
                     point(mPointEditText.text.toString())
+                    dismiss()
                 } else {
                     Toast.makeText(context, "Set point to save", Toast.LENGTH_SHORT).show()
                 }
-            } else {
+            } else if (mNoPointBtn.isChecked) {
                 point("Unmarked")
+                dismiss()
+            } else {
+                Toast.makeText(context, "Please select a grade to save", Toast.LENGTH_SHORT).show()
             }
-            dismiss()
         }
 
         mCancelBtn.setOnClickListener {

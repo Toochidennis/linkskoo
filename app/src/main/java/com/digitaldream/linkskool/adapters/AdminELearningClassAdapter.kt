@@ -125,7 +125,7 @@ class AdminELearningClassAdapter(
                 true
             }
 
-            //   optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
+            optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
         }
     }
 
@@ -167,7 +167,7 @@ class AdminELearningClassAdapter(
                 launchActivity(itemView, "material_details", "")
             }
 
-            optionsAction("question", optionBtn, material, itemView, adapterPosition)
+            optionsAction("material", optionBtn, material, itemView, adapterPosition)
         }
     }
 
@@ -212,9 +212,8 @@ class AdminELearningClassAdapter(
                                             "id=${topicModel.id}&type=${topicModel.type}"
 
                                 getContent(url, itemView) { response ->
-                                    if (response.isNotBlank()) {
-                                         launchActivity(itemView, from, response)
-                                    }
+                                    launchActivity(itemView, from, response)
+
                                 }
                             }
 
@@ -224,10 +223,8 @@ class AdminELearningClassAdapter(
                                             "id=${topicModel.id}&type=${topicModel.type}"
 
                                 getContent(url, itemView) { response ->
-                                    if (response.isBlank()) {
-                                        println(response)
-                                        //launchActivity(itemView, from, response)
-                                    }
+                                    launchActivity(itemView, from, response)
+
                                 }
                             }
 
@@ -237,12 +234,8 @@ class AdminELearningClassAdapter(
                                             "id=${topicModel.id}&type=${topicModel.type}"
 
                                 getContent(url, itemView) { response ->
-                                    if (response.isNotBlank()) {
-                                        println(response)
-                                        response.replace("\\", "")
-                                        Timber.tag("response").d(response)
-                                        // launchActivity(itemView, from, response)
-                                    }
+                                    launchActivity(itemView, from, response)
+
                                 }
                             }
 
@@ -252,10 +245,8 @@ class AdminELearningClassAdapter(
                                             "id=${topicModel.id}&type=${topicModel.type}"
 
                                 getContent(url, itemView) { response ->
-                                    if (response.isBlank()) {
-                                        println(response)
-                                        // launchActivity(itemView, from, response)
-                                    }
+                                    launchActivity(itemView, from, response)
+
                                 }
                             }
                         }
@@ -291,7 +282,7 @@ class AdminELearningClassAdapter(
 
                 override fun onError(error: VolleyError) {
                     Toast.makeText(
-                        itemView.context, "Something went wrong",
+                        itemView.context, "Something went wrong please try again",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -303,6 +294,7 @@ class AdminELearningClassAdapter(
         itemView.context.startActivity(
             Intent(itemView.context, ELearningActivity::class.java)
                 .putExtra("from", from)
+                .putExtra("task", "edit")
                 .putExtra("json", response)
         )
     }

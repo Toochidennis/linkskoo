@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
+import com.android.volley.TimeoutError
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
@@ -40,17 +41,24 @@ import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.File
+import java.sql.Time
 
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val ARG_PARAM3 = "param3"
 private const val ARG_PARAM4 = "param4"
+private const val ARG_PARAM5 = "param5"
 
 class AdminELearningAssignmentFragment :
     Fragment(R.layout.fragment_admin_e_learning_assignment) {
@@ -88,16 +96,16 @@ class AdminELearningAssignmentFragment :
     private var mCourseId: String? = null
     private var mStartDate: String? = null
     private var mEndDate: String? = null
-    private var jsonFromTopic: String? = null
+    private var json: String? = null
     private var mCourseName: String? = null
-    private var updatedJson = JSONObject()
-    private var newHashMap = mutableMapOf<Any?, Any?>()
+    private var mFrom: String? = null
     private var year: String? = null
     private var term: String? = null
     private var userId: String? = null
+    private var id: String? = null
     private var userName: String? = null
 
-    private var topicText: String? = null
+    private var topic: String? = null
     private var topicId: String? = null
     private var descriptionText: String? = null
     private var titleText: String? = null
@@ -109,8 +117,9 @@ class AdminELearningAssignmentFragment :
         arguments?.let {
             mLevelId = it.getString(ARG_PARAM1)
             mCourseId = it.getString(ARG_PARAM2)
-            jsonFromTopic = it.getString(ARG_PARAM3)
+            json = it.getString(ARG_PARAM3)
             mCourseName = it.getString(ARG_PARAM4)
+            mFrom = it.getString(ARG_PARAM5)
         }
 
         val callBack = object : OnBackPressedCallback(true) {
@@ -125,15 +134,21 @@ class AdminELearningAssignmentFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(levelId: String, courseId: String, json: String, courseName: String) =
-            AdminELearningAssignmentFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, levelId)
-                    putString(ARG_PARAM2, courseId)
-                    putString(ARG_PARAM3, json)
-                    putString(ARG_PARAM4, courseName)
-                }
+        fun newInstance(
+            levelId: String,
+            courseId: String,
+            json: String,
+            courseName: String,
+            from: String
+        ) = AdminELearningAssignmentFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_PARAM1, levelId)
+                putString(ARG_PARAM2, courseId)
+                putString(ARG_PARAM3, json)
+                putString(ARG_PARAM4, courseName)
+                putString(ARG_PARAM5, from)
             }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -148,11 +163,15 @@ class AdminELearningAssignmentFragment :
         userId = sharedPreferences.getString("user_id", "")
         userName = sharedPreferences.getString("user", "")
 
-        setUpClassAdapter()
+        if (json.isNullOrBlank()) {
+            setUpClassAdapter()
+        } else {
+            onEditAssignment()
+        }
 
         setDate()
 
-        setGrade()
+        setUpGrade()
 
         fileAttachment(mAttachmentBtn)
         fileAttachment(mAddAttachmentBtn)
@@ -170,7 +189,6 @@ class AdminELearningAssignmentFragment :
         mTopicTxt.setOnClickListener {
             selectTopic()
         }
-
     }
 
     private fun setUpViews(view: View) {
@@ -258,11 +276,6 @@ class AdminELearningAssignmentFragment :
                 mStartDate = startDate
                 mEndDate = endDate
 
-                val start = "Start ${formatDate2(startDate, "custom1")}"
-                val end = "Due ${formatDate2(endDate, "custom1")}"
-                mStartDateTxt.text = start
-                mEndDateTxt.text = end
-
                 showDate()
             }.apply {
                 setCancelable(true)
@@ -287,25 +300,24 @@ class AdminELearningAssignmentFragment :
     }
 
     private fun showDate() {
+        val start = "Start ${formatDate2(mStartDate!!, "custom1")}"
+        val end = "Due ${formatDate2(mEndDate!!, "custom1")}"
+
+        mStartDateTxt.text = start
+        mEndDateTxt.text = end
+
         mStartDateBtn.isVisible = true
         mEndDateBtn.isVisible = true
         mEndDateTxt.isVisible = true
         mDateSeparator.isVisible = true
     }
 
-    private fun setGrade() {
+    private fun setUpGrade() {
         mGradeBtn.setOnClickListener {
             AdminELearningAssignmentGradeDialog(requireContext()) { point ->
 
-                when (point) {
-                    "Unmarked" -> point
-                    "1" -> "$point point"
-                    else -> "$point points"
-                }.let {
-                    mGradeTxt.text = it
-                }
-
-                mResetGradeBtn.isVisible = true
+                gradeText = point
+                setGradeText()
 
             }.apply {
                 show()
@@ -320,6 +332,18 @@ class AdminELearningAssignmentFragment :
             mResetGradeBtn.isVisible = false
             "Unmarked".let { mGradeTxt.text = it }
         }
+    }
+
+    private fun setGradeText() {
+        when (gradeText) {
+            "Unmarked" -> gradeText
+            "1" -> "$gradeText point"
+            else -> "$gradeText points"
+        }.let {
+            mGradeTxt.text = it
+        }
+
+        mResetGradeBtn.isVisible = true
     }
 
     private fun fileAttachment(button: View) {
@@ -420,7 +444,7 @@ class AdminELearningAssignmentFragment :
             }
 
             else -> {
-                showText("Can't open file")
+                showToast("Can't open file")
             }
         }
     }
@@ -459,25 +483,27 @@ class AdminELearningAssignmentFragment :
         if (titleText.isNullOrBlank()) {
             mAssignmentTitleEditText.error = "Please enter assignment title"
         } else if (selectedClassItems.size == 0) {
-            showText("Please select a class")
+            showToast("Please select a class")
         } else if (descriptionText.isNullOrBlank()) {
             mDescriptionEditText.error = "Please enter a description"
-        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            showText("Please set date")
+        } else if (mStartDate.isNullOrEmpty() && mEndDate.isNullOrEmpty()) {
+            showToast("Please set date")
         } else {
             postAssignment()
         }
     }
 
-    private fun prepareAssignment(): HashMap<String, String> {
+    private fun createAssignmentObject(): HashMap<String, String> {
         val filesArray = JSONArray()
         val classArray = JSONArray()
+        getFieldsText()
 
         return HashMap<String, String>().apply {
+            put("id", id ?: "")
             put("title", titleText!!)
             put("type", "3")
             put("description", descriptionText!!)
-            put("topic", if (topicText == "Topic") "" else topicText!!)
+            put("topic", if (topic == "Topic" || topic == "No topic") "" else topic!!)
             put("topic_id", topicId ?: "0")
             put("objective", gradeText!!)
 
@@ -526,8 +552,8 @@ class AdminELearningAssignmentFragment :
             put("level", mLevelId!!)
             put("course", mCourseId!!)
             put("course_name", mCourseName!!)
-            put("start_date", mStartDate!!)
-            put("end_date", mEndDate!!)
+            put("start_date", mStartDate ?: "")
+            put("end_date", mEndDate ?: "")
             put("author_id", userId!!)
             put("author_name", userName!!)
             put("year", year!!)
@@ -551,13 +577,13 @@ class AdminELearningAssignmentFragment :
     private fun getFieldsText() {
         titleText = mAssignmentTitleEditText.text.toString().trim()
         descriptionText = mDescriptionEditText.text.toString().trim()
-        topicText = mTopicTxt.text.toString()
-        gradeText = mGradeTxt.text.toString()
+        topic = mTopicTxt.text.toString()
+        gradeText = mGradeTxt.text.toString().replace(" points", "")
     }
 
     private fun postAssignment() {
         val url = "${getString(R.string.base_url)}/addContent.php"
-        val hashMap = prepareAssignment()
+        val hashMap = createAssignmentObject()
 
         sendRequestToServer(
             Request.Method.POST,
@@ -567,50 +593,187 @@ class AdminELearningAssignmentFragment :
             object
                 : VolleyCallback {
                 override fun onResponse(response: String) {
-//                    Toast.makeText(
-//                        requireContext(), "Material submitted successfully",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//
-//                    SystemClock.sleep(1000)
-//                    onBackPressed()
-
+                    try {
+                        JSONObject(response).run {
+                            if (getString("status") == "success") {
+                                if (mFrom != "edit") {
+                                    showToast("Assignment added")
+                                    finishActivity()
+                                } else {
+                                    finishActivity()
+                                }
+                            } else {
+                                showToast("Failed. Please check your connection and try again")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
 
                 override fun onError(error: VolleyError) {
-                    showText("Something went wrong please try again")
+                    showToast("Something went wrong please try again")
                 }
             })
     }
 
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun finishActivity() {
+        GlobalScope.launch {
+            delay(50L)
+            onBackPressed()
+        }
+    }
+
     private fun selectTopic() = if (selectedClassItems.isEmpty()) {
-        showText("Please select a class")
+        showToast("Please select a class")
     } else {
         AdminELearningSelectTopicDialogFragment(
             courseId = mCourseId!!,
             levelId = mLevelId!!,
             courseName = mCourseName!!,
-            selectedClass = selectedClassItems
-        ) { topicId, topicText ->
-
-            this.topicId = topicId
+            selectedClass = selectedClassItems,
+            topic ?: ""
+        ) { id, topicText ->
+            topicId = id
             mTopicTxt.text = topicText
 
         }.show(parentFragmentManager, "")
     }
 
+    private fun onEditAssignment() {
+        try {
+            val assignmentJsonObject = parseJsonObject(json!!)
 
-    private fun showText(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            with(assignmentJsonObject) {
+                id = getString("id")
+                titleText = getString("title")
+                descriptionText = getString("description")
+                topic = getString("topic")
+                topicId = getString("topic_id")
+                gradeText = getString("objective")
+
+                getJSONArray("files").let { jsonArray ->
+                    for (i in 0 until jsonArray.length()) {
+                        jsonArray.getJSONObject(i).let { fileJson ->
+                            val attachmentModel = AttachmentModel(
+                                fileJson.getString("file_name"),
+                                fileJson.getString("old_file_name"),
+                                fileJson.getString("type"),
+                                fileJson.getString("file")
+                            )
+
+                            mFileList.add(attachmentModel)
+                        }
+                    }
+                }
+
+                getJSONArray("class").let { jsonArray ->
+                    for (i in 0 until jsonArray.length()) {
+                        jsonArray.getJSONObject(i).let {
+                            selectedClassItems[it.getString("id")] =
+                                it.getString("name")
+                        }
+                    }
+                }
+
+                mCourseId = getString("course")
+                mCourseName = getString("course_name")
+                mLevelId = getString("level")
+                mStartDate = getString("start_date")
+                mEndDate = getString("end_date")
+            }
+
+            setUpClassAdapter()
+            setUpFilesAdapter()
+            setTextOnViews()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setTextOnViews() {
+        mAssignmentTitleEditText.setText(titleText)
+        mDescriptionEditText.setText(descriptionText)
+        mTopicTxt.text = topic
+
+        if (!gradeText.isNullOrBlank()) {
+            setGradeText()
+        }
+
+        if (!mStartDate.isNullOrBlank() && !mEndDate.isNullOrBlank()) {
+            showDate()
+        }
     }
 
 
+    private fun parseJsonObject(json: String): JSONObject {
+        return JSONObject().apply {
+            JSONObject(json).let {
+                put("id", it.getString("id"))
+                put("title", it.getString("title"))
+                put("type", it.getString("type"))
+                put("description", it.getString("description"))
+                put("topic", it.getString("category"))
+                put("topic_id", it.getString("parent"))
+                put("objective", it.getString("objective"))
+                put("files", parseFilesArray(JSONArray(it.getString("picref"))))
+                put("class", parseClassArray(JSONArray(it.getString("class"))))
+                put("level", it.getString("level"))
+                put("course", it.getString("course_id"))
+                put("course_name", it.getString("course_name"))
+                put("start_date", it.getString("start_date"))
+                put("end_date", it.getString("end_date"))
+                put("author_id", it.getString("author_id"))
+                put("author_name", it.getString("author_name"))
+                put("year", term!!)
+                put("term", it.getString("term"))
+            }
+        }
+    }
+
+    private fun parseFilesArray(files: JSONArray): JSONArray {
+        return JSONArray().apply {
+            JSONObject().apply {
+                files.getJSONObject(0).let {
+                    put("file_name", trimText(it.getString("file_name")))
+                    put("old_file_name", trimText(it.getString("file_name")))
+                    put("type", it.getString("type"))
+                    put("file", it.getString("file_name"))
+                }
+            }.let { jsonObject ->
+                put(jsonObject)
+            }
+        }
+    }
+
+    private fun trimText(text: String): String {
+        return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
+    }
+
+    private fun parseClassArray(classArray: JSONArray): JSONArray {
+        return JSONArray().apply {
+            for (i in 0 until classArray.length()) {
+                classArray.getJSONObject(i).let {
+                    JSONObject().apply {
+                        put("id", it.getString("id"))
+                        put("name", it.getString("name"))
+                    }.let { jsonObject ->
+                        put(jsonObject)
+                    }
+                }
+            }
+        }
+    }
+
     private fun onExit() {
         try {
-            val json1 = JSONObject(jsonFromTopic!!)
-            val json2 = updatedJson
+            val json1 = JSONObject(createAssignmentObject().toMap())
 
-            if (json2.length() != 0) {
+            if (!json.isNullOrBlank() && json1.length() != 0) {
+                val json2 = parseJsonObject(json!!)
                 val areContentSame = compareJsonObjects(json1, json2)
 
                 if (areContentSame) {
@@ -618,13 +781,14 @@ class AdminELearningAssignmentFragment :
                 } else {
                     exitWithWarning()
                 }
+            } else if (json1.length() != 0) {
+                exitWithWarning()
             } else {
                 onBackPressed()
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     private fun exitWithWarning() {
@@ -641,30 +805,12 @@ class AdminELearningAssignmentFragment :
         }.create()
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun onBackPressed() {
         requireActivity().finish()
     }
 
-
-    private fun parseJsonObject(json: String): JSONObject {
-        return JSONObject().apply {
-            JSONObject(json).let {
-                put("id", it.getString("id"))
-                put("title", it.getString("title"))
-                put("topic_id", it.getString("parent"))
-                put("objective", it.getString("objective"))
-
-                val fileArray = it.getJSONArray("picref")
-                fileArray.getJSONObject(0).let { file ->
-
-                }
-
-
-            }
-        }
-    }
-
-    private fun parseJsonArray(files: JSONArray): JSONArray {
-
-    }
 }

@@ -3,7 +3,6 @@ package com.digitaldream.linkskool.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -62,7 +61,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var sectionItems = mutableListOf<SectionModel>()
     private var selectedClassArray = JSONArray()
 
-    private var jsonFromQuestionSettings: String? = null
+    private var json: String? = null
     private var questionTitle: String? = null
     private var levelId: String? = null
     private var courseId: String? = null
@@ -76,7 +75,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var term: String? = null
     private var userId: String? = null
     private var userName: String? = null
-    private var from: String? = null
+    private var task: String? = null
+    private var id: String? = null
 
     private var questionData: String? = null
     private var settingsObject = JSONObject()
@@ -86,8 +86,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            jsonFromQuestionSettings = it.getString(ARG_PARAM1)
-            from = it.getString(ARG_PARAM2)
+            json = it.getString(ARG_PARAM1)
+            task = it.getString(ARG_PARAM2)
         }
 
         val callback = object : OnBackPressedCallback(true) {
@@ -102,11 +102,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     companion object {
 
         @JvmStatic
-        fun newInstance(settings: String = "", from: String = "") =
+        fun newInstance(json: String = "", task: String = "") =
             AdminELearningQuestionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, settings)
-                    putString(ARG_PARAM2, from)
+                    putString(ARG_PARAM1, json)
+                    putString(ARG_PARAM2, task)
                 }
             }
     }
@@ -116,7 +116,20 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         setUpViews(view)
 
-        loadJSonData()
+        sharedPreferences =
+            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+
+        if (task == "edit" && !json.isNullOrBlank()) {
+            try {
+
+                parseJsonObject(json!!)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        loadJsonData()
 
         fromQuestionSettings()
 
@@ -216,34 +229,39 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     private fun fromQuestionSettings() {
         try {
-            if (from == "settings")
-                jsonFromQuestionSettings?.let {
-                    JSONObject(it).run {
-                        questionTitle = getString("title")
-                        questionDescription = getString("description")
-                        startDate = getString("start_date")
-                        endDate = getString("end_date")
-                        questionTopic = getString("topic")
-                        topicId = getString("topic_id")
-                        levelId = getString("level")
-                        courseId = getString("course")
-                        courseName = getString("course_name")
-                        selectedClassArray = getJSONArray("class")
-
-                        questionTitleTxt.text = questionTitle
-                        descriptionTxt.text = questionDescription
-                    }
-
+            if (task == "settings") {
+                json?.let {
+                    parseJsonFromQuestionSettings(it)
                     setQuestionsIfExist()
                 }
-            else
+            } else {
                 setQuestionsIfExist()
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
             showToast("Error loading settings")
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun parseJsonFromQuestionSettings(json: String) {
+        JSONObject(json).run {
+            id = getString("id")
+            questionTitle = getString("title")
+            questionDescription = getString("description")
+            startDate = getString("start_date")
+            endDate = getString("end_date")
+            questionTopic = getString("topic")
+            topicId = getString("topic_id")
+            levelId = getString("level")
+            courseId = getString("course")
+            courseName = getString("course_name")
+            selectedClassArray = getJSONArray("class")
+
+            questionTitleTxt.text = questionTitle
+            descriptionTxt.text = questionDescription
         }
     }
 
@@ -254,40 +272,35 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private fun toQuestionSettings() {
         createAssessmentObject()
 
-        parentFragmentManager.commit {
-            replace(
-                R.id.learning_container,
-                AdminELearningQuestionSettingsFragment.newInstance(
-                    levelId!!,
-                    courseId!!,
-                    courseName!!,
-                    "edit",
-                    settingsObject.toString()
+        try {
+
+            parentFragmentManager.commit {
+                replace(
+                    R.id.learning_container,
+                    AdminELearningQuestionSettingsFragment.newInstance(
+                        levelId!!,
+                        courseId!!,
+                        courseName!!,
+                        "edit",
+                        settingsObject.toString()
+                    )
                 )
-            )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showToast("Something went wrong")
         }
     }
 
     private fun setQuestionsIfExist() {
         if (!questionData.isNullOrEmpty()) {
+
             questionData?.let { data ->
                 JSONObject(data).run {
                     val settingsObject = getJSONObject("settings")
-                    if (from != "settings") {
-                        settingsObject.let {
-                            questionTitle = it.getString("title")
-                            questionDescription = it.getString("description")
-                            startDate = it.getString("start_date")
-                            endDate = it.getString("end_date")
-                            questionTopic = it.getString("topic")
-                            levelId = it.getString("level")
-                            courseId = it.getString("course")
-                            courseName = it.getString("course_name")
-                            selectedClassArray = it.getJSONArray("class")
 
-                            questionTitleTxt.text = questionTitle
-                            descriptionTxt.text = questionDescription
-                        }
+                    if (task != "settings") {
+                        parseJsonFromQuestionSettings(settingsObject.toString())
                     }
 
                     if (has("questions")) {
@@ -479,13 +492,14 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         println("assessment: $assessmentObject")
 
-        saveJSonData(assessmentObject.toString())
+        saveJsonData(assessmentObject.toString())
 
         return assessmentObject
     }
 
     private fun createSettingsJsonObject(): JSONObject {
         return JSONObject().apply {
+            put("id", id ?: "")
             put("author_id", userId)
             put("author_name", userName)
             put("title", questionTitle)
@@ -671,7 +685,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun submitQuestions() {
         val assessmentObject = createAssessmentObject()
 
@@ -684,16 +697,16 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
                 object : VolleyCallback {
                     override fun onResponse(response: String) {
-                        showToast("Question created")
-
-                        GlobalScope.launch {
-                            delay(100L)
-                            onBackPressed()
+                        if (task == "edit" && !json.isNullOrBlank()) {
+                            finishActivity()
+                        } else {
+                            showToast("Question added")
+                            finishActivity()
                         }
+
                     }
 
                     override fun onError(error: VolleyError) {
-                        Log.e("error", error.toString())
                         showToast("Something went wrong please try again")
                     }
                 }
@@ -703,6 +716,136 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             showToast("There are no questions to submit")
         }
     }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun finishActivity() {
+        GlobalScope.launch {
+            delay(50L)
+            onBackPressed()
+        }
+    }
+
+    private fun parseJsonObject(json: String) {
+        JSONObject().apply {
+            JSONObject(json).let { jsonObject ->
+                put("settings", parseSettingsJson(JSONObject(jsonObject.getString("e"))))
+                put("questions", parseQuestionJson(JSONArray(jsonObject.getString("q"))))
+            }
+        }.let {
+            saveJsonData(it.toString())
+        }
+    }
+
+    private fun parseSettingsJson(settings: JSONObject): JSONObject {
+        return JSONObject().apply {
+            settings.let {
+                put("id", it.getString("id"))
+                put("author_id", it.getString("author_id"))
+                put("author_name", it.getString("author_name"))
+                put("title", it.getString("title"))
+                put("description", it.getString("description"))
+                put("level", it.getString("level"))
+                put("class", parseClassArray(JSONArray(it.getString("class"))))
+                put("course", it.getString("course_id"))
+                put("course_name", it.getString("course_name"))
+                put("topic", it.getString("topic"))
+                put("topic_id", it.getString("topic_id"))
+                put("start_date", it.getString("start_date"))
+                put("end_date", it.getString("end_date"))
+                put("year", year)
+                put("term", it.getString("term"))
+            }
+        }
+    }
+
+    private fun parseClassArray(classArray: JSONArray): JSONArray {
+        return JSONArray().apply {
+            for (i in 0 until classArray.length()) {
+                classArray.getJSONObject(i).let {
+                    JSONObject().apply {
+                        put("id", it.getString("id"))
+                        put("name", it.getString("name"))
+                    }.let { jsonObject ->
+                        put(jsonObject)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun parseQuestionJson(jsonArray: JSONArray): JSONArray {
+        return JSONArray().apply {
+            jsonArray.getJSONArray(0).let { question ->
+                for (i in 0 until question.length()) {
+                    JSONObject().apply {
+                        question.getJSONObject(i).let {
+                            put("question_id", it.getString("id"))
+                            put("question_title", it.getString("content"))
+                            put("question_type", it.getString("type"))
+                            put(
+                                "question_files", parseFilesArray(
+                                    JSONArray(it.getString("question_file"))
+                                )
+                            )
+
+                            if (it.getString("answer") != "null") {
+                                put(
+                                    "options",
+                                    parseOptionsJson(JSONArray(it.getString("answer")))
+                                )
+                            }
+
+                            if (it.getString("correct") != "null")
+                                put("correct", JSONObject(it.getString("correct")))
+                        }
+                    }.let {
+                        put(it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun parseFilesArray(files: JSONArray): JSONArray {
+        return JSONArray().apply {
+            JSONObject().apply {
+                files.getJSONObject(0).let {
+                    put("file_name", trimText(it.getString("file_name")))
+                    put("old_file_name", trimText(it.getString("file_name")))
+                    put("type", it.getString("type"))
+                    put("file", it.getString("file_name"))
+                }
+            }.let { jsonObject ->
+                put(jsonObject)
+            }
+        }
+    }
+
+
+    private fun trimText(text: String): String {
+        return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
+    }
+
+
+    private fun parseOptionsJson(jsonArray: JSONArray): JSONArray {
+        return JSONArray().apply {
+            for (i in 0 until jsonArray.length()) {
+                JSONObject().apply {
+                    jsonArray.getJSONObject(i).let {
+                        put("order", it.getString("order"))
+                        put("text", it.getString("text"))
+                        put(
+                            "option_files",
+                            parseFilesArray(JSONArray(it.getString("option_files")))
+                        )
+                    }
+                }.let {
+                    put(it)
+                }
+            }
+        }
+    }
+
 
     private fun onExit() {
         try {
@@ -748,15 +891,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         requireActivity().finish()
     }
 
-    private fun saveJSonData(data: String) {
+    private fun saveJsonData(data: String) {
         sharedPreferences.edit().apply {
             putString("question_data", data)
         }.apply()
     }
 
-    private fun loadJSonData() {
-        sharedPreferences =
-            requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+    private fun loadJsonData() {
         year = sharedPreferences.getString("school_year", "")
         term = sharedPreferences.getString("term", "")
         userId = sharedPreferences.getString("user_id", "")
