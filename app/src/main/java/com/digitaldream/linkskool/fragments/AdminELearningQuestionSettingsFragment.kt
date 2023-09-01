@@ -20,6 +20,7 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
 import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.dialog.AdminELearningDatePickerDialog
+import com.digitaldream.linkskool.dialog.AdminELearningDurationPickerDialog
 import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.compareJsonObjects
@@ -53,6 +54,7 @@ class AdminELearningQuestionSettingsFragment :
     private lateinit var mStartDateBtn: ImageButton
     private lateinit var mEndDateBtn: ImageButton
     private lateinit var mTopicTxt: TextView
+    private lateinit var mDurationTxt: TextView
     private lateinit var mDateSeparator: View
 
     private var mClassList = mutableListOf<ClassNameTable>()
@@ -74,6 +76,7 @@ class AdminELearningQuestionSettingsFragment :
     private var descriptionText: String? = null
     private var topic: String? = null
     private var id: String? = null
+    private var durationMinutes: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,7 +134,7 @@ class AdminELearningQuestionSettingsFragment :
         smoothScrollEditText(mDescriptionEditText)
 
         mApplyBtn.setOnClickListener {
-            applySettings()
+            verifySettings()
         }
 
         mTopicTxt.setOnClickListener {
@@ -142,6 +145,9 @@ class AdminELearningQuestionSettingsFragment :
             onExit()
         }
 
+        mDurationTxt.setOnClickListener {
+            setDuration()
+        }
     }
 
     private fun setUpView(view: View) {
@@ -159,6 +165,7 @@ class AdminELearningQuestionSettingsFragment :
             mStartDateBtn = findViewById(R.id.startDateBtn)
             mEndDateBtn = findViewById(R.id.endDateBtn)
             mTopicTxt = findViewById(R.id.topicBtn)
+            mDurationTxt = findViewById(R.id.durationTxt)
             mDateSeparator = findViewById(R.id.separator)
         }
     }
@@ -248,6 +255,108 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
+    private fun showDate() {
+        mStartDateBtn.isVisible = true
+        mEndDateBtn.isVisible = true
+        mEndDateTxt.isVisible = true
+        mDateSeparator.isVisible = true
+    }
+
+    private fun selectTopic() = if (selectedItems.isEmpty()) {
+        showToast("Please select a class")
+    } else {
+        AdminELearningSelectTopicDialogFragment(
+            courseId = courseId!!,
+            levelId = levelId!!,
+            courseName = courseName!!,
+            selectedClass = selectedItems,
+            topic ?: ""
+        ) { id, topicText ->
+            topicId = id
+            mTopicTxt.text = topicText
+
+        }.show(parentFragmentManager, "")
+    }
+
+    private fun setDuration() {
+        AdminELearningDurationPickerDialog(requireContext()) { duration ->
+            durationMinutes = duration
+
+            when (duration) {
+                "0", "1" -> "$duration minute"
+                else -> "$duration minutes"
+            }.let {
+                mDurationTxt.text = it
+            }
+
+        }.apply {
+            show()
+        }.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun verifySettings() {
+        val titleText = mQuestionTitleEditText.text.toString().trim()
+        val descriptionText = mDescriptionEditText.text.toString().trim()
+
+        if (titleText.isEmpty()) {
+            mQuestionTitleEditText.error = "Please enter question title"
+        } else if (selectedItems.size == 0) {
+            showToast("Please select a class")
+        } else if (descriptionText.isEmpty()) {
+            mDescriptionEditText.error = "Please enter a description"
+        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
+            showToast("Please set date")
+        } else if (durationMinutes.isNullOrBlank()){
+            showToast("Please set duration")
+        } else {
+            val json = createSettingsJsonObject()
+
+            parentFragmentManager.commit {
+                replace(
+                    R.id.learning_container,
+                    AdminELearningQuestionFragment.newInstance(json.toString(), "settings")
+                )
+            }
+        }
+    }
+
+    private fun createSettingsJsonObject(): JSONObject {
+        getFieldsText()
+
+        return JSONObject().apply {
+            put("id", id ?: "")
+            put("title", titleText!!)
+            put("description", descriptionText!!)
+            put("start_date", mStartDate)
+            put("end_date", mEndDate)
+            put("duration", durationMinutes)
+            put("level", levelId)
+            put("course", courseId)
+            put("course_name", courseName)
+            put("topic", if (topic == "Topic" || topic == "No topic") "" else topic)
+            put("topic_id", topicId ?: "0")
+
+            JSONArray().apply {
+                selectedItems.forEach { (key, value) ->
+                    if (key.isNotEmpty() && value.isNotEmpty()) {
+                        JSONObject().apply {
+                            put("id", key)
+                            put("name", value)
+                        }.let {
+                            put(it)
+                        }
+                    }
+                }
+            }.let {
+                put("class", it)
+            }
+        }
+    }
+
+
     private fun onEdit() {
         try {
             if (from == "edit")
@@ -259,6 +368,7 @@ class AdminELearningQuestionSettingsFragment :
                             mQuestionDescription = getString("description")
                             mStartDate = getString("start_date")
                             mEndDate = getString("end_date")
+                            durationMinutes = getString("duration")
                             mQuestionTopic = getString("topic")
                             topicId = getString("topic_id")
                             levelId = getString("level")
@@ -288,85 +398,6 @@ class AdminELearningQuestionSettingsFragment :
                 }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun showDate() {
-        mStartDateBtn.isVisible = true
-        mEndDateBtn.isVisible = true
-        mEndDateTxt.isVisible = true
-        mDateSeparator.isVisible = true
-    }
-
-    private fun selectTopic() = if (selectedItems.isEmpty()) {
-        showToast("Please select a class")
-    } else {
-        AdminELearningSelectTopicDialogFragment(
-            courseId = courseId!!,
-            levelId = levelId!!,
-            courseName = courseName!!,
-            selectedClass = selectedItems,
-            topic ?: ""
-        ) { id, topicText ->
-            topicId = id
-            mTopicTxt.text = topicText
-
-        }.show(parentFragmentManager, "")
-    }
-
-    private fun createSettingsJsonObject(): JSONObject {
-        getFieldsText()
-
-        return JSONObject().apply {
-            put("id", id ?: "")
-            put("title", titleText!!)
-            put("description", descriptionText!!)
-            put("start_date", mStartDate)
-            put("end_date", mEndDate)
-            put("level", levelId)
-            put("course", courseId)
-            put("course_name", courseName)
-            put("topic", if (topic == "Topic" || topic == "No topic") "" else topic)
-            put("topic_id", topicId ?: "0")
-
-            JSONArray().apply {
-                selectedItems.forEach { (key, value) ->
-                    if (key.isNotEmpty() && value.isNotEmpty()) {
-                        JSONObject().apply {
-                            put("id", key)
-                            put("name", value)
-                        }.let {
-                            put(it)
-                        }
-                    }
-                }
-            }.let {
-                put("class", it)
-            }
-        }
-    }
-
-    private fun applySettings() {
-        val titleText = mQuestionTitleEditText.text.toString().trim()
-        val descriptionText = mDescriptionEditText.text.toString().trim()
-
-        if (titleText.isEmpty()) {
-            mQuestionTitleEditText.error = "Please enter question title"
-        } else if (selectedItems.size == 0) {
-            showToast("Please select a class")
-        } else if (descriptionText.isEmpty()) {
-            mDescriptionEditText.error = "Please enter a description"
-        } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
-            showToast("Please set date")
-        } else {
-            val json = createSettingsJsonObject()
-
-            parentFragmentManager.commit {
-                replace(
-                    R.id.learning_container,
-                    AdminELearningQuestionFragment.newInstance(json.toString(), "settings")
-                )
-            }
         }
     }
 
@@ -435,4 +466,5 @@ class AdminELearningQuestionSettingsFragment :
     private fun onBackPressed() {
         requireActivity().finish()
     }
+
 }

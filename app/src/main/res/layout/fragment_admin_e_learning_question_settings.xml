@@ -247,6 +247,22 @@
         android:background="@color/test_color_7" />
 
     <TextView
+        android:id="@+id/durationTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/dimen_16"
+        android:padding="@dimen/dimen_16"
+        android:text="Duration"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16"
+        app:drawableStartCompat="@drawable/ic_timer" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
+
+    <TextView
         android:id="@+id/topicBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

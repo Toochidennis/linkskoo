@@ -22,13 +22,10 @@ import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
-import com.google.gson.JsonParser
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import timber.log.Timber
 import java.util.Collections
 
 class AdminELearningClassAdapter(
@@ -125,7 +122,7 @@ class AdminELearningClassAdapter(
                 true
             }
 
-            optionsAction("topic", optionBtn, topic, itemView, adapterPosition)
+            menuButtonAction("topic", optionBtn, topic, itemView, adapterPosition)
         }
     }
 
@@ -139,7 +136,7 @@ class AdminELearningClassAdapter(
             val date = formatDate2(assignment.date, "custom")
             "Posted $date".let { dateTxt.text = it }
 
-            optionsAction("assignment", optionBtn, assignment, itemView, adapterPosition)
+            menuButtonAction("assignment", optionBtn, assignment, itemView, adapterPosition)
 
             itemView.setOnClickListener {
                 launchActivity(itemView, "assignment_details", "")
@@ -167,7 +164,7 @@ class AdminELearningClassAdapter(
                 launchActivity(itemView, "material_details", "")
             }
 
-            optionsAction("material", optionBtn, material, itemView, adapterPosition)
+            menuButtonAction("material", optionBtn, material, itemView, adapterPosition)
         }
     }
 
@@ -187,11 +184,11 @@ class AdminELearningClassAdapter(
             val date = formatDate2(question.date, "custom")
             "Posted $date".let { dateTxt.text = it }
 
-            optionsAction("question", optionBtn, question, itemView, adapterPosition)
+            menuButtonAction("question", optionBtn, question, itemView, adapterPosition)
         }
     }
 
-    private fun optionsAction(
+    private fun menuButtonAction(
         from: String,
         optionBtn: ImageView,
         topicModel: ContentModel,
@@ -205,52 +202,7 @@ class AdminELearningClassAdapter(
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.editSection -> {
-                        when (from) {
-                            "assignment" -> {
-                                val url =
-                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
-                                            "id=${topicModel.id}&type=${topicModel.type}"
-
-                                getContent(url, itemView) { response ->
-                                    launchActivity(itemView, from, response)
-
-                                }
-                            }
-
-                            "material" -> {
-                                val url =
-                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
-                                            "id=${topicModel.id}&type=${topicModel.type}"
-
-                                getContent(url, itemView) { response ->
-                                    launchActivity(itemView, from, response)
-
-                                }
-                            }
-
-                            "question" -> {
-                                val url =
-                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
-                                            "id=${topicModel.id}&type=${topicModel.type}"
-
-                                getContent(url, itemView) { response ->
-                                    launchActivity(itemView, from, response)
-
-                                }
-                            }
-
-                            "topic" -> {
-                                val url =
-                                    "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
-                                            "id=${topicModel.id}&type=${topicModel.type}"
-
-                                getContent(url, itemView) { response ->
-                                    launchActivity(itemView, from, response)
-
-                                }
-                            }
-                        }
-
+                        getResponseAndLaunchActivity(itemView, topicModel, from)
                         true
                     }
 
@@ -265,7 +217,22 @@ class AdminELearningClassAdapter(
         }
     }
 
-    private fun getContent(
+
+    private fun getResponseAndLaunchActivity(
+        itemView: View,
+        contentModel: ContentModel,
+        from: String
+    ) {
+        val url =
+            "${itemView.context.getString(R.string.base_url)}/getContent.php?" +
+                    "id=${contentModel.id}&type=${contentModel.type}"
+
+        sendRequest(url, itemView) { response ->
+            launchActivity(itemView, from, response)
+        }
+    }
+
+    private fun sendRequest(
         url: String,
         itemView: View,
         onResponse: (response: String) -> Unit

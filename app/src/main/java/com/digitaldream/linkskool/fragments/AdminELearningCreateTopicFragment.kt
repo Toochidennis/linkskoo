@@ -133,7 +133,7 @@ class AdminELearningCreateTopicFragment :
         showSoftInput(requireContext(), topicEditText)
 
         setUpClassAdapter()
-        
+
         createTopicBtn.setOnClickListener {
             verifyTopic()
         }

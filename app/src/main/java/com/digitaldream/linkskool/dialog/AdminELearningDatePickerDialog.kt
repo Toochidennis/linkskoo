@@ -20,9 +20,7 @@ import java.util.Locale
 
 class AdminELearningDatePickerDialog(
     context: Context,
-    private val receiveDate: (
-        startDate: String, endDate: String
-    ) -> Unit
+    private val receiveDate: (startDate: String, endDate: String) -> Unit
 ) : Dialog(context) {
 
     private lateinit var mStartDateBtn: Button
@@ -77,7 +75,6 @@ class AdminELearningDatePickerDialog(
         val day = calendar[Calendar.DAY_OF_MONTH]
         val month = calendar[Calendar.MONTH]
         val year = calendar[Calendar.YEAR]
-
 
         button.setOnClickListener {
             DatePickerDialog(

@@ -42,12 +42,39 @@ import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * AdminELearningQuestionFragment is a Fragment responsible for managing and presenting
+ * questions within an e-learning system. It allows users to create, edit, and submit
+ * questions for a specified course and topic.
+ *
+ * This fragment handles the following functionalities:
+ * 1. Displaying questions in a RecyclerView.
+ * 2. Allowing users to add new questions (multiple choice or short answer).
+ * 3. Previewing questions.
+ * 4. Submitting questions to a server.
+ * 5. Managing user interactions and data flow.
+ *
+ * Usage:
+ * To use this fragment, create an instance of it using newInstance() with optional JSON data
+ * and task type (edit, settings), and add it to a FragmentTransaction.
+ *
+ * Example:
+ * val fragment = AdminELearningQuestionFragment.newInstance(jsonData, taskType)
+ * supportFragmentManager.beginTransaction()
+ *     .replace(R.id.fragment_container, fragment)
+ *     .commit()
+ *
+ * @param jsonData JSON data (optional) containing course details, questions, and settings.
+ * @param taskType Task type (optional) specifying whether the fragment is for editing or settings.
+ */
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+
+private const val ARG_JSON_DATA = "param1"
+private const val ARG_TASK_TYPE = "param2"
 
 class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learning_question) {
 
+    // Define UI elements
     private lateinit var topicButton: CardView
     private lateinit var questionTitleTxt: TextView
     private lateinit var descriptionTxt: TextView
@@ -57,11 +84,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private lateinit var submitQuestionButton: ImageButton
     private lateinit var addQuestionButton: ImageButton
 
+    // Initialize adapters and data structures
     private lateinit var sectionAdapter: AdminELearningQuestionAdapter
     private var sectionItems = mutableListOf<SectionModel>()
     private var selectedClassArray = JSONArray()
 
-    private var json: String? = null
+    // Variables to store data and settings
+    private var jsonData: String? = null
     private var questionTitle: String? = null
     private var levelId: String? = null
     private var courseId: String? = null
@@ -75,8 +104,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var term: String? = null
     private var userId: String? = null
     private var userName: String? = null
-    private var task: String? = null
+    private var taskType: String? = null
     private var id: String? = null
+    private var durationMinutes: String? = null
 
     private var questionData: String? = null
     private var settingsObject = JSONObject()
@@ -86,8 +116,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            json = it.getString(ARG_PARAM1)
-            task = it.getString(ARG_PARAM2)
+            jsonData = it.getString(ARG_JSON_DATA)
+            taskType = it.getString(ARG_TASK_TYPE)
         }
 
         val callback = object : OnBackPressedCallback(true) {
@@ -102,11 +132,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     companion object {
 
         @JvmStatic
-        fun newInstance(json: String = "", task: String = "") =
+        fun newInstance(jsonData: String = "", taskType: String = "") =
             AdminELearningQuestionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, json)
-                    putString(ARG_PARAM2, task)
+                    putString(ARG_JSON_DATA, jsonData)
+                    putString(ARG_TASK_TYPE, taskType)
                 }
             }
     }
@@ -114,16 +144,16 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize UI elements and listeners
         setUpViews(view)
 
+        // Load shared preferences and data
         sharedPreferences =
             requireActivity().getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
 
-        if (task == "edit" && !json.isNullOrBlank()) {
+        if (taskType == "edit" && !jsonData.isNullOrBlank()) {
             try {
-
-                parseJsonObject(json!!)
-
+                parseJsonObject(jsonData!!)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -131,28 +161,36 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
         loadJsonData()
 
+        // Handle different tasks (edit, settings, etc.)
         fromQuestionSettings()
 
+        // Initialize RecyclerView for questions
         setupQuestionRecyclerView()
 
+        // Add a new section or question
         addQuestionButton.setOnClickListener {
             addQuestion()
         }
 
+        // Handle topic settings
         topicButton.setOnClickListener {
             toQuestionSettings()
         }
 
+        // Preview questions
         previewQuestions()
 
+        // Submit questions
         submitQuestionButton.setOnClickListener {
             submitQuestions()
         }
 
+        // Enable drag-and-drop for RecyclerView items
         onTouchHelper()
     }
 
 
+    // Set up the UI elements, including the toolbar
     private fun setUpViews(view: View) {
         view.apply {
             val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -173,6 +211,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Function to add a new section or question
     private fun addQuestion() {
         AdminELearningQuestionDialog(
             requireContext(),
@@ -181,6 +221,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             ShortAnswerModel()
         ) { question: MultiChoiceQuestion?, shortQuestion: ShortAnswerModel?, sectionTitle: String? ->
 
+            // Create a new question item based on the user's input
             val questionItem = when {
                 question != null -> SectionModel(
                     "",
@@ -195,6 +236,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 else -> null
             }
 
+            // Add the question or section to the list
             if (sectionTitle.isNullOrEmpty()) {
                 questionItem?.let {
                     sectionItems.add(it)
@@ -204,6 +246,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 sectionItems.add(newSection)
             }
 
+            // Notify the adapter of changes
             sectionAdapter.notifyDataSetChanged()
 
         }.apply {
@@ -215,6 +258,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         )
     }
 
+
+    // Set up the RecyclerView for displaying questions and sections
     private fun setupQuestionRecyclerView() {
         sectionAdapter =
             AdminELearningQuestionAdapter(parentFragmentManager, sectionItems)
@@ -227,10 +272,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Handle loading data from the question settings or saved data
     private fun fromQuestionSettings() {
         try {
-            if (task == "settings") {
-                json?.let {
+            if (taskType == "settings") {
+                jsonData?.let {
                     parseJsonFromQuestionSettings(it)
                     setQuestionsIfExist()
                 }
@@ -246,6 +293,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Parse JSON data from question settings
     private fun parseJsonFromQuestionSettings(json: String) {
         JSONObject(json).run {
             id = getString("id")
@@ -253,6 +302,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             questionDescription = getString("description")
             startDate = getString("start_date")
             endDate = getString("end_date")
+            durationMinutes = getString("duration")
             questionTopic = getString("topic")
             topicId = getString("topic_id")
             levelId = getString("level")
@@ -265,15 +315,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
 
+    // Navigate to question settings fragment
     private fun toQuestionSettings() {
         createAssessmentObject()
 
         try {
-
             parentFragmentManager.commit {
                 replace(
                     R.id.learning_container,
@@ -292,6 +339,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Check if questions already exist and set them up if they do
     private fun setQuestionsIfExist() {
         if (!questionData.isNullOrEmpty()) {
 
@@ -299,7 +348,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 JSONObject(data).run {
                     val settingsObject = getJSONObject("settings")
 
-                    if (task != "settings") {
+                    // Parse settings if not in settings mode
+                    if (taskType != "settings") {
                         parseJsonFromQuestionSettings(settingsObject.toString())
                     }
 
@@ -325,6 +375,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 }
 
                                 when (val questionType = getString("question_type")) {
+                                    // Handle different question types
                                     "section" -> {
                                         val section =
                                             SectionModel(
@@ -433,12 +484,16 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Initialize the ItemTouchHelper for drag-and-drop functionality
     private fun onTouchHelper() {
         val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
         val sectionItemTouchHelper = ItemTouchHelper(sectionItemTouchHelperCallback)
         sectionItemTouchHelper.attachToRecyclerView(sectionRecyclerView)
     }
 
+
+    // Preview the questions if there are any
     private fun previewQuestions() {
         previewQuestionButton.setOnClickListener {
             if (sectionItems.isNotEmpty()) {
@@ -450,6 +505,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Create the assessment object before submitting questions
     private fun createAssessmentObject(): JSONObject? {
         if (sectionItems.isEmpty()) return null
 
@@ -464,13 +521,12 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                     put("question_type", sectionModel.viewType)
 
                     JSONArray().apply {
-                        put(
-                            JSONObject().apply {
-                                put("file_name", "")
-                                put("old_file_name", "")
-                                put("type", "")
-                                put("file", "")
-                            }
+                        put(JSONObject().apply {
+                            put("file_name", "")
+                            put("old_file_name", "")
+                            put("type", "")
+                            put("file", "")
+                        }
                         )
                     }.let {
                         put("question_files", it)
@@ -497,6 +553,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         return assessmentObject
     }
 
+
+    // Create and return the settings object as a JSONObject
     private fun createSettingsJsonObject(): JSONObject {
         return JSONObject().apply {
             put("id", id ?: "")
@@ -504,6 +562,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("author_name", userName)
             put("title", questionTitle)
             put("description", questionDescription)
+            put("duration", durationMinutes)
             put("level", levelId)
             put("class", selectedClassArray)
             put("course", courseId)
@@ -517,6 +576,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Create a JSONObject representing a question based on its type
     private fun createQuestionsJsonObject(sectionModel: SectionModel): JSONObject? {
         val questionItem = sectionModel.questionItem ?: return null
 
@@ -672,6 +733,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Convert a file or URI to a base64 string if it's a URI, otherwise, return it as is
     private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
         return if (fileUri is String) {
             fileUri
@@ -685,6 +748,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Submit the assessment questions to the server
     private fun submitQuestions() {
         val assessmentObject = createAssessmentObject()
 
@@ -697,7 +762,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
                 object : VolleyCallback {
                     override fun onResponse(response: String) {
-                        if (task == "edit" && !json.isNullOrBlank()) {
+                        if (taskType == "edit" && !jsonData.isNullOrBlank()) {
                             finishActivity()
                         } else {
                             showToast("Question added")
@@ -717,6 +782,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Finish the activity after a delay
     @OptIn(DelicateCoroutinesApi::class)
     private fun finishActivity() {
         GlobalScope.launch {
@@ -725,6 +792,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Parse the JSON data from a given JSON string
     private fun parseJsonObject(json: String) {
         JSONObject().apply {
             JSONObject(json).let { jsonObject ->
@@ -736,6 +805,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Parse the settings JSON object
     private fun parseSettingsJson(settings: JSONObject): JSONObject {
         return JSONObject().apply {
             settings.let {
@@ -744,6 +815,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 put("author_name", it.getString("author_name"))
                 put("title", it.getString("title"))
                 put("description", it.getString("description"))
+                put("duration", it.getString("objectives"))
                 put("level", it.getString("level"))
                 put("class", parseClassArray(JSONArray(it.getString("class"))))
                 put("course", it.getString("course_id"))
@@ -758,6 +830,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Parse the class JSON array
     private fun parseClassArray(classArray: JSONArray): JSONArray {
         return JSONArray().apply {
             for (i in 0 until classArray.length()) {
@@ -773,6 +847,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Parse the question JSON array
     private fun parseQuestionJson(jsonArray: JSONArray): JSONArray {
         return JSONArray().apply {
             jsonArray.getJSONArray(0).let { question ->
@@ -806,6 +882,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Parse the files JSON array
     private fun parseFilesArray(files: JSONArray): JSONArray {
         return JSONArray().apply {
             JSONObject().apply {
@@ -822,11 +900,13 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
 
+    // Remove a specific text from the file name
     private fun trimText(text: String): String {
         return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
     }
 
 
+    // Parse the options JSON array
     private fun parseOptionsJson(jsonArray: JSONArray): JSONArray {
         return JSONArray().apply {
             for (i in 0 until jsonArray.length()) {
@@ -847,6 +927,38 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
 
+    // Save JSON data in SharedPreferences
+    private fun saveJsonData(data: String) {
+        sharedPreferences.edit().apply {
+            putString("question_data", data)
+        }.apply()
+    }
+
+
+    // Load JSON data from SharedPreferences
+    private fun loadJsonData() {
+        year = sharedPreferences.getString("school_year", "")
+        term = sharedPreferences.getString("term", "")
+        userId = sharedPreferences.getString("user_id", "")
+        userName = sharedPreferences.getString("user", "")
+        questionData = sharedPreferences.getString("question_data", "")
+    }
+
+    // Delete JSON data from SharedPreferences
+    private fun deleteJsonData() {
+        sharedPreferences.edit().apply {
+            putString("question_data", "")
+        }.apply()
+    }
+
+
+    // Display a toast message
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+
+    // Handle the back button press event
     private fun onExit() {
         try {
             val assessmentObject = createAssessmentObject()
@@ -872,6 +984,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
+
+    // Display a warning dialog before exiting the activity
     private fun exitWithWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
@@ -886,29 +1000,11 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }.create()
     }
 
+
+    // Handle the back button press event
     private fun onBackPressed() {
         deleteJsonData()
         requireActivity().finish()
-    }
-
-    private fun saveJsonData(data: String) {
-        sharedPreferences.edit().apply {
-            putString("question_data", data)
-        }.apply()
-    }
-
-    private fun loadJsonData() {
-        year = sharedPreferences.getString("school_year", "")
-        term = sharedPreferences.getString("term", "")
-        userId = sharedPreferences.getString("user_id", "")
-        userName = sharedPreferences.getString("user", "")
-        questionData = sharedPreferences.getString("question_data", "")
-    }
-
-    private fun deleteJsonData() {
-        sharedPreferences.edit().apply {
-            putString("question_data", "")
-        }.apply()
     }
 
 }

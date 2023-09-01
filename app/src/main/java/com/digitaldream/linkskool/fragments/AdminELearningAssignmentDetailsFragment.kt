@@ -30,6 +30,7 @@ class AdminELearningAssignmentDetailsFragment :
     private var actionBar: ActionBar? = null
     private var customActionBarView: View? = null
     var menuView: Menu? = null
+    private var isCustomBarShowing = false
 
     private lateinit var actionBarViewModel: ActionBarViewModel
 
@@ -61,21 +62,26 @@ class AdminELearningAssignmentDetailsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setUpView(view)
-        defaultActionBar()
+
+        hideCustomActionBar()
+
+        setUpMenu()
+
         setUpViewPager()
 
         actionBarViewModel.customActionBarVisible.observe(requireActivity()) { showCustomActionBar ->
             viewPager.setCustomBarVisibility(showCustomActionBar)
 
-            for (i in 0 until tabLayout.tabCount){
+            for (i in 0 until tabLayout.tabCount) {
                 tabLayout.getTabAt(i)?.view?.isClickable = !showCustomActionBar
             }
 
             if (showCustomActionBar) {
-                setUpCustomActionBar()
+                showCustomActionBar()
             } else {
-                defaultActionBar()
+                hideCustomActionBar()
             }
         }
     }
@@ -104,24 +110,27 @@ class AdminELearningAssignmentDetailsFragment :
         }
     }
 
-    private fun defaultActionBar() {
+    private fun hideCustomActionBar() {
         actionBar = (activity as AppCompatActivity).supportActionBar
+        isCustomBarShowing = false
+        requireActivity().invalidateOptionsMenu()
 
         actionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_TITLE
             setHomeButtonEnabled(true)
-            title = ""
             setDisplayHomeAsUpEnabled(true)
+            title = ""
             customView = null
         }
 
-        setUpMenu()
     }
 
-    private fun setUpCustomActionBar() {
+    private fun showCustomActionBar() {
         customActionBarView = layoutInflater.inflate(R.layout.custom_action_bar_layout, null)
         customActionBarView?.apply {
         }
+        isCustomBarShowing = true
+        requireActivity().invalidateOptionsMenu()
 
         actionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
@@ -133,9 +142,16 @@ class AdminELearningAssignmentDetailsFragment :
 
     private fun setUpMenu() {
         menuHost.addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                if (isCustomBarShowing) {
+                    menu.clear()
+                }
+                super.onPrepareMenu(menu)
+            }
+
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_e_learning_details, menu)
-                menuView = menu
+
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
