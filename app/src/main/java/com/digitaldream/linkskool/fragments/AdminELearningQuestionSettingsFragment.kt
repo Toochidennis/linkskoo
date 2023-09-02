@@ -356,7 +356,6 @@ class AdminELearningQuestionSettingsFragment :
         }
     }
 
-
     private fun onEdit() {
         try {
             if (from == "edit")

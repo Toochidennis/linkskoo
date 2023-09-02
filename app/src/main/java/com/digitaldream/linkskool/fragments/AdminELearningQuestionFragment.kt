@@ -815,7 +815,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 put("author_name", it.getString("author_name"))
                 put("title", it.getString("title"))
                 put("description", it.getString("description"))
-                put("duration", it.getString("objectives"))
+                put("duration", it.getString("objective"))
                 put("level", it.getString("level"))
                 put("class", parseClassArray(JSONArray(it.getString("class"))))
                 put("course", it.getString("course_id"))
