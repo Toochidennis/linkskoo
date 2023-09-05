@@ -98,7 +98,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningAssignmentDetailsFragment()
+                        AdminELearningAssignmentDetailsFragment.newInstance(json, task)
                     )
                 }
             }
@@ -107,7 +107,7 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningQuestionDetailsFragment()
+                        AdminELearningQuestionDetailsFragment.newInstance(json, task)
                     )
                 }
             }

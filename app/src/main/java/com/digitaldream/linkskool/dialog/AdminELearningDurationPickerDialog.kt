@@ -111,10 +111,7 @@ class AdminELearningDurationPickerDialog(
                 ).show()
             }
         } else {
-            Toast.makeText(
-                context, "Please provide time to save",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, "Please provide duration", Toast.LENGTH_SHORT).show()
         }
     }
 }

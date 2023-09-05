@@ -728,7 +728,7 @@ class AdminELearningAssignmentFragment :
                 put("end_date", it.getString("end_date"))
                 put("author_id", it.getString("author_id"))
                 put("author_name", it.getString("author_name"))
-                put("year", term!!)
+                put("year", it.getString("term"))
                 put("term", it.getString("term"))
             }
         }

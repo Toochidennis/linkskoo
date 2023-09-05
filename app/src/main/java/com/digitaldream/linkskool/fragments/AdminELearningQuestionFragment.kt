@@ -22,7 +22,7 @@ import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionDialog
-import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewDialogFragment
+import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
@@ -497,8 +497,14 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private fun previewQuestions() {
         previewQuestionButton.setOnClickListener {
             if (sectionItems.isNotEmpty()) {
-                AdminELearningQuestionPreviewDialogFragment.newInstance(sectionItems)
-                    .show(parentFragmentManager, "")
+                parentFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningQuestionPreviewFragment.newInstance(sectionItems.toString())
+                    )
+                    addToBackStack("preview")
+                }
+
             } else {
                 showToast("There are no questions to preview")
             }

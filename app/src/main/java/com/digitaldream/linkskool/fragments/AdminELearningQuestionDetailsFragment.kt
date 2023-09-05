@@ -26,14 +26,14 @@ class AdminELearningQuestionDetailsFragment :
     private lateinit var viewPager: ViewPager
     private lateinit var menuHost: MenuHost
 
-    private var param1: String? = null
-    private var param2: String? = null
+    private var jsonData: String? = null
+    private var taskType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            jsonData = it.getString(ARG_PARAM1)
+            taskType = it.getString(ARG_PARAM2)
         }
     }
 
@@ -41,11 +41,11 @@ class AdminELearningQuestionDetailsFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(jsonData: String, taskType: String) =
             AdminELearningQuestionDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM1, jsonData)
+                    putString(ARG_PARAM2, taskType)
                 }
             }
     }

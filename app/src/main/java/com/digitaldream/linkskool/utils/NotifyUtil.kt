@@ -7,7 +7,7 @@ import android.os.Build
 import com.digitaldream.linkskool.BuildConfig
 import timber.log.Timber
 
-const val CHANNEL_ID = "0"
+const val CHANNEL_ID = "1"
 
 class NotifyUtil : Application() {
 

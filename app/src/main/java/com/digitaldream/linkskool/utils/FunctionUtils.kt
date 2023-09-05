@@ -233,12 +233,10 @@ object FunctionUtils {
     fun formatDate2(date: String, format: String = "default"): String {
         var formattedDate = ""
         try {
-
             val simpleDateFormat = SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault()
             )
-
 
             val parseDate = if (date.length <= 10) {
                 simpleDateFormat.parse("$date 00:00:00")!!

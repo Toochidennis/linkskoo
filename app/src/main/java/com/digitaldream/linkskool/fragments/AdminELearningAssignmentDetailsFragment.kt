@@ -34,14 +34,14 @@ class AdminELearningAssignmentDetailsFragment :
 
     private lateinit var actionBarViewModel: ActionBarViewModel
 
-    private var json: String? = null
-    private var from: String? = null
+    private var jsonData: String? = null
+    private var taskType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            json = it.getString(ARG_PARAM1)
-            from = it.getString(ARG_PARAM2)
+            jsonData = it.getString(ARG_PARAM1)
+            taskType = it.getString(ARG_PARAM2)
         }
 
         actionBarViewModel = ViewModelProvider(requireActivity())[ActionBarViewModel::class.java]
@@ -51,11 +51,11 @@ class AdminELearningAssignmentDetailsFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(jsonData: String, taskType: String = "") =
             AdminELearningAssignmentDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM1, jsonData)
+                    putString(ARG_PARAM2, taskType)
                 }
             }
     }
@@ -99,7 +99,13 @@ class AdminELearningAssignmentDetailsFragment :
 
     private fun setUpViewPager() {
         SectionPagerAdapter(childFragmentManager).apply {
-            addFragment(AdminELearningAssignmentInstructionsFragment(), "Instructions")
+            addFragment(
+                AdminELearningAssignmentInstructionsFragment.newInstance(
+                    jsonData!!,
+                    taskType!!
+                ), "Instructions"
+            )
+
             addFragment(AdminELearningAssignmentStudentWorkFragment(), "Student work")
         }.let {
             viewPager.apply {

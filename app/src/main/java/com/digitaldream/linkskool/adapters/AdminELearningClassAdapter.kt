@@ -138,9 +138,11 @@ class AdminELearningClassAdapter(
 
             menuButtonAction("assignment", optionBtn, assignment, itemView, adapterPosition)
 
+
             itemView.setOnClickListener {
-                launchActivity(itemView, "assignment_details", "")
+                viewOrEditContentDetails(itemView, assignment, "assignment_details")
             }
+
         }
     }
 
@@ -185,6 +187,10 @@ class AdminELearningClassAdapter(
             "Posted $date".let { dateTxt.text = it }
 
             menuButtonAction("question", optionBtn, question, itemView, adapterPosition)
+
+            itemView.setOnClickListener {
+                launchActivity(itemView, "question_details", "response")
+            }
         }
     }
 
@@ -202,7 +208,7 @@ class AdminELearningClassAdapter(
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.editSection -> {
-                        getResponseAndLaunchActivity(itemView, topicModel, from)
+                        viewOrEditContentDetails(itemView, topicModel, from)
                         true
                     }
 
@@ -218,7 +224,7 @@ class AdminELearningClassAdapter(
     }
 
 
-    private fun getResponseAndLaunchActivity(
+    private fun viewOrEditContentDetails(
         itemView: View,
         contentModel: ContentModel,
         from: String

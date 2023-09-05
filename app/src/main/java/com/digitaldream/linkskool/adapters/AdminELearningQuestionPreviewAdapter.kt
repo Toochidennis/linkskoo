@@ -136,7 +136,7 @@ class AdminELearningQuestionPreviewAdapter(
                 itemView.animate()
                     .alpha(1f)
                     .setDuration(500)
-                    .setStartDelay(position * 100L)
+                    .setStartDelay(position * 150L)
                     .start()
             }
         ).let {

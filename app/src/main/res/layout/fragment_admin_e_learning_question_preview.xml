@@ -4,35 +4,83 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="@dimen/dimen_10">
+    android:padding="@dimen/dimen_16">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/dismissBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/ripple_effect11"
         android:clickable="true"
         android:contentDescription="@string/close"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:padding="@dimen/dimen_12"
-        android:src="@drawable/ic_close"
+        android:padding="@dimen/dimen_10"
+        android:src="@drawable/ic_arrow_back_black_24dp"
         app:tint="@color/test_color_7" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/timerLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/white">
+
+        <ProgressBar
+            android:id="@+id/timeProgressBar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:indeterminateOnly="false"
+            android:progress="100"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timeTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1:00:00"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_12"
+            app:layout_constraintBottom_toBottomOf="@id/timeProgressBar"
+            app:layout_constraintEnd_toEndOf="@id/timeProgressBar"
+            app:layout_constraintStart_toStartOf="@id/timeProgressBar"
+            app:layout_constraintTop_toTopOf="@id/timeProgressBar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
-        android:id="@+id/timeTxt"
+        android:id="@+id/questionCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dismissBtn"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dimen_10"
-        android:drawablePadding="@dimen/dimen_10"
-        android:text=""
-        android:textColor="@color/test_color_1"
-        android:textSize="@dimen/text_18"
-        android:visibility="gone"
-        app:drawableStartCompat="@drawable/ic_timer" />
+        android:layout_marginTop="@dimen/dimen_32"
+        android:text="Question 1"
+        android:textSize="@dimen/text_24"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/questionTotalCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dismissBtn"
+        android:layout_marginTop="40dp"
+        android:layout_toEndOf="@id/questionCount"
+        android:text="/10"
+        android:textSize="@dimen/text_16"
+        android:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/questionCount"
+        android:background="@drawable/dashed_line" />
 
     <TextView
         android:id="@+id/sectionTxt"
@@ -43,31 +91,16 @@
         android:text=""
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_18"
+        android:textSize="@dimen/text_24"
         android:visibility="gone" />
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timeTxt"
-        android:layout_marginTop="@dimen/text_16"
-        android:layout_marginBottom="@dimen/dimen_64"
-        android:contentDescription="@string/todo">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/questionRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+        android:layout_below="@id/questionCount"
+        android:layout_marginTop="@dimen/dimen_16"
+        android:layout_marginBottom="@dimen/dimen_64" />
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -3,51 +3,60 @@ package com.digitaldream.linkskool.dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionPreviewAdapter
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
-import java.io.Serializable
 
 private const val ARG_PARAM = "section"
+private const val ARG_PARAM2 = "section"
 
-class AdminELearningQuestionPreviewDialogFragment :
-    DialogFragment(R.layout.fragment_admin_e_learning_question_preview) {
+class AdminELearningQuestionPreviewFragment :
+    Fragment(R.layout.fragment_admin_e_learning_question_preview) {
 
 
-    private lateinit var dismissBtn: ImageView
+    private lateinit var dismissBtn: ImageButton
     private lateinit var timeTxt: TextView
+    private lateinit var timeProgressBar: ProgressBar
+    private lateinit var questionCountTxt: TextView
+    private lateinit var questionTotalCountTxt: TextView
     private lateinit var sectionTxt: TextView
     private lateinit var questionRecyclerView: RecyclerView
     private lateinit var previousBtn: Button
     private lateinit var nextBtn: Button
+
+    // Initialise section items
     private lateinit var sectionItems: MutableList<SectionModel>
 
+    // Variables to store data
     private var currentSectionIndex: Int = 0
-
+    private var settingsData: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
+      //  setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
 
-        arguments?.let {bundle->
-            (bundle.getSerializable(ARG_PARAM) as? MutableList<SectionModel>
-                ?: mutableListOf()).also { sectionItems = it }
+        arguments?.let {
+            sectionItems = it.getString(ARG_PARAM)?.toMutableList() as
+                    MutableList<SectionModel>
+            settingsData = it.getString(ARG_PARAM2)
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(sectionItem: MutableList<SectionModel>) =
-            AdminELearningQuestionPreviewDialogFragment().apply {
+        fun newInstance(sectionData: String, settingsData: String = "") =
+            AdminELearningQuestionPreviewFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM, sectionItem as Serializable)
+                    putString(ARG_PARAM, sectionData)
+                    putString(ARG_PARAM2, settingsData)
                 }
             }
     }
@@ -56,14 +65,7 @@ class AdminELearningQuestionPreviewDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.apply {
-            dismissBtn = findViewById(R.id.dismissBtn)
-            timeTxt = findViewById(R.id.timeTxt)
-            sectionTxt = findViewById(R.id.sectionTxt)
-            questionRecyclerView = findViewById(R.id.questionRecyclerView)
-            previousBtn = findViewById(R.id.prevBtn)
-            nextBtn = findViewById(R.id.nextBtn)
-        }
+        setUpViews(view)
 
         showQuestion()
 
@@ -74,7 +76,20 @@ class AdminELearningQuestionPreviewDialogFragment :
         nextBtn.setOnClickListener {
             showNextQuestion()
         }
+    }
 
+    private fun setUpViews(view: View) {
+        view.apply {
+            dismissBtn = findViewById(R.id.dismissBtn)
+            timeTxt = findViewById(R.id.timeTxt)
+            timeProgressBar = findViewById(R.id.timeProgressBar)
+            questionCountTxt = findViewById(R.id.questionCount)
+            questionTotalCountTxt = findViewById(R.id.questionTotalCount)
+            sectionTxt = findViewById(R.id.sectionTxt)
+            questionRecyclerView = findViewById(R.id.questionRecyclerView)
+            previousBtn = findViewById(R.id.prevBtn)
+            nextBtn = findViewById(R.id.nextBtn)
+        }
     }
 
 
@@ -91,9 +106,7 @@ class AdminELearningQuestionPreviewDialogFragment :
                 showQuestionPreview(questionItem)
             }
             updateNavigationButtons()
-
         }
-
     }
 
     private fun updateNavigationButtons() =
@@ -156,5 +169,15 @@ class AdminELearningQuestionPreviewDialogFragment :
         nextBtn.isEnabled = true
     }
 
+    private fun getQuestionCount(): Int {
+        var questionCount = 0
+        sectionItems.forEach { sectionModel ->
+            if (sectionModel.sectionTitle == null && sectionModel.questionItem != null) {
+                questionCount++
+            }
+        }
+
+        return questionCount
+    }
 
 }
