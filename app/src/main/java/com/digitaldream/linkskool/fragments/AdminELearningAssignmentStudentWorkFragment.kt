@@ -8,7 +8,7 @@ import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.models.ActionBarViewModel
+import com.digitaldream.linkskool.models.SharedViewModel
 
 
 private const val ARG_PARAM1 = "param1"
@@ -21,7 +21,7 @@ class AdminELearningAssignmentStudentWorkFragment :
     private lateinit var markedLayout: LinearLayout
     private lateinit var markedButton: CheckBox
 
-    private lateinit var actionBarViewModel: ActionBarViewModel
+    private lateinit var sharedViewModel: SharedViewModel
 
     private var param1: String? = null
     private var param2: String? = null
@@ -33,7 +33,7 @@ class AdminELearningAssignmentStudentWorkFragment :
             param2 = it.getString(ARG_PARAM2)
         }
 
-        actionBarViewModel = ViewModelProvider(requireActivity())[ActionBarViewModel::class.java]
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
 
     }
 
@@ -65,10 +65,10 @@ class AdminELearningAssignmentStudentWorkFragment :
         markedLayout.setOnClickListener {
             if (markedButton.isChecked) {
                 markedButton.isChecked = false
-                actionBarViewModel.hideCustomActionBar()
+                sharedViewModel.hideCustomActionBar()
             } else {
                 markedButton.isChecked = true
-                actionBarViewModel.showCustomActionBar()
+                sharedViewModel.showCustomActionBar()
             }
         }
 

@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewFragment
 import com.digitaldream.linkskool.fragments.*
+import com.digitaldream.linkskool.models.SectionModel
+import timber.log.Timber
 
 
 class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
@@ -120,6 +123,20 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                     )
                 }
             }
+
+            "view_questions" -> {
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningQuestionPreviewFragment
+                            .newInstance(
+                                mutableListOf(),
+                                json
+                            )
+                    )
+                }
+            }
+
         }
     }
 }

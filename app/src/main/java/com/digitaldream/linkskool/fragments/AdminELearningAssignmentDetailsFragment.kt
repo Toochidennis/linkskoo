@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
-import com.digitaldream.linkskool.models.ActionBarViewModel
+import com.digitaldream.linkskool.models.SharedViewModel
 import com.digitaldream.linkskool.utils.CustomViewPager2
 import com.google.android.material.tabs.TabLayout
 
@@ -32,7 +32,7 @@ class AdminELearningAssignmentDetailsFragment :
     var menuView: Menu? = null
     private var isCustomBarShowing = false
 
-    private lateinit var actionBarViewModel: ActionBarViewModel
+    private lateinit var sharedViewModel: SharedViewModel
 
     private var jsonData: String? = null
     private var taskType: String? = null
@@ -44,8 +44,7 @@ class AdminELearningAssignmentDetailsFragment :
             taskType = it.getString(ARG_PARAM2)
         }
 
-        actionBarViewModel = ViewModelProvider(requireActivity())[ActionBarViewModel::class.java]
-
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
     }
 
     companion object {
@@ -71,7 +70,7 @@ class AdminELearningAssignmentDetailsFragment :
 
         setUpViewPager()
 
-        actionBarViewModel.customActionBarVisible.observe(requireActivity()) { showCustomActionBar ->
+        sharedViewModel.customActionBarVisible.observe(requireActivity()) { showCustomActionBar ->
             viewPager.setCustomBarVisibility(showCustomActionBar)
 
             for (i in 0 until tabLayout.tabCount) {

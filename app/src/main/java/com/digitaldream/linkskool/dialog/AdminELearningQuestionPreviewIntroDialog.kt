@@ -12,6 +12,9 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import org.json.JSONObject
+import java.util.Locale
 
 class AdminELearningQuestionPreviewIntroDialog(
     context: Context,
@@ -41,6 +44,14 @@ class AdminELearningQuestionPreviewIntroDialog(
 
         setUpViews()
 
+        pulsateButton()
+
+        parseJson()
+
+        dismissBtn.setOnClickListener {
+            onStart("exit")
+            dismiss()
+        }
     }
 
     private fun setUpViews() {
@@ -55,6 +66,46 @@ class AdminELearningQuestionPreviewIntroDialog(
 
     private fun pulsateButton() {
         val animation = AnimationUtils.loadAnimation(context, R.anim.pulse)
-        startBtn.startAnimation(animation)
+
+        startBtn.apply {
+            startAnimation(animation)
+
+            setOnClickListener {
+                onStart("start")
+                dismiss()
+            }
+        }
     }
+
+    // Parse JSON data from question settings
+    private fun parseJson() {
+        JSONObject(jsonData).run {
+            val questionTitle = getString("title")
+            val questionDescription = getString("description")
+            val startDate = formatDate2(getString("start_date"), "custom1")
+            val endDate = formatDate2(getString("end_date"))
+            val durationMinutes = getString("duration")
+
+            titleTxt.text = questionTitle
+            descriptionTxt.text = questionDescription
+
+            val date = String.format(
+                Locale.getDefault(), "%s %s %s %s",
+                "Starts", startDate,
+                "and ends", endDate
+            )
+
+            dateTxt.text = date
+
+            val duration = String.format(
+                Locale.getDefault(),
+                "%s %s",
+                "Duration:", durationMinutes
+            )
+
+            durationTxt.text = duration
+
+        }
+    }
+
 }

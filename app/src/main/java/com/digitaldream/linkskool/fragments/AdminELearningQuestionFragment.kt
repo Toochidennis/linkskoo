@@ -293,7 +293,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-
     // Parse JSON data from question settings
     private fun parseJsonFromQuestionSettings(json: String) {
         JSONObject(json).run {
@@ -314,7 +313,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             descriptionTxt.text = questionDescription
         }
     }
-
 
     // Navigate to question settings fragment
     private fun toQuestionSettings() {
@@ -342,8 +340,9 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
 
     // Check if questions already exist and set them up if they do
     private fun setQuestionsIfExist() {
-        if (!questionData.isNullOrEmpty()) {
+        sectionItems.clear()
 
+        if (!questionData.isNullOrEmpty()) {
             questionData?.let { data ->
                 JSONObject(data).run {
                     val settingsObject = getJSONObject("settings")
@@ -484,7 +483,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-
     // Initialize the ItemTouchHelper for drag-and-drop functionality
     private fun onTouchHelper() {
         val sectionItemTouchHelperCallback = ItemTouchHelperCallback(sectionAdapter)
@@ -500,7 +498,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 parentFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningQuestionPreviewFragment.newInstance(sectionItems.toString())
+                        AdminELearningQuestionPreviewFragment.newInstance(sectionItems)
                     )
                     addToBackStack("preview")
                 }

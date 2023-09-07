@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="@dimen/dimen_16">
+    android:background="@color/white">
 
     <ImageButton
         android:id="@+id/dismissBtn"
@@ -12,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="@dimen/dimen_10"
         android:background="@drawable/ripple_effect11"
         android:clickable="true"
         android:contentDescription="@string/close"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/dimen_16"
         android:background="@color/white">
 
         <ProgressBar
@@ -45,9 +47,10 @@
             android:id="@+id/timeTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1:00:00"
+            android:fontFamily="@font/poppins_regular"
+            android:text="30:00"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_12"
+            android:textSize="@dimen/text_14"
             app:layout_constraintBottom_toBottomOf="@id/timeProgressBar"
             app:layout_constraintEnd_toEndOf="@id/timeProgressBar"
             app:layout_constraintStart_toStartOf="@id/timeProgressBar"
@@ -60,8 +63,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dismissBtn"
+        android:layout_marginStart="@dimen/dimen_16"
         android:layout_marginTop="@dimen/dimen_32"
-        android:text="Question 1"
+        android:text=""
+        android:textColor="@color/black"
         android:textSize="@dimen/text_24"
         android:visibility="visible" />
 
@@ -72,15 +77,20 @@
         android:layout_below="@id/dismissBtn"
         android:layout_marginTop="40dp"
         android:layout_toEndOf="@id/questionCount"
-        android:text="/10"
+        android:text=""
+        android:textColor="@color/black"
         android:textSize="@dimen/text_16"
         android:visibility="visible" />
 
-    <View
+    <ImageView
+        android:id="@+id/dashedLine"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="5dp"
         android:layout_below="@id/questionCount"
-        android:background="@drawable/dashed_line" />
+        android:layout_marginStart="@dimen/dimen_16"
+        android:layout_marginEnd="@dimen/dimen_16"
+        android:contentDescription="dotted line"
+        android:src="@drawable/dashed_line" />
 
     <TextView
         android:id="@+id/sectionTxt"
@@ -98,14 +108,17 @@
         android:id="@+id/questionRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/questionCount"
-        android:layout_marginTop="@dimen/dimen_16"
+        android:layout_below="@id/dashedLine"
+        android:layout_marginStart="@dimen/dimen_16"
+        android:layout_marginEnd="@dimen/dimen_16"
         android:layout_marginBottom="@dimen/dimen_64" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dimen_16"
+        android:layout_marginEnd="@dimen/dimen_16"
         android:background="@color/white">
 
         <Button

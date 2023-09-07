@@ -1,15 +1,19 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
+import com.digitaldream.linkskool.models.CommentModel
 import com.google.android.material.textfield.TextInputLayout
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 private const val ARG_PARAM1 = "param1"
@@ -28,6 +32,10 @@ class AdminELearningQuestionViewFragment :
     private lateinit var commentTxt: TextView
     private lateinit var commentInput: TextInputLayout
 
+    private lateinit var commentAdapter: AdminELearningCommentAdapter
+    private val commentList = mutableListOf<CommentModel>()
+
+
     // Variables to store data
     private var jsonData: String? = null
     private var taskType: String? = null
@@ -38,8 +46,8 @@ class AdminELearningQuestionViewFragment :
             jsonData = it.getString(ARG_PARAM1)
             taskType = it.getString(ARG_PARAM2)
         }
-    }
 
+    }
 
     companion object {
 
@@ -58,6 +66,9 @@ class AdminELearningQuestionViewFragment :
 
         setUpViews(view)
 
+        viewQuestions()
+
+        setUpCommentRecyclerView()
     }
 
     private fun setUpViews(view: View) {
@@ -72,134 +83,36 @@ class AdminELearningQuestionViewFragment :
         }
     }
 
-
-    // Parse the JSON data from a given JSON string
-    private fun parseJsonObject(json: String):JSONObject {
-       return JSONObject().apply {
-            JSONObject(json).let { jsonObject ->
-                put("settings", parseSettingsJson(JSONObject(jsonObject.getString("e"))))
-                put("questions", parseQuestionJson(JSONArray(jsonObject.getString("q"))))
-            }
+    private fun viewQuestions() {
+        viewQuestionBtn.setOnClickListener {
+            startActivity(
+                Intent(requireContext(), ELearningActivity::class.java)
+                    .putExtra("from", "view_questions")
+                    .putExtra("json", jsonData)
+            )
         }
     }
 
 
-    // Parse the settings JSON object
-    private fun parseSettingsJson(settings: JSONObject): JSONObject {
-        return JSONObject().apply {
-            settings.let {
-                put("id", it.getString("id"))
-                put("author_id", it.getString("author_id"))
-                put("author_name", it.getString("author_name"))
-                put("title", it.getString("title"))
-                put("description", it.getString("description"))
-                put("duration", it.getString("objective"))
-                put("level", it.getString("level"))
-                put("class", parseClassArray(JSONArray(it.getString("class"))))
-                put("course", it.getString("course_id"))
-                put("course_name", it.getString("course_name"))
-                put("topic", it.getString("topic"))
-                put("topic_id", it.getString("topic_id"))
-                put("start_date", it.getString("start_date"))
-                put("end_date", it.getString("end_date"))
-                put("term", it.getString("term"))
-            }
+    private fun setUpCommentRecyclerView() {
+        commentAdapter = AdminELearningCommentAdapter(commentList)
+
+        commentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
         }
     }
 
-
-    // Parse the class JSON array
-    private fun parseClassArray(classArray: JSONArray): JSONArray {
-        return JSONArray().apply {
-            for (i in 0 until classArray.length()) {
-                classArray.getJSONObject(i).let {
-                    JSONObject().apply {
-                        put("id", it.getString("id"))
-                        put("name", it.getString("name"))
-                    }.let { jsonObject ->
-                        put(jsonObject)
-                    }
-                }
-            }
+    private fun sendComment() {
+        commentTxt.setOnClickListener {
+            it.isVisible = false
+            commentInput.isVisible = true
         }
     }
 
+    private fun updateComment(){
 
-    // Parse the question JSON array
-    private fun parseQuestionJson(jsonArray: JSONArray): JSONArray {
-        return JSONArray().apply {
-            jsonArray.getJSONArray(0).let { question ->
-                for (i in 0 until question.length()) {
-                    JSONObject().apply {
-                        question.getJSONObject(i).let {
-                            put("question_id", it.getString("id"))
-                            put("question_title", it.getString("content"))
-                            put("question_type", it.getString("type"))
-                            put(
-                                "question_files", parseFilesArray(
-                                    JSONArray(it.getString("question_file"))
-                                )
-                            )
-
-                            if (it.getString("answer") != "null") {
-                                put(
-                                    "options",
-                                    parseOptionsJson(JSONArray(it.getString("answer")))
-                                )
-                            }
-
-                            if (it.getString("correct") != "null")
-                                put("correct", JSONObject(it.getString("correct")))
-                        }
-                    }.let {
-                        put(it)
-                    }
-                }
-            }
-        }
     }
-
-    private fun parseFilesArray(files: JSONArray): JSONArray {
-        return JSONArray().apply {
-            JSONObject().apply {
-                files.getJSONObject(0).let {
-                    put("file_name", trimText(it.getString("file_name")))
-                    put("old_file_name", trimText(it.getString("file_name")))
-                    put("type", it.getString("type"))
-                    put("file", it.getString("file_name"))
-                }
-            }.let { jsonObject ->
-                put(jsonObject)
-            }
-        }
-    }
-
-
-    // Remove a specific text from the file name
-    private fun trimText(text: String): String {
-        return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
-    }
-
-
-    // Parse the options JSON array
-    private fun parseOptionsJson(jsonArray: JSONArray): JSONArray {
-        return JSONArray().apply {
-            for (i in 0 until jsonArray.length()) {
-                JSONObject().apply {
-                    jsonArray.getJSONObject(i).let {
-                        put("order", it.getString("order"))
-                        put("text", it.getString("text"))
-                        put(
-                            "option_files",
-                            parseFilesArray(JSONArray(it.getString("option_files")))
-                        )
-                    }
-                }.let {
-                    put(it)
-                }
-            }
-        }
-    }
-
 
 }

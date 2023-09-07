@@ -189,7 +189,7 @@ class AdminELearningClassAdapter(
             menuButtonAction("question", optionBtn, question, itemView, adapterPosition)
 
             itemView.setOnClickListener {
-                launchActivity(itemView, "question_details", "response")
+                viewOrEditContentDetails(itemView, question, "question_details")
             }
         }
     }

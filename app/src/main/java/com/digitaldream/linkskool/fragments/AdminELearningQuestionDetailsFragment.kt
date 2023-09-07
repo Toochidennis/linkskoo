@@ -81,7 +81,10 @@ class AdminELearningQuestionDetailsFragment :
 
     private fun setUpPager() {
         SectionPagerAdapter(childFragmentManager).apply {
-            addFragment(AdminELearningQuestionViewFragment(), "Question")
+            addFragment(
+                AdminELearningQuestionViewFragment.newInstance(jsonData!!, taskType!!),
+                "Question"
+            )
             addFragment(AdminELearningQuestionAnswersFragment(), "Student answers")
         }.let {
             viewPager.apply {
