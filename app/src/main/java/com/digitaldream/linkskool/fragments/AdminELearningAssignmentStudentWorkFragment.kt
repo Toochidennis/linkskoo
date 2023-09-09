@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
 import android.widget.LinearLayout
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.digitaldream.linkskool.R
@@ -72,18 +71,6 @@ class AdminELearningAssignmentStudentWorkFragment :
             }
         }
 
-    }
-
-    private fun getMenuId() {
-        if (parentFragment is AdminELearningAssignmentDetailsFragment) {
-            val hostFragment = parentFragment as AdminELearningAssignmentDetailsFragment
-            val menu = hostFragment.menuView
-            menu?.apply {
-                get(0).isVisible = false
-                get(1).isVisible = false
-                get(2).isVisible = false
-            }
-        }
     }
 
 

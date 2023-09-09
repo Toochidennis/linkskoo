@@ -736,15 +736,18 @@ class AdminELearningAssignmentFragment :
 
     private fun parseFilesArray(files: JSONArray): JSONArray {
         return JSONArray().apply {
-            JSONObject().apply {
-                files.getJSONObject(0).let {
-                    put("file_name", trimText(it.getString("file_name")))
-                    put("old_file_name", trimText(it.getString("file_name")))
-                    put("type", it.getString("type"))
-                    put("file", it.getString("file_name"))
+            val jsonObject = JSONObject()
+            for (i in 0 until files.length()) {
+                files.getJSONObject(i).let {
+                    jsonObject.apply {
+                        put("file_name", trimText(it.getString("file_name")))
+                        put("old_file_name", trimText(it.getString("file_name")))
+                        put("type", it.getString("type"))
+                        put("file", it.getString("file_name"))
+                    }
+
+                    put(jsonObject)
                 }
-            }.let { jsonObject ->
-                put(jsonObject)
             }
         }
     }

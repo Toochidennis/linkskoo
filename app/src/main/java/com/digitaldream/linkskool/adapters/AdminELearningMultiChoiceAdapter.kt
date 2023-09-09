@@ -345,5 +345,4 @@ class AdminELearningMultiChoiceAdapter(
         }
 
     }
-
 }

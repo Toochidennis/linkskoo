@@ -27,12 +27,13 @@ class AdminELearningAssignmentDetailsFragment :
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: CustomViewPager2
     private lateinit var menuHost: MenuHost
-    private var actionBar: ActionBar? = null
-    private var customActionBarView: View? = null
-    var menuView: Menu? = null
-    private var isCustomBarShowing = false
 
     private lateinit var sharedViewModel: SharedViewModel
+
+    private var actionBar: ActionBar? = null
+    private var customActionBarView: View? = null
+
+    private var isCustomBarShowing = false
 
     private var jsonData: String? = null
     private var taskType: String? = null
@@ -132,9 +133,9 @@ class AdminELearningAssignmentDetailsFragment :
 
     private fun showCustomActionBar() {
         customActionBarView = layoutInflater.inflate(R.layout.custom_action_bar_layout, null)
-        customActionBarView?.apply {
-        }
+
         isCustomBarShowing = true
+
         requireActivity().invalidateOptionsMenu()
 
         actionBar?.apply {

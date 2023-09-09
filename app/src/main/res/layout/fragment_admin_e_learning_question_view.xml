@@ -53,6 +53,15 @@
                 android:layout_marginTop="@dimen/dimen_10"
                 android:background="@color/test_color_1" />
 
+            <TextView
+                android:id="@+id/descriptionTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14" />
+
             <Button
                 android:id="@+id/viewQuestionsButton"
                 android:layout_width="match_parent"
@@ -61,7 +70,7 @@
                 android:background="@drawable/ripple_effect10"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="View questions"
+                android:text="View"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_18" />
@@ -71,6 +80,16 @@
                 android:layout_height=".5dp"
                 android:layout_marginTop="@dimen/dimen_10"
                 android:background="@color/test_color_7" />
+
+            <TextView
+                android:id="@+id/commentTitleTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:text="Class comment"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentRecyclerView"
@@ -90,6 +109,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/commentEditText"
                 android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dimen_16"
                 android:layout_height="wrap_content"
                 android:hint="Class comment"
                 android:visibility="gone"
@@ -98,14 +118,12 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:background="@drawable/edit_text_bg5"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:lineSpacingMultiplier="1"
-                    android:lines="1"
-                    android:minLines="5"
-                    android:overScrollMode="ifContentScrolls"
-                    android:padding="@dimen/dimen_16"
+                    android:imeOptions="actionSend"
+                    android:inputType="textCapSentences"
+                    android:paddingStart="@dimen/dimen_16"
+                    android:paddingEnd="@dimen/dimen_16"
                     android:scrollbars="vertical"
                     android:textSize="@dimen/text_14" />
 

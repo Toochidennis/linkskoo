@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="@dimen/dimen_16"
+    android:paddingBottom="@dimen/dimen_16"
     android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
     android:background="@color/white">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -22,7 +23,7 @@
         android:layout_toEndOf="@id/profileImageView"
         android:text="Toochi Dennis"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_16"
+        android:textSize="@dimen/text_14"
         android:textStyle="bold" />
 
     <TextView
@@ -41,11 +42,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/authorNameTxt"
         android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/profileImageView"
         android:text="When are we submitting the assignment?"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_16" />
+        android:textSize="13sp" />
 
 
 </RelativeLayout>

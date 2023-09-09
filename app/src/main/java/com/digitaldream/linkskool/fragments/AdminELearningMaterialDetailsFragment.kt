@@ -1,64 +1,254 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
+import android.graphics.PorterDuff
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
+import com.digitaldream.linkskool.models.AttachmentModel
+import com.digitaldream.linkskool.models.CommentDataModel
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.getDate
+import org.json.JSONArray
+import org.json.JSONObject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AdminELearningMaterialDetailsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AdminELearningMaterialDetailsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+class AdminELearningMaterialDetailsFragment :
+    Fragment(R.layout.fragment_admin_e_learning_material_details) {
+
+
+    private lateinit var titleTxt: TextView
+    private lateinit var descriptionTxt: TextView
+    private lateinit var attachmentTxt: TextView
+    private lateinit var attachmentRecyclerView: RecyclerView
+    private lateinit var commentRecyclerView: RecyclerView
+    private lateinit var commentGuide: View
+    private lateinit var commentTitleTxt: TextView
+    private lateinit var commentEditText: EditText
+    private lateinit var sendMessageBtn: ImageButton
+
+    private lateinit var commentAdapter: AdminELearningCommentAdapter
+    private lateinit var filesAdapter: AdminELearningFilesAdapter
+    private val commentList = mutableListOf<CommentDataModel>()
+    private var fileList = mutableListOf<AttachmentModel>()
+
+    private var jsonData: String? = null
+    private var taskType: String? = null
+    private var title: String? = null
+    private var description: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            jsonData = it.getString(ARG_PARAM1)
+            taskType = it.getString(ARG_PARAM2)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(
-            R.layout.fragment_admin_e_learning_material_details,
-            container,
-            false
-        )
-    }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AdminELearningMaterialDetailsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(data: String, task: String) =
             AdminELearningMaterialDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM1, data)
+                    putString(ARG_PARAM2, task)
                 }
             }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpViews(view)
+
+        onWatchEditText()
+
+        setUpCommentRecyclerView()
+
+        parseFileJsonObject()
+
+        updateComment()
+
+    }
+
+    private fun setUpViews(view: View) {
+        view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            titleTxt = findViewById(R.id.titleTxt)
+            descriptionTxt = findViewById(R.id.descriptionTxt)
+            attachmentTxt = findViewById(R.id.attachmentTxt)
+            attachmentRecyclerView = findViewById(R.id.attachmentRecyclerView)
+            commentRecyclerView = findViewById(R.id.commentRecyclerView)
+            commentGuide = findViewById(R.id.commentGuide)
+            commentTitleTxt = findViewById(R.id.commentTitleTxt)
+            commentEditText = findViewById(R.id.commentEditText)
+            sendMessageBtn = findViewById(R.id.sendMessageBtn)
+
+
+            (requireContext() as AppCompatActivity).setSupportActionBar(toolbar)
+            val actionBar = (requireContext() as AppCompatActivity).supportActionBar
+
+            actionBar?.apply {
+                title = ""
+                setDisplayHomeAsUpEnabled(true)
+                setHomeButtonEnabled(true)
+            }
+        }
+    }
+
+
+    private fun parseFileJsonObject() {
+        if (jsonData?.isNotBlank() == true) {
+            JSONObject(jsonData!!).let {
+                title = it.getString("title")
+                description = it.getString("description")
+                parseFilesArray(JSONArray(it.getString("picref")))
+            }
+
+            setTextOnViews()
+
+            setUpFilesRecyclerView()
+
+            attachmentTxt.isVisible = true
+        }
+
+    }
+
+    private fun setTextOnViews() {
+        titleTxt.text = title
+        descriptionTxt.text = description
+    }
+
+    private fun parseFilesArray(files: JSONArray) {
+        for (i in 0 until files.length()) {
+            files.getJSONObject(i).let {
+                val fileName = trimText(it.getString("file_name"))
+                val oldFileName = trimText(it.getString("file_name"))
+                val type = it.getString("type")
+                val uri = it.getString("file_name")
+
+                val attachmentModel = AttachmentModel(fileName, oldFileName, type, uri)
+
+                fileList.add(attachmentModel)
+            }
+        }
+    }
+
+    private fun trimText(text: String): String {
+        return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
+    }
+
+    private fun setUpCommentRecyclerView() {
+        commentAdapter = AdminELearningCommentAdapter(commentList)
+
+        commentTitleTxt.isVisible = commentList.isNotEmpty()
+        commentGuide.isVisible = commentList.isNotEmpty()
+
+        commentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
+        }
+
+    }
+
+    private fun setUpFilesRecyclerView() {
+        filesAdapter = AdminELearningFilesAdapter(fileList)
+
+        attachmentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            adapter = filesAdapter
+        }
+
+    }
+
+    private fun onWatchEditText() {
+        sendMessageBtn.isEnabled = false
+
+        commentEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                sendMessageBtn.isEnabled = s.toString().isNotBlank()
+
+                if (sendMessageBtn.isEnabled) {
+                    sendMessageBtn.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(), R.color.black
+                        ),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                } else {
+                    sendMessageBtn.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(), R.color.test_color_7
+                        ),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                }
+            }
+        })
+    }
+
+    private fun sendComment() {
+        val message = commentEditText.text.toString().trim()
+        val date = formatDate2(getDate())
+
+        if (message.isNotBlank()) {
+            val commentDataModel = CommentDataModel("id", "id", "Toochi Dennis", message, date)
+            commentList.add(commentDataModel)
+
+            commentTitleTxt.isVisible = commentList.isNotEmpty()
+            commentGuide.isVisible = commentList.isNotEmpty()
+
+            hideKeyboard(commentEditText)
+
+            commentAdapter.notifyDataSetChanged()
+        } else {
+            commentEditText.error = "Please provide a comment"
+        }
+    }
+
+
+    private fun updateComment() {
+        sendMessageBtn.setOnClickListener {
+            sendComment()
+        }
+
+    }
+
+    private fun hideKeyboard(editText: EditText) {
+        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
+        editText.clearFocus()
+        editText.setText("")
+    }
+
 }

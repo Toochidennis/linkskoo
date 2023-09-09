@@ -786,7 +786,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
         }
     }
 
-
     // Finish the activity after a delay
     @OptIn(DelicateCoroutinesApi::class)
     private fun finishActivity() {

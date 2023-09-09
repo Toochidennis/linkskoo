@@ -163,7 +163,7 @@ class AdminELearningClassAdapter(
             "Posted $date".let { dateTxt.text = it }
 
             itemView.setOnClickListener {
-                launchActivity(itemView, "material_details", "")
+                viewOrEditContentDetails(itemView, material, "material_details")
             }
 
             menuButtonAction("material", optionBtn, material, itemView, adapterPosition)

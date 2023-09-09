@@ -1,16 +1,17 @@
 package com.digitaldream.linkskool.adapters
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.models.CommentModel
-import de.hdodenhof.circleimageview.CircleImageView
+import com.digitaldream.linkskool.models.CommentDataModel
 
 class AdminELearningCommentAdapter(
-    val itemList: MutableList<CommentModel>
+    val itemList: MutableList<CommentDataModel>
 ) : RecyclerView.Adapter<AdminELearningCommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -31,15 +32,41 @@ class AdminELearningCommentAdapter(
     override fun getItemCount() = itemList.size
 
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-      //  private val profileImage: CircleImageView = itemView.findViewById(R.id.profileImageView)
+        //  private val profileImage: CircleImageView = itemView.findViewById(R.id.profileImageView)
         private val authorNameTxt: TextView = itemView.findViewById(R.id.authorNameTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val commentTxt: TextView = itemView.findViewById(R.id.commentTxt)
 
-        fun bind(commentModel: CommentModel) {
-            authorNameTxt.text = commentModel.authorName
-            dateTxt.text = commentModel.date
-            commentTxt.text = commentModel.commentText
+        fun bind(sCommentDataModel: CommentDataModel) {
+            authorNameTxt.text = sCommentDataModel.authorName
+            dateTxt.text = sCommentDataModel.date
+            commentTxt.text = sCommentDataModel.commentText
+
+            setUpPopMenu(itemView, adapterPosition)
+        }
+    }
+
+
+    private fun setUpPopMenu(itemView: View, position: Int) {
+        itemView.setOnClickListener {
+            PopupMenu(it.context, it, Gravity.END).apply {
+                inflate(R.menu.delete_class_menu)
+
+                setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.delete_menu -> {
+                            itemList.removeAt(position)
+
+                            notifyDataSetChanged()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+
+            }.show()
+
         }
     }
 }

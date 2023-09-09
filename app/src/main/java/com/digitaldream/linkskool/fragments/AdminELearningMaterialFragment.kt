@@ -156,6 +156,7 @@ class AdminELearningMaterialFragment :
         showSoftInput(requireContext(), mMaterialTitleEditText)
 
         mPostBtn.setOnClickListener {
+            mPostBtn.isEnabled = false
             verifyMaterial()
         }
 
@@ -488,6 +489,7 @@ class AdminELearningMaterialFragment :
                                 showToast("Failed. Please check your connection and try again")
                             }
                         }
+                        mPostBtn.isEnabled = true
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -495,6 +497,7 @@ class AdminELearningMaterialFragment :
                 }
 
                 override fun onError(error: VolleyError) {
+                    mPostBtn.isEnabled = true
                     showToast("Something went wrong please try again")
                 }
             })
@@ -606,15 +609,18 @@ class AdminELearningMaterialFragment :
 
     private fun parseFilesArray(files: JSONArray): JSONArray {
         return JSONArray().apply {
-            JSONObject().apply {
-                files.getJSONObject(0).let {
-                    put("file_name", trimText(it.getString("file_name")))
-                    put("old_file_name", trimText(it.getString("file_name")))
-                    put("type", it.getString("type"))
-                    put("file", it.getString("file_name"))
+            val jsonObject = JSONObject()
+            for (i in 0 until files.length()) {
+                files.getJSONObject(i).let {
+                    jsonObject.apply {
+                        put("file_name", trimText(it.getString("file_name")))
+                        put("old_file_name", trimText(it.getString("file_name")))
+                        put("type", it.getString("type"))
+                        put("file", it.getString("file_name"))
+                    }
+
+                    put(jsonObject)
                 }
-            }.let { jsonObject ->
-                put(jsonObject)
             }
         }
     }

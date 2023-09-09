@@ -1,6 +1,6 @@
 package com.digitaldream.linkskool.models
 
-data class CommentModel(
+data class CommentDataModel(
     val commentId:String,
     val authorId:String,
     val authorName:String,
