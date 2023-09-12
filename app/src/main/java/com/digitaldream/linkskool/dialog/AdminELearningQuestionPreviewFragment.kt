@@ -2,14 +2,12 @@ package com.digitaldream.linkskool.dialog
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -18,7 +16,6 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
-import com.digitaldream.linkskool.models.SharedViewModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -130,8 +127,8 @@ class AdminELearningQuestionPreviewFragment :
             var questionCount = "Question $currentSectionIndex"
             if (currentSection.sectionTitle.isNullOrEmpty()) {
                 questionCountTxt.text = questionCount
-            }else{
-                questionCount = "Question ${currentSectionIndex-1}"
+            } else {
+                questionCount = "Question ${currentSectionIndex - 1}"
                 questionCountTxt.text = questionCount
             }
 
@@ -446,7 +443,6 @@ class AdminELearningQuestionPreviewFragment :
                 }
             }
 
-
         }
 
 
@@ -454,8 +450,7 @@ class AdminELearningQuestionPreviewFragment :
     }
 
     private fun openIntroDialog() {
-        AdminELearningQuestionPreviewIntroDialog(
-            requireContext(),
+        AdminELearningQuestionPreviewIntroDialogFragment(
             jsonData = settingsData.toString()
         ) { status ->
 
@@ -465,13 +460,7 @@ class AdminELearningQuestionPreviewFragment :
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
-        }.apply {
-            show()
-            setCancelable(false)
-        }.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        }.show(parentFragmentManager, "Intro")
     }
 
 

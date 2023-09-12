@@ -8,7 +8,7 @@ sealed class QuestionItem {
 }
 
 data class MultiChoiceQuestion(
-    var questionId:String? = null,
+    var questionId:String = "",
     var questionText: String = "",
     var attachmentName: String = "",
     var attachmentUri: Any? = null,
@@ -19,7 +19,7 @@ data class MultiChoiceQuestion(
 )
 
 data class ShortAnswerModel(
-    var questionId:String? = null,
+    var questionId:String = "",
     var questionText: String = "",
     var attachmentName: String = "",
     var attachmentUri: Any? = null,

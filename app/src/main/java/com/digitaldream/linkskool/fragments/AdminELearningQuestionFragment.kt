@@ -591,7 +591,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 val optionsList = multiChoice.options
 
                 return JSONObject().apply {
-                    put("question_id", multiChoice.questionId ?: "")
+                    put("question_id", multiChoice.questionId)
                     put("question_title", multiChoice.questionText)
                     put("question_type", sectionModel.viewType)
 
@@ -599,18 +599,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                         put(
                             JSONObject().apply {
                                 put("file_name", multiChoice.attachmentName)
-                                put(
-                                    "old_file_name",
-                                    if ((multiChoice.attachmentName !=
-                                                multiChoice.previousAttachmentName) &&
-                                        multiChoice.previousAttachmentName.isNotBlank()
-                                    )
-                                        multiChoice.previousAttachmentName
-                                    else {
-                                        ""
-                                    }
-                                )
-
+                                put("old_file_name", multiChoice.previousAttachmentName)
                                 put("type", "")
 
                                 put(
@@ -637,18 +626,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                                 put(
                                     JSONObject().apply {
                                         put("file_name", option.attachmentName)
-                                        put(
-                                            "old_file_name",
-                                            if ((option.attachmentName !=
-                                                        option.previousAttachmentName) &&
-                                                option.previousAttachmentName.isNotBlank()
-                                            ) {
-                                                option.previousAttachmentName
-                                            } else {
-                                                ""
-                                            }
-                                        )
-
+                                        put("old_file_name", option.previousAttachmentName)
                                         put("type", "")
 
                                         put(
@@ -684,28 +662,15 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
                 val shortAnswer = questionItem.question
 
                 return JSONObject().apply {
-                    put("question_id", shortAnswer.questionId ?: "")
+                    put("question_id", shortAnswer.questionId)
                     put("question_title", shortAnswer.questionText)
                     put("question_type", sectionModel.viewType)
 
                     JSONArray().apply {
                         put(
                             JSONObject().apply {
-
                                 put("file_name", shortAnswer.attachmentName)
-
-                                put(
-                                    "old_file_name",
-                                    if ((shortAnswer.attachmentName !=
-                                                shortAnswer.previousAttachmentName) &&
-                                        shortAnswer.previousAttachmentName.isNotBlank()
-                                    ) {
-                                        shortAnswer.previousAttachmentName
-                                    } else {
-                                        ""
-                                    }
-                                )
-
+                                put("old_file_name", shortAnswer.previousAttachmentName)
                                 put("type", "")
 
                                 put(
@@ -741,7 +706,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     // Convert a file or URI to a base64 string if it's a URI, otherwise, return it as is
     private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
         return if (fileUri is String) {
-            fileUri
+            ""
         } else {
             runBlocking(Dispatchers.IO) {
                 encodeUriOrFileToBase64(

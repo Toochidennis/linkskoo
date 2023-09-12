@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,7 @@ import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.CommentDataModel
+import com.digitaldream.linkskool.utils.FileViewModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import org.json.JSONArray
@@ -52,6 +54,8 @@ class AdminELearningMaterialDetailsFragment :
     private val commentList = mutableListOf<CommentDataModel>()
     private var fileList = mutableListOf<AttachmentModel>()
 
+    private lateinit var fileViewModel: FileViewModel
+
     private var jsonData: String? = null
     private var taskType: String? = null
     private var title: String? = null
@@ -64,6 +68,9 @@ class AdminELearningMaterialDetailsFragment :
             jsonData = it.getString(ARG_PARAM1)
             taskType = it.getString(ARG_PARAM2)
         }
+
+        fileViewModel = ViewModelProvider(this)[FileViewModel::class.java]
+
     }
 
 
@@ -176,7 +183,7 @@ class AdminELearningMaterialDetailsFragment :
     }
 
     private fun setUpFilesRecyclerView() {
-        filesAdapter = AdminELearningFilesAdapter(fileList)
+        filesAdapter = AdminELearningFilesAdapter(fileList, fileViewModel)
 
         attachmentRecyclerView.apply {
             hasFixedSize()

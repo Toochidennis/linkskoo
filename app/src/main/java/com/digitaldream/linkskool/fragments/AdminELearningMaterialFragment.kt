@@ -401,21 +401,12 @@ class AdminELearningMaterialFragment :
                     mFileList.forEach { attachment ->
                         JSONObject().apply {
                             put("file_name", attachment.name)
-
-                            val oldFileName =
-                                if (attachment.name != attachment.oldName &&
-                                    attachment.oldName.isNotBlank()
-                                ) {
-                                    attachment.oldName
-                                } else {
-                                    ""
-                                }
-
-                            put("old_file_name", oldFileName)
+                            put("old_file_name", attachment.oldName)
                             put("type", attachment.type)
 
                             val file = convertFileOrUriToBase64(attachment.uri)
                             put("file", file)
+
                         }.let {
                             filesArray.put(it)
                         }
@@ -451,7 +442,7 @@ class AdminELearningMaterialFragment :
 
     private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
         return if (fileUri is String) {
-            fileUri
+            ""
         } else {
             runBlocking(Dispatchers.IO) {
                 encodeUriOrFileToBase64(
@@ -491,6 +482,7 @@ class AdminELearningMaterialFragment :
                         }
                         mPostBtn.isEnabled = true
                     } catch (e: Exception) {
+                        mPostBtn.isEnabled = true
                         e.printStackTrace()
                     }
 
@@ -608,21 +600,23 @@ class AdminELearningMaterialFragment :
     }
 
     private fun parseFilesArray(files: JSONArray): JSONArray {
-        return JSONArray().apply {
-            val jsonObject = JSONObject()
-            for (i in 0 until files.length()) {
-                files.getJSONObject(i).let {
-                    jsonObject.apply {
-                        put("file_name", trimText(it.getString("file_name")))
-                        put("old_file_name", trimText(it.getString("file_name")))
-                        put("type", it.getString("type"))
-                        put("file", it.getString("file_name"))
-                    }
+        val jsonArray = JSONArray()
 
-                    put(jsonObject)
+        for (i in 0 until files.length()) {
+            JSONObject().apply {
+                files.getJSONObject(i).let {
+                    val fileName = it.getString("file_name")
+                    put("file_name", trimText(fileName))
+                    put("old_file_name", trimText(fileName))
+                    put("type", it.getString("type"))
+                    put("file", fileName)
                 }
+            }.let {
+                jsonArray.put(it)
             }
         }
+
+        return jsonArray
     }
 
     private fun trimText(text: String): String {

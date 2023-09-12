@@ -91,6 +91,12 @@ dependencies {
 
     //noinspection DuplicatePlatformClasses
     implementation 'org.apache.httpcomponents:httpclient:4.3'
+    implementation 'org.apache.poi:poi-ooxml:3.17'
+    implementation 'org.apache.xmlbeans:xmlbeans:3.1.0'
+    implementation 'javax.xml.stream:stax-api:1.0'
+    implementation 'com.fasterxml:aalto-xml:1.2.2'
+    implementation 'com.itextpdf:itextpdf:5.5.13.2'
+
     //image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
@@ -104,7 +110,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation files('libs/achartengine-1.2.0.jar')
-
 }

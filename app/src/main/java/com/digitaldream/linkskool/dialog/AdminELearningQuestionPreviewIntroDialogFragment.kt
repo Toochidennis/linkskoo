@@ -1,26 +1,21 @@
 package com.digitaldream.linkskool.dialog
 
-import android.app.Dialog
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Window
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import org.json.JSONObject
 import java.util.Locale
 
-class AdminELearningQuestionPreviewIntroDialog(
-    context: Context,
+class AdminELearningQuestionPreviewIntroDialogFragment(
     private val jsonData: String,
     private val onStart: (status: String) -> Unit
-) : Dialog(context) {
+) : DialogFragment(R.layout.fragment_admin_e_learning_question_preview_intro) {
 
     // Define UI elements
     private lateinit var dismissBtn: ImageButton
@@ -33,16 +28,13 @@ class AdminELearningQuestionPreviewIntroDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            attributes.windowAnimations = R.style.DialogAnimation
-            setGravity(Gravity.BOTTOM)
-        }
+        setStyle(STYLE_NORMAL, R.style.DialogTheme)
+    }
 
-        setContentView(R.layout.dialog_admin_e_learning_question_preview_intro)
 
-        setUpViews()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpViews(view)
 
         pulsateButton()
 
@@ -54,13 +46,16 @@ class AdminELearningQuestionPreviewIntroDialog(
         }
     }
 
-    private fun setUpViews() {
-        dismissBtn = findViewById(R.id.dismissBtn)
-        titleTxt = findViewById(R.id.titleTxt)
-        descriptionTxt = findViewById(R.id.descriptionTxt)
-        dateTxt = findViewById(R.id.dateTxt)
-        durationTxt = findViewById(R.id.durationTxt)
-        startBtn = findViewById(R.id.startQuizButton)
+    private fun setUpViews(view: View) {
+        view.apply {
+            dismissBtn = findViewById(R.id.dismissBtn)
+            titleTxt = findViewById(R.id.titleTxt)
+            descriptionTxt = findViewById(R.id.descriptionTxt)
+            dateTxt = findViewById(R.id.dateTxt)
+            durationTxt = findViewById(R.id.durationTxt)
+            startBtn = findViewById(R.id.startQuizButton)
+        }
+
     }
 
 
@@ -83,7 +78,7 @@ class AdminELearningQuestionPreviewIntroDialog(
             val questionTitle = getString("title")
             val questionDescription = getString("description")
             val startDate = formatDate2(getString("start_date"), "custom1")
-            val endDate = formatDate2(getString("end_date"))
+            val endDate = formatDate2(getString("end_date"), "custom1")
             val durationMinutes = getString("duration")
 
             titleTxt.text = questionTitle

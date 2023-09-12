@@ -8,32 +8,33 @@ import com.android.volley.toolbox.HttpHeaderParser
 import java.io.File
 import java.io.FileOutputStream
 
-class FileRequest(
+class FileDownloadRequest(
     method: Int,
     url: String,
     private val filePath: String,
-    private val successListener: (ByteArray) -> Unit,
+    private val successListener: (File) -> Unit,
     errorListener: (Exception) -> Unit
-) : Request<ByteArray>(method, url, Response.ErrorListener { error -> errorListener(error) }) {
+) : Request<File>(method, url, Response.ErrorListener { error -> errorListener(error) }) {
 
 
-    override fun parseNetworkResponse(response: NetworkResponse?): Response<ByteArray> {
+    override fun parseNetworkResponse(response: NetworkResponse?): Response<File> {
         return try {
-            saveToFile(response!!.data)
-            Response.success(response.data, HttpHeaderParser.parseCacheHeaders(response))
+            val file = saveToFile(response!!.data)
+            Response.success(file, HttpHeaderParser.parseCacheHeaders(response))
         } catch (e: VolleyError) {
             Response.error(e)
         }
     }
 
-    override fun deliverResponse(response: ByteArray?) {
-        successListener(response!!)
+    override fun deliverResponse(response: File) {
+        successListener(response)
     }
 
-    private fun saveToFile(data: ByteArray) {
+    private fun saveToFile(data: ByteArray): File {
         val file = File(filePath)
         val outputStream = FileOutputStream(file)
         outputStream.write(data)
         outputStream.close()
+        return file
     }
 }

@@ -512,22 +512,12 @@ class AdminELearningAssignmentFragment :
                     mFileList.forEach { attachment ->
                         JSONObject().apply {
                             put("file_name", attachment.name)
-
-                            val oldFileName =
-                                if (attachment.name != attachment.oldName &&
-                                    attachment.oldName.isNotBlank()
-                                ) {
-                                    attachment.oldName
-                                } else {
-                                    ""
-                                }
-
-                            put("old_file_name", oldFileName)
+                            put("old_file_name", attachment.oldName)
                             put("type", attachment.type)
 
                             val file = convertFileOrUriToBase64(attachment.uri)
-
                             put("file", file)
+
                         }.let {
                             filesArray.put(it)
                         }
@@ -563,7 +553,7 @@ class AdminELearningAssignmentFragment :
 
     private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
         return if (fileUri is String) {
-            fileUri
+            ""
         } else {
             runBlocking(Dispatchers.IO) {
                 encodeUriOrFileToBase64(
