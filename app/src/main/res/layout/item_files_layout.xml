@@ -43,7 +43,7 @@
         android:lines="2"
         android:drawablePadding="@dimen/dimen_10"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_14"
+        android:textSize="13sp"
         app:drawableTint="@color/test_color_3" />
 
 </LinearLayout>

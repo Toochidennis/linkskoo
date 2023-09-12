@@ -1,17 +1,20 @@
 package com.digitaldream.linkskool.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.utils.FileViewModel
 import com.squareup.picasso.Picasso
+import timber.log.Timber
 import java.io.File
 
 class AdminELearningFilesAdapter(
@@ -49,6 +52,7 @@ class AdminELearningFilesAdapter(
                 "image" -> loadImage(itemView, attachmentModel, fileImageView)
                 else -> {
                     fileSavePath = createTempDir(itemView, attachmentModel)
+
                     fileViewModel.downloadAndProcessFile(attachmentModel, fileSavePath)
                 }
             }
@@ -57,7 +61,12 @@ class AdminELearningFilesAdapter(
                 if (file.absolutePath == fileSavePath) {
                     fileImageView.setImageBitmap(bitmap)
                     fileImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                    attachmentModel.uri = file.absolutePath
                 }
+            }
+
+            itemView.setOnClickListener {
+                viewFiles(itemView, attachmentModel)
             }
         }
     }
@@ -95,6 +104,40 @@ class AdminELearningFilesAdapter(
             },
             null, null, null
         )
+    }
+
+    private fun viewFiles(itemView: View, attachmentModel: AttachmentModel) {
+        val file = File(attachmentModel.uri.toString())
+        try {
+            val uri = FileProvider.getUriForFile(
+                itemView.context,
+                "${itemView.context.packageName}.provider",
+                file
+            )
+
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+            when (attachmentModel.type) {
+                "video" -> {
+                    intent.setDataAndType(uri, "video/*")
+                    itemView.context.startActivity(intent)
+                }
+
+                "pdf" -> {
+                    intent.setDataAndType(uri, "application/pdf")
+                    itemView.context.startActivity(intent)
+                }
+
+                "word" -> {
+                    intent.setDataAndType(uri, "application/msword")
+                    itemView.context.startActivity(intent)
+                }
+
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 }

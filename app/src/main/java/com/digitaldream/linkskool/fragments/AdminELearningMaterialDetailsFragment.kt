@@ -128,18 +128,22 @@ class AdminELearningMaterialDetailsFragment :
 
 
     private fun parseFileJsonObject() {
-        if (jsonData?.isNotBlank() == true) {
-            JSONObject(jsonData!!).let {
-                title = it.getString("title")
-                description = it.getString("description")
-                parseFilesArray(JSONArray(it.getString("picref")))
+        try {
+            if (jsonData?.isNotBlank() == true) {
+                JSONObject(jsonData!!).let {
+                    title = it.getString("title")
+                    description = it.getString("description")
+                    parseFilesArray(JSONArray(it.getString("picref")))
+                }
+
+                setTextOnViews()
+
+                setUpFilesRecyclerView()
+
+                attachmentTxt.isVisible = true
             }
-
-            setTextOnViews()
-
-            setUpFilesRecyclerView()
-
-            attachmentTxt.isVisible = true
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
     }

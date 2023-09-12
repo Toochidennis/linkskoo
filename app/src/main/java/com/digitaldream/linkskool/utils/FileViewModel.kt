@@ -17,8 +17,10 @@ import com.itextpdf.text.Document
 import com.itextpdf.text.Paragraph
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -58,21 +60,28 @@ class FileViewModel(application: Application) : AndroidViewModel(application) {
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun downloadFile(fileURL: String, targetPath: String): File {
         return suspendCancellableCoroutine { continuation ->
-            val fileDownloadRequest = FileDownloadRequest(
-                Request.Method.GET,
-                fileURL,
-                targetPath,
-                { downloadFile ->
-                    continuation.resume(downloadFile) {
-                        downloadFile.delete()
+            try {
+                val fileDownloadRequest = FileDownloadRequest(
+                    Request.Method.GET,
+                    fileURL,
+                    targetPath,
+                    { downloadFile ->
+                        continuation.resume(downloadFile) {
+                            downloadFile.delete()
+                        }
                     }
-
+                ) { error ->
+                    error.printStackTrace()
                 }
-            ) { error ->
-                continuation.cancel(error)
-            }
 
-            fileDownloadQueue.add(fileDownloadRequest)
+                fileDownloadQueue.add(fileDownloadRequest)
+
+                continuation.invokeOnCancellation {
+                    fileDownloadRequest.cancel()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
         }
     }

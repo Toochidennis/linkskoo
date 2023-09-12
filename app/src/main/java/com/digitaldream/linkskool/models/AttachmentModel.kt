@@ -4,5 +4,5 @@ data class AttachmentModel(
     val name: String,
     var oldName: String,
     val type: String,
-    val uri: Any?
+    var uri: Any?
 )

@@ -30,6 +30,10 @@ class FileDownloadRequest(
         successListener(response)
     }
 
+    override fun getErrorListener(): Response.ErrorListener? {
+        return errorListener
+    }
+
     private fun saveToFile(data: ByteArray): File {
         val file = File(filePath)
         val outputStream = FileOutputStream(file)
