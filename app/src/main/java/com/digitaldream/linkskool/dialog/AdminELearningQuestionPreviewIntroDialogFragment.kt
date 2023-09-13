@@ -74,33 +74,38 @@ class AdminELearningQuestionPreviewIntroDialogFragment(
 
     // Parse JSON data from question settings
     private fun parseJson() {
-        JSONObject(jsonData).run {
-            val questionTitle = getString("title")
-            val questionDescription = getString("description")
-            val startDate = formatDate2(getString("start_date"), "custom1")
-            val endDate = formatDate2(getString("end_date"), "custom1")
-            val durationMinutes = getString("duration")
+        try {
+            JSONObject(jsonData).run {
+                val questionTitle = getString("title")
+                val questionDescription = getString("description")
+                val startDate = formatDate2(getString("start_date"), "custom1")
+                val endDate = formatDate2(getString("end_date"), "custom1")
+                val durationMinutes = getString("duration")
 
-            titleTxt.text = questionTitle
-            descriptionTxt.text = questionDescription
+                titleTxt.text = questionTitle
+                descriptionTxt.text = questionDescription
 
-            val date = String.format(
-                Locale.getDefault(), "%s %s %s %s",
-                "Starts", startDate,
-                "and ends", endDate
-            )
+                val date = String.format(
+                    Locale.getDefault(), "%s %s %s %s",
+                    "Starts", startDate,
+                    "and ends", endDate
+                )
 
-            dateTxt.text = date
+                dateTxt.text = date
 
-            val duration = String.format(
-                Locale.getDefault(),
-                "%s %s",
-                "Duration:", durationMinutes
-            )
+                val duration = String.format(
+                    Locale.getDefault(),
+                    "%s %s",
+                    "Duration:", durationMinutes
+                )
 
-            durationTxt.text = duration
+                durationTxt.text = duration
 
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
 }

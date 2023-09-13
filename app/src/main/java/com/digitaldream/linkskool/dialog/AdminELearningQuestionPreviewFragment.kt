@@ -303,138 +303,139 @@ class AdminELearningQuestionPreviewFragment :
         }
     }
 
-    // return list of questions
+    // Return list of questions
     private fun setJsonDataIfExist(): MutableList<SectionModel> {
         val sectionItems = mutableListOf<SectionModel>()
+        try {
+            if (jsonData?.isNotBlank() == true) {
+                val questionData = parseJsonObject(jsonData!!)
 
-        if (jsonData?.isNotBlank() == true) {
-            val questionData = parseJsonObject(jsonData!!)
+                questionData.run {
+                    if (has("questions")) {
+                        settingsData = getJSONObject("settings")
+                        val questionsArray = getJSONArray("questions")
 
-            questionData.run {
-                if (has("questions")) {
-                    settingsData = getJSONObject("settings")
-                    val questionsArray = getJSONArray("questions")
+                        for (i in 0 until questionsArray.length()) {
+                            with(questionsArray.getJSONObject(i)) {
+                                val questionId = getString("question_id")
+                                val questionTitle = getString("question_title")
+                                var questionFileName: String
+                                var questionImage: String?
+                                var questionOldFileName: String
 
-                    for (i in 0 until questionsArray.length()) {
-                        with(questionsArray.getJSONObject(i)) {
-                            val questionId = getString("question_id")
-                            val questionTitle = getString("question_title")
-                            var questionFileName: String
-                            var questionImage: String?
-                            var questionOldFileName: String
-
-                            getJSONArray("question_files").let { filesArray ->
-                                filesArray.getJSONObject(0).let { filesObject ->
-                                    questionFileName = filesObject.getString("file_name")
-                                    questionOldFileName = filesObject.getString("old_file_name")
-                                    questionImage =
-                                        filesObject.getString("file").ifEmpty { null }
-                                }
-                            }
-
-                            when (val questionType = getString("question_type")) {
-                                // Handle different question types
-                                "section" -> {
-                                    val section =
-                                        SectionModel(
-                                            questionId,
-                                            questionTitle,
-                                            null,
-                                            questionType
-                                        )
-                                    sectionItems.add(section)
+                                getJSONArray("question_files").let { filesArray ->
+                                    filesArray.getJSONObject(0).let { filesObject ->
+                                        questionFileName = filesObject.getString("file_name")
+                                        questionOldFileName = filesObject.getString("old_file_name")
+                                        questionImage =
+                                            filesObject.getString("file").ifEmpty { null }
+                                    }
                                 }
 
-                                "multiple_choice" -> {
-                                    val optionsArray = getJSONArray("options")
-                                    val optionsList = mutableListOf<MultipleChoiceOption>()
+                                when (val questionType = getString("question_type")) {
+                                    // Handle different question types
+                                    "section" -> {
+                                        val section =
+                                            SectionModel(
+                                                questionId,
+                                                questionTitle,
+                                                null,
+                                                questionType
+                                            )
+                                        sectionItems.add(section)
+                                    }
 
-                                    for (j in 0 until optionsArray.length()) {
-                                        optionsArray.getJSONObject(j).let { option ->
-                                            val order = option.getString("order")
-                                            val text = option.getString("text")
-                                            val fileName: String
-                                            val oldFileName: String
-                                            val file: String?
+                                    "multiple_choice" -> {
+                                        val optionsArray = getJSONArray("options")
+                                        val optionsList = mutableListOf<MultipleChoiceOption>()
 
-                                            with(option.getJSONArray("option_files")) {
-                                                getJSONObject(0).let { filesObject ->
-                                                    fileName =
-                                                        filesObject.getString("file_name")
-                                                    oldFileName =
-                                                        filesObject.getString("old_file_name")
-                                                    file = filesObject.getString("file")
-                                                        .ifEmpty { null }
+                                        for (j in 0 until optionsArray.length()) {
+                                            optionsArray.getJSONObject(j).let { option ->
+                                                val order = option.getString("order")
+                                                val text = option.getString("text")
+                                                val fileName: String
+                                                val oldFileName: String
+                                                val file: String?
+
+                                                with(option.getJSONArray("option_files")) {
+                                                    getJSONObject(0).let { filesObject ->
+                                                        fileName =
+                                                            filesObject.getString("file_name")
+                                                        oldFileName =
+                                                            filesObject.getString("old_file_name")
+                                                        file = filesObject.getString("file")
+                                                            .ifEmpty { null }
+                                                    }
                                                 }
-                                            }
 
-                                            val optionModel =
-                                                MultipleChoiceOption(
-                                                    text,
-                                                    order,
-                                                    fileName,
-                                                    file,
-                                                    oldFileName
+                                                val optionModel =
+                                                    MultipleChoiceOption(
+                                                        text,
+                                                        order,
+                                                        fileName,
+                                                        file,
+                                                        oldFileName
+                                                    )
+
+                                                optionsList.add(optionModel)
+                                            }
+                                        }
+
+                                        getJSONObject("correct").let { answer ->
+                                            val answerOrder = answer.getString("order")
+                                            val correctAnswer = answer.getString("text")
+
+                                            val multiChoiceQuestion =
+                                                MultiChoiceQuestion(
+                                                    questionId,
+                                                    questionTitle,
+                                                    questionFileName,
+                                                    questionImage,
+                                                    questionOldFileName,
+                                                    optionsList,
+                                                    answerOrder.toInt(),
+                                                    correctAnswer
                                                 )
 
-                                            optionsList.add(optionModel)
+                                            val questionSection =
+                                                SectionModel(
+                                                    questionId, "",
+                                                    QuestionItem.MultiChoice(
+                                                        multiChoiceQuestion
+                                                    ),
+                                                    questionType
+                                                )
+
+                                            sectionItems.add(questionSection)
                                         }
                                     }
 
-                                    getJSONObject("correct").let { answer ->
-                                        val answerOrder = answer.getString("order")
-                                        val correctAnswer = answer.getString("text")
+                                    else -> {
+                                        getJSONObject("correct").let { answer ->
+                                            val correctAnswer = answer.getString("text")
 
-                                        val multiChoiceQuestion =
-                                            MultiChoiceQuestion(
-                                                questionId,
-                                                questionTitle,
-                                                questionFileName,
-                                                questionImage,
-                                                questionOldFileName,
-                                                optionsList,
-                                                answerOrder.toInt(),
-                                                correctAnswer
-                                            )
+                                            val shortAnswerModel =
+                                                ShortAnswerModel(
+                                                    questionId,
+                                                    questionTitle,
+                                                    questionFileName,
+                                                    questionImage,
+                                                    questionOldFileName,
+                                                    correctAnswer
+                                                )
 
-                                        val questionSection =
-                                            SectionModel(
-                                                questionId, "",
-                                                QuestionItem.MultiChoice(
-                                                    multiChoiceQuestion
-                                                ),
-                                                questionType
-                                            )
+                                            val questionSection =
+                                                SectionModel(
+                                                    questionId,
+                                                    "",
+                                                    QuestionItem.ShortAnswer(
+                                                        shortAnswerModel
+                                                    ),
+                                                    questionType
+                                                )
 
-                                        sectionItems.add(questionSection)
-                                    }
-                                }
-
-                                else -> {
-                                    getJSONObject("correct").let { answer ->
-                                        val correctAnswer = answer.getString("text")
-
-                                        val shortAnswerModel =
-                                            ShortAnswerModel(
-                                                questionId,
-                                                questionTitle,
-                                                questionFileName,
-                                                questionImage,
-                                                questionOldFileName,
-                                                correctAnswer
-                                            )
-
-                                        val questionSection =
-                                            SectionModel(
-                                                questionId,
-                                                "",
-                                                QuestionItem.ShortAnswer(
-                                                    shortAnswerModel
-                                                ),
-                                                questionType
-                                            )
-
-                                        sectionItems.add(questionSection)
+                                            sectionItems.add(questionSection)
+                                        }
                                     }
                                 }
                             }
@@ -443,8 +444,9 @@ class AdminELearningQuestionPreviewFragment :
                 }
             }
 
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
 
         return sectionItems
     }
