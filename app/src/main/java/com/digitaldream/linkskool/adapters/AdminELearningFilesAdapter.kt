@@ -1,23 +1,27 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.dialog.AdminELearningFilePreviewDialogFragment
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.utils.FileViewModel
 import com.squareup.picasso.Picasso
-import timber.log.Timber
 import java.io.File
 
 class AdminELearningFilesAdapter(
+    private val fragmentManager: FragmentManager,
     private val itemList: MutableList<AttachmentModel>,
     private val fileViewModel: FileViewModel
 ) : RecyclerView.Adapter<AdminELearningFilesAdapter.FilesViewHolder>() {
@@ -107,37 +111,75 @@ class AdminELearningFilesAdapter(
     }
 
     private fun viewFiles(itemView: View, attachmentModel: AttachmentModel) {
-        val file = File(attachmentModel.uri.toString())
         try {
-            val uri = FileProvider.getUriForFile(
+            val uri = when (attachmentModel.type) {
+                "video", "pdf", "word" -> getFileUri(itemView, attachmentModel.uri.toString())
+                else -> null
+            }
+
+            if (uri != null) {
+                openFileWithIntent(itemView, uri, attachmentModel.type)
+            } else {
+                previewImageOrExcel(itemView, attachmentModel)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun getFileUri(itemView: View, fileUri: String): Uri? {
+        val file = File(fileUri)
+        return if (file.exists()) {
+            FileProvider.getUriForFile(
                 itemView.context,
                 "${itemView.context.packageName}.provider",
                 file
             )
-
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-
-            when (attachmentModel.type) {
-                "video" -> {
-                    intent.setDataAndType(uri, "video/*")
-                    itemView.context.startActivity(intent)
-                }
-
-                "pdf" -> {
-                    intent.setDataAndType(uri, "application/pdf")
-                    itemView.context.startActivity(intent)
-                }
-
-                "word" -> {
-                    intent.setDataAndType(uri, "application/msword")
-                    itemView.context.startActivity(intent)
-                }
-
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } else {
+            null
         }
+    }
+
+    private fun openFileWithIntent(itemView: View, uri: Uri, fileType: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+        val mimeType = when (fileType) {
+            "video" -> "video/*"
+            "pdf" -> "application/pdf"
+            "word" -> "application/msword"
+            else -> null
+        }
+
+        if (mimeType != null) {
+            intent.setDataAndType(uri, mimeType)
+            itemView.context.startActivity(intent)
+        }
+    }
+
+    private fun previewImageOrExcel(
+        itemView: View,
+        attachmentModel: AttachmentModel,
+    ) {
+        val filePath = when (attachmentModel.type) {
+            "image" -> "${itemView.context.getString(R.string.base_url)}/${attachmentModel.uri}"
+            "excel" -> attachmentModel.uri.toString()
+            else -> null
+
+        }
+
+        if (filePath != null) {
+            AdminELearningFilePreviewDialogFragment.newInstance(
+                attachmentModel.name,
+                filePath,
+                attachmentModel.type
+            ).show(fragmentManager, "view")
+        } else {
+            Toast.makeText(itemView.context, "Unable to open file", Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 
 }

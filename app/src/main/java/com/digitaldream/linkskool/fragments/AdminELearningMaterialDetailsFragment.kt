@@ -187,7 +187,7 @@ class AdminELearningMaterialDetailsFragment :
     }
 
     private fun setUpFilesRecyclerView() {
-        filesAdapter = AdminELearningFilesAdapter(fileList, fileViewModel)
+        filesAdapter = AdminELearningFilesAdapter(parentFragmentManager,fileList, fileViewModel)
 
         attachmentRecyclerView.apply {
             hasFixedSize()

@@ -66,9 +66,11 @@ class AdminELearningAttachmentDialog(
                         mimeType?.contains("image") == true -> FileType.IMAGE
                         mimeType?.contains("video") == true -> FileType.VIDEO
                         mimeType == "application/pdf" -> FileType.PDF
-                        mimeType == "application/msword" || mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> FileType.WORD
+                        mimeType == "application/msword" || mimeType ==
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> FileType.WORD
                         mimeType == "text/csv" -> FileType.CSV
-                        mimeType == "application/vnd.ms-excel" || mimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" -> FileType.EXCEL
+                        mimeType == "application/vnd.ms-excel" || mimeType ==
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" -> FileType.EXCEL
                         else -> FileType.UNKNOWN
                     }
 

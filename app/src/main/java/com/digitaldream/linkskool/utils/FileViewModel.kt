@@ -192,6 +192,7 @@ class FileViewModel(application: Application) : AndroidViewModel(application) {
             val inputStream = FileInputStream(excelPath)
             val workbook = XSSFWorkbook(inputStream)
             val sheet = workbook.getSheetAt(0)
+            inputStream.close()
 
             val pdfDocument = Document()
             PdfWriter.getInstance(pdfDocument, FileOutputStream(convertedFilePath))
