@@ -50,11 +50,16 @@ class AdminELearningCommentAdapter(
     private fun setUpPopMenu(itemView: View, position: Int) {
         itemView.setOnClickListener {
             PopupMenu(it.context, it, Gravity.END).apply {
-                inflate(R.menu.delete_class_menu)
+                inflate(R.menu.section_menu)
 
                 setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
-                        R.id.delete_menu -> {
+                        R.id.editSection -> {
+
+                            true
+                        }
+
+                        R.id.deleteSection -> {
                             itemList.removeAt(position)
 
                             notifyDataSetChanged()

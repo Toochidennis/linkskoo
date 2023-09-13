@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,6 +14,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
 import com.digitaldream.linkskool.models.SharedViewModel
 import com.digitaldream.linkskool.utils.CustomViewPager2
@@ -163,12 +165,18 @@ class AdminELearningAssignmentDetailsFragment :
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.refresh -> {
-                        // setUpPager()
+
 
                         true
                     }
 
                     R.id.edit -> {
+                        startActivity(
+                            Intent(requireContext(), ELearningActivity::class.java)
+                                .putExtra("from", "assignment")
+                                .putExtra("task", "edit")
+                                .putExtra("json", jsonData)
+                        )
                         true
                     }
 

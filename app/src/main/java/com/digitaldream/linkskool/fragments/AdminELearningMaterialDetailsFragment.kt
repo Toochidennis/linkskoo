@@ -1,10 +1,14 @@
 package com.digitaldream.linkskool.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -13,6 +17,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.ELearningActivity
 import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
@@ -55,6 +62,7 @@ class AdminELearningMaterialDetailsFragment :
     private var fileList = mutableListOf<AttachmentModel>()
 
     private lateinit var fileViewModel: FileViewModel
+    private lateinit var menuHost: MenuHost
 
     private var jsonData: String? = null
     private var taskType: String? = null
@@ -91,6 +99,8 @@ class AdminELearningMaterialDetailsFragment :
 
         setUpViews(view)
 
+        setUpMenu()
+
         onWatchEditText()
 
         setUpCommentRecyclerView()
@@ -114,7 +124,7 @@ class AdminELearningMaterialDetailsFragment :
             commentEditText = findViewById(R.id.commentEditText)
             sendMessageBtn = findViewById(R.id.sendMessageBtn)
 
-
+            menuHost = requireActivity()
             (requireContext() as AppCompatActivity).setSupportActionBar(toolbar)
             val actionBar = (requireContext() as AppCompatActivity).supportActionBar
 
@@ -125,7 +135,6 @@ class AdminELearningMaterialDetailsFragment :
             }
         }
     }
-
 
     private fun parseFileJsonObject() {
         try {
@@ -187,7 +196,7 @@ class AdminELearningMaterialDetailsFragment :
     }
 
     private fun setUpFilesRecyclerView() {
-        filesAdapter = AdminELearningFilesAdapter(parentFragmentManager,fileList, fileViewModel)
+        filesAdapter = AdminELearningFilesAdapter(parentFragmentManager, fileList, fileViewModel)
 
         attachmentRecyclerView.apply {
             hasFixedSize()
@@ -261,6 +270,47 @@ class AdminELearningMaterialDetailsFragment :
         inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
         editText.clearFocus()
         editText.setText("")
+    }
+
+    private fun setUpMenu() {
+        menuHost.addMenuProvider(object : MenuProvider {
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_e_learning_details, menu)
+
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.refresh -> {
+
+
+                        true
+                    }
+
+                    R.id.edit -> {
+                        startActivity(
+                            Intent(requireContext(), ELearningActivity::class.java)
+                                .putExtra("from", "material")
+                                .putExtra("task", "edit")
+                                .putExtra("json", jsonData)
+                        )
+
+                        true
+                    }
+
+                    R.id.delete -> {
+                        true
+                    }
+
+                    else -> {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        false
+                    }
+
+                }
+            }
+        })
     }
 
 }

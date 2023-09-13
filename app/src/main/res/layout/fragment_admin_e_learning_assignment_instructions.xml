@@ -16,8 +16,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_16"
             android:orientation="vertical">
 
             <TextView
@@ -25,6 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_16"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14" />
@@ -34,15 +34,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_10"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/test_color_1"
-                android:textSize="@dimen/text_18" />
+                android:textSize="@dimen/text_24" />
 
             <TextView
                 android:id="@+id/assignmentGradeTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_10"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14" />
@@ -50,30 +54,38 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/dimen_10"
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
                 android:background="@color/test_color_1" />
 
             <TextView
                 android:id="@+id/assignmentDescriptionTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_10"
+                android:padding="@dimen/dimen_16"
                 android:text=""
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14" />
 
             <TextView
                 android:id="@+id/attachmentTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_16"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text="Attachments"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/attachmentRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_10" />
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:nestedScrollingEnabled="false" />
 
             <View
                 android:layout_width="match_parent"
@@ -81,17 +93,31 @@
                 android:layout_marginTop="@dimen/dimen_10"
                 android:background="@color/test_color_7" />
 
+            <TextView
+                android:id="@+id/commentTitleTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_16"
+                android:text="Class comments"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14"
+                android:visibility="gone" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_10" />
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:nestedScrollingEnabled="false" />
 
             <TextView
                 android:id="@+id/addCommentTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dimen_16"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingTop="0dp"
+                android:paddingEnd="@dimen/dimen_16"
                 android:paddingBottom="@dimen/dimen_16"
                 android:text="Add class comment"
                 android:textColor="@color/test_color_1"
@@ -101,6 +127,7 @@
                 android:id="@+id/commentEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_16"
                 android:hint="Class comment"
                 android:visibility="gone"
                 app:hintAnimationEnabled="true"
@@ -110,13 +137,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/edit_text_bg5"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:lineSpacingMultiplier="1"
-                    android:lines="1"
-                    android:minLines="5"
-                    android:overScrollMode="ifContentScrolls"
+                    android:imeOptions="actionSend"
+                    android:inputType="textCapSentences"
                     android:padding="@dimen/dimen_16"
-                    android:scrollbars="vertical"
                     android:textSize="@dimen/text_14" />
 
             </com.google.android.material.textfield.TextInputLayout>

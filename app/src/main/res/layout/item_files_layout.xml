@@ -41,9 +41,9 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:lines="2"
-        android:drawablePadding="@dimen/dimen_10"
+        android:drawablePadding="5dp"
         android:textColor="@color/black"
-        android:textSize="13sp"
+        android:textSize="12sp"
         app:drawableTint="@color/test_color_3" />
 
 </LinearLayout>

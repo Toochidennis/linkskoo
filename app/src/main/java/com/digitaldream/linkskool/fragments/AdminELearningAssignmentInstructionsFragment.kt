@@ -1,11 +1,25 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
+import com.digitaldream.linkskool.models.AttachmentModel
+import com.digitaldream.linkskool.models.CommentDataModel
+import com.digitaldream.linkskool.utils.FileViewModel
+import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONArray
@@ -27,8 +41,16 @@ class AdminELearningAssignmentInstructionsFragment :
     private lateinit var attachmentTxt: TextView
     private lateinit var attachmentRecyclerView: RecyclerView
     private lateinit var commentRecyclerView: RecyclerView
-    private lateinit var addCommentTxt: TextView
-    private lateinit var addCommentInput: TextInputLayout
+    private lateinit var commentTxt: TextView
+    private lateinit var commentTitleTxt: TextView
+    private lateinit var commentInput: TextInputLayout
+
+    private lateinit var commentAdapter: AdminELearningCommentAdapter
+    private lateinit var filesAdapter: AdminELearningFilesAdapter
+    private val commentList = mutableListOf<CommentDataModel>()
+    private var fileList = mutableListOf<AttachmentModel>()
+
+    private lateinit var fileViewModel: FileViewModel
 
     // Variables to store data
     private var jsonData: String? = null
@@ -45,6 +67,8 @@ class AdminELearningAssignmentInstructionsFragment :
             jsonData = it.getString(ARG_PARAM1)
             taskType = it.getString(ARG_PARAM2)
         }
+
+        fileViewModel = ViewModelProvider(this)[FileViewModel::class.java]
     }
 
 
@@ -60,12 +84,19 @@ class AdminELearningAssignmentInstructionsFragment :
             }
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpViews(view)
 
-        parseJsonObject(jsonData!!)
+        parseJsonObject()
+
+        setUpCommentRecyclerView()
+
+        commentClick()
+
+        updateComment()
     }
 
     private fun setUpViews(view: View) {
@@ -77,66 +108,147 @@ class AdminELearningAssignmentInstructionsFragment :
             attachmentTxt = findViewById(R.id.attachmentTxt)
             attachmentRecyclerView = findViewById(R.id.attachmentRecyclerView)
             commentRecyclerView = findViewById(R.id.commentRecyclerView)
-            addCommentTxt = findViewById(R.id.addCommentTxt)
-            addCommentInput = findViewById(R.id.commentEditText)
+            commentTxt = findViewById(R.id.addCommentTxt)
+            commentTitleTxt = findViewById(R.id.commentTitleTxt)
+            commentInput = findViewById(R.id.commentEditText)
         }
     }
 
-    private fun parseJsonObject(json: String) {
-        try {
-            JSONObject(json).let {
-                //    put("id", it.getString("id"))
-                title = it.getString("title")
-                grade = "${it.getString("objective")} points"
-                description = it.getString("description")
-                dueDate = "Due ${formatDate2(it.getString("end_date"), "custom1")}"
+    private fun setUpFilesRecyclerView() {
+        filesAdapter = AdminELearningFilesAdapter(parentFragmentManager, fileList, fileViewModel)
 
-//                put("type", it.getString("type"))
-//                put("topic", it.getString("category"))
-//                put("topic_id", it.getString("parent"))
-//                put("files", parseFilesArray(JSONArray(it.getString("picref"))))
-//                put("class", parseClassArray(JSONArray(it.getString("class"))))
-//                put("level", it.getString("level"))
-//                put("course", it.getString("course_id"))
-//                put("course_name", it.getString("course_name"))
-//                put("start_date", it.getString("start_date"))
-//                put("author_id", it.getString("author_id"))
-//                put("author_name", it.getString("author_name"))
-//                put("year", it.getString("term"))
-//                put("term", it.getString("term"))
+        attachmentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            adapter = filesAdapter
+        }
+
+    }
+
+    private fun setUpCommentRecyclerView() {
+        commentAdapter = AdminELearningCommentAdapter(commentList)
+
+        commentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
+        }
+    }
+
+
+    private fun parseJsonObject() {
+        try {
+            if (jsonData?.isNotBlank() == true) {
+                jsonData?.let { json ->
+                    JSONObject(json).let {
+                        title = it.getString("title")
+                        grade = it.getString("objective")
+                        description = it.getString("description")
+                        dueDate = formatDate2(it.getString("end_date"), "custom1")
+                        parseFilesArray(JSONArray(it.getString("picref")))
+                    }
+                }
+
+                setTextOnViews()
+
+                setUpFilesRecyclerView()
             }
 
-            setDataOnFields()
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun setDataOnFields() {
-        dueDateTxt.text = dueDate
+
+    private fun setTextOnViews() {
+        if (dueDate?.isNotBlank() == true) {
+            "Due $dueDate".let { dueDateTxt.text = it }
+        }
+
+        if (grade?.isNotBlank() == true) {
+            "$grade points".let { gradeTxt.text = it }
+        }
+
         titleTxt.text = title
-        gradeTxt.text = grade
         descriptionTxt.text = description
     }
 
-    private fun parseFilesArray(files: JSONArray): JSONArray {
-        return JSONArray().apply {
-            JSONObject().apply {
-                files.getJSONObject(0).let {
-                    put("file_name", trimText(it.getString("file_name")))
-                    put("old_file_name", trimText(it.getString("file_name")))
-                    put("type", it.getString("type"))
-                    put("file", it.getString("file_name"))
-                }
-            }.let { jsonObject ->
-                put(jsonObject)
+    private fun parseFilesArray(files: JSONArray) {
+        for (i in 0 until files.length()) {
+            files.getJSONObject(i).let {
+                val fileName = trimText(it.getString("file_name"))
+                val oldFileName = trimText(it.getString("file_name"))
+                val type = it.getString("type")
+                val uri = it.getString("file_name")
+
+                val attachmentModel = AttachmentModel(fileName, oldFileName, type, uri)
+
+                fileList.add(attachmentModel)
             }
         }
     }
 
     private fun trimText(text: String): String {
         return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
+    }
+
+    private fun commentClick() {
+        commentTxt.setOnClickListener {
+            it.isVisible = false
+            commentInput.isVisible = true
+
+            commentInput.editText?.let { edit ->
+                FunctionUtils.showSoftInput(
+                    requireContext(),
+                    edit
+                )
+            }
+        }
+
+    }
+
+    private fun sendComment() {
+        val message = commentInput.editText?.text.toString().trim()
+        val date = formatDate2(FunctionUtils.getDate())
+
+        if (message.isNotBlank()) {
+            val commentDataModel = CommentDataModel("id", "id", "Toochi Dennis", message, date)
+            commentList.add(commentDataModel)
+
+            commentInput.isVisible = false
+            commentTxt.isVisible = true
+            commentTitleTxt.isVisible = true
+
+            commentInput.editText?.let { hideKeyboard(it) }
+
+            commentAdapter.notifyDataSetChanged()
+        } else {
+            commentInput.error = "Please provide a comment"
+        }
+    }
+
+    private fun updateComment() {
+        commentInput.editText?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                sendComment()
+
+                return@setOnEditorActionListener true
+            } else if (actionId == EditorInfo.IME_ACTION_NONE) {
+                commentInput.isVisible = false
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
+    }
+
+    private fun hideKeyboard(editText: EditText) {
+        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
+        editText.clearFocus()
+        editText.setText("")
     }
 
 }
