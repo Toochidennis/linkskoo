@@ -139,18 +139,4 @@ class AdminELearningAssignmentInstructionsFragment :
         return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
     }
 
-    private fun parseClassArray(classArray: JSONArray): JSONArray {
-        return JSONArray().apply {
-            for (i in 0 until classArray.length()) {
-                classArray.getJSONObject(i).let {
-                    JSONObject().apply {
-                        put("id", it.getString("id"))
-                        put("name", it.getString("name"))
-                    }.let { jsonObject ->
-                        put(jsonObject)
-                    }
-                }
-            }
-        }
-    }
 }

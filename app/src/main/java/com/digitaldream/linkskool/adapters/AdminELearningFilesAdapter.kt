@@ -1,6 +1,7 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,7 @@ class AdminELearningFilesAdapter(
 
             when (attachmentModel.type) {
                 "image" -> loadImage(itemView, attachmentModel, fileImageView)
+                "url" -> loadUrl(itemView, fileImageView)
                 else -> {
                     fileSavePath = createTempDir(itemView, attachmentModel)
 
@@ -82,6 +84,17 @@ class AdminELearningFilesAdapter(
 
         picasso.load(fileURL).into(imageView)
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+    }
+
+    private fun loadUrl(itemView: View, imageView: ImageView) {
+        imageView.apply {
+            setColorFilter(
+                ContextCompat.getColor(itemView.context, R.color.test_color_7),
+                PorterDuff.Mode.SRC_IN
+            )
+
+            setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_link))
+        }
     }
 
 
@@ -113,14 +126,19 @@ class AdminELearningFilesAdapter(
     private fun viewFiles(itemView: View, attachmentModel: AttachmentModel) {
         try {
             val uri = when (attachmentModel.type) {
-                "video", "pdf", "word" -> getFileUri(itemView, attachmentModel.uri.toString())
+                "video", "pdf", "word", "excel" -> getFileUri(
+                    itemView,
+                    attachmentModel.uri.toString()
+                )
+
+                "url" -> Uri.parse(attachmentModel.uri.toString())
                 else -> null
             }
 
             if (uri != null) {
                 openFileWithIntent(itemView, uri, attachmentModel.type)
             } else {
-                previewImageOrExcel(itemView, attachmentModel)
+                previewImage(itemView, attachmentModel)
             }
 
         } catch (e: Exception) {
@@ -149,36 +167,36 @@ class AdminELearningFilesAdapter(
             "video" -> "video/*"
             "pdf" -> "application/pdf"
             "word" -> "application/msword"
+            "excel" -> "application/vnd.ms-excel"
+            "url" -> uri
             else -> null
         }
 
-        if (mimeType != null) {
-            intent.setDataAndType(uri, mimeType)
-            itemView.context.startActivity(intent)
-        }
+        if (mimeType != null)
+            if (mimeType is String) {
+                intent.setDataAndType(uri, mimeType)
+                itemView.context.startActivity(intent)
+            } else {
+                itemView.context.startActivity(
+                    Intent(Intent.ACTION_VIEW, mimeType as Uri)
+                )
+            }
     }
 
-    private fun previewImageOrExcel(
-        itemView: View,
-        attachmentModel: AttachmentModel,
-    ) {
+    private fun previewImage(itemView: View, attachmentModel: AttachmentModel) {
         val filePath = when (attachmentModel.type) {
             "image" -> "${itemView.context.getString(R.string.base_url)}/${attachmentModel.uri}"
-            "excel" -> attachmentModel.uri.toString()
             else -> null
-
         }
 
         if (filePath != null) {
             AdminELearningFilePreviewDialogFragment.newInstance(
                 attachmentModel.name,
                 filePath,
-                attachmentModel.type
-            ).show(fragmentManager, "view")
+            ).show(fragmentManager, "view file")
         } else {
             Toast.makeText(itemView.context, "Unable to open file", Toast.LENGTH_SHORT).show()
         }
-
 
     }
 
