@@ -163,4 +163,6 @@
     <string name="tab_layout">Tab layout</string>
     <string name="view_pager">View pager</string>
     <string name="file_icon">file icon</string>
+    <string name="nested_scrollview">Nested scrollView</string>
+    <string name="dashed_line">dashed line</string>
 </resources>

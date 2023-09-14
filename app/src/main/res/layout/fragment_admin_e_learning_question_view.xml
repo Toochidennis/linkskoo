@@ -16,8 +16,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_16"
             android:orientation="vertical">
 
             <TextView
@@ -34,6 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_10"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/test_color_1"
                 android:textSize="@dimen/text_18" />
@@ -43,6 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_10"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14" />
@@ -50,14 +52,16 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginStart="@dimen/dimen_16"
                 android:layout_marginTop="@dimen/dimen_10"
+                android:layout_marginEnd="@dimen/dimen_16"
                 android:background="@color/test_color_1" />
 
             <TextView
                 android:id="@+id/descriptionTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_10"
+                android:padding="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14" />
@@ -78,30 +82,32 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height=".5dp"
-                android:layout_marginTop="@dimen/dimen_10"
+                android:layout_marginTop="@dimen/dimen_16"
                 android:background="@color/test_color_7" />
 
             <TextView
                 android:id="@+id/commentTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_16"
+                android:padding="@dimen/dimen_16"
                 android:text="Class comment"
-                android:visibility="gone"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_14" />
+                android:textSize="@dimen/text_14"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16" />
 
             <TextView
                 android:id="@+id/addCommentTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dimen_16"
-                android:paddingBottom="@dimen/dimen_16"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
                 android:text="Add class comment"
                 android:textColor="@color/test_color_1"
                 android:textSize="@dimen/text_14" />
@@ -109,8 +115,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/commentEditText"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dimen_16"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_16"
                 android:hint="Class comment"
                 android:visibility="gone"
                 app:hintAnimationEnabled="true"

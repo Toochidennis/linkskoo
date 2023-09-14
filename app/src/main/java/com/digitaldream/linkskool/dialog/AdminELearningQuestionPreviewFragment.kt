@@ -1,10 +1,10 @@
 package com.digitaldream.linkskool.dialog
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,9 +17,16 @@ import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
+import java.util.Locale
 
 private const val ARG_PARAM1 = "section"
 private const val ARG_PARAM2 = "settings"
@@ -28,8 +35,7 @@ class AdminELearningQuestionPreviewFragment :
     Fragment(R.layout.fragment_admin_e_learning_question_preview) {
 
     private lateinit var dismissBtn: ImageButton
-    private lateinit var timeTxt: TextView
-    private lateinit var timeProgressBar: ProgressBar
+    private lateinit var countDownTxt: TextView
     private lateinit var questionCountTxt: TextView
     private lateinit var questionTotalCountTxt: TextView
     private lateinit var sectionTxt: TextView
@@ -39,6 +45,7 @@ class AdminELearningQuestionPreviewFragment :
 
     // Initialise section items
     private lateinit var sectionItems: MutableList<SectionModel>
+    private lateinit var countDownJob: Job
 
     // Variables to store data
     private var currentSectionIndex: Int = 0
@@ -86,8 +93,7 @@ class AdminELearningQuestionPreviewFragment :
     private fun setUpViews(view: View) {
         view.apply {
             dismissBtn = findViewById(R.id.dismissBtn)
-            timeTxt = findViewById(R.id.timeTxt)
-            timeProgressBar = findViewById(R.id.timeProgressBar)
+            countDownTxt = findViewById(R.id.durationTxt)
             questionCountTxt = findViewById(R.id.questionCount)
             questionTotalCountTxt = findViewById(R.id.questionTotalCount)
             sectionTxt = findViewById(R.id.sectionTxt)
@@ -108,7 +114,6 @@ class AdminELearningQuestionPreviewFragment :
 
         questionTotalCountTxt.text = getQuestionCount().toString()
     }
-
 
     private fun showQuestion() {
         val currentSection = sectionItems.getOrNull(currentSectionIndex)
@@ -204,7 +209,6 @@ class AdminELearningQuestionPreviewFragment :
 
         return questionCount
     }
-
 
     // Parse the question JSON array
     private fun parseQuestionJson(jsonArray: JSONArray): JSONArray {
@@ -458,11 +462,52 @@ class AdminELearningQuestionPreviewFragment :
 
             if (status == "start") {
                 showQuestion()
+                countDownTimer()
             } else {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
         }.show(parentFragmentManager, "Intro")
+    }
+
+    private fun countDownTimer() {
+        val quizDurationSeconds = 60 * 60
+        val quizDurationMillis = quizDurationSeconds * 1000
+        val countDownIntervalMillis = 1000
+
+        countDownJob = CoroutineScope(Dispatchers.Default).launch {
+            var remainingTimeMillis = quizDurationMillis
+
+            while (remainingTimeMillis > 0) {
+                val minutes = remainingTimeMillis / 1000 / 60
+                val seconds = (remainingTimeMillis / 1000) % 60
+                val timeString = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+
+                withContext(Dispatchers.Main) {
+                    countDownTxt.text = timeString
+
+                    if (remainingTimeMillis <= 5 * 60 * 1000) {
+                        countDownTxt.setTextColor(Color.RED)
+                    }
+                }
+
+                delay(countDownIntervalMillis.toLong())
+                remainingTimeMillis -= countDownIntervalMillis
+            }
+
+
+            withContext(Dispatchers.Main) {
+                countDownTxt.text = "00:00"
+            }
+
+
+        }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownJob.cancel()
     }
 
 

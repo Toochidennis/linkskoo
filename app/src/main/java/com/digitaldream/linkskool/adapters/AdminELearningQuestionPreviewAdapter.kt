@@ -1,6 +1,10 @@
 package com.digitaldream.linkskool.adapters
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,7 +87,7 @@ class AdminELearningQuestionPreviewAdapter(
 
         fun bind(multiItem: MultiChoiceQuestion) {
             questionTxt.text = multiItem.questionText
-            loadImage(multiItem.attachmentUri, questionImage)
+            loadImage(itemView.context, multiItem.attachmentUri, questionImage)
 
             multiItem.options?.let {
                 optionsAdapter(it, optionRecyclerView)
@@ -99,7 +103,7 @@ class AdminELearningQuestionPreviewAdapter(
 
         fun bind(shortAnswer: ShortAnswerModel) {
             questionTxt.text = shortAnswer.questionText
-            loadImage(shortAnswer.attachmentUri, questionImage)
+            loadImage(itemView.context, shortAnswer.attachmentUri, questionImage)
             answerEditText.setText(shortAnswer.answerText)
         }
 
@@ -124,7 +128,7 @@ class AdminELearningQuestionPreviewAdapter(
                 optionLabel.text = labelList[position].toString()
 
                 if (model.optionText.isEmpty()) {
-                    loadImage(model.attachmentUri, optionImage)
+                    loadImage(itemView.context, model.attachmentUri, optionImage)
                     optionTxt.isVisible = false
                 } else {
                     optionTxt.text = model.optionText
@@ -149,17 +153,38 @@ class AdminELearningQuestionPreviewAdapter(
 
     }
 
-    private fun loadImage(imageUri: Any?, imageView: ImageView) {
+    private fun isBased64(encodedString: String): Boolean {
+        return try {
+            Base64.decode(encodedString, Base64.DEFAULT)
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+
+    }
+
+    private fun loadImage(context: Context, imageUri: Any?, imageView: ImageView) {
         try {
             when (imageUri) {
                 is String -> {
                     if (imageUri.isNotEmpty()) {
-                        Picasso.get().load(imageUri).into(imageView)
-                        imageView.isVisible = true
+                        val isBase64 = isBased64(imageUri)
+
+                        if (isBase64) {
+                            val bitmap = decodeBase64(imageUri)
+                            imageView.isVisible = bitmap != null
+                            imageView.setImageBitmap(bitmap)
+                        } else {
+                            val url = "${context.getString(R.string.base_url)}/$imageUri"
+                            Picasso.get().load(url).into(imageView)
+                            imageView.isVisible = true
+                        }
+
                     } else {
                         imageView.isVisible = false
                     }
-
                 }
 
                 is Uri -> {
@@ -173,6 +198,16 @@ class AdminELearningQuestionPreviewAdapter(
 
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun decodeBase64(encodedString: String): Bitmap? {
+        return try {
+            val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
+            Bitmap.createBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }

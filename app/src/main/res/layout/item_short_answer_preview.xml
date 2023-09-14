@@ -14,11 +14,8 @@
         <ImageView
             android:id="@+id/questionImage"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:contentDescription="@string/todo"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile_pic"
-            android:visibility="visible" />
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/todo" />
 
     </androidx.cardview.widget.CardView>
 
@@ -32,14 +29,15 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_24" />
 
+
     <EditText
         android:id="@+id/answerEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_64"
         android:autofillHints="title"
-        android:background="@drawable/edit_text_bg4"
         android:cursorVisible="true"
+        android:drawableBottom="@drawable/edit_text_bg5"
         android:hint="Your answer"
         android:inputType="textCapSentences|textMultiLine"
         android:lineSpacingMultiplier="1"
