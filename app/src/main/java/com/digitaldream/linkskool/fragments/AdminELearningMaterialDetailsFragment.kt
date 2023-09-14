@@ -195,6 +195,7 @@ class AdminELearningMaterialDetailsFragment :
 
     }
 
+
     private fun setUpFilesRecyclerView() {
         filesAdapter = AdminELearningFilesAdapter(parentFragmentManager, fileList, fileViewModel)
 
