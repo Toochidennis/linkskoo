@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".fragments.AdminELearningQuestionTestFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -12,11 +14,36 @@
         android:layout_alignParentTop="true"
         android:background="@color/white">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:layout_height="?actionBarSize">
+
+            <ImageButton
+                android:id="@+id/dismissBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/ripple_effect11"
+                android:clickable="true"
+                android:contentDescription="@string/close"
+                android:focusable="true"
+                android:padding="@dimen/dimen_10"
+                android:src="@drawable/ic_arrow_back_black_24dp"
+                app:tint="@color/test_color_7" />
+
+            <TextView
+                android:id="@+id/durationTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:fontFamily="@font/poppins_regular"
+                android:padding="@dimen/dimen_16"
+                android:text=""
+                android:textColor="@color/test_color_1"
+                android:textSize="@dimen/text_16" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -25,13 +52,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
         android:layout_alignParentBottom="true"
-        android:scrollIndicators="left"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="true"
-        android:overScrollMode="ifContentScrolls"
-        android:scrollbarFadeDuration="@integer/material_motion_duration_short_1"
         android:contentDescription="@string/nested_scrollview"
-        android:fillViewport="true">
+        android:fadeScrollbars="true"
+        android:fillViewport="true"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollIndicators="left"
+        android:scrollbarFadeDuration="@integer/material_motion_duration_short_1"
+        android:scrollbars="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -52,7 +79,7 @@
 
             <TextView
                 android:id="@+id/questionTotalCount"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@id/questionCount"
@@ -92,8 +119,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/dashedLine"
                 android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginEnd="@dimen/dimen_16"
                 android:layout_marginTop="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
                 android:layout_marginBottom="90dp"
                 android:nestedScrollingEnabled="false" />
 

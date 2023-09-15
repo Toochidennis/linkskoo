@@ -495,14 +495,8 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private fun previewQuestions() {
         previewQuestionButton.setOnClickListener {
             if (sectionItems.isNotEmpty()) {
-                parentFragmentManager.commit {
-                    replace(
-                        R.id.learning_container,
-                        AdminELearningQuestionPreviewFragment.newInstance(sectionItems)
-                    )
-                    addToBackStack("preview")
-                }
-
+                AdminELearningQuestionPreviewFragment.newInstance(sectionItems)
+                    .show(parentFragmentManager, "preview")
             } else {
                 showToast("There are no questions to preview")
             }

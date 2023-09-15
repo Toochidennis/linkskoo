@@ -124,15 +124,11 @@ class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
                 }
             }
 
-            "view_questions" -> {
+            "question_test" -> {
                 supportFragmentManager.commit {
                     replace(
                         R.id.learning_container,
-                        AdminELearningQuestionPreviewFragment
-                            .newInstance(
-                                mutableListOf(),
-                                json
-                            )
+                        AdminELearningQuestionTestFragment.newInstance(json)
                     )
                 }
             }

@@ -58,6 +58,8 @@ class AdminELearningQuestionViewFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         arguments?.let {
             jsonData = it.getString(ARG_PARAM1)
             taskType = it.getString(ARG_PARAM2)
@@ -111,7 +113,7 @@ class AdminELearningQuestionViewFragment :
         viewQuestionBtn.setOnClickListener {
             startActivity(
                 Intent(requireContext(), ELearningActivity::class.java)
-                    .putExtra("from", "view_questions")
+                    .putExtra("from", "question_test")
                     .putExtra("json", jsonData)
             )
         }
@@ -210,6 +212,5 @@ class AdminELearningQuestionViewFragment :
             dueDateTxt.text = date
         }
     }
-
 
 }

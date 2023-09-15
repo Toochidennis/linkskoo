@@ -22,7 +22,7 @@ import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.squareup.picasso.Picasso
 import timber.log.Timber
 
-class AdminELearningQuestionPreviewAdapter(
+class AdminELearningQuestionTestAdapter(
     private var questionList: MutableList<QuestionItem?>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -107,7 +107,7 @@ class AdminELearningQuestionPreviewAdapter(
         fun bind(shortAnswer: ShortAnswerModel) {
             questionTxt.text = shortAnswer.questionText
             loadImage(itemView.context, shortAnswer.attachmentUri, questionImage)
-            answerEditText.setText(shortAnswer.answerText)
+
         }
 
     }
@@ -172,7 +172,7 @@ class AdminELearningQuestionPreviewAdapter(
                 is String -> {
                     if (imageUri.isNotEmpty()) {
                         val isBase64 = isBased64(imageUri)
-
+                        Timber.tag("decode").d("$isBase64")
                         if (isBase64) {
                             val bitmap = decodeBase64(imageUri)
                             imageView.isVisible = bitmap != null
