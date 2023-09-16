@@ -23,6 +23,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Locale
 
 
 private const val ARG_PARAM1 = "param1"
@@ -151,6 +152,7 @@ class AdminELearningQuestionViewFragment :
 
             commentInput.isVisible = false
             commentTxt.isVisible = true
+            commentTitleTxt.isVisible = true
 
             commentInput.editText?.let { hideKeyboard(it) }
 
@@ -204,7 +206,8 @@ class AdminELearningQuestionViewFragment :
         }
 
         if (duration?.isNotBlank() == true) {
-            durationTxt.text = duration
+            val durationString = String.format(Locale.getDefault(),"%s minutes", duration)
+            durationTxt.text = durationString
         }
 
         if (dueDate?.isNotBlank() == true) {

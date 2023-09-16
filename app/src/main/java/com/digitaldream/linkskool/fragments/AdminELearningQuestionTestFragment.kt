@@ -12,9 +12,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningQuestionPreviewAdapter
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionTestAdapter
-import com.digitaldream.linkskool.dialog.AdminELearningQuestionPreviewIntroDialogFragment
+import com.digitaldream.linkskool.dialog.AdminELearningQuestionTestIntroDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
@@ -49,11 +48,14 @@ class AdminELearningQuestionTestFragment :
     // Initialise section items
     private lateinit var sectionItems: MutableList<SectionModel>
     private lateinit var countDownJob: Job
+    private lateinit var questionTestAdapter: AdminELearningQuestionTestAdapter
+    private var userResponses = mutableMapOf<String, String>()
 
     // Variables to store data
     private var currentSectionIndex: Int = 0
     private var currentQuestionCount = 0
     private var jsonData: String? = null
+    private var duration: String? = null
     private var settingsData = JSONObject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,13 +201,17 @@ class AdminELearningQuestionTestFragment :
     }
 
     private fun showQuestionPreview(nextQuestion: QuestionItem?) {
-        AdminELearningQuestionTestAdapter(mutableListOf(nextQuestion)).let {
-            questionRecyclerView.apply {
-                hasFixedSize()
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = it
-            }
+        questionTestAdapter = AdminELearningQuestionTestAdapter(
+            mutableListOf(nextQuestion),
+            userResponses
+        )
+
+        questionRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = questionTestAdapter
         }
+
     }
 
     private fun disablePreviousButton() {
@@ -227,6 +233,7 @@ class AdminELearningQuestionTestFragment :
         // Enable the next button
         nextBtn.isEnabled = true
     }
+
 
     // Parse the question JSON array
     private fun parseQuestionJson(jsonArray: JSONArray): JSONArray {
@@ -262,6 +269,7 @@ class AdminELearningQuestionTestFragment :
         }
     }
 
+
     private fun parseFilesArray(files: JSONArray): JSONArray {
         return JSONArray().apply {
             JSONObject().apply {
@@ -277,10 +285,12 @@ class AdminELearningQuestionTestFragment :
         }
     }
 
+
     // Remove a specific text from the file name
     private fun trimText(text: String): String {
         return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
     }
+
 
     // Parse the options JSON array
     private fun parseOptionsJson(jsonArray: JSONArray): JSONArray {
@@ -302,6 +312,7 @@ class AdminELearningQuestionTestFragment :
         }
     }
 
+
     // Parse the settings JSON object
     private fun parseSettingsJson(settings: JSONObject): JSONObject {
         return JSONObject().apply {
@@ -315,6 +326,7 @@ class AdminELearningQuestionTestFragment :
         }
     }
 
+
     // Parse the JSON data from a given JSON string
     private fun parseJsonObject(json: String): JSONObject {
         return JSONObject().apply {
@@ -324,6 +336,7 @@ class AdminELearningQuestionTestFragment :
             }
         }
     }
+
 
     // Return list of questions
     private fun returnQuestionList(): MutableList<SectionModel> {
@@ -335,6 +348,11 @@ class AdminELearningQuestionTestFragment :
                 questionData.run {
                     if (has("questions")) {
                         settingsData = getJSONObject("settings")
+
+                        settingsData.let {
+                            duration = it.getString("duration")
+                        }
+
                         val questionsArray = getJSONArray("questions")
 
                         for (i in 0 until questionsArray.length()) {
@@ -473,13 +491,14 @@ class AdminELearningQuestionTestFragment :
         return sectionItems
     }
 
+
     private fun introDialog() {
-        AdminELearningQuestionPreviewIntroDialogFragment(
+        AdminELearningQuestionTestIntroDialogFragment(
             jsonData = settingsData.toString()
         ) { status ->
 
             if (status == "start") {
-                val totalCount = totalCount()
+                val totalCount = totalQuestionCount()
                 val countString = String.format(Locale.getDefault(), "/%d", totalCount)
 
                 questionTotalCountTxt.text = countString
@@ -488,14 +507,14 @@ class AdminELearningQuestionTestFragment :
                 countDownTimer()
 
             } else {
-                countDownTimer()
                 requireActivity().finish()
             }
 
         }.show(parentFragmentManager, "Intro")
     }
 
-    private fun totalCount(): Int {
+
+    private fun totalQuestionCount(): Int {
         var count = 0
         sectionItems.forEach {
             if (it.questionItem != null) {
@@ -508,41 +527,47 @@ class AdminELearningQuestionTestFragment :
 
 
     private fun countDownTimer() {
-        val quizDurationSeconds = 60 * 60
-        val quizDurationMillis = quizDurationSeconds * 1000
+        if (duration.isNullOrBlank()) {
+            return
+        }
+
+        val quizDurationSeconds = duration?.toInt()?.times(60)
+        val quizDurationMillis = quizDurationSeconds?.times(1000)
         val countDownIntervalMillis = 1000
 
         countDownJob = CoroutineScope(Dispatchers.Default).launch {
             var remainingTimeMillis = quizDurationMillis
 
-            while (remainingTimeMillis > 0) {
-                val minutes = remainingTimeMillis / 1000 / 60
-                val seconds = (remainingTimeMillis / 1000) % 60
-                val timeString = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+            if (remainingTimeMillis != null) {
+                while (remainingTimeMillis > 0) {
+                    val minutes = remainingTimeMillis / 1000 / 60
+                    val seconds = (remainingTimeMillis / 1000) % 60
+                    val timeString =
+                        String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
 
-                withContext(Dispatchers.Main) {
-                    countDownTxt.text = timeString
+                    withContext(Dispatchers.Main) {
+                        countDownTxt.text = timeString
 
-                    if (remainingTimeMillis <= 5 * 60 * 1000) {
-                        countDownTxt.setTextColor(Color.RED)
+                        if (remainingTimeMillis <= 5 * 60 * 1000) {
+                            countDownTxt.setTextColor(Color.RED)
+                        }
                     }
+
+                    delay(countDownIntervalMillis.toLong())
+                    remainingTimeMillis -= countDownIntervalMillis
                 }
-
-                delay(countDownIntervalMillis.toLong())
-                remainingTimeMillis -= countDownIntervalMillis
             }
-
 
             withContext(Dispatchers.Main) {
                 countDownTxt.text = "00:00"
             }
-
-
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        countDownJob.cancel()
+
+        if (::countDownJob.isInitialized)
+            countDownJob.cancel()
     }
 }

@@ -3,7 +3,10 @@ package com.digitaldream.linkskool.adapters
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +27,7 @@ import timber.log.Timber
 
 class AdminELearningQuestionTestAdapter(
     private var questionList: MutableList<QuestionItem?>,
+    private var userResponses: MutableMap<String, String>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private companion object {
@@ -32,6 +36,7 @@ class AdminELearningQuestionTestAdapter(
     }
 
     private var picasso = Picasso.get()
+    private lateinit var optionsAdapter: OptionAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -63,6 +68,7 @@ class AdminELearningQuestionTestAdapter(
             is MultipleChoiceViewHolder -> {
                 val question = (questionItem as? QuestionItem.MultiChoice)?.question ?: return
                 holder.bind(question)
+
             }
 
             is ShortAnswerViewHolder -> {
@@ -88,13 +94,31 @@ class AdminELearningQuestionTestAdapter(
         private val optionRecyclerView: RecyclerView =
             itemView.findViewById(R.id.optionsRecyclerView)
 
+        private var options: MutableList<MultipleChoiceOption>? = null
+
         fun bind(multiItem: MultiChoiceQuestion) {
             questionTxt.text = multiItem.questionText
             loadImage(itemView.context, multiItem.attachmentUri, questionImage)
 
-            multiItem.options?.let {
-                optionsAdapter(it, optionRecyclerView)
+            options = multiItem.options
+
+            val questionId = multiItem.questionId
+            val selectedOption = userResponses[questionId]
+
+            if (selectedOption != null) {
+                setSelectedOption(selectedOption)
             }
+
+            optionsAdapter = OptionAdapter(multiItem)
+
+            setUpOptionsRecyclerView(optionRecyclerView)
+
+        }
+
+        private fun setSelectedOption(selectedOption: String) {
+            val position = options?.indexOfFirst { it.optionText == selectedOption }
+            options?.forEach { it.isSelected = false }
+            position?.let { options?.get(it)?.isSelected = true }
         }
 
     }
@@ -108,33 +132,103 @@ class AdminELearningQuestionTestAdapter(
             questionTxt.text = shortAnswer.questionText
             loadImage(itemView.context, shortAnswer.attachmentUri, questionImage)
 
+            val questionId = shortAnswer.questionId
+            val typedAnswer = userResponses[questionId]
+
+            if (typedAnswer != null) {
+                setTypedAnswer(typedAnswer)
+            }
+
+            answerEditText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    userResponses[questionId] = s.toString()
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            })
+
+        }
+
+        private fun setTypedAnswer(answer: String) {
+            answerEditText.setText(answer)
         }
 
     }
 
 
-    private fun optionsAdapter(
-        options: MutableList<MultipleChoiceOption>,
-        recyclerView: RecyclerView
-    ) {
-        val labelList =
-            arrayOf('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', '0', 'P')
+    inner class OptionAdapter(
+        private val multiChoiceQuestion: MultiChoiceQuestion
+    ) : RecyclerView.Adapter<OptionAdapter.OptionViewHolder>() {
 
-        GenericAdapter2(
-            options,
-            R.layout.item_options_preview,
-            bindItem = { itemView, model, position ->
-                val optionLabel: TextView = itemView.findViewById(R.id.optionsLabel)
-                val optionTxt: TextView = itemView.findViewById(R.id.optionsTxt)
-                val optionImage: ImageView = itemView.findViewById(R.id.optionImage)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(
+                R.layout
+                    .item_options_preview, parent, false
+            )
 
-                optionLabel.text = labelList[position].toString()
+            return OptionViewHolder(view)
+        }
 
-                if (model.optionText.isEmpty()) {
-                    loadImage(itemView.context, model.attachmentUri, optionImage)
+        override fun onBindViewHolder(holder: OptionViewHolder, position: Int) {
+            val options = multiChoiceQuestion.options?.get(position)
+
+            holder.bind(options!!)
+
+        }
+
+
+        override fun getItemCount() = multiChoiceQuestion.options?.size!!
+
+        inner class OptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val optionLabel: TextView = itemView.findViewById(R.id.optionsLabel)
+            private val optionTxt: TextView = itemView.findViewById(R.id.optionsTxt)
+            private val optionImage: ImageView = itemView.findViewById(R.id.optionImage)
+
+            private val labelList =
+                arrayOf(
+                    'A',
+                    'B',
+                    'C',
+                    'D',
+                    'E',
+                    'F',
+                    'G',
+                    'H',
+                    'I',
+                    'J',
+                    'K',
+                    'L',
+                    'M',
+                    'N',
+                    '0',
+                    'P'
+                )
+
+            fun bind(multipleChoiceOption: MultipleChoiceOption) {
+                optionLabel.text = labelList[adapterPosition].toString()
+
+                if (multipleChoiceOption.isSelected) {
+                    itemView.setBackgroundColor(Color.BLUE)
+                } else {
+                    itemView.setBackgroundColor(Color.WHITE)
+                }
+
+                if (multipleChoiceOption.optionText.isEmpty()) {
+                    loadImage(itemView.context, multipleChoiceOption.attachmentUri, optionImage)
                     optionTxt.isVisible = false
                 } else {
-                    optionTxt.text = model.optionText
+                    optionTxt.text = multipleChoiceOption.optionText
                     optionTxt.isVisible = true
                     optionImage.isVisible = false
                 }
@@ -143,17 +237,32 @@ class AdminELearningQuestionTestAdapter(
                 itemView.animate()
                     .alpha(1f)
                     .setDuration(500)
-                    .setStartDelay(position * 150L)
+                    .setStartDelay(adapterPosition * 150L)
                     .start()
-            }
-        ).let {
-            recyclerView.apply {
-                hasFixedSize()
-                layoutManager = LinearLayoutManager(context)
-                adapter = it
+
+
+                itemView.setOnClickListener {
+                    val selectedOption = multiChoiceQuestion.options?.get(adapterPosition)
+                    val questionId = multiChoiceQuestion.questionId
+
+                    multiChoiceQuestion.options?.forEach { it.isSelected = false }
+
+                    selectedOption!!.isSelected = true
+                    notifyDataSetChanged()
+
+                    userResponses[questionId] = selectedOption.optionText
+                }
             }
         }
 
+    }
+
+    private fun setUpOptionsRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(context)
+            adapter = optionsAdapter
+        }
     }
 
     private fun isBased64(encodedString: String): Boolean {
@@ -172,7 +281,7 @@ class AdminELearningQuestionTestAdapter(
                 is String -> {
                     if (imageUri.isNotEmpty()) {
                         val isBase64 = isBased64(imageUri)
-                        Timber.tag("decode").d("$isBase64")
+
                         if (isBase64) {
                             val bitmap = decodeBase64(imageUri)
                             imageView.isVisible = bitmap != null
@@ -205,8 +314,13 @@ class AdminELearningQuestionTestAdapter(
     private fun decodeBase64(encodedString: String): Bitmap? {
         return try {
             val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
-            Timber.tag("decode").d("$decodedBytes")
-            Bitmap.createBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size))
+            Bitmap.createBitmap(
+                BitmapFactory.decodeByteArray(
+                    decodedBytes,
+                    0,
+                    decodedBytes.size
+                )
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             null

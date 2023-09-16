@@ -12,10 +12,10 @@ import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import org.json.JSONObject
 import java.util.Locale
 
-class AdminELearningQuestionPreviewIntroDialogFragment(
+class AdminELearningQuestionTestIntroDialogFragment(
     private val jsonData: String,
     private val onStart: (status: String) -> Unit
-) : DialogFragment(R.layout.fragment_admin_e_learning_question_preview_intro) {
+) : DialogFragment(R.layout.fragment_admin_e_learning_question_test_intro) {
 
     // Define UI elements
     private lateinit var dismissBtn: ImageButton
@@ -29,6 +29,7 @@ class AdminELearningQuestionPreviewIntroDialogFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DialogTheme)
+        isCancelable = false
     }
 
 
@@ -93,13 +94,15 @@ class AdminELearningQuestionPreviewIntroDialogFragment(
 
                 dateTxt.text = date
 
-                val duration = String.format(
-                    Locale.getDefault(),
-                    "%s %s",
-                    "Duration:", durationMinutes
-                )
+                if (durationMinutes.isNotBlank()) {
+                    val durationString = String.format(
+                        Locale.getDefault(),
+                        "Duration: %s minutes",
+                        durationMinutes
+                    )
 
-                durationTxt.text = duration
+                    durationTxt.text = durationString
+                }
 
             }
         } catch (e: Exception) {

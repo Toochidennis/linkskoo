@@ -22,7 +22,10 @@
                 android:id="@+id/questionDueDateTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_16"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingTop="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
+                android:paddingBottom="0dp"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14" />
@@ -36,7 +39,7 @@
                 android:paddingEnd="@dimen/dimen_16"
                 android:text=""
                 android:textColor="@color/test_color_1"
-                android:textSize="@dimen/text_18" />
+                android:textSize="@dimen/text_24" />
 
             <TextView
                 android:id="@+id/questionDurationTxt"
@@ -106,8 +109,7 @@
                 android:id="@+id/addCommentTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/dimen_16"
-                android:paddingEnd="@dimen/dimen_16"
+                android:padding="@dimen/dimen_16"
                 android:text="Add class comment"
                 android:textColor="@color/test_color_1"
                 android:textSize="@dimen/text_14" />
