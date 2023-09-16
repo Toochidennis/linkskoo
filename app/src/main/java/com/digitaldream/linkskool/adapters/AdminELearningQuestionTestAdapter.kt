@@ -116,7 +116,9 @@ class AdminELearningQuestionTestAdapter(
         }
 
         private fun setSelectedOption(selectedOption: String) {
-            val position = options?.indexOfFirst { it.optionText == selectedOption }
+            val position = options?.indexOfFirst {
+                it.optionText == selectedOption || it.attachmentName == selectedOption
+            }
             options?.forEach { it.isSelected = false }
             position?.let { options?.get(it)?.isSelected = true }
         }
@@ -250,7 +252,10 @@ class AdminELearningQuestionTestAdapter(
                     selectedOption!!.isSelected = true
                     notifyDataSetChanged()
 
-                    userResponses[questionId] = selectedOption.optionText
+                    userResponses[questionId] =
+                        selectedOption.optionText.ifEmpty {
+                            selectedOption.attachmentName
+                        }
                 }
             }
         }
