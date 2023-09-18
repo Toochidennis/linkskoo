@@ -11,6 +11,7 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,11 +24,11 @@ import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.squareup.picasso.Picasso
-import timber.log.Timber
 
-class AdminELearningQuestionTestAdapter(
+class AdminELearningTestAdapter(
     private var questionList: MutableList<QuestionItem?>,
     private var userResponses: MutableMap<String, String>,
+    private var userResponse: UserResponse
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private companion object {
@@ -96,20 +97,20 @@ class AdminELearningQuestionTestAdapter(
 
         private var options: MutableList<MultipleChoiceOption>? = null
 
-        fun bind(multiItem: MultiChoiceQuestion) {
-            questionTxt.text = multiItem.questionText
-            loadImage(itemView.context, multiItem.attachmentUri, questionImage)
+        fun bind(multiChoiceQuestion: MultiChoiceQuestion) {
+            questionTxt.text = multiChoiceQuestion.questionText
+            loadImage(itemView.context, multiChoiceQuestion.attachmentUri, questionImage)
 
-            options = multiItem.options
+            options = multiChoiceQuestion.options
 
-            val questionId = multiItem.questionId
+            val questionId = multiChoiceQuestion.questionId
             val selectedOption = userResponses[questionId]
 
             if (selectedOption != null) {
                 setSelectedOption(selectedOption)
             }
 
-            optionsAdapter = OptionAdapter(multiItem)
+            optionsAdapter = OptionAdapter(multiChoiceQuestion)
 
             setUpOptionsRecyclerView(optionRecyclerView)
 
@@ -173,6 +174,8 @@ class AdminELearningQuestionTestAdapter(
         private val multiChoiceQuestion: MultiChoiceQuestion
     ) : RecyclerView.Adapter<OptionAdapter.OptionViewHolder>() {
 
+        private var isAnimationPlayed = false
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(
                 R.layout
@@ -220,7 +223,8 @@ class AdminELearningQuestionTestAdapter(
             fun bind(multipleChoiceOption: MultipleChoiceOption) {
                 optionLabel.text = labelList[adapterPosition].toString()
 
-                if (multipleChoiceOption.isSelected) {
+                itemView.isSelected = multipleChoiceOption.isSelected
+                if (itemView.isSelected) {
                     itemView.setBackgroundColor(Color.BLUE)
                 } else {
                     itemView.setBackgroundColor(Color.WHITE)
@@ -235,13 +239,9 @@ class AdminELearningQuestionTestAdapter(
                     optionImage.isVisible = false
                 }
 
-                itemView.alpha = 0f
-                itemView.animate()
-                    .alpha(1f)
-                    .setDuration(500)
-                    .setStartDelay(adapterPosition * 150L)
-                    .start()
-
+                if (!isAnimationPlayed) {
+                    playAnimation(itemView, adapterPosition)
+                }
 
                 itemView.setOnClickListener {
                     val selectedOption = multiChoiceQuestion.options?.get(adapterPosition)
@@ -250,16 +250,29 @@ class AdminELearningQuestionTestAdapter(
                     multiChoiceQuestion.options?.forEach { it.isSelected = false }
 
                     selectedOption!!.isSelected = true
+                    isAnimationPlayed = true
+
                     notifyDataSetChanged()
 
-                    userResponses[questionId] =
+                    userResponse.onOptionSelected(questionId,
                         selectedOption.optionText.ifEmpty {
                             selectedOption.attachmentName
                         }
+                    )
+
                 }
             }
         }
 
+    }
+
+    private fun playAnimation(itemView: View, position: Int) {
+        itemView.alpha = 0f
+        itemView.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .setStartDelay(position * 150L)
+            .start()
     }
 
     private fun setUpOptionsRecyclerView(recyclerView: RecyclerView) {
@@ -330,5 +343,9 @@ class AdminELearningQuestionTestAdapter(
             e.printStackTrace()
             null
         }
+    }
+
+    interface UserResponse {
+        fun onOptionSelected(questionId: String, selectedOption: String)
     }
 }

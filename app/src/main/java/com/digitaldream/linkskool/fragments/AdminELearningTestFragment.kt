@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningQuestionTestAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningTestAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionTestIntroDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
@@ -20,7 +20,9 @@ import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,8 +35,9 @@ import java.util.Locale
 
 private const val ARG_PARAM1 = "param1"
 
-class AdminELearningQuestionTestFragment :
-    Fragment(R.layout.fragment_admin_e_learning_question_test) {
+class AdminELearningTestFragment :
+    Fragment(R.layout.fragment_admin_e_learning_test),
+    AdminELearningTestAdapter.UserResponse {
 
     private lateinit var dismissBtn: ImageButton
     private lateinit var countDownTxt: TextView
@@ -44,11 +47,12 @@ class AdminELearningQuestionTestFragment :
     private lateinit var questionRecyclerView: RecyclerView
     private lateinit var previousBtn: Button
     private lateinit var nextBtn: Button
+    private lateinit var submitQuestionBtn: Button
 
     // Initialise section items
     private lateinit var sectionItems: MutableList<SectionModel>
     private lateinit var countDownJob: Job
-    private lateinit var questionTestAdapter: AdminELearningQuestionTestAdapter
+    private lateinit var questionTestAdapter: AdminELearningTestAdapter
     private var userResponses = mutableMapOf<String, String>()
 
     // Variables to store data
@@ -78,7 +82,7 @@ class AdminELearningQuestionTestFragment :
 
         @JvmStatic
         fun newInstance(param1: String) =
-            AdminELearningQuestionTestFragment().apply {
+            AdminELearningTestFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                 }
@@ -94,7 +98,13 @@ class AdminELearningQuestionTestFragment :
 
         showPreviousQuestion()
 
-        showNextQuestion()
+        nextBtn.setOnClickListener {
+            showNextQuestion()
+        }
+
+        submitQuestionBtn.setOnClickListener {
+            submitTest()
+        }
 
     }
 
@@ -106,6 +116,7 @@ class AdminELearningQuestionTestFragment :
             questionTotalCountTxt = findViewById(R.id.questionTotalCount)
             sectionTxt = findViewById(R.id.sectionTxt)
             questionRecyclerView = findViewById(R.id.questionRecyclerView)
+            submitQuestionBtn = findViewById(R.id.submitQuestionBtn)
             previousBtn = findViewById(R.id.prevBtn)
             nextBtn = findViewById(R.id.nextBtn)
         }
@@ -166,20 +177,20 @@ class AdminELearningQuestionTestFragment :
             enablePreviousButton()
         }
 
+
     private fun showNextQuestion() {
-        nextBtn.setOnClickListener {
-            if (currentSectionIndex < sectionItems.size) {
+        if (currentSectionIndex < sectionItems.size) {
 
-                // Decrement the question count only if there are questions
-                if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
-                    currentQuestionCount++
-                }
-
-                currentSectionIndex++
-
-                showQuestion()
+            // Decrement the question count only if there are questions
+            if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
+                currentQuestionCount++
             }
+
+            currentSectionIndex++
+
+            showQuestion()
         }
+
     }
 
     private fun showPreviousQuestion() {
@@ -196,14 +207,17 @@ class AdminELearningQuestionTestFragment :
                 currentSectionIndex--
 
                 showQuestion()
+
             }
         }
     }
 
+
     private fun showQuestionPreview(nextQuestion: QuestionItem?) {
-        questionTestAdapter = AdminELearningQuestionTestAdapter(
+        questionTestAdapter = AdminELearningTestAdapter(
             mutableListOf(nextQuestion),
-            userResponses
+            userResponses,
+            this
         )
 
         questionRecyclerView.apply {
@@ -515,14 +529,7 @@ class AdminELearningQuestionTestFragment :
 
 
     private fun totalQuestionCount(): Int {
-        var count = 0
-        sectionItems.forEach {
-            if (it.questionItem != null) {
-                count++
-            }
-        }
-
-        return count
+       return sectionItems.count{it.questionItem != null}
     }
 
 
@@ -560,6 +567,50 @@ class AdminELearningQuestionTestFragment :
 
             withContext(Dispatchers.Main) {
                 countDownTxt.text = "00:00"
+            }
+        }
+    }
+
+    private fun calculateScore(): Int {
+        return userResponses.count { (questionId, userAnswer) ->
+            val section = sectionItems.find {
+                it.questionItem?.let { questionItem ->
+                    when (questionItem) {
+                        is QuestionItem.MultiChoice -> questionItem.question.questionId
+                        is QuestionItem.ShortAnswer -> questionItem.question.questionId
+                    }
+                } == questionId
+            }
+
+            val correctAnswer = section?.questionItem?.let { questionItem ->
+                when (questionItem) {
+                    is QuestionItem.MultiChoice -> questionItem.question.correctAnswer
+                    is QuestionItem.ShortAnswer -> questionItem.question.answerText
+                }
+            }
+
+            userAnswer.isNotBlank() && userAnswer == correctAnswer
+        }
+    }
+
+    private fun submitTest() {
+        val score = calculateScore()
+        Timber.tag("response").d("$score")
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onOptionSelected(questionId: String, selectedOption: String) {
+        userResponses[questionId] = selectedOption
+
+        if (currentSectionIndex == sectionItems.size-1){
+            submitQuestionBtn.isVisible = true
+        }
+
+        GlobalScope.launch {
+            delay(1000L)
+
+            withContext(Dispatchers.Main) {
+                showNextQuestion()
             }
         }
     }
