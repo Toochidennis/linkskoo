@@ -188,7 +188,7 @@ class AdminELearningQuestionDetailsFragment :
                     }
 
                     else -> {
-                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        requireActivity().finish()
                         true
                     }
 
