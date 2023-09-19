@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 
 /**
  * AdminELearningQuestionFragment is a Fragment responsible for managing and presenting
@@ -544,7 +545,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             put("questions", questionArray)
         }
 
-        println("assessment: $assessmentObject")
+        Timber.tag("assessment").d(assessmentObject.toString())
 
         saveJsonData(assessmentObject.toString())
 
