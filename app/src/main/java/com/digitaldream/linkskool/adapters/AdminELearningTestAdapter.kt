@@ -148,12 +148,10 @@ class AdminELearningTestAdapter(
                     start: Int,
                     count: Int,
                     after: Int
-                ) {
-
-                }
+                ) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    userResponses[questionId] = s.toString()
+                    userResponses[questionId] = s.toString().replace("\\s+".toRegex()," ").trim()
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -202,22 +200,10 @@ class AdminELearningTestAdapter(
 
             private val labelList =
                 arrayOf(
-                    'A',
-                    'B',
-                    'C',
-                    'D',
-                    'E',
-                    'F',
-                    'G',
-                    'H',
-                    'I',
-                    'J',
-                    'K',
-                    'L',
-                    'M',
-                    'N',
-                    '0',
-                    'P'
+                    'A', 'B', 'C', 'D',
+                    'E', 'F', 'G', 'H',
+                    'I', 'J', 'K', 'L',
+                    'M', 'N', '0', 'P'
                 )
 
             fun bind(multipleChoiceOption: MultipleChoiceOption) {

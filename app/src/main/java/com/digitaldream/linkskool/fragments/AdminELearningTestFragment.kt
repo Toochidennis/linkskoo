@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -529,7 +530,7 @@ class AdminELearningTestFragment :
 
 
     private fun totalQuestionCount(): Int {
-       return sectionItems.count{it.questionItem != null}
+        return sectionItems.count { it.questionItem != null }
     }
 
 
@@ -565,44 +566,28 @@ class AdminELearningTestFragment :
                 }
             }
 
+            submitTest()
+
             withContext(Dispatchers.Main) {
                 countDownTxt.text = "00:00"
             }
         }
     }
 
-    private fun calculateScore(): Int {
-        return userResponses.count { (questionId, userAnswer) ->
-            val section = sectionItems.find {
-                it.questionItem?.let { questionItem ->
-                    when (questionItem) {
-                        is QuestionItem.MultiChoice -> questionItem.question.questionId
-                        is QuestionItem.ShortAnswer -> questionItem.question.questionId
-                    }
-                } == questionId
-            }
-
-            val correctAnswer = section?.questionItem?.let { questionItem ->
-                when (questionItem) {
-                    is QuestionItem.MultiChoice -> questionItem.question.correctAnswer
-                    is QuestionItem.ShortAnswer -> questionItem.question.answerText
-                }
-            }
-
-            userAnswer.isNotBlank() && userAnswer == correctAnswer
-        }
-    }
-
     private fun submitTest() {
-        val score = calculateScore()
-        Timber.tag("response").d("$score")
+        parentFragmentManager.commit {
+            replace(
+                R.id.learning_container,
+                AdminELearningTestSummaryFragment.newInstance(jsonData ?: "", userResponses)
+            )
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOptionSelected(questionId: String, selectedOption: String) {
         userResponses[questionId] = selectedOption
 
-        if (currentSectionIndex == sectionItems.size-1){
+        if (currentSectionIndex == sectionItems.size - 1) {
             submitQuestionBtn.isVisible = true
         }
 
