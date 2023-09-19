@@ -556,7 +556,7 @@ class AdminELearningTestFragment :
                     withContext(Dispatchers.Main) {
                         countDownTxt.text = timeString
 
-                        if (remainingTimeMillis <= 5 * 60 * 1000) {
+                        if (remainingTimeMillis <= 3 * 60 * 1000) {
                             countDownTxt.setTextColor(Color.RED)
                         }
                     }

@@ -112,8 +112,6 @@ class AdminELearningTestSummaryFragment :
 
         if (::sectionItems.isInitialized && ::userResponses.isInitialized) {
 
-            Timber.tag("response").d(userResponses.toString())
-
             if (sectionItems.isNotEmpty()) {
                 val questionItem = mutableListOf<QuestionItem?>()
 
@@ -157,8 +155,6 @@ class AdminELearningTestSummaryFragment :
                     is QuestionItem.ShortAnswer -> questionItem.question.answerText
                 }
             }
-
-            Timber.tag("answer").d("$userAnswer, $correctAnswer")
 
             userAnswer.isNotBlank() && userAnswer.equals(correctAnswer, true)
         }
