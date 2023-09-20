@@ -21,8 +21,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
+import com.digitaldream.linkskool.dialog.AdminELearningFilePreviewDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
+import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.smoothScrollEditText
 import java.io.File
 
@@ -30,12 +32,14 @@ class AdminELearningMultiChoiceAdapter(
     private val parentFragmentManager: FragmentManager,
     private val itemList: MutableList<MultipleChoiceOption>,
     private var questionModelCopy: MultiChoiceQuestion,
-    private val optionsRecyclerView: RecyclerView
+    private val optionsRecyclerView: RecyclerView,
+    private val taskType: String
 ) : RecyclerView.Adapter<AdminELearningMultiChoiceAdapter.ViewHolder>() {
 
     private var selectedPosition = RecyclerView.NO_POSITION
     private var newItemList = HashMap<Int, MultipleChoiceOption>()
     private lateinit var newOptionModel: MultipleChoiceOption
+    private val deletedOptionFileList = mutableListOf<MultipleChoiceOption>()
 
     init {
         if (questionModelCopy.checkedPosition != RecyclerView.NO_POSITION) {
@@ -113,7 +117,7 @@ class AdminELearningMultiChoiceAdapter(
             radioButton.isChecked = adapterPosition == selectedPosition
 
             attachmentTxt.setOnClickListener {
-                previewAttachment(option.attachmentUri!!, itemView)
+                previewAttachment(option.attachmentUri!!, option.attachmentName, itemView.context)
             }
 
             radioButtonAction(radioButton, adapterPosition)
@@ -220,6 +224,7 @@ class AdminELearningMultiChoiceAdapter(
                     null,
                     ""
                 )
+
                 newItemList[position] = newOptionModel
             }
 
@@ -265,6 +270,14 @@ class AdminELearningMultiChoiceAdapter(
             questionModelCopy.checkedPosition = selectedPosition
         }
 
+        if (taskType == "edit") {
+            val deletedOptionModel = newItemList[position]
+            if (deletedOptionModel?.attachmentName?.isNotEmpty() == true) {
+                deletedOptionModel.attachmentName = ""
+                deletedOptionFileList.add(deletedOptionModel)
+            }
+        }
+
         newItemList.remove(position)
 
         updateList()
@@ -287,35 +300,61 @@ class AdminELearningMultiChoiceAdapter(
         )
     }
 
-    private fun previewAttachment(uri: Any, itemView: View) {
+    private fun previewAttachment(uri: Any, uriName: String, context: Context) {
         try {
-            val fileUri = when (uri) {
+            when (uri) {
                 is File -> {
                     val file = File(uri.absolutePath)
-                    FileProvider.getUriForFile(
-                        itemView.context,
-                        "${itemView.context.packageName}.provider",
+
+                    val fileUri = FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.provider",
                         file
                     )
+
+                    launchUriIntent(fileUri as Uri, context)
                 }
 
-                is String -> Uri.parse(uri)
+                is String -> {
+                    val isBase64 = FunctionUtils.isBased64(uri)
 
-                else -> uri
+                    if (isBase64) {
+                        val bitmap = FunctionUtils.decodeBase64(uri)
+                        if (bitmap != null) {
+                            launchImagePreviewDialog(bitmap, uriName)
+                        }
+                    } else {
+                        val url = "${context.getString(R.string.base_url)}/$uri"
+                        launchImagePreviewDialog(url, uriName)
+                    }
+                }
+
+                else -> {
+                    launchUriIntent(uri as Uri, context)
+                }
             }
 
-            Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(fileUri as Uri?, "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }.let {
-                itemView.context.startActivity(it)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(
-                itemView.context, "Error occurred while viewing file", Toast.LENGTH_SHORT
+                context, "Error occurred while viewing the file",
+                Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun launchUriIntent(uri: Uri, context: Context) {
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.let {
+            context.startActivity(it)
+        }
+    }
+
+    private fun launchImagePreviewDialog(uri: Any, uriName: String) {
+        AdminELearningFilePreviewDialogFragment(file = uri, uriName)
+            .show(parentFragmentManager, "")
     }
 
     private fun updateList() {
@@ -334,13 +373,18 @@ class AdminELearningMultiChoiceAdapter(
             Toast.makeText(context, "Please select an option", Toast.LENGTH_SHORT).show()
             false
         } else {
-            mutableListOf<MultipleChoiceOption>().apply {
-                newItemList.forEach { map ->
-                    add(map.value)
-                }
-            }.let {
-                questionModelCopy.options = it
+            val optionList = mutableListOf<MultipleChoiceOption>()
+
+            newItemList.forEach { map ->
+                optionList.add(map.value)
             }
+
+            if (deletedOptionFileList.isNotEmpty()) {
+                optionList.addAll(deletedOptionFileList)
+            }
+
+            questionModelCopy.options = optionList
+
             true
         }
 

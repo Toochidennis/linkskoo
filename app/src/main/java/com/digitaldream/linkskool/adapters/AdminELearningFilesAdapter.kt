@@ -190,7 +190,7 @@ class AdminELearningFilesAdapter(
         }
 
         if (filePath != null) {
-            AdminELearningFilePreviewDialogFragment.newInstance(
+            AdminELearningFilePreviewDialogFragment(
                 attachmentModel.name,
                 filePath,
             ).show(fragmentManager, "view file")

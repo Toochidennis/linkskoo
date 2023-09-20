@@ -20,8 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningMultiChoiceAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
+import com.digitaldream.linkskool.dialog.AdminELearningFilePreviewDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
+import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import java.io.File
 
@@ -44,6 +47,8 @@ class AdminELearningMultiChoiceDialogFragment(
 
     private val mOptionList = mutableListOf<MultipleChoiceOption>()
     private lateinit var questionModelCopy: MultiChoiceQuestion
+
+    private var taskType: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,7 +96,10 @@ class AdminELearningMultiChoiceDialogFragment(
 
         mAttachmentTxt.setOnClickListener {
             if (questionModelCopy.attachmentUri != null) {
-                previewAttachment(questionModelCopy.attachmentUri!!)
+                previewAttachment(
+                    questionModelCopy.attachmentUri!!,
+                    questionModelCopy.attachmentName
+                )
             } else {
                 showQuestionAttachment()
             }
@@ -113,6 +121,7 @@ class AdminELearningMultiChoiceDialogFragment(
     private fun initializeOptions() {
         if (!questionModelCopy.options.isNullOrEmpty()) {
             mOptionList.addAll(questionModelCopy.options!!)
+            taskType = "edit"
         } else {
             mOptionList.add(MultipleChoiceOption(""))
         }
@@ -122,7 +131,10 @@ class AdminELearningMultiChoiceDialogFragment(
     private fun setUpRecyclerView() {
         optionAdapter = AdminELearningMultiChoiceAdapter(
             parentFragmentManager,
-            mOptionList, questionModelCopy, mOptionsRecyclerView
+            mOptionList,
+            questionModelCopy,
+            mOptionsRecyclerView,
+            taskType ?: ""
         )
 
         mOptionsRecyclerView.apply {
@@ -154,6 +166,7 @@ class AdminELearningMultiChoiceDialogFragment(
         questionModelCopy.attachmentName = ""
         mRemoveQuestionAttachmentBtn.isVisible = false
         "Add attachment".also { mAttachmentTxt.text = it }
+
         mAttachmentTxt.setCompoundDrawablesWithIntrinsicBounds(
             null, null, null, null
         )
@@ -166,41 +179,67 @@ class AdminELearningMultiChoiceDialogFragment(
         )
     }
 
-    private fun previewAttachment(uri: Any) {
+    private fun previewAttachment(uri: Any, uriName: String) {
         try {
-            val fileUri = when (uri) {
+            when (uri) {
                 is File -> {
                     val file = File(uri.absolutePath)
-                    FileProvider.getUriForFile(
+
+                    val fileUri = FileProvider.getUriForFile(
                         requireContext(),
                         "${requireActivity().packageName}.provider",
                         file
                     )
+
+                    launchUriIntent(fileUri as Uri)
                 }
 
-                is String -> Uri.parse(uri)
+                is String -> {
+                    val isBase64 = isBased64(uri)
 
-                else -> uri
+                    if (isBase64) {
+                        val bitmap = decodeBase64(uri)
+                        if (bitmap != null) {
+                            launchImagePreviewDialog(bitmap, uriName)
+                        }
+                    } else {
+                        val url = "${requireActivity().getString(R.string.base_url)}/$uri"
+                        launchImagePreviewDialog(url, uriName)
+                    }
+                }
+
+                else -> {
+                    launchUriIntent(uri as Uri)
+                }
             }
 
-            Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(fileUri as Uri?, "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }.let {
-                startActivity(it)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(
-                requireContext(), "Error occurred while viewing file", Toast.LENGTH_SHORT
+                requireContext(), "Error occurred while viewing the file",
+                Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun launchUriIntent(uri: Uri) {
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.let {
+            startActivity(it)
+        }
+    }
+
+    private fun launchImagePreviewDialog(uri: Any, uriName: String) {
+        AdminELearningFilePreviewDialogFragment(file = uri, uriName)
+            .show(parentFragmentManager, "")
     }
 
     private fun onExit() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
-            setMessage("Your unsaved changes will be lost")
+            setMessage("Your unsaved changes will be lost.")
             setPositiveButton("Yes") { _, _ ->
                 dismiss()
             }

@@ -23,6 +23,8 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
 import com.squareup.picasso.Picasso
 
 class AdminELearningTestAdapter(
@@ -148,10 +150,11 @@ class AdminELearningTestAdapter(
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    userResponses[questionId] = s.toString().replace("\\s+".toRegex()," ").trim()
+                    userResponses[questionId] = s.toString().replace("\\s+".toRegex(), " ").trim()
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -269,15 +272,6 @@ class AdminELearningTestAdapter(
         }
     }
 
-    private fun isBased64(encodedString: String): Boolean {
-        return try {
-            org.apache.commons.codec.binary.Base64.isBase64(encodedString)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-
-    }
 
     private fun loadImage(context: Context, imageUri: Any?, imageView: ImageView) {
         try {
@@ -315,21 +309,6 @@ class AdminELearningTestAdapter(
         }
     }
 
-    private fun decodeBase64(encodedString: String): Bitmap? {
-        return try {
-            val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
-            Bitmap.createBitmap(
-                BitmapFactory.decodeByteArray(
-                    decodedBytes,
-                    0,
-                    decodedBytes.size
-                )
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
 
     interface UserResponse {
         fun onOptionSelected(questionId: String, selectedOption: String)

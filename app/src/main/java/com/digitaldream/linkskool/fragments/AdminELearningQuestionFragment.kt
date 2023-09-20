@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -110,7 +111,6 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private var durationMinutes: String? = null
 
     private var questionData: String? = null
-    private var settingsObject = JSONObject()
     private lateinit var sharedPreferences: SharedPreferences
 
 
@@ -204,9 +204,16 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             submitQuestionButton = findViewById(R.id.submitQuestionsButton)
             addQuestionButton = findViewById(R.id.addQuestionsButton)
 
-            toolbar.apply {
+            (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+            val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+            actionBar?.apply {
                 title = "Question"
-                setNavigationIcon(R.drawable.arrow_left)
+                setHomeButtonEnabled(true)
+                setDisplayHomeAsUpEnabled(true)
+            }
+
+            toolbar.apply {
                 setNavigationOnClickListener { onExit() }
             }
         }
@@ -263,7 +270,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     // Set up the RecyclerView for displaying questions and sections
     private fun setupQuestionRecyclerView() {
         sectionAdapter =
-            AdminELearningQuestionAdapter(parentFragmentManager, sectionItems, taskType?:"")
+            AdminELearningQuestionAdapter(parentFragmentManager, sectionItems, taskType ?: "")
 
         sectionRecyclerView.apply {
             hasFixedSize()
@@ -318,6 +325,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     // Navigate to question settings fragment
     private fun toQuestionSettings() {
         createAssessmentObject()
+        val settingsObject = createSettingsJsonObject()
 
         try {
             parentFragmentManager.commit {
@@ -538,7 +546,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
             }
         }
 
-        settingsObject = createSettingsJsonObject()
+        val settingsObject = createSettingsJsonObject()
 
         assessmentObject.apply {
             put("settings", settingsObject)
@@ -556,7 +564,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     // Create and return the settings object as a JSONObject
     private fun createSettingsJsonObject(): JSONObject {
         return JSONObject().apply {
-            put("id", id ?: "")
+            put("id", id)
             put("author_id", userId)
             put("author_name", userName)
             put("title", questionTitle)

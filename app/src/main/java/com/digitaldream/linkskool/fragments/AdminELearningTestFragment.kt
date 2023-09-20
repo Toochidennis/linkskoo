@@ -2,13 +2,13 @@ package com.digitaldream.linkskool.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
-import timber.log.Timber
 import java.util.Locale
 
 
@@ -123,6 +122,7 @@ class AdminELearningTestFragment :
         }
     }
 
+
     private fun initialiseSectionItem() {
         sectionItems = returnQuestionList()
 
@@ -130,6 +130,7 @@ class AdminELearningTestFragment :
             introDialog()
         }
     }
+
 
     private fun showQuestion() {
         val currentSection = sectionItems.getOrNull(currentSectionIndex)
@@ -163,6 +164,7 @@ class AdminELearningTestFragment :
         }
     }
 
+
     private fun updateNavigationButtons() =
         if (sectionItems.size == 1) {
             disableNextButton()
@@ -193,6 +195,7 @@ class AdminELearningTestFragment :
         }
 
     }
+
 
     private fun showPreviousQuestion() {
         previousBtn.setOnClickListener {
@@ -569,7 +572,7 @@ class AdminELearningTestFragment :
             submitTest()
 
             withContext(Dispatchers.Main) {
-                countDownTxt.text = "00:00"
+                "00:00".let { countDownTxt.text = it }
             }
         }
     }

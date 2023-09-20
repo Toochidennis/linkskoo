@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
-import com.android.volley.TimeoutError
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuestionSettingsAdapter
@@ -49,9 +48,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
-import timber.log.Timber
 import java.io.File
-import java.sql.Time
 
 
 private const val ARG_PARAM1 = "param1"
@@ -90,7 +87,8 @@ class AdminELearningAssignmentFragment :
     private val mTagList = mutableListOf<TagModel>()
 
     private val mFileList = mutableListOf<AttachmentModel>()
-    private lateinit var mAdapter: GenericAdapter<AttachmentModel>
+    private val mDeletedFileList = mutableListOf<AttachmentModel>()
+    private lateinit var mFileAdapter: GenericAdapter<AttachmentModel>
 
     private var mLevelId: String? = null
     private var mCourseId: String? = null
@@ -179,6 +177,7 @@ class AdminELearningAssignmentFragment :
         showSoftInput(requireContext(), mAssignmentTitleEditText)
 
         mAssignBtn.setOnClickListener {
+            it.isEnabled = false
             assignAssignment()
         }
 
@@ -359,7 +358,7 @@ class AdminELearningAssignmentFragment :
     private fun setUpFilesAdapter() {
         try {
             if (mFileList.isNotEmpty()) {
-                mAdapter = GenericAdapter(
+                mFileAdapter = GenericAdapter(
                     mFileList,
                     R.layout.fragment_admin_e_learning_assigment_attachment_item,
                     bindItem = { itemView, model, position ->
@@ -380,16 +379,8 @@ class AdminELearningAssignmentFragment :
                     }
                 )
 
-                mAttachmentRecyclerView.apply {
-                    hasFixedSize()
-                    layoutManager = LinearLayoutManager(requireContext())
-                    adapter = mAdapter
-                    smoothScrollToPosition(mFileList.size - 1)
+               setUpFileRecyclerView()
 
-                    mAttachmentTxt.isVisible = false
-                    mAddAttachmentBtn.isVisible = true
-                    mAttachmentBtn.isClickable = false
-                }
             } else {
                 mAttachmentTxt.isVisible = true
                 mAddAttachmentBtn.isVisible = false
@@ -399,6 +390,20 @@ class AdminELearningAssignmentFragment :
             e.printStackTrace()
         }
     }
+
+    private fun setUpFileRecyclerView() {
+        mAttachmentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mFileAdapter
+            smoothScrollToPosition(mFileList.size - 1)
+
+            mAttachmentTxt.isVisible = false
+            mAddAttachmentBtn.isVisible = true
+            mAttachmentBtn.isClickable = false
+        }
+    }
+
 
     private fun previewAttachment(type: String, uri: Any?) {
         val fileUri = when (uri) {
@@ -451,13 +456,19 @@ class AdminELearningAssignmentFragment :
 
     private fun deleteAttachment(deleteButton: ImageButton, position: Int) {
         deleteButton.setOnClickListener {
+            if (mFrom == "edit") {
+                val deletedAttachmentModel = mFileList[position]
+                deletedAttachmentModel.name = ""
+                mDeletedFileList.add(deletedAttachmentModel)
+            }
+
             mFileList.removeAt(position)
             if (mFileList.isEmpty()) {
                 mAttachmentTxt.isVisible = true
                 mAddAttachmentBtn.isVisible = false
                 mAttachmentBtn.isClickable = true
             }
-            mAdapter.notifyDataSetChanged()
+            mFileAdapter.notifyDataSetChanged()
         }
     }
 
@@ -496,7 +507,12 @@ class AdminELearningAssignmentFragment :
     private fun createAssignmentObject(): HashMap<String, String> {
         val filesArray = JSONArray()
         val classArray = JSONArray()
+
         getFieldsText()
+
+        if (mDeletedFileList.isNotEmpty()){
+            mFileList.addAll(mDeletedFileList)
+        }
 
         return HashMap<String, String>().apply {
             put("id", id ?: "")
@@ -596,12 +612,15 @@ class AdminELearningAssignmentFragment :
                                 showToast("Failed. Please check your connection and try again")
                             }
                         }
+                        mAssignBtn.isEnabled = true
                     } catch (e: Exception) {
+                        mAssignBtn.isEnabled = true
                         e.printStackTrace()
                     }
                 }
 
                 override fun onError(error: VolleyError) {
+                    mAssignBtn.isEnabled = true
                     showToast("Something went wrong please try again")
                 }
             })

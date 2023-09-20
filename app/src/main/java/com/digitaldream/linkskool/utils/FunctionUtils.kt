@@ -13,6 +13,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -904,6 +905,29 @@ object FunctionUtils {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+
+    @JvmStatic
+    fun isBased64(encodedString: String): Boolean {
+        return org.apache.commons.codec.binary.Base64.isBase64(encodedString)
+    }
+
+    @JvmStatic
+    fun decodeBase64(encodedString: String): Bitmap? {
+        return try {
+            val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
+            Bitmap.createBitmap(
+                BitmapFactory.decodeByteArray(
+                    decodedBytes,
+                    0,
+                    decodedBytes.size
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 

@@ -3,16 +3,15 @@ package com.digitaldream.linkskool.dialog
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -22,11 +21,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.ShortAnswerModel
+import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.net.URL
 
 class AdminELearningShortAnswerDialogFragment(
     private val shortAnswerModel: ShortAnswerModel,
@@ -79,7 +78,10 @@ class AdminELearningShortAnswerDialogFragment(
 
         attachmentTxt.setOnClickListener {
             if (shortAnswerModelCopy.attachmentUri != null) {
-                previewAttachment(shortAnswerModelCopy.attachmentUri!!)
+                previewAttachment(
+                    shortAnswerModelCopy.attachmentUri!!,
+                    shortAnswerModel.attachmentName
+                )
             } else {
                 showQuestionAttachment()
             }
@@ -108,9 +110,9 @@ class AdminELearningShortAnswerDialogFragment(
                 attachmentTxt.text = shortAnswerModelCopy.attachmentName
                 removeQuestionAttachmentBtn.isVisible = true
 
-                attachmentTxt.setOnClickListener {
-                    previewAttachment(shortAnswerModelCopy.attachmentUri!!)
-                }
+//                attachmentTxt.setOnClickListener {
+//                    previewAttachment(shortAnswerModelCopy.attachmentUri!!, shortAnswerModel.attachmentName)
+//                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -135,53 +137,61 @@ class AdminELearningShortAnswerDialogFragment(
         )
     }
 
-    private fun previewAttachment(uri: Any) {
+    private fun previewAttachment(uri: Any, uriName: String) {
         try {
-            val fileUri = when (uri) {
+            when (uri) {
                 is File -> {
                     val file = File(uri.absolutePath)
-                    FileProvider.getUriForFile(
+
+                    val fileUri = FileProvider.getUriForFile(
                         requireContext(),
                         "${requireActivity().packageName}.provider",
                         file
                     )
+
+                    launchUriIntent(fileUri as Uri)
                 }
 
                 is String -> {
-                    isValidUriOrUrl(uri)
+                    val isBase64 = isBased64(uri)
+
+                    if (isBase64) {
+                        val bitmap = decodeBase64(uri)
+                        if (bitmap != null) {
+                            launchImagePreviewDialog(bitmap, uriName)
+                        }
+                    } else {
+                        val url = "${requireActivity().getString(R.string.base_url)}/$uri"
+                        launchImagePreviewDialog(url, uriName)
+                    }
                 }
 
-                else -> uri
-
+                else -> {
+                    launchUriIntent(uri as Uri)
+                }
             }
 
-            Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(fileUri as Uri?, "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }.let {
-                startActivity(it)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(
-                requireContext(),
-                "Error occurred while viewing the file",
+                requireContext(), "Error occurred while viewing the file",
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
 
-    private fun isValidUriOrUrl(str: String): Boolean {
-        return try {
-            Uri.parse(str)
-            true
-        } catch (e: Exception) {
-            val decodedBytes = Base64.decode(str, Base64.DEFAULT)
-            val decodeBitmap = BitmapFactory.decodeStream(ByteArrayInputStream(decodedBytes))
-
-            Log.d("image", "$decodeBitmap")
-            true
+    private fun launchUriIntent(uri: Uri) {
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.let {
+            startActivity(it)
         }
+    }
+
+    private fun launchImagePreviewDialog(uri: Any, uriName: String) {
+        AdminELearningFilePreviewDialogFragment(file = uri, uriName)
+            .show(parentFragmentManager, "")
     }
 
     private fun onDiscard() {

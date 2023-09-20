@@ -309,7 +309,7 @@ class AdminELearningQuestionSettingsFragment :
             mDescriptionEditText.error = "Please enter a description"
         } else if (mStartDate.isNullOrEmpty() or mEndDate.isNullOrEmpty()) {
             showToast("Please set date")
-        } else if (durationMinutes.isNullOrBlank()){
+        } else if (durationMinutes.isNullOrBlank()) {
             showToast("Please set duration")
         } else {
             val json = createSettingsJsonObject()
@@ -392,6 +392,7 @@ class AdminELearningQuestionSettingsFragment :
                     val end = "Due ${formatDate2(mEndDate!!, "custom1")}"
                     mStartDateTxt.text = start
                     mEndDateTxt.text = end
+                    mDurationTxt.text = durationMinutes
 
                     showDate()
                 }
