@@ -263,7 +263,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     // Set up the RecyclerView for displaying questions and sections
     private fun setupQuestionRecyclerView() {
         sectionAdapter =
-            AdminELearningQuestionAdapter(parentFragmentManager, sectionItems)
+            AdminELearningQuestionAdapter(parentFragmentManager, sectionItems, taskType?:"")
 
         sectionRecyclerView.apply {
             hasFixedSize()
@@ -698,7 +698,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
 
-    // Convert a file or URI to a base64 string if it's a URI, otherwise, return it as is
+    // Convert a file or URI to base64 otherwise, return
     private fun convertFileOrUriToBase64(fileUri: Any?): Any? {
         return if (fileUri is String) {
             ""
@@ -713,7 +713,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     }
 
 
-    // Submit the assessment questions to the server
+    // Submit assessment questions to the server
     private fun submitQuestions() {
         val assessmentObject = createAssessmentObject()
 
@@ -952,7 +952,7 @@ class AdminELearningQuestionFragment : Fragment(R.layout.fragment_admin_e_learni
     private fun exitWithWarning() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Are you sure to exit?")
-            setMessage("Your unsaved changes will be lost")
+            setMessage("Your unsaved changes will be lost.")
             setPositiveButton("Yes") { _, _ ->
                 onBackPressed()
             }

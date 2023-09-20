@@ -31,6 +31,7 @@ import java.util.Collections
 class AdminELearningQuestionAdapter(
     private val fragmentManager: FragmentManager,
     private val itemList: MutableList<SectionModel>,
+    private val taskType: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperAdapter {
 
     private companion object {
@@ -40,6 +41,7 @@ class AdminELearningQuestionAdapter(
     }
 
     private val viewHolderList = mutableListOf<RecyclerView.ViewHolder>()
+    private val deletedItemList = mutableListOf<SectionModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

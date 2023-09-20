@@ -1,5 +1,7 @@
 package com.digitaldream.linkskool.adapters
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -213,6 +215,7 @@ class AdminELearningClassAdapter(
                     }
 
                     R.id.deleteSection -> {
+                        warningDialog(itemView.context, contentModel = topicModel)
                         true
                     }
 
@@ -270,6 +273,52 @@ class AdminELearningClassAdapter(
                 .putExtra("task", "edit")
                 .putExtra("json", response)
         )
+    }
+
+    private fun deleteContent(context: Context, url: String) {
+        sendRequestToServer(
+            Request.Method.GET,
+            url,
+            context,
+            null,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+
+                }
+
+                override fun onError(error: VolleyError) {
+                    Toast.makeText(
+                        context, "Something went wrong please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+
+    private fun warningDialog(context: Context, contentModel: ContentModel) {
+        val title = "Delete ${contentModel.viewType}?"
+
+        val message = when (contentModel.viewType) {
+            "topic" -> "Posts with this topic will not be deleted."
+            "material" -> "Comments will also be deleted."
+            else -> "Marks and comments will also be deleted."
+        }
+
+        val url = "${context.getString(R.string.base_url)}/deleteContent.php?id=${contentModel.id}"
+
+        AlertDialog.Builder(context).apply {
+            setTitle(title)
+            setMessage(message)
+            setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            setPositiveButton("Delete") { _, _ ->
+                deleteContent(context, url)
+            }
+
+            show()
+        }.create()
     }
 
     @OptIn(DelicateCoroutinesApi::class)

@@ -41,6 +41,7 @@ class AdminELearningSectionDialog(
             } else {
                 sectionInput.error = "Please enter a section"
             }
+
         }
     }
 }

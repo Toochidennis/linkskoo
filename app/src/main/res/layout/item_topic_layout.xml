@@ -15,7 +15,6 @@
         android:layout_marginEnd="@dimen/dimen_10"
         android:layout_toStartOf="@id/moreBtn"
         android:ellipsize="marquee"
-        android:fontFamily="@font/poppins_regular"
         android:paddingTop="@dimen/dimen_10"
         android:paddingBottom="@dimen/dimen_10"
         android:singleLine="true"
