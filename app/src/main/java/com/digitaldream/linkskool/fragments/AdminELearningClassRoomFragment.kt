@@ -89,7 +89,8 @@ class AdminELearningClassRoomFragment : Fragment(R.layout.fragment_admin_e_learn
 
 
         mAddCourseOutlineBtn.setOnClickListener {
-            AdminELearningCreateClassDialogFragment.newInstance(mLevelId!!)
+            AdminELearningCreateClassDialogFragment
+                .newInstance(mLevelId!!, mCourseName!!, mCourseId!!)
                 .show(parentFragmentManager, "")
         }
 

@@ -8,146 +8,199 @@
     android:orientation="vertical"
     tools:context=".fragments.AdminELearningCreateClassDialogFragment">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/backBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="@dimen/dimen_10"
-            android:background="@drawable/ripple_effect11"
-            android:clickable="true"
-            android:contentDescription="@string/todo"
-            android:focusable="true"
-            android:padding="@dimen/dimen_10"
-            android:src="@drawable/ic_close"
-            app:tint="@color/test_color_7" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="@color/white">
 
-        <Button
-            android:id="@+id/doneBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_16"
-            android:background="@drawable/ripple_effect10"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="Done"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_14" />
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/ripple_effect11"
+                android:clickable="true"
+                android:contentDescription="@string/todo"
+                android:focusable="true"
+                android:padding="@dimen/dimen_10"
+                android:src="@drawable/ic_close"
+                app:tint="@color/test_color_7" />
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:layout_toStartOf="@id/createBtn"
+                android:layout_toEndOf="@id/backBtn"
+                android:text="Create outline"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_18" />
 
-    <EditText
-        android:id="@+id/courseOutlineEditText"
+            <Button
+                android:id="@+id/createBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="@dimen/dimen_16"
+                android:background="@drawable/ripple_effect6"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="Create"
+                android:textAllCaps="false"
+                android:textColor="@color/test_color_1"
+                android:textSize="@dimen/text_14" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/courseOutlineTitleInputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_16"
+        android:background="@color/test_color_6"
+        android:hint="Title (required)"
+        app:hintAnimationEnabled="true"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/test_color_1">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:inputType="textCapSentences" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/descriptionInputText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_16"
+        android:layout_marginEnd="@dimen/dimen_16"
+        android:background="@color/test_color_6"
+        android:hint="Description"
+        app:hintAnimationEnabled="true"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/test_color_1">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:inputType="textCapSentences" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <View
+        android:id="@+id/classSeparator"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
         android:layout_marginTop="@dimen/dimen_16"
-        android:layout_marginEnd="@dimen/dimen_16"
-        android:autofillHints="title"
-        android:background="@android:color/transparent"
-        android:cursorVisible="true"
-        android:focusableInTouchMode="true"
-        android:hint="Course outline title"
-        android:inputType="text"
-        android:paddingTop="@dimen/dimen_16"
-        android:paddingBottom="@dimen/dimen_16"
-        android:textColor="@color/black"
-        android:textSize="22sp" />
+        android:background="@color/test_color_7" />
 
     <LinearLayout
+        android:id="@+id/classLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginEnd="@dimen/dimen_16"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_16">
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginEnd="@dimen/dimen_16"
-        android:background="@color/white">
-
-        <RadioButton
-            android:id="@+id/tagClassButton"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dimen_16"
-            android:text="Tag class" />
-
-        <RadioButton
-            android:id="@+id/tagTeacherButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dimen_16"
-            android:text="Tag teachers" />
-
-    </RadioGroup>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginEnd="@dimen/dimen_16"
-        android:background="@drawable/line_separator"
-        android:orientation="horizontal" />
-
-    <RelativeLayout
-        android:id="@+id/tagView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:visibility="gone">
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_group" />
 
         <Button
-            android:id="@+id/selectAllBtn"
+            android:id="@+id/selectAllClassesBtn"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/dimen_16"
             android:background="@drawable/ripple_effect6"
             android:clickable="true"
-            android:layout_marginTop="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_16"
             android:focusable="true"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="Select all"
+            android:text="All classes"
             android:textAllCaps="false"
             android:textSize="@dimen/text_14" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tagRecyclerView"
-            android:layout_width="match_parent"
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_16">
+
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_10"
-            android:layout_below="@id/selectAllBtn" />
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_group" />
+
+        <Button
+            android:id="@+id/selectAllTeachersBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/dimen_16"
+            android:background="@drawable/ripple_effect6"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="All teachers"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@color/test_color_7" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTintMode="@color/test_color_1"
+            android:padding="@dimen/dimen_16"
+            android:textSize="@dimen/text_16" />
 
         <TextView
-            android:id="@+id/errorTxt"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/no_data"
-            android:textAlignment="center"
+            android:paddingTop="@dimen/dimen_16"
+            android:paddingEnd="@dimen/dimen_16"
+            android:paddingBottom="@dimen/dimen_16"
+            android:text="For teachers only"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_16"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_14" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
