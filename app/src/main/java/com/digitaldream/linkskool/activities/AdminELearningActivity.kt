@@ -5,10 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.fragments.*
-import timber.log.Timber
 
 
-class ELearningActivity : AppCompatActivity(R.layout.activity_elearn) {
+class AdminELearningActivity : AppCompatActivity(R.layout.activity_admin_e_learning) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -157,8 +157,6 @@ class AdminELearningCreateClassDialogFragment :
 
             mClassList = classDao.queryBuilder().where().eq("level", levelId).query()
 
-            mClassList.sortBy { it.className }
-
             mClassList.forEach { item ->
                 selectedClasses[item.classId] = item.className
             }
@@ -168,7 +166,6 @@ class AdminELearningCreateClassDialogFragment :
             )
 
             mTeacherList = teacherDao.queryForAll()
-            mTeacherList.sortBy { it.staffFirstname }
 
             mTeacherList.forEach { teacher ->
                 teacher.staffFullName =
@@ -187,9 +184,11 @@ class AdminELearningCreateClassDialogFragment :
 
     private fun selectClass() {
         mSelectAllClassesBtn.setOnClickListener {
-            AdminELearningSelectClassFragment(selectedClasses) { classes ->
-                selectedClasses = classes
-
+            AdminELearningSelectClassFragment(selectedClasses, levelId!!) { classes ->
+                if (classes.isEmpty())
+                    loadDataset()
+                else
+                    selectedClasses = classes
             }.show(parentFragmentManager, "")
         }
     }
@@ -197,7 +196,10 @@ class AdminELearningCreateClassDialogFragment :
     private fun selectTeacher() {
         mSelectAllTeachersBtn.setOnClickListener {
             AdminELearningSelectTeacherFragment(selectedTeachers) { teachers ->
-                selectedTeachers = teachers
+                if (teachers.isEmpty())
+                    loadDataset()
+                else
+                    selectedTeachers = teachers
             }.show(parentFragmentManager, "teacher")
         }
     }

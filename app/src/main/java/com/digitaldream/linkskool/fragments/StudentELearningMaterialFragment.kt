@@ -1,14 +1,12 @@
 package com.digitaldream.linkskool.fragments
 
 import android.content.Context
-import android.content.Intent
+import android.content.Context.MODE_PRIVATE
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -17,23 +15,18 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.AdminELearningActivity
 import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.CommentDataModel
 import com.digitaldream.linkskool.utils.FileViewModel
-import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
-import com.digitaldream.linkskool.utils.FunctionUtils.getDate
+import com.digitaldream.linkskool.utils.FunctionUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -41,10 +34,7 @@ import org.json.JSONObject
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-
-class AdminELearningMaterialDetailsFragment :
-    Fragment(R.layout.fragment_admin_e_learning_material_details) {
-
+class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_learning_material) {
 
     private lateinit var titleTxt: TextView
     private lateinit var descriptionTxt: TextView
@@ -62,34 +52,33 @@ class AdminELearningMaterialDetailsFragment :
     private var fileList = mutableListOf<AttachmentModel>()
 
     private lateinit var fileViewModel: FileViewModel
-    private lateinit var menuHost: MenuHost
 
     private var jsonData: String? = null
-    private var taskType: String? = null
     private var title: String? = null
     private var description: String? = null
-
+    private var userName: String? = null
+    private var userId: String? = null
+    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             jsonData = it.getString(ARG_PARAM1)
-            taskType = it.getString(ARG_PARAM2)
+            param2 = it.getString(ARG_PARAM2)
         }
 
         fileViewModel = ViewModelProvider(this)[FileViewModel::class.java]
-
     }
 
 
     companion object {
 
         @JvmStatic
-        fun newInstance(data: String, task: String) =
-            AdminELearningMaterialDetailsFragment().apply {
+        fun newInstance(param1: String, param2: String = "") =
+            StudentELearningMaterialFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, data)
-                    putString(ARG_PARAM2, task)
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
                 }
             }
     }
@@ -98,8 +87,6 @@ class AdminELearningMaterialDetailsFragment :
         super.onViewCreated(view, savedInstanceState)
 
         setUpViews(view)
-
-        setUpMenu()
 
         onWatchEditText()
 
@@ -123,7 +110,6 @@ class AdminELearningMaterialDetailsFragment :
             commentEditText = findViewById(R.id.commentEditText)
             sendMessageBtn = findViewById(R.id.sendMessageBtn)
 
-            menuHost = requireActivity()
             (requireContext() as AppCompatActivity).setSupportActionBar(toolbar)
             val actionBar = (requireContext() as AppCompatActivity).supportActionBar
 
@@ -133,6 +119,10 @@ class AdminELearningMaterialDetailsFragment :
                 setHomeButtonEnabled(true)
             }
         }
+
+        val sharedPreferences = requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
+        userName = sharedPreferences.getString("_name", "")
+        userId = sharedPreferences.getString("user_id", "")
     }
 
     private fun parseFileJsonObject() {
@@ -237,9 +227,12 @@ class AdminELearningMaterialDetailsFragment :
 
     private fun sendComment() {
         val message = commentEditText.text.toString().trim()
-        val date = formatDate2(getDate())
+        val date = FunctionUtils.formatDate2(FunctionUtils.getDate())
 
-        val commentDataModel = CommentDataModel("id", "id", "Toochi Dennis", message, date)
+        val commentDataModel = CommentDataModel(
+            "id", userId ?: "",
+            userName ?: "", message, date
+        )
         commentList.add(commentDataModel)
 
         commentTitleTxt.isVisible = commentList.isNotEmpty()
@@ -251,7 +244,6 @@ class AdminELearningMaterialDetailsFragment :
 
     }
 
-
     private fun updateComment() {
         sendMessageBtn.setOnClickListener {
             sendComment()
@@ -259,53 +251,12 @@ class AdminELearningMaterialDetailsFragment :
 
     }
 
-
     private fun hideKeyboard(editText: EditText) {
         val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
                 as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
         editText.clearFocus()
         editText.setText("")
-    }
-
-    private fun setUpMenu() {
-        menuHost.addMenuProvider(object : MenuProvider {
-
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_e_learning_details, menu)
-
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.refresh -> {
-
-                        true
-                    }
-
-                    R.id.edit -> {
-                        startActivity(
-                            Intent(requireContext(), AdminELearningActivity::class.java)
-                                .putExtra("from", "material")
-                                .putExtra("task", "edit")
-                                .putExtra("json", jsonData)
-                        )
-
-                        true
-                    }
-
-                    R.id.delete -> {
-                        true
-                    }
-
-                    else -> {
-                        requireActivity().onBackPressedDispatcher.onBackPressed()
-                        false
-                    }
-
-                }
-            }
-        })
     }
 
 }

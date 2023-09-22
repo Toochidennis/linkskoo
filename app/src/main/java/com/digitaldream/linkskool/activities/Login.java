@@ -1131,7 +1131,6 @@ public class Login extends AppCompatActivity {
                         String studentRegNo = jsonObject1.getString("registration_no");
                         String studentEmail = jsonObject.optString("guardian_email", "");
 
-                        Log.i("responseDb", db);
 
                         SharedPreferences sharedPreferences = getSharedPreferences(
                                 "loginDetail", Context.MODE_PRIVATE);

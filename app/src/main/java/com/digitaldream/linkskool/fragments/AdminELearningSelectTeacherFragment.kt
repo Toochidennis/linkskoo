@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,7 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningSelectTeachersAdapter
+import com.digitaldream.linkskool.config.DatabaseHelper
 import com.digitaldream.linkskool.models.TagModel
+import com.digitaldream.linkskool.models.TeachersTable
+import com.j256.ormlite.dao.Dao
+import com.j256.ormlite.dao.DaoManager
+import java.util.Locale
 
 
 class AdminELearningSelectTeacherFragment(
@@ -27,9 +33,12 @@ class AdminELearningSelectTeacherFragment(
     private lateinit var teacherRecyclerView: RecyclerView
 
     private val tagList = mutableListOf<TagModel>()
+    private var teacherList = mutableListOf<TeachersTable>()
     private var selectedTeachersCopy = hashMapOf<String, String>()
 
     private lateinit var teachersAdapter: AdminELearningSelectTeachersAdapter
+    private lateinit var databaseHelper: DatabaseHelper
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +67,9 @@ class AdminELearningSelectTeacherFragment(
             selectAllStateLayout = findViewById(R.id.selectedStateLayout)
             teacherRecyclerView = findViewById(R.id.teacherRecyclerView)
         }
+
+        databaseHelper = DatabaseHelper(requireContext())
+
     }
 
     private fun setUpDataset() {
@@ -65,9 +77,30 @@ class AdminELearningSelectTeacherFragment(
             selectAllLayout.isSelected = false
             selectedTeachersCopy = selectedTeachers
 
-            selectedTeachersCopy.forEach { (teacherId, teacherName) ->
-                tagList.add(TagModel(teacherId, teacherName))
+            val teacherDao: Dao<TeachersTable, Long> = DaoManager.createDao(
+                databaseHelper.connectionSource, TeachersTable::class.java
+            )
+
+            teacherList = teacherDao.queryForAll()
+
+            teacherList.forEach { teacher ->
+                teacher.staffFullName =
+                    String.format(
+                        Locale.getDefault(), "%s %s %s",
+                        teacher.staffSurname, teacher.staffMiddlename,
+                        teacher.staffFirstname
+                    )
+
+                val teacherName = selectedTeachers[teacher.staffId]
+
+                if (teacherName == teacher.staffFullName) {
+                    tagList.add(TagModel(teacher.staffId, teacher.staffFullName, true))
+                } else {
+                    tagList.add(TagModel(teacher.staffId, teacher.staffFullName))
+                }
             }
+
+            tagList.sortBy { it.tagName }
 
             setUpRecyclerView()
 
@@ -90,11 +123,19 @@ class AdminELearningSelectTeacherFragment(
         }
     }
 
-    private fun doneAction(){
+    private fun doneAction() {
         doneBtn.setOnClickListener {
             onSelected(selectedTeachers)
             it.isEnabled = false
             dismiss()
         }
+    }
+
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+
+        if (selectedTeachersCopy.isEmpty())
+            onSelected(hashMapOf())
     }
 }

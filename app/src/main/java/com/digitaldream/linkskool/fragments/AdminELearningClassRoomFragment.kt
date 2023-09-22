@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.activities.AdminELearningActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -77,7 +77,7 @@ class AdminELearningClassRoomFragment : Fragment(R.layout.fragment_admin_e_learn
 
             postLayout.setOnClickListener {
                 startActivity(
-                    Intent(requireContext(), ELearningActivity::class.java)
+                    Intent(requireContext(), AdminELearningActivity::class.java)
                         .putExtra("from", "view_post")
                         .putExtra("levelId", mLevelId)
                         .putExtra("courseId", mCourseId)

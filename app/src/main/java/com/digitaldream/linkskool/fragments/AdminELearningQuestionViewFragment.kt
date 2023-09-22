@@ -14,14 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.activities.AdminELearningActivity
 import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.models.CommentDataModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.google.android.material.textfield.TextInputLayout
-import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Locale
 
@@ -113,7 +112,7 @@ class AdminELearningQuestionViewFragment :
     private fun viewQuestions() {
         viewQuestionBtn.setOnClickListener {
             startActivity(
-                Intent(requireContext(), ELearningActivity::class.java)
+                Intent(requireContext(), AdminELearningActivity::class.java)
                     .putExtra("from", "question_test")
                     .putExtra("json", jsonData)
             )

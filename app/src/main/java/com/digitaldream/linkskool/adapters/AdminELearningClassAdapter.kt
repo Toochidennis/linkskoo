@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.activities.AdminELearningActivity
 import com.digitaldream.linkskool.interfaces.ItemTouchHelperAdapter
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
@@ -244,7 +244,7 @@ class AdminELearningClassAdapter(
     private fun sendRequest(
         url: String,
         itemView: View,
-        onResponse: (response: String) -> Unit
+        onResponse: (String) -> Unit
     ) {
         sendRequestToServer(
             Request.Method.GET,
@@ -268,7 +268,7 @@ class AdminELearningClassAdapter(
 
     private fun launchActivity(itemView: View, from: String, response: String) {
         itemView.context.startActivity(
-            Intent(itemView.context, ELearningActivity::class.java)
+            Intent(itemView.context, AdminELearningActivity::class.java)
                 .putExtra("from", from)
                 .putExtra("task", "edit")
                 .putExtra("json", response)

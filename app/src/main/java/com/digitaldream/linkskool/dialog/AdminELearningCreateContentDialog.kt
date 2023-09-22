@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.activities.AdminELearningActivity
 
 class AdminELearningCreateContentDialog(
     context: Context,
@@ -67,7 +66,7 @@ class AdminELearningCreateContentDialog(
 
     private fun launchActivity(from: String) {
         context.startActivity(
-            Intent(context, ELearningActivity::class.java)
+            Intent(context, AdminELearningActivity::class.java)
                 .putExtra("from", from)
                 .putExtra("levelId", levelId)
                 .putExtra("courseId", courseId)

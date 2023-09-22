@@ -24,11 +24,11 @@ public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElear
 
     private Context context;
     private List<CourseTable> courseList;
-    StudentElearningCourseAdapter.OnCourseClickListener onCourseClickListener;
+    StudentELearningAdapter.OnCourseClickListener onCourseClickListener;
     private List<Object> list = new ArrayList<>();
     private List<CourseOutlineTable> courseLists= new ArrayList<>();
 
-    public AdminElearningCourseAdapter(Context context, List<CourseTable> courseList, StudentElearningCourseAdapter.OnCourseClickListener onCourseClickListener) {
+    public AdminElearningCourseAdapter(Context context, List<CourseTable> courseList, StudentELearningAdapter.OnCourseClickListener onCourseClickListener) {
         this.context = context;
         this.courseList = courseList;
         this.onCourseClickListener = onCourseClickListener;
@@ -70,10 +70,10 @@ public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElear
 
     class StudentElearningCourseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView courseName,courseInitials;
-        StudentElearningCourseAdapter.OnCourseClickListener onCourseClickListener;
+        StudentELearningAdapter.OnCourseClickListener onCourseClickListener;
         LinearLayout linearLayout;
 
-        public StudentElearningCourseViewHolder(@NonNull View itemView, StudentElearningCourseAdapter.OnCourseClickListener onCourseClickListener) {
+        public StudentElearningCourseViewHolder(@NonNull View itemView, StudentELearningAdapter.OnCourseClickListener onCourseClickListener) {
             super(itemView);
             courseName = itemView.findViewById(R.id.course_name);
             courseInitials = itemView.findViewById(R.id.course_initials);

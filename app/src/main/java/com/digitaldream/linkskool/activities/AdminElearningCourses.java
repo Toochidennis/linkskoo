@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.digitaldream.linkskool.adapters.AdminElearningCourseAdapter;
-import com.digitaldream.linkskool.adapters.StudentElearningCourseAdapter;
+import com.digitaldream.linkskool.adapters.StudentELearningAdapter;
 import com.digitaldream.linkskool.config.DatabaseHelper;
 import com.digitaldream.linkskool.models.CourseTable;
 import com.digitaldream.linkskool.R;
@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class AdminElearningCourses extends AppCompatActivity implements StudentElearningCourseAdapter.OnCourseClickListener {
+public class AdminElearningCourses extends AppCompatActivity implements StudentELearningAdapter.OnCourseClickListener {
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private DatabaseHelper databaseHelper;

@@ -12,11 +12,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.ELearningActivity
+import com.digitaldream.linkskool.activities.AdminELearningActivity
 import com.digitaldream.linkskool.adapters.SectionPagerAdapter
 import com.digitaldream.linkskool.models.SharedViewModel
 import com.digitaldream.linkskool.utils.CustomViewPager2
@@ -175,7 +173,7 @@ class AdminELearningQuestionDetailsFragment :
 
                     R.id.edit -> {
                         startActivity(
-                            Intent(requireContext(), ELearningActivity::class.java)
+                            Intent(requireContext(), AdminELearningActivity::class.java)
                                 .putExtra("from", "question")
                                 .putExtra("task", "edit")
                                 .putExtra("json", jsonData)

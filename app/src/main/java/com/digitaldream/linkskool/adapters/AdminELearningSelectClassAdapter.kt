@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.TagModel
 import com.digitaldream.linkskool.utils.FunctionUtils.getRandomColor
+import timber.log.Timber
 
 class AdminELearningSelectClassAdapter(
     private val itemList: MutableList<TagModel>,
@@ -61,6 +62,7 @@ class AdminELearningSelectClassAdapter(
 
                     setBackgroundDrawable(selectAllLayout, "select")
                     selectAllLayout.isSelected = true
+
                 }
 
                 setBackgroundDrawable(classLayout, "select")

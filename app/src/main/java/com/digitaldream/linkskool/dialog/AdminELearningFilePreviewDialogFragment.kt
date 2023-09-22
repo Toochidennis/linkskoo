@@ -10,8 +10,6 @@ import androidx.fragment.app.DialogFragment
 import com.digitaldream.linkskool.R
 import com.squareup.picasso.Picasso
 
-private const val ARG_PARAM1 = "name"
-private const val ARG_PARAM2 = "file"
 
 class AdminELearningFilePreviewDialogFragment(
     private val file: Any?,
@@ -23,7 +21,6 @@ class AdminELearningFilePreviewDialogFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DialogTheme)
-
     }
 
 

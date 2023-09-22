@@ -191,8 +191,8 @@ class AdminELearningFilesAdapter(
 
         if (filePath != null) {
             AdminELearningFilePreviewDialogFragment(
-                attachmentModel.name,
                 filePath,
+                attachmentModel.name
             ).show(fragmentManager, "view file")
         } else {
             Toast.makeText(itemView.context, "Unable to open file", Toast.LENGTH_SHORT).show()

@@ -24,7 +24,7 @@ import com.digitaldream.linkskool.R;
 import com.digitaldream.linkskool.fragments.ELibraryFragment;
 import com.digitaldream.linkskool.fragments.FlashCardList;
 import com.digitaldream.linkskool.fragments.StudentDashboard;
-import com.digitaldream.linkskool.fragments.StudentElearning;
+import com.digitaldream.linkskool.fragments.StudentELearningFragment;
 import com.digitaldream.linkskool.fragments.StudentPaymentFragment;
 import com.digitaldream.linkskool.fragments.StudentResultFragment;
 import com.digitaldream.linkskool.models.CourseOutlineTable;
@@ -123,7 +123,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
                         case R.id.student_elearning:
                             getSupportFragmentManager().beginTransaction().replace(
                                     R.id.payment_container,
-                                    new StudentElearning()).commit();
+                                    new StudentELearningFragment()).commit();
                             return true;
                     }
                     return false;

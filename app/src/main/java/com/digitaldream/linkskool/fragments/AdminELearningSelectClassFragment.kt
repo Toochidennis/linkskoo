@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,11 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningSelectClassAdapter
+import com.digitaldream.linkskool.config.DatabaseHelper
+import com.digitaldream.linkskool.models.ClassNameTable
 import com.digitaldream.linkskool.models.TagModel
+import com.j256.ormlite.dao.Dao
+import com.j256.ormlite.dao.DaoManager
+import timber.log.Timber
 
 
 class AdminELearningSelectClassFragment(
     private var selectedClasses: HashMap<String, String>,
+    private val levelId: String,
     private val onSelected: (HashMap<String, String>) -> Unit
 ) : DialogFragment(R.layout.fragment_admin_e_learning_select_class) {
 
@@ -27,9 +34,13 @@ class AdminELearningSelectClassFragment(
     private lateinit var classRecyclerView: RecyclerView
 
     private val tagList = mutableListOf<TagModel>()
+    private var classList = mutableListOf<ClassNameTable>()
     private lateinit var selectedClassesCopy: HashMap<String, String>
 
     private lateinit var classAdapter: AdminELearningSelectClassAdapter
+
+    private lateinit var databaseHelper: DatabaseHelper
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,16 +70,30 @@ class AdminELearningSelectClassFragment(
             classRecyclerView = findViewById(R.id.classRecyclerView)
         }
 
+        databaseHelper = DatabaseHelper(requireContext())
+
     }
 
     private fun setUpDataset() {
         try {
             selectAllLayout.isSelected = false
             selectedClassesCopy = selectedClasses
+            val classDao: Dao<ClassNameTable, Long> = DaoManager.createDao(
+                databaseHelper.connectionSource, ClassNameTable::class.java
+            )
 
-            selectedClassesCopy.forEach { (classId, className) ->
-                tagList.add(TagModel(classId, className))
+            classList = classDao.queryBuilder().where().eq("level", levelId).query()
+
+            classList.forEach { item ->
+                val className = selectedClassesCopy[item.classId]
+                if (className == item.className) {
+                    tagList.add(TagModel(item.classId, item.className, true))
+                } else {
+                    tagList.add(TagModel(item.classId, item.className))
+                }
             }
+
+            tagList.sortBy { it.tagName }
 
             setUpRecyclerView()
 
@@ -96,6 +121,13 @@ class AdminELearningSelectClassFragment(
             it.isEnabled = false
             dismiss()
         }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+
+        if (selectedClassesCopy.isEmpty())
+            onSelected(hashMapOf())
     }
 
 }
