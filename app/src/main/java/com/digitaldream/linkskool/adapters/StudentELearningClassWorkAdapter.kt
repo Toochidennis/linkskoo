@@ -14,8 +14,8 @@ import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.StudentELearningActivity
 import com.digitaldream.linkskool.models.ContentModel
-import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 
 class StudentELearningClassWorkAdapter(
@@ -169,7 +169,7 @@ class StudentELearningClassWorkAdapter(
         itemView: View,
         onResponse: (String) -> Unit
     ) {
-        FunctionUtils.sendRequestToServer(
+        sendRequestToServer(
             Request.Method.GET,
             url,
             itemView.context,
@@ -185,7 +185,8 @@ class StudentELearningClassWorkAdapter(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            }
+        )
     }
 
     private fun launchActivity(itemView: View, from: String, response: String) {
