@@ -18,7 +18,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 
-class StudentELearningClassWorkAdapter(
+class StudentELearningCourseWorkAdapter(
     private val itemList: MutableList<ContentModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

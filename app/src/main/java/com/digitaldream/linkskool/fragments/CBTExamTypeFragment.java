@@ -116,15 +116,14 @@ public class CBTExamTypeFragment extends Fragment implements CBTExamTypeAdapter.
         ((AppCompatActivity) (requireActivity())).setSupportActionBar(
                 toolbar);
         ActionBar actionBar =
-                ((AppCompatActivity) (getActivity())).getSupportActionBar();
+                ((AppCompatActivity) requireActivity()).getSupportActionBar();
         assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Computer Based Test");
-        setHasOptionsMenu(true);
         toolbar.setNavigationOnClickListener(
-                v -> getActivity().onBackPressed());
+                v -> requireActivity().onBackPressed());
 
         displayProgress();
 

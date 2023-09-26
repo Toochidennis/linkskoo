@@ -38,9 +38,8 @@ class FileViewModel(application: Application) : AndroidViewModel(application) {
     val fileProcessed: LiveData<Pair<File, Bitmap>> = _fileProcessed
 
     fun downloadAndProcessFile(attachmentModel: AttachmentModel, targetPath: String) {
-        val fileUrl = "${
-            getApplication<Application>().getString(R.string.base_url)
-        }/${attachmentModel.uri}"
+        val fileUrl =
+            "${getApplication<Application>().getString(R.string.base_url)}/${attachmentModel.uri}"
 
         viewModelScope.launch {
             val downloadedFile = downloadFile(fileUrl, targetPath)

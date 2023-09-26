@@ -53,6 +53,16 @@
         </activity>
 
         <activity
+            android:name="com.digitaldream.linkskool.activities.StudentELearningCourseOutlineActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+
+        <activity
             android:name="com.digitaldream.linkskool.activities.AdminELearningActivity"
             android:exported="false"
             android:screenOrientation="portrait">
@@ -155,7 +165,6 @@
         <activity android:name="com.digitaldream.linkskool.activities.Assessment" />
         <activity android:name="com.digitaldream.linkskool.activities.ContactUs" />
         <activity android:name="com.digitaldream.linkskool.activities.TestUpload" />
-        <activity android:name="com.digitaldream.linkskool.activities.StudentELearningCourseOutlineActivity" />
         <activity android:name="com.digitaldream.linkskool.activities.ContentDownload" />
         <activity android:name="com.digitaldream.linkskool.activities.ContentUpload" />
         <activity android:name="com.digitaldream.linkskool.activities.CourseOutlines" />

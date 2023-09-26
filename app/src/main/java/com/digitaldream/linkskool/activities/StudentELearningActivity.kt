@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.fragments.StudentELearningAssignmentFragment
-import com.digitaldream.linkskool.fragments.StudentELearningDashboardFragment
 import com.digitaldream.linkskool.fragments.StudentELearningMaterialFragment
 import com.digitaldream.linkskool.fragments.StudentELearningQuestionFragment
 
@@ -17,15 +16,6 @@ class StudentELearningActivity : AppCompatActivity(R.layout.activity_student_e_l
         val json = intent.getStringExtra("json") ?: ""
 
         when (intent.getStringExtra("from")) {
-            "dashboard" -> {
-                supportFragmentManager.commit {
-                    replace(
-                        R.id.learningContainer,
-                        StudentELearningDashboardFragment()
-                    )
-                }
-            }
-
             "material" -> {
                 supportFragmentManager.commit {
                     replace(

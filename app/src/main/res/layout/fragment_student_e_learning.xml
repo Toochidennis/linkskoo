@@ -39,6 +39,7 @@
                     android:padding="@dimen/dimen_16"
                     android:text="Upcoming quiz"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/text_16" />
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -53,8 +54,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/tab_layout"
+                    app:tabBackground="@drawable/indicator_selector"
                     app:tabGravity="center"
-                    app:tabMode="scrollable"
                     app:tabIndicatorHeight="0dp" />
 
                 <TextView
@@ -62,14 +63,15 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dimen_16"
                     android:text="Recent activity"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_16" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recentActivityRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_marginStart="@dimen/dimen_16"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_16" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -79,6 +81,7 @@
                     android:paddingEnd="@dimen/dimen_16"
                     android:paddingBottom="0dp"
                     android:text="Course"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_16" />
 

@@ -12,7 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.StudentELearningClassWorkAdapter
+import com.digitaldream.linkskool.adapters.StudentELearningCourseWorkAdapter
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
@@ -22,13 +22,14 @@ import org.json.JSONArray
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class StudentELearningClassworkFragment : Fragment(R.layout.fragment_student_e_learning_classwork) {
+class StudentELearningCourseworkFragment :
+    Fragment(R.layout.fragment_student_e_learning_course_work) {
 
     private lateinit var contentRecyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var emptyTxt: TextView
 
-    private lateinit var classWorkAdapter: StudentELearningClassWorkAdapter
+    private lateinit var classWorkAdapter: StudentELearningCourseWorkAdapter
     private var contentList = mutableListOf<ContentModel>()
 
     private var levelId: String? = null
@@ -49,7 +50,7 @@ class StudentELearningClassworkFragment : Fragment(R.layout.fragment_student_e_l
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            StudentELearningClassworkFragment().apply {
+            StudentELearningCourseworkFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -197,7 +198,7 @@ class StudentELearningClassworkFragment : Fragment(R.layout.fragment_student_e_l
     }
 
     private fun setUpRecyclerView() {
-        classWorkAdapter = StudentELearningClassWorkAdapter(contentList)
+        classWorkAdapter = StudentELearningCourseWorkAdapter(contentList)
 
         contentRecyclerView.apply {
             hasFixedSize()

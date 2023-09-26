@@ -4,13 +4,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/dimen_16"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="280dp"
         android:layout_height="120dp"
         app:cardCornerRadius="@dimen/dimen_10"
-        app:cardElevation="2dp">
+        app:cardElevation="3dp">
 
         <RelativeLayout
             android:layout_width="match_parent"

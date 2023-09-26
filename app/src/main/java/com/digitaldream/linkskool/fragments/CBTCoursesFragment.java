@@ -86,27 +86,21 @@ public class CBTCoursesFragment extends Fragment implements CBTCoursesAdapter.On
         mErrorImage = view.findViewById(R.id.error_image);
         mErrorMessage = view.findViewById(R.id.error_message);
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
 
         try {
-            SharedPreferences sharedPreferences = Objects.requireNonNull(
-                    getContext()).getSharedPreferences("exam",
+            DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
+            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("exam",
                     Context.MODE_PRIVATE);
-            mExamTypeId = Integer.toString(
-                    sharedPreferences.getInt("examTypeId", 1));
+            mExamTypeId = Integer.toString(sharedPreferences.getInt("examTypeId", 1));
 
-            mDao = DaoManager.createDao(databaseHelper.getConnectionSource()
-                    , Exam.class);
-        } catch (SQLException sE) {
+            mDao = DaoManager.createDao(databaseHelper.getConnectionSource(), Exam.class);
+        } catch (Exception sE) {
             sE.printStackTrace();
         }
 
-        ((AppCompatActivity) (Objects.requireNonNull(getActivity())))
-                .setSupportActionBar(
-                        toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
-        ActionBar actionBar = ((AppCompatActivity) (getActivity()))
-                .getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
 
         assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
@@ -115,8 +109,7 @@ public class CBTCoursesFragment extends Fragment implements CBTCoursesAdapter.On
         actionBar.setTitle("Choose subject");
         setHasOptionsMenu(true);
 
-        toolbar.setNavigationOnClickListener(
-                v -> getActivity().onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
 
         progressFlower = new ACProgressFlower.Builder(
                 getContext())

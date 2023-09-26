@@ -11,12 +11,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Orientation
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.StudentELearningCourseOutlineActivity
@@ -123,15 +122,31 @@ class StudentELearningFragment : Fragment() {
     }
 
     private fun setUpCourseAdapter() {
+        val colors = intArrayOf(
+            R.color.test_color_2, R.color.color_1, R.color.test_color_1,
+            R.color.color_3, R.color.color_4, R.color.color_5,
+            R.color.color_6, R.color.color_8, R.color.test_color_5,
+            R.color.test_color_3
+        )
+
         courseAdapter = GenericAdapter(
             outlineTableList,
             R.layout.item_student_e_learning_course_layout,
-            bindItem = { itemView, model, _ ->
+            bindItem = { itemView, model, position ->
                 val courseCardView: CardView = itemView.findViewById(R.id.courseCardView)
-                val courseImageView: ImageView = itemView.findViewById(R.id.courseImageView)
+                val initialTxt: TextView = itemView.findViewById(R.id.initialTxt)
                 val courseNameTxt: TextView = itemView.findViewById(R.id.courseNameTxt)
 
                 courseNameTxt.text = model.courseName
+                val initial = model.courseName.substring(0, 1).uppercase()
+                initialTxt.text = initial
+
+                courseCardView.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        colors[position % colors.size]
+                    )
+                )
 
             }
         ) { position ->
@@ -162,27 +177,7 @@ class StudentELearningFragment : Fragment() {
         upcomingQuizAdapter = StudentELearningUpcomingQuizAdapter(upcomingQuizList)
         upcomingQuizViewPager.adapter = upcomingQuizAdapter
 
-        TabLayoutMediator(upcomingQuizTabLayout, upcomingQuizViewPager) { tab, position ->
-            val customView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.custom_tab_layout, null)
-            val tabIcon: ImageView = customView.findViewById(R.id.tabIcon)
-
-            if (position == upcomingQuizViewPager.currentItem) {
-                tabIcon.setImageResource(R.drawable.selected_indicator)
-            } else {
-                tabIcon.setImageResource(R.drawable.default_unselected_dot)
-            }
-
-            tab.customView = customView
-        }.attach()
-
-        upcomingQuizViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                upcomingQuizViewPager.currentItem = position
-            }
-        })
+        TabLayoutMediator(upcomingQuizTabLayout, upcomingQuizViewPager) { _, _ -> }.attach()
     }
 
 

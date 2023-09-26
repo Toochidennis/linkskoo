@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -25,26 +27,54 @@ class AdminELearningFilesAdapter(
     private val fragmentManager: FragmentManager,
     private val itemList: MutableList<AttachmentModel>,
     private val fileViewModel: FileViewModel
-) : RecyclerView.Adapter<AdminELearningFilesAdapter.FilesViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+
+    private companion object {
+        private const val VIEW_TYPE_PDF_WORD_EXCEL_LINK = 0
+        private const val VIEW_TYPE_IMAGE_VIDEO = 1
+    }
 
     private val picasso = Picasso.get()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_files_layout,
-            parent, false
-        )
-        return FilesViewHolder(view)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_PDF_WORD_EXCEL_LINK -> {
+                val view = inflater.inflate(R.layout.item_pdf_word_layout, parent, false)
+                PdfWordViewHolder(view)
+            }
+
+            VIEW_TYPE_IMAGE_VIDEO -> {
+                val view = inflater.inflate(R.layout.item_video_image_layout, parent, false)
+                ImageVideoViewHolder(view)
+            }
+
+            else -> throw IllegalArgumentException("Unknown viewType $viewType")
+        }
+
     }
 
-    override fun onBindViewHolder(holder: FilesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val attachmentModel = itemList[position]
-        holder.bind(attachmentModel)
+        when (holder) {
+            is PdfWordViewHolder -> holder.bind(attachmentModel)
+            is ImageVideoViewHolder -> holder.bind(attachmentModel)
+        }
     }
 
     override fun getItemCount() = itemList.size
 
-    inner class FilesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    override fun getItemViewType(position: Int): Int {
+        return when (itemList[position].type) {
+            "word", "pdf", "link", "excel" -> VIEW_TYPE_PDF_WORD_EXCEL_LINK
+            "image", "video" -> VIEW_TYPE_IMAGE_VIDEO
+            else -> position
+        }
+    }
+
+    inner class PdfWordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val fileImageView: ImageView = itemView.findViewById(R.id.fileImageView)
         private val fileNameTxt: TextView = itemView.findViewById(R.id.fileNameTxt)
 
@@ -54,11 +84,9 @@ class AdminELearningFilesAdapter(
             var fileSavePath = ""
 
             when (attachmentModel.type) {
-                "image" -> loadImage(itemView, attachmentModel, fileImageView)
                 "url" -> loadUrl(itemView, fileImageView)
                 else -> {
                     fileSavePath = createTempDir(itemView, attachmentModel)
-
                     fileViewModel.downloadAndProcessFile(attachmentModel, fileSavePath)
                 }
             }
@@ -76,6 +104,41 @@ class AdminELearningFilesAdapter(
             }
         }
     }
+
+    inner class ImageVideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val fileImageView: ImageView = itemView.findViewById(R.id.fileImageView)
+        private val videoIcon: LinearLayout = itemView.findViewById(R.id.videoIcon)
+
+        fun bind(attachmentModel: AttachmentModel) {
+            var fileSavePath = ""
+            when (attachmentModel.type) {
+                "image" -> {
+                    loadImage(itemView, attachmentModel, fileImageView)
+                    videoIcon.isVisible = false
+                }
+
+                else -> {
+                    fileSavePath = createTempDir(itemView, attachmentModel)
+                    videoIcon.isVisible = true
+                    fileViewModel.downloadAndProcessFile(attachmentModel, fileSavePath)
+                }
+            }
+
+            fileViewModel.fileProcessed.observe(itemView.context as LifecycleOwner) { (file, bitmap) ->
+                if (file.absolutePath == fileSavePath) {
+                    fileImageView.setImageBitmap(bitmap)
+                    fileImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                    attachmentModel.uri = file.absolutePath
+                }
+            }
+
+            itemView.setOnClickListener {
+                viewFiles(itemView, attachmentModel)
+            }
+
+        }
+    }
+
 
     private fun loadImage(
         itemView: View, attachmentModel: AttachmentModel, imageView: ImageView
@@ -97,7 +160,6 @@ class AdminELearningFilesAdapter(
         }
     }
 
-
     private fun createTempDir(itemView: View, attachmentModel: AttachmentModel): String {
         val tempDir = itemView.context.cacheDir
         val name = attachmentModel.name
@@ -108,12 +170,9 @@ class AdminELearningFilesAdapter(
     private fun setCompoundDrawable(textView: TextView, type: String) {
         textView.setCompoundDrawablesWithIntrinsicBounds(
             when (type) {
-                "image" -> R.drawable.ic_image24
-                "video" -> R.drawable.ic_video24
                 "pdf" -> R.drawable.ic_pdf24
                 "word" -> R.drawable.ic_file_word
                 "excel" -> R.drawable.ic_file_excel
-                "unknown" -> R.drawable.ic_unknown_document24
                 "url" -> R.drawable.ic_link
                 else -> R.drawable.ic_document24
             }.let {
@@ -126,10 +185,8 @@ class AdminELearningFilesAdapter(
     private fun viewFiles(itemView: View, attachmentModel: AttachmentModel) {
         try {
             val uri = when (attachmentModel.type) {
-                "video", "pdf", "word", "excel" -> getFileUri(
-                    itemView,
-                    attachmentModel.uri.toString()
-                )
+                "video", "pdf", "word", "excel" ->
+                    getFileUri(itemView, attachmentModel.uri.toString())
 
                 "url" -> Uri.parse(attachmentModel.uri.toString())
                 else -> null
@@ -184,19 +241,12 @@ class AdminELearningFilesAdapter(
     }
 
     private fun previewImage(itemView: View, attachmentModel: AttachmentModel) {
-        val filePath = when (attachmentModel.type) {
-            "image" -> "${itemView.context.getString(R.string.base_url)}/${attachmentModel.uri}"
-            else -> null
-        }
+        val filePath = "${itemView.context.getString(R.string.base_url)}/${attachmentModel.uri}"
 
-        if (filePath != null) {
-            AdminELearningFilePreviewDialogFragment(
-                filePath,
-                attachmentModel.name
-            ).show(fragmentManager, "view file")
-        } else {
-            Toast.makeText(itemView.context, "Unable to open file", Toast.LENGTH_SHORT).show()
-        }
+        AdminELearningFilePreviewDialogFragment(
+            filePath,
+            attachmentModel.name
+        ).show(fragmentManager, "view file")
 
     }
 
