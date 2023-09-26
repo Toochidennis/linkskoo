@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@color/android_ash"
+        android:background="#FAFAFA"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar

@@ -61,6 +61,4 @@ class StudentELearningCourseOutlineActivity :
         }
         return false
     }
-
-
 }
