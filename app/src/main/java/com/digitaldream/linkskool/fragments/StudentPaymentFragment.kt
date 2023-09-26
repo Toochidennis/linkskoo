@@ -32,8 +32,12 @@ import com.digitaldream.linkskool.utils.FunctionUtils.currencyFormat
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
@@ -45,8 +49,8 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class StudentPaymentFragment : Fragment(), OnInputListener,
-    StudentPaymentAdapter.OnHistoryClickListener, StudentPaymentSliderAdapter
-    .OnCardClickListener {
+    StudentPaymentAdapter.OnHistoryClickListener,
+    StudentPaymentSliderAdapter.OnCardClickListener {
 
     private lateinit var mMainView: LinearLayout
     private lateinit var mPaidSate: LinearLayout
@@ -63,6 +67,8 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     private val mCardList = mutableListOf<StudentPaymentModel>()
     private lateinit var mHistoryAdapter: StudentPaymentAdapter
     private lateinit var mCardAdapter: StudentPaymentSliderAdapter
+    private var autoSlideJob: Job? = null
+
     private var mStudentId: String? = null
     private var mInvoiceId: String? = null
     private var mAmount: String? = null
@@ -78,10 +84,11 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(
-            R.layout.fragment_student_payment, container,
-            false
-        )
+        return inflater.inflate(R.layout.fragment_student_payment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         mMainView = view.findViewById(R.id.main_layout)
@@ -105,6 +112,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         toolbar.apply {
             title = "Payment"
             setNavigationIcon(R.drawable.arrow_left)
+
             setNavigationOnClickListener { requireActivity().onBackPressed() }
         }
 
@@ -115,16 +123,9 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
 
         mCardAdapter = StudentPaymentSliderAdapter(requireContext(), mCardList, this)
         mViewPager.adapter = mCardAdapter
-
-        Timer().apply {
-            scheduleAtFixedRate(CardTimer(), 1000, 5000)
-        }
-
         mTabLayout.setupWithViewPager(mViewPager, true)
 
         refreshData()
-
-        return view
     }
 
     private fun refreshData() {
@@ -180,6 +181,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                         intent.putExtra("amount", mAmount)
                         startActivity(intent)
                     }
+
                     else -> throw Exception("Can't generate url")
                 }
             } catch (e: Exception) {
@@ -366,6 +368,13 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
         mCardList.clear()
         mCardAdapter.notifyDataSetChanged()
         paymentHistory()
+
+        startAutoSliding()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopAutoSliding()
     }
 
     override fun viewDetails(position: Int) {
@@ -395,28 +404,31 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
                     setCancelable(true)
                     show()
                 }.window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         }
 
     }
 
-    inner class CardTimer : TimerTask() {
-        override fun run() {
-            try {
-                requireActivity().runOnUiThread {
-                    if (mViewPager.currentItem < mCardList.size - 1) {
-                        mViewPager.currentItem = mViewPager.currentItem + 1
+    private fun startAutoSliding() {
+        autoSlideJob = CoroutineScope(Dispatchers.Default).launch {
+            while (true){
+                delay(3000L)
+
+                withContext(Dispatchers.Main) {
+                    if (mCardList.isNotEmpty() && mViewPager.currentItem < mCardList.size - 1) {
+                        mViewPager.currentItem++
                     } else {
                         mViewPager.currentItem = 0
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-
         }
+    }
 
+    private fun stopAutoSliding() {
+        autoSlideJob?.cancel()
+        autoSlideJob = null
     }
 }

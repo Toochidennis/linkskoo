@@ -20,15 +20,17 @@ import java.util.Random;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElearningCourseAdapter.StudentElearningCourseViewHolder>{
+public class AdminElearningCourseAdapter extends
+        RecyclerView.Adapter<AdminElearningCourseAdapter.StudentElearningCourseViewHolder> {
 
     private Context context;
     private List<CourseTable> courseList;
-    StudentELearningAdapter.OnCourseClickListener onCourseClickListener;
+    OnCourseClickListener onCourseClickListener;
     private List<Object> list = new ArrayList<>();
-    private List<CourseOutlineTable> courseLists= new ArrayList<>();
+    private List<CourseOutlineTable> courseLists = new ArrayList<>();
 
-    public AdminElearningCourseAdapter(Context context, List<CourseTable> courseList, StudentELearningAdapter.OnCourseClickListener onCourseClickListener) {
+    public AdminElearningCourseAdapter(Context context, List<CourseTable> courseList,
+                                       OnCourseClickListener onCourseClickListener) {
         this.context = context;
         this.courseList = courseList;
         this.onCourseClickListener = onCourseClickListener;
@@ -37,20 +39,21 @@ public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElear
 
     @NonNull
     @Override
-    public AdminElearningCourseAdapter.StudentElearningCourseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public StudentElearningCourseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.elearning_course_item,viewGroup,false);
-        return new AdminElearningCourseAdapter.StudentElearningCourseViewHolder(view,onCourseClickListener);
+        View view = layoutInflater.inflate(R.layout.elearning_course_item, viewGroup, false);
+        return new StudentElearningCourseViewHolder(view, onCourseClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StudentElearningCourseViewHolder holder, int position) {
         CourseTable ct = courseList.get(position);
-        String courseName = ct.getCourseName();;
-        if (courseName.isEmpty()){
+        String courseName = ct.getCourseName();
+        ;
+        if (courseName.isEmpty()) {
             holder.courseInitials.setText(" ");
-        }else{
-            holder.courseInitials.setText(courseName.substring(0,1).toUpperCase());
+        } else {
+            holder.courseInitials.setText(courseName.substring(0, 1).toUpperCase());
         }
 
         holder.courseName.setText(courseName.toUpperCase());
@@ -68,12 +71,12 @@ public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElear
         return courseList.size();
     }
 
-    class StudentElearningCourseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView courseName,courseInitials;
-        StudentELearningAdapter.OnCourseClickListener onCourseClickListener;
+    static class StudentElearningCourseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView courseName, courseInitials;
+        OnCourseClickListener onCourseClickListener;
         LinearLayout linearLayout;
 
-        public StudentElearningCourseViewHolder(@NonNull View itemView, StudentELearningAdapter.OnCourseClickListener onCourseClickListener) {
+        public StudentElearningCourseViewHolder(@NonNull View itemView, OnCourseClickListener onCourseClickListener) {
             super(itemView);
             courseName = itemView.findViewById(R.id.course_name);
             courseInitials = itemView.findViewById(R.id.course_initials);
@@ -89,7 +92,7 @@ public class AdminElearningCourseAdapter extends RecyclerView.Adapter<AdminElear
         }
     }
 
-    public interface OnCourseClickListener{
+    public interface OnCourseClickListener {
         void onCourseClick(int position);
     }
 }

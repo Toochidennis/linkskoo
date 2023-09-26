@@ -14,7 +14,6 @@ import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.GenericAdapter
-import com.digitaldream.linkskool.adapters.StudentELearningAdapter
 import com.digitaldream.linkskool.models.CourseOutlineModel
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback

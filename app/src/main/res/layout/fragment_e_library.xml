@@ -861,23 +861,10 @@
 
                 </androidx.cardview.widget.CardView>
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <!--  <com.google.android.gms.ads.AdView
-                  android:id="@+id/adView"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="20dp"
-                  android:layout_marginBottom="30dp"
-                  android:visibility="gone"
-                  ads:adSize="BANNER"
-                  ads:adUnitId="ca-app-pub-9708958609167471/1176733766" />
-  -->
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 </RelativeLayout>

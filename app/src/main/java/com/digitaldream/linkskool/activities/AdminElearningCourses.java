@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.digitaldream.linkskool.adapters.AdminElearningCourseAdapter;
-import com.digitaldream.linkskool.adapters.StudentELearningAdapter;
 import com.digitaldream.linkskool.config.DatabaseHelper;
 import com.digitaldream.linkskool.models.CourseTable;
 import com.digitaldream.linkskool.R;
@@ -21,7 +20,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class AdminElearningCourses extends AppCompatActivity implements StudentELearningAdapter.OnCourseClickListener {
+public class AdminElearningCourses extends AppCompatActivity
+        implements AdminElearningCourseAdapter.OnCourseClickListener {
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private DatabaseHelper databaseHelper;
@@ -48,6 +48,7 @@ public class AdminElearningCourses extends AppCompatActivity implements StudentE
         recyclerView.setHasFixedSize(true);
         levelId = getIntent().getStringExtra("levelId");
         databaseHelper = new DatabaseHelper(this);
+
         try {
             courseDao = DaoManager.createDao(databaseHelper.getConnectionSource(), CourseTable.class);
             //QueryBuilder<CourseTable,Long> queryBuilder = courseDao.queryBuilder();
