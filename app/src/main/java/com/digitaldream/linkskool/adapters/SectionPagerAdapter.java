@@ -41,9 +41,9 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
 
     }
 
-    public void addFragment(Fragment sFragment, String sS){
+    public void addFragment(Fragment sFragment, String sTitle){
         mFragmentList.add(sFragment);
-        mStringList.add(sS);
+        mStringList.add(sTitle);
     }
 
 

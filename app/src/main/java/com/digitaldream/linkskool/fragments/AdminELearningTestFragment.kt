@@ -287,7 +287,6 @@ class AdminELearningTestFragment :
         }
     }
 
-
     private fun parseFilesArray(files: JSONArray): JSONArray {
         return JSONArray().apply {
             JSONObject().apply {

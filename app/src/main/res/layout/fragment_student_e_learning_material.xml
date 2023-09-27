@@ -45,15 +45,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dimen_16"
+                    android:textAlignment="center"
                     android:textColor="@color/test_color_1"
                     android:textSize="@dimen/text_24" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/dimen_16"
-                    android:layout_marginEnd="@dimen/dimen_16"
-                    android:background="@color/test_color_1" />
 
                 <TextView
                     android:id="@+id/descriptionTxt"
