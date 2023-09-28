@@ -1,7 +1,6 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +28,7 @@ import com.squareup.picasso.Picasso
 class AdminELearningQuizAdapter(
     private var questionList: MutableList<QuestionItem?>,
     private var userResponses: MutableMap<String, String>,
+    private var currentQuestionCount:Int,
     private var userResponse: UserResponse
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -42,7 +45,7 @@ class AdminELearningQuizAdapter(
         return when (viewType) {
             VIEW_TYPE_MULTI_CHOICE_OPTION -> {
                 val view = inflater.inflate(
-                    R.layout.item_multi_choice_option_preview, parent,
+                    R.layout.item_multi_choice_option_layout, parent,
                     false
                 )
                 MultipleChoiceViewHolder(view)
@@ -50,7 +53,7 @@ class AdminELearningQuizAdapter(
 
             VIEW_TYPE_SHORT_ANSWER -> {
                 val view = inflater.inflate(
-                    R.layout.item_short_answer_preview, parent,
+                    R.layout.item_short_answer_layout, parent,
                     false
                 )
                 ShortAnswerViewHolder(view)
@@ -88,6 +91,7 @@ class AdminELearningQuizAdapter(
     }
 
     inner class MultipleChoiceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val questionCountTxt: TextView = itemView.findViewById(R.id.questionCountTxt)
         private val questionTxt: TextView = itemView.findViewById(R.id.questionTxt)
         private val questionImage: ImageView = itemView.findViewById(R.id.questionImage)
         private val optionRecyclerView: RecyclerView =
@@ -98,6 +102,7 @@ class AdminELearningQuizAdapter(
         fun bind(multiChoiceQuestion: MultiChoiceQuestion) {
             questionTxt.text = multiChoiceQuestion.questionText
             loadImage(itemView.context, multiChoiceQuestion.attachmentUri, questionImage)
+            questionCountTxt.text = (currentQuestionCount).toString()
 
             options = multiChoiceQuestion.options
 
@@ -125,6 +130,7 @@ class AdminELearningQuizAdapter(
     }
 
     inner class ShortAnswerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val questionCountTxt: TextView = itemView.findViewById(R.id.questionCountTxt)
         private val questionTxt: TextView = itemView.findViewById(R.id.questionTxt)
         private val questionImage: ImageView = itemView.findViewById(R.id.questionImage)
         private val answerEditText: EditText = itemView.findViewById(R.id.answerEditText)
@@ -132,6 +138,7 @@ class AdminELearningQuizAdapter(
         fun bind(shortAnswer: ShortAnswerModel) {
             questionTxt.text = shortAnswer.questionText
             loadImage(itemView.context, shortAnswer.attachmentUri, questionImage)
+            questionCountTxt.text = (currentQuestionCount).toString()
 
             val questionId = shortAnswer.questionId
             val typedAnswer = userResponses[questionId]
@@ -150,7 +157,10 @@ class AdminELearningQuizAdapter(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    userResponse.setTypedAnswer(questionId, s.toString().replace("\\s+".toRegex(), " ").trim())
+                    userResponse.setTypedAnswer(
+                        questionId,
+                        s.toString().replace("\\s+".toRegex(), " ").trim()
+                    )
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -175,8 +185,7 @@ class AdminELearningQuizAdapter(
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(
-                R.layout
-                    .item_options_preview, parent, false
+                R.layout.item_options_preview, parent, false
             )
 
             return OptionViewHolder(view)
@@ -192,6 +201,8 @@ class AdminELearningQuizAdapter(
         override fun getItemCount() = multiChoiceQuestion.options?.size!!
 
         inner class OptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val optionLayout: LinearLayout = itemView.findViewById(R.id.optionLayout)
+            private val optionCard: CardView = itemView.findViewById(R.id.optionCard)
             private val optionLabel: TextView = itemView.findViewById(R.id.optionsLabel)
             private val optionTxt: TextView = itemView.findViewById(R.id.optionsTxt)
             private val optionImage: ImageView = itemView.findViewById(R.id.optionImage)
@@ -209,9 +220,19 @@ class AdminELearningQuizAdapter(
 
                 itemView.isSelected = multipleChoiceOption.isSelected
                 if (itemView.isSelected) {
-                    itemView.setBackgroundColor(Color.BLUE)
+                    optionCard.setCardBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.test_color_2)
+                    )
+                    optionLayout.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.test_color_2)
+                    )
                 } else {
-                    itemView.setBackgroundColor(Color.WHITE)
+                    optionLayout.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.color_1)
+                    )
+                    optionCard.setCardBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.color_1)
+                    )
                 }
 
                 if (multipleChoiceOption.optionText.isEmpty()) {
@@ -247,7 +268,6 @@ class AdminELearningQuizAdapter(
                 }
             }
         }
-
     }
 
     private fun playAnimation(itemView: View, position: Int) {
@@ -307,6 +327,6 @@ class AdminELearningQuizAdapter(
 
     interface UserResponse {
         fun onOptionSelected(questionId: String, selectedOption: String)
-        fun setTypedAnswer(questionId: String, typedAnswer:String)
+        fun setTypedAnswer(questionId: String, typedAnswer: String)
     }
 }

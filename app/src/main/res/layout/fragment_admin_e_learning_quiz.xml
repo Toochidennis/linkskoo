@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".fragments.AdminELearningQuizFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -12,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@color/white">
+        android:background="@color/android_ash">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -30,8 +28,7 @@
                 android:contentDescription="@string/close"
                 android:focusable="true"
                 android:padding="@dimen/dimen_10"
-                android:src="@drawable/ic_arrow_back_black_24dp"
-                app:tint="@color/test_color_7" />
+                android:src="@drawable/ic_arrow_back_black_24dp" />
 
             <TextView
                 android:id="@+id/durationTxt"
@@ -47,48 +44,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <TextView
-        android:id="@+id/questionCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/appBar"
-        android:paddingStart="@dimen/dimen_16"
-        android:paddingTop="@dimen/dimen_16"
-        android:paddingEnd="0dp"
-        android:paddingBottom="@dimen/dimen_16"
-        android:text=""
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_24" />
-
-    <TextView
-        android:id="@+id/questionTotalCount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/appBar"
-        android:layout_toEndOf="@id/questionCount"
-        android:paddingStart="0dp"
-        android:paddingTop="@dimen/dimen_24"
-        android:paddingEnd="@dimen/dimen_16"
-        android:paddingBottom="@dimen/dimen_16"
-        android:text=""
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_16" />
-
-    <ImageView
-        android:id="@+id/dashedLine"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_below="@id/questionCount"
-        android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginEnd="@dimen/dimen_16"
-        android:contentDescription="@string/dashed_line"
-        android:src="@drawable/dashed_line" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dashedLine"
+        android:layout_below="@id/appBar"
         android:layout_alignParentBottom="true"
         android:contentDescription="@string/nested_scrollview"
         android:fillViewport="true">
@@ -122,10 +81,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginEnd="@dimen/dimen_16"
-                android:background="@color/white">
+                android:layout_alignParentBottom="true">
 
                 <Button
                     android:id="@+id/submitQuestionBtn"
@@ -134,45 +90,33 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginBottom="@dimen/dimen_32"
                     android:background="@drawable/ripple_effect8"
-                    android:text="Submit"
+                    android:text="@string/submit"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_16"
                     android:visibility="gone" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/prevBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/submitQuestionBtn"
                     android:layout_alignParentStart="true"
-                    android:background="@drawable/ripple_effect6"
-                    android:clickable="true"
-                    android:drawableStart="@drawable/ic_arrow_back_black_24dp"
-                    android:drawablePadding="@dimen/dimen_16"
-                    android:focusable="true"
-                    android:paddingStart="@dimen/dimen_16"
-                    android:paddingEnd="@dimen/dimen_16"
-                    android:text="Prev"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/text_16" />
+                    android:background="@drawable/ripple_effect11"
+                    android:contentDescription="@string/prev"
+                    android:padding="@dimen/dimen_16"
+                    android:src="@drawable/ic_arrow_back_black_24dp" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/nextBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/submitQuestionBtn"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/ripple_effect6"
-                    android:clickable="true"
-                    android:drawableEnd="@drawable/baseline_arrow_forward_24"
-                    android:drawablePadding="@dimen/dimen_16"
-                    android:focusable="true"
-                    android:paddingStart="@dimen/dimen_16"
-                    android:paddingEnd="@dimen/dimen_16"
-                    android:text="Next"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/text_16" />
+                    android:background="@drawable/ripple_effect11"
+                    android:contentDescription="@string/next"
+                    android:padding="@dimen/dimen_16"
+                    android:src="@drawable/baseline_arrow_forward_24" />
 
             </RelativeLayout>
 

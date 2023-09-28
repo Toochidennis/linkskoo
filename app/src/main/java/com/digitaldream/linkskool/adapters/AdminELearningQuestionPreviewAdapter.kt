@@ -38,7 +38,7 @@ class AdminELearningQuestionPreviewAdapter(
         return when (viewType) {
             VIEW_TYPE_MULTI_CHOICE_OPTION -> {
                 val view = inflater.inflate(
-                    R.layout.item_multi_choice_option_preview, parent,
+                    R.layout.item_multi_choice_option_layout, parent,
                     false
                 )
                 MultipleChoiceViewHolder(view)
@@ -46,7 +46,7 @@ class AdminELearningQuestionPreviewAdapter(
 
             VIEW_TYPE_SHORT_ANSWER -> {
                 val view = inflater.inflate(
-                    R.layout.item_short_answer_preview, parent,
+                    R.layout.item_short_answer_layout, parent,
                     false
                 )
                 ShortAnswerViewHolder(view)

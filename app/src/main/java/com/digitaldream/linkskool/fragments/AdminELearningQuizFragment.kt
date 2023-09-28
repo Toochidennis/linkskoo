@@ -41,12 +41,10 @@ class AdminELearningQuizFragment :
 
     private lateinit var dismissBtn: ImageButton
     private lateinit var countDownTxt: TextView
-    private lateinit var questionCountTxt: TextView
-    private lateinit var questionTotalCountTxt: TextView
     private lateinit var sectionTxt: TextView
     private lateinit var questionRecyclerView: RecyclerView
-    private lateinit var previousBtn: Button
-    private lateinit var nextBtn: Button
+    private lateinit var previousBtn: ImageButton
+    private lateinit var nextBtn: ImageButton
     private lateinit var submitQuestionBtn: Button
 
     // Initialise section items
@@ -112,8 +110,6 @@ class AdminELearningQuizFragment :
         view.apply {
             dismissBtn = findViewById(R.id.dismissBtn)
             countDownTxt = findViewById(R.id.durationTxt)
-            questionCountTxt = findViewById(R.id.questionCount)
-            questionTotalCountTxt = findViewById(R.id.questionTotalCount)
             sectionTxt = findViewById(R.id.sectionTxt)
             questionRecyclerView = findViewById(R.id.questionRecyclerView)
             submitQuestionBtn = findViewById(R.id.submitQuestionBtn)
@@ -144,19 +140,11 @@ class AdminELearningQuizFragment :
             if (currentSectionIndex == 0) {
                 if (questionItem != null) {
                     currentQuestionCount = 1
-
-                    val countString =
-                        String.format(Locale.getDefault(), "Question %d", currentQuestionCount)
-                    questionCountTxt.text = countString
                 }
             }
 
             if (questionItem != null) {
                 showQuestionPreview(questionItem)
-
-                val countString =
-                    String.format(Locale.getDefault(), "Question %d", currentQuestionCount)
-                questionCountTxt.text = countString
             }
 
             updateNavigationButtons()
@@ -220,6 +208,7 @@ class AdminELearningQuizFragment :
         questionTestAdapter = AdminELearningQuizAdapter(
             mutableListOf(nextQuestion),
             userResponses,
+            currentQuestionCount,
             this
         )
 
@@ -514,11 +503,6 @@ class AdminELearningQuizFragment :
         ) { status ->
 
             if (status == "start") {
-                val totalCount = totalQuestionCount()
-                val countString = String.format(Locale.getDefault(), "/%d", totalCount)
-
-                questionTotalCountTxt.text = countString
-
                 showQuestion()
                 countDownTimer()
 
@@ -529,20 +513,14 @@ class AdminELearningQuizFragment :
         }.show(parentFragmentManager, "Intro")
     }
 
-
-    private fun totalQuestionCount(): Int {
-        return sectionItems.count { it.questionItem != null }
-    }
-
-
     private fun countDownTimer() {
         if (duration.isNullOrBlank()) {
             return
         }
 
-        val quizDurationSeconds = duration?.toInt()?.times(60)
-        val quizDurationMillis = quizDurationSeconds?.times(1000)
-        val countDownIntervalMillis = 1000
+        val countDownIntervalMillis = 1000L
+        val quizDurationMillis = duration?.toLong()?.times(60)?.times(countDownIntervalMillis)
+        val threshold = (quizDurationMillis?.times(0.10))?.toLong()
 
         countDownJob = CoroutineScope(Dispatchers.Default).launch {
             var remainingTimeMillis = quizDurationMillis
@@ -557,12 +535,12 @@ class AdminELearningQuizFragment :
                     withContext(Dispatchers.Main) {
                         countDownTxt.text = timeString
 
-                        if (remainingTimeMillis <= 3 * 60 * 1000) {
+                        if (remainingTimeMillis <= threshold!!) {
                             countDownTxt.setTextColor(Color.RED)
                         }
                     }
 
-                    delay(countDownIntervalMillis.toLong())
+                    delay(countDownIntervalMillis)
                     remainingTimeMillis -= countDownIntervalMillis
                 }
             }
@@ -602,7 +580,7 @@ class AdminELearningQuizFragment :
     }
 
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
-
+        userResponses[questionId] = typedAnswer
     }
 
 

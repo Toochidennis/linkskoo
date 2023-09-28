@@ -112,6 +112,7 @@ class StudentELearningQuizDialogFragment(
         quizAdapter = AdminELearningQuizAdapter(
             mutableListOf(nextQuestion),
             userResponses,
+            currentQuestionCount,
             this
         )
 
