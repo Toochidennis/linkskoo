@@ -2,10 +2,13 @@ package com.digitaldream.linkskool.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
@@ -31,7 +34,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
     private lateinit var questionCountTxt: TextView
     private lateinit var durationTxt: TextView
     private lateinit var descriptionTxt: TextView
-    private lateinit var durationDescriptionTxt: TextView
+    private lateinit var startDateTxt: TextView
     private lateinit var startBtn: Button
 
     private var questionList = mutableListOf<SectionModel>()
@@ -72,17 +75,30 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
         setUpViews(view)
 
         initializeQuestionsList()
+
     }
 
     private fun setUpViews(view: View) {
         view.apply {
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
             endDateTxt = findViewById(R.id.dateTxt)
             titleTxt = findViewById(R.id.titleTxt)
             questionCountTxt = findViewById(R.id.questionCountTxt)
             durationTxt = findViewById(R.id.durationTxt)
             descriptionTxt = findViewById(R.id.descriptionTxt)
-            durationDescriptionTxt = findViewById(R.id.durationDescriptionTxt)
+            startDateTxt = findViewById(R.id.startDateTxt)
             startBtn = findViewById(R.id.startBtn)
+
+            (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+            val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+            actionBar?.apply {
+                title = "Quiz"
+                setHomeButtonEnabled(true)
+                setDisplayHomeAsUpEnabled(true)
+            }
+
+            toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
     }
 
@@ -90,6 +106,9 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
         questionList = returnQuestionList()
 
         questionCount = totalQuestionCount().toString()
+
+        setTextOnDateFields()
+        setTextOnOtherFields()
     }
 
     // Return list of questions
@@ -340,38 +359,96 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
 
     private fun setTextOnDateFields() {
         try {
-            if (endDate?.isNotBlank() == true) {
-                val serverDateFormat = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault())
+            val serverDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val currentCalendar = Calendar.getInstance()
+            val startCalendar = Calendar.getInstance()
+            val endCalendar = Calendar.getInstance()
 
-                val dateFromServer = serverDateFormat.parse(endDate!!)
+          //  disableStartBtn()
+            enableStartBtn()
 
-                val currentDate = Calendar.getInstance()
+            if (startDate?.isNotBlank() == true && endDate?.isNotBlank() == true) {
+                val startDateFromServer = serverDateFormat.parse(startDate!!)
+                val endDateFromServer = serverDateFormat.parse(endDate!!)
 
-                val calendarFromServer = Calendar.getInstance()
+                var dateString = ""
 
-                if (dateFromServer != null) {
-                    calendarFromServer.time = dateFromServer
-                }
+                if (endDateFromServer != null && startDateFromServer != null) {
+                    startCalendar.time = endDateFromServer
+                    endCalendar.time = startDateFromServer
 
-                var dateString: String
+                    var end = "Due ${formatDate2(endDate!!, "date time")}"
 
-                if (calendarFromServer.before(currentDate)) {
-                    dateString = formatDate2(endDate!!, "date time")
-                    endDateTxt.text = dateString
-                } else if (calendarFromServer.after(currentDate)) {
-                    dateString = "Missed"
-                    endDateTxt.text = dateString
-                    endDateTxt.setTextColor(Color.RED)
-                } else {
-                    dateString = "Today"
+                    if (startCalendar == currentCalendar || startCalendar.after(currentCalendar)) {
+                        if (endCalendar.after(currentCalendar)) {
+                            dateString = "Quiz will last for $duration minutes"
+                        } else if (endCalendar.before(currentCalendar)) {
+                            dateString = "You can no longer take this quiz"
+                          //  endDateTxt.setTextColor(Color.RED)
+                        } else if (endCalendar == currentCalendar) {
+                            end = "Due Today"
+                            dateString = "Quiz will last for $duration minutes"
+                        }
+
+                        startDateTxt.text = dateString
+                        endDateTxt.text = end
+
+//                        if (endCalendar.after(currentCalendar) || endCalendar == currentCalendar) {
+//                            enableStartBtn()
+//                        } else {
+//                            disableStartBtn()
+//                        }
+
+                    } else {
+                        dateString =
+                            if (endCalendar.before(currentCalendar)) "You can no longer take this quiz"
+                            else "Quiz will be available from ${
+                                formatDate2(startDate!!, "date time")
+                            } to ${formatDate2(endDate!!, "date time")}"
+
+                        startDateTxt.text = dateString
+                        endDateTxt.text = end
+
+//                        if (endCalendar.before(currentCalendar))
+//                            endDateTxt.setTextColor(Color.RED)
+
+                       // disableStartBtn()
+                    }
                 }
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun disableStartBtn() {
+        startBtn.apply {
+            isEnabled = false
+            setBackgroundResource(R.drawable.ripple_effect6)
+            setTextColor(Color.WHITE)
+        }
+    }
+
+    private fun enableStartBtn() {
+        val animation = AnimationUtils.loadAnimation(context, R.anim.pulse)
+
+        startBtn.apply {
+            isEnabled = true
+            startAnimation(animation)
+
+            setOnClickListener {
+
+            }
+        }
+    }
 
 
+    private fun setTextOnOtherFields() {
+        titleTxt.text = title
+        durationTxt.text = duration ?: "0"
+        questionCountTxt.text = questionCount
+        descriptionTxt.text = description
     }
 
 }
