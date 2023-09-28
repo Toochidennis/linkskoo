@@ -1,17 +1,13 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,7 +23,7 @@ import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
 import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
 import com.squareup.picasso.Picasso
 
-class AdminELearningTestAdapter(
+class AdminELearningQuizAdapter(
     private var questionList: MutableList<QuestionItem?>,
     private var userResponses: MutableMap<String, String>,
     private var userResponse: UserResponse
@@ -154,7 +150,7 @@ class AdminELearningTestAdapter(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    userResponses[questionId] = s.toString().replace("\\s+".toRegex(), " ").trim()
+                    userResponse.setTypedAnswer(questionId, s.toString().replace("\\s+".toRegex(), " ").trim())
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -190,7 +186,6 @@ class AdminELearningTestAdapter(
             val options = multiChoiceQuestion.options?.get(position)
 
             holder.bind(options!!)
-
         }
 
 
@@ -312,5 +307,6 @@ class AdminELearningTestAdapter(
 
     interface UserResponse {
         fun onOptionSelected(questionId: String, selectedOption: String)
+        fun setTypedAnswer(questionId: String, typedAnswer:String)
     }
 }

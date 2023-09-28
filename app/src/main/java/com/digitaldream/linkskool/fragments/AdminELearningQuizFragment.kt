@@ -13,7 +13,7 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningTestAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionTestIntroDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
@@ -35,9 +35,9 @@ import java.util.Locale
 
 private const val ARG_PARAM1 = "param1"
 
-class AdminELearningTestFragment :
-    Fragment(R.layout.fragment_admin_e_learning_test),
-    AdminELearningTestAdapter.UserResponse {
+class AdminELearningQuizFragment :
+    Fragment(R.layout.fragment_admin_e_learning_quiz),
+    AdminELearningQuizAdapter.UserResponse {
 
     private lateinit var dismissBtn: ImageButton
     private lateinit var countDownTxt: TextView
@@ -52,7 +52,7 @@ class AdminELearningTestFragment :
     // Initialise section items
     private lateinit var sectionItems: MutableList<SectionModel>
     private lateinit var countDownJob: Job
-    private lateinit var questionTestAdapter: AdminELearningTestAdapter
+    private lateinit var questionTestAdapter: AdminELearningQuizAdapter
     private var userResponses = mutableMapOf<String, String>()
 
     // Variables to store data
@@ -82,7 +82,7 @@ class AdminELearningTestFragment :
 
         @JvmStatic
         fun newInstance(param1: String) =
-            AdminELearningTestFragment().apply {
+            AdminELearningQuizFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                 }
@@ -216,9 +216,8 @@ class AdminELearningTestFragment :
         }
     }
 
-
     private fun showQuestionPreview(nextQuestion: QuestionItem?) {
-        questionTestAdapter = AdminELearningTestAdapter(
+        questionTestAdapter = AdminELearningQuizAdapter(
             mutableListOf(nextQuestion),
             userResponses,
             this
@@ -601,6 +600,11 @@ class AdminELearningTestFragment :
             }
         }
     }
+
+    override fun setTypedAnswer(questionId: String, typedAnswer: String) {
+
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

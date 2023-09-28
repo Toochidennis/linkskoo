@@ -364,8 +364,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
             val startCalendar = Calendar.getInstance()
             val endCalendar = Calendar.getInstance()
 
-          //  disableStartBtn()
-            enableStartBtn()
+            disableStartBtn()
 
             if (startDate?.isNotBlank() == true && endDate?.isNotBlank() == true) {
                 val startDateFromServer = serverDateFormat.parse(startDate!!)
@@ -393,11 +392,11 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                         startDateTxt.text = dateString
                         endDateTxt.text = end
 
-//                        if (endCalendar.after(currentCalendar) || endCalendar == currentCalendar) {
-//                            enableStartBtn()
-//                        } else {
-//                            disableStartBtn()
-//                        }
+                        if (endCalendar.after(currentCalendar) || endCalendar == currentCalendar) {
+                            enableStartBtn()
+                        } else {
+                            disableStartBtn()
+                        }
 
                     } else {
                         dateString =
@@ -412,7 +411,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
 //                        if (endCalendar.before(currentCalendar))
 //                            endDateTxt.setTextColor(Color.RED)
 
-                       // disableStartBtn()
+                        disableStartBtn()
                     }
                 }
             }

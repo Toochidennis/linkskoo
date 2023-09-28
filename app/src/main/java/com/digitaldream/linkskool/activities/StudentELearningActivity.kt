@@ -29,7 +29,7 @@ class StudentELearningActivity : AppCompatActivity(R.layout.activity_student_e_l
                 supportFragmentManager.commit {
                     replace(
                         R.id.learningContainer,
-                        StudentELearningAssignmentFragment()
+                        StudentELearningAssignmentFragment.newInstance(json)
                     )
                 }
             }

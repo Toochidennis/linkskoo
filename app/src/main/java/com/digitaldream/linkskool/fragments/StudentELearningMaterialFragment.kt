@@ -114,10 +114,12 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
             val actionBar = (requireContext() as AppCompatActivity).supportActionBar
 
             actionBar?.apply {
-                title = ""
+                title = "Material"
                 setDisplayHomeAsUpEnabled(true)
                 setHomeButtonEnabled(true)
             }
+
+            toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
 
         val sharedPreferences = requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)

@@ -10,8 +10,8 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/android_ash"
-        android:elevation="0dp">
+        android:layout_alignParentTop="true"
+        android:background="@color/android_ash">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,12 +39,13 @@
                 android:textSize="@dimen/text_16" />
 
         </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/buttonLayout"
         android:layout_below="@id/appBar"
         android:contentDescription="@string/todo">
 
@@ -59,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dimen_16"
-                android:text="Assignment"
+                android:text=""
                 android:textAlignment="center"
                 android:textColor="@color/test_color_1"
                 android:textSize="@dimen/text_24" />
@@ -70,19 +71,12 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/dimen_16"
                 android:paddingEnd="@dimen/dimen_16"
-                android:text="100 points"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginEnd="@dimen/dimen_16"
-                android:background="@color/test_color_1" />
-
             <TextView
-                android:id="@+id/assignmentDescriptionTxt"
+                android:id="@+id/descriptionTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dimen_16"
@@ -106,30 +100,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginEnd="@dimen/dimen_16"
                 android:nestedScrollingEnabled="false" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height=".5dp"
-                android:layout_marginTop="@dimen/dimen_10"
-                android:background="@color/test_color_7" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottom">
-
-        <include layout="@layout/persistent_student_elearning_assignment_bottom_sheet" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
     <LinearLayout
-        android:id="@+id/bottom"
+        android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -138,45 +116,20 @@
         <View
             android:layout_width="match_parent"
             android:layout_height=".5dp"
-            android:layout_marginTop="@dimen/dimen_10"
-            android:background="@color/test_color_7"
-            android:visibility="gone" />
+            android:background="@color/test_color_7" />
 
         <Button
-            android:id="@+id/addWorkBtn"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="@dimen/dimen_16"
-            android:background="@drawable/ripple_effect7"
-            android:text="Add work"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/handInBtn"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/dimen_16"
-            android:layout_marginEnd="@dimen/dimen_16"
-            android:background="@drawable/ripple_effect7"
-            android:text="Hand in"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/warningTxt"
+            android:id="@+id/submitAssignmentBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_10"
-            android:layout_marginBottom="@dimen/dimen_16"
+            android:layout_margin="@dimen/dimen_16"
+            android:background="@drawable/ripple_effect8"
+            android:fontFamily="@font/poppins_regular"
             android:padding="@dimen/dimen_16"
-            android:text="Your teacher may choose not to accept your work after the due date"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_14"
-            android:textStyle="italic"
-            android:visibility="gone" />
-
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_16" />
     </LinearLayout>
 
 </RelativeLayout>

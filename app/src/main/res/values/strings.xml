@@ -165,4 +165,9 @@
     <string name="file_icon">file icon</string>
     <string name="nested_scrollview">Nested scrollView</string>
     <string name="dashed_line">dashed line</string>
+    <string name="quiz_warning">Please note that once you begin, you cannot exit until it\'s
+        completed. Exiting during the quiz will result to automatic submission.</string>
+    <string name="next">Next</string>
+    <string name="prev">Prev</string>
+    <string name="submit">Submit</string>
 </resources>

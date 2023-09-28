@@ -32,9 +32,9 @@
                 android:layout_gravity="center|end"
                 android:layout_marginEnd="@dimen/dimen_16"
                 android:layout_weight="1"
-                android:padding="5dp"
                 android:background="@drawable/edit_text_bg5"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/dateTxt"
@@ -205,6 +205,21 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"
                 app:drawableStartCompat="@drawable/ic_access_time_black_24dp" />
+
+            <TextView
+                android:id="@+id/warningTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/dimen_16"
+                android:fontFamily="@font/poppins_regular"
+                android:paddingStart="@dimen/dimen_16"
+                android:paddingEnd="@dimen/dimen_16"
+                android:text="@string/quiz_warning"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14"
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_warning_24"
+                app:drawableTint="@color/test_color_3" />
 
         </LinearLayout>
 

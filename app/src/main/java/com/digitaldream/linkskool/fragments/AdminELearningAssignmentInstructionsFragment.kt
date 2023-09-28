@@ -160,7 +160,6 @@ class AdminELearningAssignmentInstructionsFragment :
         }
     }
 
-
     private fun setTextOnViews() {
         if (dueDate?.isNotBlank() == true) {
             "Due $dueDate".let { dueDateTxt.text = it }
