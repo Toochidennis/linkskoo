@@ -1,12 +1,14 @@
 package com.digitaldream.linkskool.dialog
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,9 +68,17 @@ class StudentELearningQuizDialogFragment(
 
         disableSubmitButton()
 
+        setUpProgressAdapter()
+
         showQuestion()
 
         countDownTimer()
+
+        showPreviousQuestion()
+
+        nextBtn.setOnClickListener {
+            showNextQuestion()
+        }
     }
 
     private fun setUpViews(view: View) {
@@ -106,9 +116,6 @@ class StudentELearningQuizDialogFragment(
             }
 
             updateNavigationButtons()
-
-            setUpProgressAdapter()
-
         }
     }
 
@@ -172,6 +179,7 @@ class StudentELearningQuizDialogFragment(
         } else if (currentSectionIndex == quizItems.size - 1) {
             disableNextButton()
             enablePreviousButton()
+            enableSubmitBtn()
         } else {
             enableNextButton()
             enablePreviousButton()
@@ -193,6 +201,10 @@ class StudentELearningQuizDialogFragment(
 
                 val circlePosition = position + 1
                 progressTxt.text = (circlePosition).toString()
+
+                if (currentQuestionCount == circlePosition){
+                    progressLayout.background = ContextCompat.getDrawable(requireContext(), R.drawable.circle5)
+                }
             }
         ) { _ ->
 
@@ -286,10 +298,6 @@ class StudentELearningQuizDialogFragment(
     override fun onOptionSelected(questionId: String, selectedOption: String) {
         userResponses[questionId] = selectedOption
 
-        if (currentSectionIndex == quizItems.size - 1) {
-            enableSubmitBtn()
-        }
-
         GlobalScope.launch {
             delay(1000L)
 
@@ -297,10 +305,14 @@ class StudentELearningQuizDialogFragment(
                 showNextQuestion()
             }
         }
+
+        progressAdapter.notifyDataSetChanged()
+
     }
 
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
         userResponses[questionId] = typedAnswer
+        progressAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
