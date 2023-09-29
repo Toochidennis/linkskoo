@@ -64,8 +64,6 @@ class StudentELearningQuizDialogFragment(
 
         setUpViews(view)
 
-        showPreviousQuestion()
-
         disableSubmitButton()
 
         setUpProgressAdapter()
