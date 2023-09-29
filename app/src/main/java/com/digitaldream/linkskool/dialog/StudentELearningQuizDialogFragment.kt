@@ -65,6 +65,10 @@ class StudentELearningQuizDialogFragment(
         showPreviousQuestion()
 
         disableSubmitButton()
+
+        showQuestion()
+
+        countDownTimer()
     }
 
     private fun setUpViews(view: View) {
@@ -137,7 +141,6 @@ class StudentELearningQuizDialogFragment(
                 currentSectionIndex--
 
                 showQuestion()
-
             }
         }
     }
@@ -298,11 +301,6 @@ class StudentELearningQuizDialogFragment(
 
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
         userResponses[questionId] = typedAnswer
-    }
-
-    override fun onResume() {
-        super.onResume()
-        countDownTimer()
     }
 
     override fun onDestroy() {

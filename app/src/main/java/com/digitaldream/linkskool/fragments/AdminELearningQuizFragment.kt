@@ -529,7 +529,6 @@ class AdminELearningQuizFragment :
         return sectionItems
     }
 
-
     private fun introDialog() {
         AdminELearningQuestionTestIntroDialogFragment(
             jsonData = settingsData.toString()

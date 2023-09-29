@@ -7,7 +7,8 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:background="@color/android_ash">
 
         <TextView
             android:id="@+id/countDownTxt"
@@ -18,8 +19,8 @@
             android:layout_toStartOf="@id/submitBtn"
             android:padding="@dimen/dimen_16"
             android:text=""
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16" />
+            android:textColor="@color/test_color_1"
+            android:textSize="@dimen/text_18" />
 
         <Button
             android:id="@+id/submitBtn"
@@ -29,10 +30,12 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/dimen_16"
             android:background="@drawable/ripple_effect6"
-            android:padding="@dimen/dimen_16"
+            android:paddingStart="@dimen/dimen_16"
+            android:paddingEnd="@dimen/dimen_16"
             android:text="@string/submit"
             android:textAllCaps="false"
-            android:textColor="@color/test_color_1" />
+            android:textColor="@color/test_color_1"
+            android:textSize="@dimen/text_16" />
 
     </RelativeLayout>
 
@@ -61,7 +64,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/quizRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/dimen_32" />
 
         </RelativeLayout>
@@ -82,18 +85,18 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/ripple_effect11"
             android:contentDescription="@string/prev"
-            android:padding="@dimen/dimen_16"
+            android:padding="@dimen/dimen_24"
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/progressRecyclerView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/dimen_16"
             android:layout_marginEnd="@dimen/dimen_16"
             android:layout_toStartOf="@id/nextBtn"
-            android:layout_toEndOf="@id/prevBtn"
-            android:orientation="horizontal" />
+            android:layout_toEndOf="@id/prevBtn" />
 
         <ImageButton
             android:id="@+id/nextBtn"
@@ -103,7 +106,7 @@
             android:layout_alignParentEnd="true"
             android:background="@drawable/ripple_effect11"
             android:contentDescription="@string/next"
-            android:padding="@dimen/dimen_16"
+            android:padding="@dimen/dimen_24"
             android:src="@drawable/baseline_arrow_forward_24" />
 
     </RelativeLayout>

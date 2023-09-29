@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.dialog.StudentELearningQuizDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
@@ -364,7 +366,8 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
             val startCalendar = Calendar.getInstance()
             val endCalendar = Calendar.getInstance()
 
-            disableStartBtn()
+           // disableStartBtn()
+            enableStartBtn()
 
             if (startDate?.isNotBlank() == true && endDate?.isNotBlank() == true) {
                 val startDateFromServer = serverDateFormat.parse(startDate!!)
@@ -383,7 +386,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                             dateString = "Quiz will last for $duration minutes"
                         } else if (endCalendar.before(currentCalendar)) {
                             dateString = "You can no longer take this quiz"
-                          //  endDateTxt.setTextColor(Color.RED)
+                            //  endDateTxt.setTextColor(Color.RED)
                         } else if (endCalendar == currentCalendar) {
                             end = "Due Today"
                             dateString = "Quiz will last for $duration minutes"
@@ -392,11 +395,11 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                         startDateTxt.text = dateString
                         endDateTxt.text = end
 
-                        if (endCalendar.after(currentCalendar) || endCalendar == currentCalendar) {
+                       /* if (endCalendar.after(currentCalendar) || endCalendar == currentCalendar) {
                             enableStartBtn()
                         } else {
                             disableStartBtn()
-                        }
+                        }*/
 
                     } else {
                         dateString =
@@ -411,7 +414,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
 //                        if (endCalendar.before(currentCalendar))
 //                            endDateTxt.setTextColor(Color.RED)
 
-                        disableStartBtn()
+                     //   disableStartBtn()
                     }
                 }
             }
@@ -437,7 +440,12 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
             startAnimation(animation)
 
             setOnClickListener {
-
+                parentFragmentManager.commit {
+                    replace(
+                        R.id.learningContainer,
+                        StudentELearningQuizDialogFragment(duration ?: "", questionList)
+                    )
+                }
             }
         }
     }
