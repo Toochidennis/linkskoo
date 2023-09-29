@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso
 class AdminELearningQuizAdapter(
     private var questionList: MutableList<QuestionItem?>,
     private var userResponses: MutableMap<String, String>,
-    private var currentQuestionCount:Int,
+    private var currentQuestionCount: Int,
     private var userResponse: UserResponse
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -197,7 +197,6 @@ class AdminELearningQuizAdapter(
             holder.bind(options!!)
         }
 
-
         override fun getItemCount() = multiChoiceQuestion.options?.size!!
 
         inner class OptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -219,19 +218,36 @@ class AdminELearningQuizAdapter(
                 optionLabel.text = labelList[adapterPosition].toString()
 
                 itemView.isSelected = multipleChoiceOption.isSelected
+
                 if (itemView.isSelected) {
                     optionCard.setCardBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.test_color_2)
                     )
-                    optionLayout.setBackgroundColor(
-                        ContextCompat.getColor(itemView.context, R.color.test_color_2)
+
+                    optionLayout.background =
+                        ContextCompat.getDrawable(itemView.context, R.drawable.circle6)
+
+                    optionLabel.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            R.color.test_color_2
+                        )
                     )
                 } else {
-                    optionLayout.setBackgroundColor(
-                        ContextCompat.getColor(itemView.context, R.color.color_1)
+                    optionLayout.background = ContextCompat.getDrawable(
+                        itemView.context, R
+                            .drawable.circle5
                     )
+
                     optionCard.setCardBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.color_1)
+                    )
+
+                    optionLabel.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            R.color.color_1
+                        )
                     )
                 }
 

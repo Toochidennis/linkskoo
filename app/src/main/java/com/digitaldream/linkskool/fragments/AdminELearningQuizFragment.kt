@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.util.Locale
 
 
@@ -94,10 +96,15 @@ class AdminELearningQuizFragment :
 
         initialiseSectionItem()
 
-        showPreviousQuestion()
+        swipeGesturesOnRecyclerView()
 
         nextBtn.setOnClickListener {
             showNextQuestion()
+        }
+
+        previousBtn.setOnClickListener {
+            showPreviousQuestion()
+
         }
 
         submitQuestionBtn.setOnClickListener {
@@ -122,6 +129,8 @@ class AdminELearningQuizFragment :
     private fun initialiseSectionItem() {
         sectionItems = returnQuestionList()
 
+        disableSubmitBtn()
+
         if (::sectionItems.isInitialized && sectionItems.isNotEmpty()) {
             introDialog()
         }
@@ -130,6 +139,7 @@ class AdminELearningQuizFragment :
 
     private fun showQuestion() {
         val currentSection = sectionItems.getOrNull(currentSectionIndex)
+
         if (currentSection != null) {
             sectionTxt.text = currentSection.sectionTitle
             sectionTxt.isVisible = !currentSection.sectionTitle.isNullOrEmpty()
@@ -138,9 +148,7 @@ class AdminELearningQuizFragment :
             questionRecyclerView.isVisible = questionItem != null
 
             if (currentSectionIndex == 0) {
-                if (questionItem != null) {
-                    currentQuestionCount = 1
-                }
+                currentQuestionCount = if (questionItem != null) 1 else 0
             }
 
             if (questionItem != null) {
@@ -148,7 +156,6 @@ class AdminELearningQuizFragment :
             }
 
             updateNavigationButtons()
-
         }
     }
 
@@ -163,45 +170,64 @@ class AdminELearningQuizFragment :
         } else if (currentSectionIndex == sectionItems.size - 1) {
             disableNextButton()
             enablePreviousButton()
+            enableSubmitBtn()
         } else {
             enableNextButton()
             enablePreviousButton()
         }
 
-
     private fun showNextQuestion() {
         if (currentSectionIndex < sectionItems.size) {
 
-            // Decrement the question count only if there are questions
+            currentSectionIndex++
+
             if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
                 currentQuestionCount++
             }
-
-            currentSectionIndex++
 
             showQuestion()
         }
 
     }
 
-
     private fun showPreviousQuestion() {
-        previousBtn.setOnClickListener {
-            if (currentSectionIndex > 0) {
+        if (currentSectionIndex > 0) {
 
-                // Decrement the question count only if there are questions
-                if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
-                    currentQuestionCount--
-                } else {
-                    currentQuestionCount--
-                }
-
-                currentSectionIndex--
-
-                showQuestion()
-
+            if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
+                currentQuestionCount--
             }
+
+            currentSectionIndex--
+
+            showQuestion()
         }
+
+    }
+
+    private fun swipeGesturesOnRecyclerView() {
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+        ) {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (direction == ItemTouchHelper.LEFT) {
+                    showNextQuestion()
+                } else {
+                    showPreviousQuestion()
+                }
+            }
+        })
+
+        itemTouchHelper.attachToRecyclerView(questionRecyclerView)
     }
 
     private fun showQuestionPreview(nextQuestion: QuestionItem?) {
@@ -238,6 +264,14 @@ class AdminELearningQuizFragment :
     private fun enableNextButton() {
         // Enable the next button
         nextBtn.isEnabled = true
+    }
+
+    private fun enableSubmitBtn() {
+        submitQuestionBtn.isEnabled = true
+    }
+
+    private fun disableSubmitBtn() {
+        submitQuestionBtn.isEnabled = false
     }
 
 
@@ -295,7 +329,6 @@ class AdminELearningQuizFragment :
     private fun trimText(text: String): String {
         return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
     }
-
 
     // Parse the options JSON array
     private fun parseOptionsJson(jsonArray: JSONArray): JSONArray {
@@ -444,7 +477,7 @@ class AdminELearningQuizFragment :
 
                                             val questionSection =
                                                 SectionModel(
-                                                    questionId, "",
+                                                    questionId, null,
                                                     QuestionItem.MultiChoice(
                                                         multiChoiceQuestion
                                                     ),
@@ -472,7 +505,7 @@ class AdminELearningQuizFragment :
                                             val questionSection =
                                                 SectionModel(
                                                     questionId,
-                                                    "",
+                                                    null,
                                                     QuestionItem.ShortAnswer(
                                                         shortAnswerModel
                                                     ),
@@ -565,10 +598,6 @@ class AdminELearningQuizFragment :
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOptionSelected(questionId: String, selectedOption: String) {
         userResponses[questionId] = selectedOption
-
-        if (currentSectionIndex == sectionItems.size - 1) {
-            submitQuestionBtn.isVisible = true
-        }
 
         GlobalScope.launch {
             delay(1000L)

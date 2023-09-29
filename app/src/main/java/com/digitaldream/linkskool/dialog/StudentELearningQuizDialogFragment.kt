@@ -132,8 +132,6 @@ class StudentELearningQuizDialogFragment(
                 // Decrement the question count only if there are questions
                 if (quizItems.getOrNull(currentSectionIndex)?.questionItem != null) {
                     currentQuestionCount--
-                } else {
-                    currentQuestionCount--
                 }
 
                 currentSectionIndex--
@@ -148,12 +146,12 @@ class StudentELearningQuizDialogFragment(
     private fun showNextQuestion() {
         if (currentSectionIndex < quizItems.size) {
 
-            // Decrement the question count only if there are questions
+            currentSectionIndex++
+
+            // Increment the question count only if there are questions
             if (quizItems.getOrNull(currentSectionIndex)?.questionItem != null) {
                 currentQuestionCount++
             }
-
-            currentSectionIndex++
 
             showQuestion()
         }
