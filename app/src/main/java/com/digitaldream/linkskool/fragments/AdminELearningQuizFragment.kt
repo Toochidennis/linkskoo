@@ -128,7 +128,13 @@ class AdminELearningQuizFragment :
         quizAdapter = AdminELearningQuizAdapter(quizItems, userResponses, this)
         questionViewPager.adapter = quizAdapter
 
-        updateNavigationButtons()
+        questionViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                updateNavigationButtons()
+            }
+        })
     }
 
 
@@ -151,8 +157,6 @@ class AdminELearningQuizFragment :
     private fun showNextQuestion() {
         if (questionViewPager.currentItem < quizItems.size - 1) {
             questionViewPager.currentItem++
-
-            updateNavigationButtons()
         }
     }
 
@@ -160,8 +164,6 @@ class AdminELearningQuizFragment :
         previousBtn.setOnClickListener {
             if (questionViewPager.currentItem > 0) {
                 questionViewPager.currentItem--
-
-                updateNavigationButtons()
             }
         }
     }

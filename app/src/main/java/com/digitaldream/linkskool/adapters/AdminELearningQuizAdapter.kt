@@ -263,7 +263,11 @@ class AdminELearningQuizAdapter(
                             .drawable.circle5
                     )
 
-                    optionCard.setCardBackgroundColor(Color.WHITE)
+                    optionCard.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context, R.color.color_1
+                        )
+                    )
 
                     optionLabel.setTextColor(
                         ContextCompat.getColor(

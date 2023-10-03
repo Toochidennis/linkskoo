@@ -86,7 +86,14 @@ class StudentELearningQuizDialogFragment(
         quizAdapter = AdminELearningQuizAdapter(quizItems, userResponses, this)
         quizViewPager.adapter = quizAdapter
 
-        updateNavigationButtons()
+        quizViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                updateNavigationButtons()
+            }
+        })
+
     }
 
 
@@ -94,10 +101,6 @@ class StudentELearningQuizDialogFragment(
         previousBtn.setOnClickListener {
             if (quizViewPager.currentItem > 0) {
                 quizViewPager.currentItem--
-
-                updateNavigationButtons()
-
-             //   progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
             }
         }
     }
@@ -105,10 +108,6 @@ class StudentELearningQuizDialogFragment(
     private fun showNextQuestion() {
         if (quizViewPager.currentItem < quizItems.size - 1) {
             quizViewPager.currentItem++
-
-            updateNavigationButtons()
-
-          //  progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
         }
     }
 
