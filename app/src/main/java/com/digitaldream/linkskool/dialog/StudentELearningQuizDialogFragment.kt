@@ -96,6 +96,8 @@ class StudentELearningQuizDialogFragment(
                 quizViewPager.currentItem--
 
                 updateNavigationButtons()
+
+                progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
             }
         }
     }
@@ -106,6 +108,8 @@ class StudentELearningQuizDialogFragment(
             quizViewPager.currentItem++
 
             updateNavigationButtons()
+
+            progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
         }
     }
 
@@ -114,7 +118,7 @@ class StudentELearningQuizDialogFragment(
         if (quizItems.size == 1) {
             disableNextButton()
             disablePreviousButton()
-        } else if (quizViewPager.currentItem  == 0) {
+        } else if (quizViewPager.currentItem == 0) {
             enableNextButton()
             disablePreviousButton()
         } else if (quizViewPager.currentItem == quizItems.size - 1) {
@@ -142,7 +146,9 @@ class StudentELearningQuizDialogFragment(
                 val circlePosition = position + 1
                 progressTxt.text = (circlePosition).toString()
 
-                if (quizViewPager.currentItem == position) {
+                val currentQuestionPosition = questionPosition(position)
+
+                if (quizViewPager.currentItem == currentQuestionPosition) {
                     progressLayout.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.circle5)
                 }
@@ -168,15 +174,26 @@ class StudentELearningQuizDialogFragment(
         }
     }
 
-    private fun scrollToPosition(position: Int) {
+    private fun scrollToPosition(progressAdapterPosition: Int) {
+        val questionPosition = questionPosition(progressAdapterPosition)
+        quizViewPager.currentItem = questionPosition
+    }
+
+    private fun questionPosition(progressAdapterPosition: Int): Int {
+        var currentPosition = 0
         var questionPosition = 0
-        for (i in 0 until position) {
+
+        for (i in 0 until quizItems.size) {
             if (quizItems[i].questionItem != null) {
+                if (questionPosition == progressAdapterPosition) {
+                    currentPosition = i
+                    break
+                }
                 questionPosition++
             }
         }
 
-        quizViewPager.currentItem = questionPosition
+        return currentPosition
     }
 
     private fun countDownTimer() {
@@ -259,7 +276,6 @@ class StudentELearningQuizDialogFragment(
         }
 
         progressAdapter.notifyDataSetChanged()
-
     }
 
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
@@ -270,6 +286,7 @@ class StudentELearningQuizDialogFragment(
 
     override fun onDestroy() {
         super.onDestroy()
-        countDownJob.cancel()
+        if (::countDownJob.isInitialized)
+            countDownJob.cancel()
     }
 }

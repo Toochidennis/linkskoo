@@ -165,21 +165,22 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
 
                 val jsonObject = JSONObject(builder.toString())
                 val status = jsonObject.getString("status")
-                val objects = jsonObject.getJSONObject("data")
-                val authorizationURL = objects.getString("authorization_url")
-                val reference = objects.getString("reference")
+                val data = jsonObject.getJSONObject("data")
+                val authorizationURL = data.getString("authorization_url")
+                val reference = data.getString("reference")
 
                 when (status) {
                     "true" -> {
-                        val intent = Intent(activity, PaystackPaymentActivity::class.java)
-                        intent.putExtra("url", authorizationURL)
-                        intent.putExtra("reference", reference)
-                        intent.putExtra("transaction_id", mInvoiceId)
-                        intent.putExtra("session", mSession)
-                        intent.putExtra("term", mTerm)
-                        intent.putExtra("year", mYear)
-                        intent.putExtra("amount", mAmount)
-                        startActivity(intent)
+                        startActivity(
+                            Intent(activity, PaystackPaymentActivity::class.java)
+                                .putExtra("url", authorizationURL)
+                                .putExtra("reference", reference)
+                                .putExtra("transaction_id", mInvoiceId)
+                                .putExtra("session", mSession)
+                                .putExtra("term", mTerm)
+                                .putExtra("year", mYear)
+                                .putExtra("amount", mAmount)
+                        )
                     }
 
                     else -> throw Exception("Can't generate url")
@@ -347,7 +348,6 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
     }
 
     override fun sendInput(input: String) {
-
         requireContext().getSharedPreferences(
             "loginDetail",
             Context.MODE_PRIVATE
@@ -413,7 +413,7 @@ class StudentPaymentFragment : Fragment(), OnInputListener,
 
     private fun startAutoSliding() {
         autoSlideJob = CoroutineScope(Dispatchers.Default).launch {
-            while (true){
+            while (true) {
                 delay(3000L)
 
                 withContext(Dispatchers.Main) {
