@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminQuizAdapter2
+import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter3
 import com.digitaldream.linkskool.models.SectionModel
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +30,7 @@ class StudentELearningQuizDialogFragment(
     private val duration: String,
     private val quizItems: MutableList<SectionModel>
 ) : DialogFragment(R.layout.fragment_student_e_learning_quiz),
-    AdminQuizAdapter2.UserResponse {
+    AdminELearningQuizAdapter.UserResponse {
 
 
     private lateinit var countDownTxt: TextView
@@ -41,7 +41,7 @@ class StudentELearningQuizDialogFragment(
     private lateinit var nextBtn: ImageButton
 
     private lateinit var countDownJob: Job
-    private lateinit var quizAdapter: AdminQuizAdapter2
+    private lateinit var quizAdapter: AdminELearningQuizAdapter
     private lateinit var progressAdapter: GenericAdapter3<Int>
     private var userResponses = mutableMapOf<String, String>()
 
@@ -83,7 +83,7 @@ class StudentELearningQuizDialogFragment(
     }
 
     private fun showQuestion() {
-        quizAdapter = AdminQuizAdapter2(quizItems, userResponses, this)
+        quizAdapter = AdminELearningQuizAdapter(quizItems, userResponses, this)
         quizViewPager.adapter = quizAdapter
 
         updateNavigationButtons()
@@ -97,11 +97,10 @@ class StudentELearningQuizDialogFragment(
 
                 updateNavigationButtons()
 
-                progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
+             //   progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
             }
         }
     }
-
 
     private fun showNextQuestion() {
         if (quizViewPager.currentItem < quizItems.size - 1) {
@@ -109,7 +108,7 @@ class StudentELearningQuizDialogFragment(
 
             updateNavigationButtons()
 
-            progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
+          //  progressRecyclerView.smoothScrollToPosition(quizViewPager.currentItem)
         }
     }
 
@@ -129,6 +128,7 @@ class StudentELearningQuizDialogFragment(
             enableNextButton()
             enablePreviousButton()
         }
+
 
     private fun totalQuestionCount(): Int {
         return quizItems.count { it.questionItem != null }

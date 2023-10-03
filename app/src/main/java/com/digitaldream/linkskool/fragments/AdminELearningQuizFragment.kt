@@ -7,12 +7,9 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
 import com.digitaldream.linkskool.dialog.AdminELearningQuestionTestIntroDialogFragment
@@ -31,7 +28,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
-import timber.log.Timber
 import java.util.Locale
 
 
@@ -43,21 +39,18 @@ class AdminELearningQuizFragment :
 
     private lateinit var dismissBtn: ImageButton
     private lateinit var countDownTxt: TextView
-    private lateinit var sectionTxt: TextView
-    private lateinit var questionRecyclerView: RecyclerView
+    private lateinit var questionViewPager: ViewPager2
     private lateinit var previousBtn: ImageButton
     private lateinit var nextBtn: ImageButton
     private lateinit var submitQuestionBtn: Button
 
     // Initialise section items
-    private lateinit var sectionItems: MutableList<SectionModel>
+    private lateinit var quizItems: MutableList<SectionModel>
     private lateinit var countDownJob: Job
-    private lateinit var questionTestAdapter: AdminELearningQuizAdapter
+    private lateinit var quizAdapter: AdminELearningQuizAdapter
     private var userResponses = mutableMapOf<String, String>()
 
     // Variables to store data
-    private var currentSectionIndex: Int = 0
-    private var currentQuestionCount = 0
     private var jsonData: String? = null
     private var duration: String? = null
     private var settingsData = JSONObject()
@@ -96,16 +89,11 @@ class AdminELearningQuizFragment :
 
         initialiseSectionItem()
 
-        swipeGesturesOnRecyclerView()
-
         nextBtn.setOnClickListener {
             showNextQuestion()
         }
 
-        previousBtn.setOnClickListener {
-            showPreviousQuestion()
-
-        }
+        showPreviousQuestion()
 
         submitQuestionBtn.setOnClickListener {
             submitTest()
@@ -117,8 +105,7 @@ class AdminELearningQuizFragment :
         view.apply {
             dismissBtn = findViewById(R.id.dismissBtn)
             countDownTxt = findViewById(R.id.durationTxt)
-            sectionTxt = findViewById(R.id.sectionTxt)
-            questionRecyclerView = findViewById(R.id.questionRecyclerView)
+            questionViewPager = findViewById(R.id.questionViewPager)
             submitQuestionBtn = findViewById(R.id.submitQuestionBtn)
             previousBtn = findViewById(R.id.prevBtn)
             nextBtn = findViewById(R.id.nextBtn)
@@ -127,47 +114,32 @@ class AdminELearningQuizFragment :
 
 
     private fun initialiseSectionItem() {
-        sectionItems = returnQuestionList()
+        quizItems = returnQuestionList()
 
         disableSubmitBtn()
 
-        if (::sectionItems.isInitialized && sectionItems.isNotEmpty()) {
+        if (::quizItems.isInitialized && quizItems.isNotEmpty()) {
             introDialog()
         }
     }
 
 
     private fun showQuestion() {
-        val currentSection = sectionItems.getOrNull(currentSectionIndex)
+        quizAdapter = AdminELearningQuizAdapter(quizItems, userResponses, this)
+        questionViewPager.adapter = quizAdapter
 
-        if (currentSection != null) {
-            sectionTxt.text = currentSection.sectionTitle
-            sectionTxt.isVisible = !currentSection.sectionTitle.isNullOrEmpty()
-
-            val questionItem = currentSection.questionItem
-            questionRecyclerView.isVisible = questionItem != null
-
-            if (currentSectionIndex == 0) {
-                currentQuestionCount = if (questionItem != null) 1 else 0
-            }
-
-            if (questionItem != null) {
-                showQuestionPreview(questionItem)
-            }
-
-            updateNavigationButtons()
-        }
+        updateNavigationButtons()
     }
 
 
     private fun updateNavigationButtons() =
-        if (sectionItems.size == 1) {
+        if (quizItems.size == 1) {
             disableNextButton()
             disablePreviousButton()
-        } else if (currentSectionIndex == 0) {
+        } else if (questionViewPager.currentItem == 0) {
             enableNextButton()
             disablePreviousButton()
-        } else if (currentSectionIndex == sectionItems.size - 1) {
+        } else if (questionViewPager.currentItem == quizItems.size - 1) {
             disableNextButton()
             enablePreviousButton()
             enableSubmitBtn()
@@ -177,74 +149,23 @@ class AdminELearningQuizFragment :
         }
 
     private fun showNextQuestion() {
-        if (currentSectionIndex < sectionItems.size) {
+        if (questionViewPager.currentItem < quizItems.size - 1) {
+            questionViewPager.currentItem++
 
-            currentSectionIndex++
-
-            if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
-                currentQuestionCount++
-            }
-
-            showQuestion()
+            updateNavigationButtons()
         }
-
     }
 
     private fun showPreviousQuestion() {
-        if (currentSectionIndex > 0) {
+        previousBtn.setOnClickListener {
+            if (questionViewPager.currentItem > 0) {
+                questionViewPager.currentItem--
 
-            if (sectionItems.getOrNull(currentSectionIndex)?.questionItem != null) {
-                currentQuestionCount--
+                updateNavigationButtons()
             }
-
-            currentSectionIndex--
-
-            showQuestion()
         }
-
     }
 
-    private fun swipeGesturesOnRecyclerView() {
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            0,
-            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
-        ) {
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                if (direction == ItemTouchHelper.LEFT) {
-                    showNextQuestion()
-                } else {
-                    showPreviousQuestion()
-                }
-            }
-        })
-
-        itemTouchHelper.attachToRecyclerView(questionRecyclerView)
-    }
-
-    private fun showQuestionPreview(nextQuestion: QuestionItem?) {
-        questionTestAdapter = AdminELearningQuizAdapter(
-            mutableListOf(nextQuestion),
-            userResponses,
-            currentQuestionCount,
-            this
-        )
-
-        questionRecyclerView.apply {
-            hasFixedSize()
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = questionTestAdapter
-        }
-
-    }
 
     private fun disablePreviousButton() {
         // Disable the previous button
@@ -323,7 +244,6 @@ class AdminELearningQuizFragment :
             }
         }
     }
-
 
     // Remove a specific text from the file name
     private fun trimText(text: String): String {
@@ -610,7 +530,6 @@ class AdminELearningQuizFragment :
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
         userResponses[questionId] = typedAnswer
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

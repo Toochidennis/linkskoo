@@ -67,25 +67,11 @@
         android:layout_above="@id/btnLayout"
         android:layout_below="@id/appBar">
 
-        <TextView
-            android:id="@+id/sectionTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/dimen_16"
-            android:text=""
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_24"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/questionRecyclerView"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/questionViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/dimen_16"
-            android:nestedScrollingEnabled="false" />
+            android:contentDescription="@string/view_pager" />
 
     </RelativeLayout>
 
