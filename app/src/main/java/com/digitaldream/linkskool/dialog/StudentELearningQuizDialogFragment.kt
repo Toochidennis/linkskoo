@@ -1,7 +1,6 @@
 package com.digitaldream.linkskool.dialog
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -9,14 +8,13 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
+import com.digitaldream.linkskool.adapters.AdminQuizAdapter2
 import com.digitaldream.linkskool.adapters.GenericAdapter3
-import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -32,26 +30,20 @@ class StudentELearningQuizDialogFragment(
     private val duration: String,
     private val quizItems: MutableList<SectionModel>
 ) : DialogFragment(R.layout.fragment_student_e_learning_quiz),
-    AdminELearningQuizAdapter.UserResponse {
+    AdminQuizAdapter2.UserResponse {
 
 
     private lateinit var countDownTxt: TextView
     private lateinit var submitBtn: Button
-    private lateinit var quizRecyclerView: RecyclerView
     private lateinit var progressRecyclerView: RecyclerView
+    private lateinit var quizViewPager: ViewPager2
     private lateinit var previousBtn: ImageButton
     private lateinit var nextBtn: ImageButton
-    private lateinit var sectionTxt: TextView
 
     private lateinit var countDownJob: Job
-    private lateinit var quizAdapter: AdminELearningQuizAdapter
+    private lateinit var quizAdapter: AdminQuizAdapter2
     private lateinit var progressAdapter: GenericAdapter3<Int>
     private var userResponses = mutableMapOf<String, String>()
-
-    // Variables to store data
-    private var currentSectionIndex: Int = 0
-    private var currentQuestionCount = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,8 +60,6 @@ class StudentELearningQuizDialogFragment(
 
         setUpProgressAdapter()
 
-        showQuestion()
-
         countDownTimer()
 
         showPreviousQuestion()
@@ -77,93 +67,46 @@ class StudentELearningQuizDialogFragment(
         nextBtn.setOnClickListener {
             showNextQuestion()
         }
+
+        showQuestion()
     }
 
     private fun setUpViews(view: View) {
         view.apply {
             countDownTxt = findViewById(R.id.countDownTxt)
             submitBtn = findViewById(R.id.submitBtn)
-            quizRecyclerView = findViewById(R.id.quizRecyclerView)
+            quizViewPager = findViewById(R.id.quizViewPager)
             progressRecyclerView = findViewById(R.id.progressRecyclerView)
             previousBtn = findViewById(R.id.prevBtn)
             nextBtn = findViewById(R.id.nextBtn)
-            sectionTxt = findViewById(R.id.sectionTxt)
         }
     }
-
 
     private fun showQuestion() {
-        val currentSection = quizItems.getOrNull(currentSectionIndex)
-        if (currentSection != null) {
-            sectionTxt.text = currentSection.sectionTitle
-            sectionTxt.isVisible = !currentSection.sectionTitle.isNullOrEmpty()
+        quizAdapter = AdminQuizAdapter2(quizItems, userResponses, this)
+        quizViewPager.adapter = quizAdapter
 
-            val questionItem = currentSection.questionItem
-            quizRecyclerView.isVisible = questionItem != null
-
-            if (currentSectionIndex == 0) {
-                if (questionItem != null) {
-                    currentQuestionCount = 1
-
-                }
-            }
-
-            if (questionItem != null) {
-                showQuestionPreview(questionItem)
-
-            }
-
-            updateNavigationButtons()
-        }
-    }
-
-    private fun showQuestionPreview(nextQuestion: QuestionItem?) {
-        quizAdapter = AdminELearningQuizAdapter(
-            mutableListOf(nextQuestion),
-            userResponses,
-            currentQuestionCount,
-            this
-        )
-
-        quizRecyclerView.apply {
-            hasFixedSize()
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = quizAdapter
-        }
-
+        updateNavigationButtons()
     }
 
 
     private fun showPreviousQuestion() {
         previousBtn.setOnClickListener {
-            if (currentSectionIndex > 0) {
+            if (quizViewPager.currentItem > 0) {
+                quizViewPager.currentItem--
 
-                // Decrement the question count only if there are questions
-                if (quizItems.getOrNull(currentSectionIndex)?.questionItem != null) {
-                    currentQuestionCount--
-                }
-
-                currentSectionIndex--
-
-                showQuestion()
+                updateNavigationButtons()
             }
         }
     }
 
 
     private fun showNextQuestion() {
-        if (currentSectionIndex < quizItems.size) {
+        if (quizViewPager.currentItem < quizItems.size - 1) {
+            quizViewPager.currentItem++
 
-            currentSectionIndex++
-
-            // Increment the question count only if there are questions
-            if (quizItems.getOrNull(currentSectionIndex)?.questionItem != null) {
-                currentQuestionCount++
-            }
-
-            showQuestion()
+            updateNavigationButtons()
         }
-
     }
 
 
@@ -171,10 +114,10 @@ class StudentELearningQuizDialogFragment(
         if (quizItems.size == 1) {
             disableNextButton()
             disablePreviousButton()
-        } else if (currentSectionIndex == 0) {
+        } else if (quizViewPager.currentItem  == 0) {
             enableNextButton()
             disablePreviousButton()
-        } else if (currentSectionIndex == quizItems.size - 1) {
+        } else if (quizViewPager.currentItem == quizItems.size - 1) {
             disableNextButton()
             enablePreviousButton()
             enableSubmitBtn()
@@ -186,7 +129,6 @@ class StudentELearningQuizDialogFragment(
     private fun totalQuestionCount(): Int {
         return quizItems.count { it.questionItem != null }
     }
-
 
     private fun setUpProgressAdapter() {
         val totalQuestions = totalQuestionCount()
@@ -200,12 +142,13 @@ class StudentELearningQuizDialogFragment(
                 val circlePosition = position + 1
                 progressTxt.text = (circlePosition).toString()
 
-                if (currentQuestionCount == circlePosition){
-                    progressLayout.background = ContextCompat.getDrawable(requireContext(), R.drawable.circle5)
+                if (quizViewPager.currentItem == position) {
+                    progressLayout.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.circle5)
                 }
             }
-        ) { _ ->
-
+        ) { position ->
+            scrollToPosition(position)
         }
 
         setUpProgressRecyclerView()
@@ -221,8 +164,19 @@ class StudentELearningQuizDialogFragment(
             )
 
             adapter = progressAdapter
-            smoothScrollToPosition(currentQuestionCount)
+            smoothScrollToPosition(quizViewPager.currentItem)
         }
+    }
+
+    private fun scrollToPosition(position: Int) {
+        var questionPosition = 0
+        for (i in 0 until position) {
+            if (quizItems[i].questionItem != null) {
+                questionPosition++
+            }
+        }
+
+        quizViewPager.currentItem = questionPosition
     }
 
     private fun countDownTimer() {
@@ -310,6 +264,7 @@ class StudentELearningQuizDialogFragment(
 
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
         userResponses[questionId] = typedAnswer
+
         progressAdapter.notifyDataSetChanged()
     }
 

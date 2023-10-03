@@ -1,6 +1,7 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,29 +21,36 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
+import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
-import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
-import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
+import com.digitaldream.linkskool.utils.FunctionUtils
 import com.squareup.picasso.Picasso
 
-class AdminELearningQuizAdapter(
-    private var questionList: MutableList<QuestionItem?>,
+class AdminQuizAdapter2(
+    private var itemList: MutableList<SectionModel>,
     private var userResponses: MutableMap<String, String>,
-    private var currentQuestionCount: Int,
     private var userResponse: UserResponse
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private companion object {
+        private const val VIEW_TYPE_SECTION = 0
         private const val VIEW_TYPE_MULTI_CHOICE_OPTION = 1
         private const val VIEW_TYPE_SHORT_ANSWER = 2
     }
 
     private var picasso = Picasso.get()
     private lateinit var optionsAdapter: OptionAdapter
+    private var currentQuestionCount = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
+            VIEW_TYPE_SECTION -> {
+                val view = inflater.inflate(R.layout.item_section_layout, parent, false)
+
+                SectionViewHolder(view)
+            }
+
             VIEW_TYPE_MULTI_CHOICE_OPTION -> {
                 val view = inflater.inflate(
                     R.layout.item_multi_choice_option_layout, parent,
@@ -65,28 +73,45 @@ class AdminELearningQuizAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val questionItem = questionList[position]
+        val itemModel = itemList[position]
         when (holder) {
+            is SectionViewHolder -> holder.bind(itemModel)
+
             is MultipleChoiceViewHolder -> {
-                val question = (questionItem as? QuestionItem.MultiChoice)?.question ?: return
+                val question =
+                    (itemModel.questionItem as? QuestionItem.MultiChoice)?.question ?: return
+                currentQuestionCount = calculateQuestionCount(position)
                 holder.bind(question)
 
             }
 
             is ShortAnswerViewHolder -> {
-                val question = (questionItem as? QuestionItem.ShortAnswer)?.question ?: return
+                val question =
+                    (itemModel.questionItem as? QuestionItem.ShortAnswer)?.question ?: return
+                currentQuestionCount = calculateQuestionCount(position)
                 holder.bind(question)
+
             }
         }
     }
 
-    override fun getItemCount() = questionList.size
+    override fun getItemCount() = itemList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (questionList[position]) {
-            is QuestionItem.MultiChoice -> VIEW_TYPE_MULTI_CHOICE_OPTION
-            is QuestionItem.ShortAnswer -> VIEW_TYPE_SHORT_ANSWER
+        return when (itemList[position].viewType) {
+            "section" -> VIEW_TYPE_SECTION
+            "multiple_choice" -> VIEW_TYPE_MULTI_CHOICE_OPTION
+            "short_answer" -> VIEW_TYPE_SHORT_ANSWER
             else -> position
+        }
+    }
+
+
+    inner class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val sectionTitle: TextView = itemView.findViewById(R.id.sectionTxt)
+
+        fun bind(sectionModel: SectionModel) {
+            sectionTitle.text = sectionModel.sectionTitle
         }
     }
 
@@ -167,7 +192,6 @@ class AdminELearningQuizAdapter(
 
                 }
             })
-
         }
 
         private fun setTypedAnswer(answer: String) {
@@ -239,9 +263,7 @@ class AdminELearningQuizAdapter(
                             .drawable.circle5
                     )
 
-                    optionCard.setCardBackgroundColor(
-                        ContextCompat.getColor(itemView.context, R.color.color_1)
-                    )
+                    optionCard.setCardBackgroundColor(Color.WHITE)
 
                     optionLabel.setTextColor(
                         ContextCompat.getColor(
@@ -309,10 +331,10 @@ class AdminELearningQuizAdapter(
             when (imageUri) {
                 is String -> {
                     if (imageUri.isNotEmpty()) {
-                        val isBase64 = isBased64(imageUri)
+                        val isBase64 = FunctionUtils.isBased64(imageUri)
 
                         if (isBase64) {
-                            val bitmap = decodeBase64(imageUri)
+                            val bitmap = FunctionUtils.decodeBase64(imageUri)
                             imageView.isVisible = bitmap != null
                             imageView.setImageBitmap(bitmap)
                         } else {
@@ -338,6 +360,16 @@ class AdminELearningQuizAdapter(
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun calculateQuestionCount(currentPosition: Int): Int {
+        var count = 0
+        for (i in 0 until currentPosition) {
+            if (itemList[i].viewType != "section") {
+                count++
+            }
+        }
+        return count + 1
     }
 
 

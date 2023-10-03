@@ -122,7 +122,7 @@ class AdminELearningQuestionPreviewAdapter(
 
         GenericAdapter2(
             options,
-            R.layout.item_options_preview,
+            R.layout.item_options_layout,
             bindItem = { itemView, model, position ->
                 val optionLabel: TextView = itemView.findViewById(R.id.optionsLabel)
                 val optionTxt: TextView = itemView.findViewById(R.id.optionsTxt)

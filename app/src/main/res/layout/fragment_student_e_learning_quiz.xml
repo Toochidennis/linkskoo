@@ -51,21 +51,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/sectionTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text=""
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_18" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/quizRecyclerView"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/quizViewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/dimen_32" />
+                android:contentDescription="@string/view_pager" />
 
         </RelativeLayout>
 
