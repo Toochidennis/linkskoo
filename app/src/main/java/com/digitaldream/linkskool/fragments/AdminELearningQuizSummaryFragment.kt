@@ -18,7 +18,6 @@ import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import org.json.JSONArray
 import org.json.JSONObject
-import timber.log.Timber
 import java.io.Serializable
 
 
@@ -26,8 +25,8 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class AdminELearningTestSummaryFragment :
-    Fragment(R.layout.fragment_admin_e_learning_test_summary) {
+class AdminELearningQuizSummaryFragment :
+    Fragment(R.layout.fragment_admin_e_learning_quiz_summary) {
 
     private lateinit var scoreTxt: TextView
     private lateinit var totalQuestionTxt: TextView
@@ -64,7 +63,7 @@ class AdminELearningTestSummaryFragment :
         fun newInstance(
             sectionData: String,
             userResponses: MutableMap<String, String>
-        ) = AdminELearningTestSummaryFragment().apply {
+        ) = AdminELearningQuizSummaryFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_PARAM1, sectionData)
                 putSerializable(ARG_PARAM2, userResponses as Serializable)

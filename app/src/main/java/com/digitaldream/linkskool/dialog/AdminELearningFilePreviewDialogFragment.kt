@@ -1,6 +1,7 @@
 package com.digitaldream.linkskool.dialog
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import com.digitaldream.linkskool.R
 import com.squareup.picasso.Picasso
+import java.io.File
 
 
 class AdminELearningFilePreviewDialogFragment(
@@ -54,8 +56,11 @@ class AdminELearningFilePreviewDialogFragment(
     }
 
     private fun loadImage() {
+        val picasso = Picasso.get()
         when (file) {
-            is String -> Picasso.get().load(file).into(imageView)
+            is String -> picasso.load(file).into(imageView)
+            is Uri -> picasso.load(file).into(imageView)
+            is File -> picasso.load(file).into(imageView)
             is Bitmap -> imageView.setImageBitmap(file)
         }
 

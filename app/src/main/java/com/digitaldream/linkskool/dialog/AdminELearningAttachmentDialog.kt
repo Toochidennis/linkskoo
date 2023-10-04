@@ -26,15 +26,62 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-enum class FileType {
-    IMAGE,
-    VIDEO,
-    PDF,
-    WORD,
-    EXCEL,
-    CSV,
-    UNKNOWN
-}
+/**
+ * AdminELearningAttachmentDialog
+ *
+ * Overview:
+ * The AdminELearningAttachmentDialog class is a BottomSheetDialogFragment designed for handling file attachments
+ * in an e-learning application. It provides options for uploading various file types, capturing images, and recording videos.
+ *
+ * Constructors:
+ * - AdminELearningAttachmentDialog(from: String, onFileSelected: (type: String, name: String, uri: Any?) -> Unit):
+ *   Constructor for creating an instance of the dialog.
+ *   Parameters:
+ *     - from: A string indicating the source or context for using the dialog.
+ *     - onFileSelected: A lambda function that gets called when a file is selected.
+ *                      It provides information about the file type, name, and URI.
+ *
+ * Properties:
+ * - cameraLauncher: ActivityResultLauncher<Intent>:
+ *   Activity result launcher for camera-related actions.
+ * - cameraCode: Int:
+ *   A variable to distinguish between capturing images (0) and recording videos (1).
+ * - timeStamp: String?:
+ *   A timestamp used for generating unique file names.
+ *
+ * Methods:
+ * - onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?:
+ *   Overrides the onCreateView method to inflate the dialog's layout.
+ * - onViewCreated(view: View, savedInstanceState: Bundle?):
+ *   Overrides the onViewCreated method to set up the dialog's behavior and UI components.
+ * - takePhoto():
+ *   Initiates the process of capturing an image using the device's camera.
+ * - recordVideo():
+ *   Initiates the process of recording a video using the device's camera.
+ * - imageFile(): File:
+ *   Generates a File object for storing the captured image.
+ * - videoFile(): File:
+ *   Generates a File object for storing the recorded video.
+ * - getFileNameFromUri(uri: Uri): String:
+ *   Retrieves the display name of a file from its content URI.
+ *
+ * Usage:
+ * 1. Create an instance of the AdminELearningAttachmentDialog class.
+ * 2. Set up the onFileSelected lambda function to handle the selected file information.
+ * 3. Show the dialog using show().
+ *
+ * Example:
+ * ```kotlin
+ * val attachmentDialog = AdminELearningAttachmentDialog(from = "multiple choice") { type, name, uri ->
+ *     // Handle the selected file information
+ *     // Type: File type (image, video, pdf, etc.)
+ *     // Name: Display name of the file
+ *     // URI: Content URI of the file
+ * }
+ *
+ * attachmentDialog.show(parentFragmentManager, "attachmentDialog")
+ * ```
+ */
 
 
 class AdminELearningAttachmentDialog(
@@ -68,9 +115,11 @@ class AdminELearningAttachmentDialog(
                         mimeType == "application/pdf" -> FileType.PDF
                         mimeType == "application/msword" || mimeType ==
                                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> FileType.WORD
+
                         mimeType == "text/csv" -> FileType.CSV
                         mimeType == "application/vnd.ms-excel" || mimeType ==
                                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" -> FileType.EXCEL
+
                         else -> FileType.UNKNOWN
                     }
 
@@ -162,16 +211,29 @@ class AdminELearningAttachmentDialog(
             val takePhotoBtn: TextView = findViewById(R.id.takePhoto)
             val recordVideoBtn: TextView = findViewById(R.id.recordVideo)
 
-            if (from == "multiple choice") {
-                insertLink.isVisible = false
-                recordVideoBtn.isVisible = false
+            when (from) {
+                "multiple choice" -> {
+                    insertLink.isVisible = false
+                    recordVideoBtn.isVisible = false
 
-                uploadFile.setOnClickListener {
-                    filePickerLauncher.launch("image/*")
+                    uploadFile.setOnClickListener {
+                        filePickerLauncher.launch("image/*")
+                    }
                 }
-            } else {
-                uploadFile.setOnClickListener {
-                    filePickerLauncher.launch("*/*")
+
+                "student" -> {
+                    insertLink.isVisible = false
+                    recordVideoBtn.isVisible = false
+
+                    uploadFile.setOnClickListener {
+                        filePickerLauncher.launch("application/*")
+                    }
+                }
+
+                else -> {
+                    uploadFile.setOnClickListener {
+                        filePickerLauncher.launch("*/*")
+                    }
                 }
             }
 
@@ -257,6 +319,14 @@ class AdminELearningAttachmentDialog(
             }
         }
         return "No name"
+    }
+
+
+    enum class FileType {
+        IMAGE, VIDEO,
+        PDF, WORD,
+        EXCEL, CSV,
+        UNKNOWN
     }
 
 }

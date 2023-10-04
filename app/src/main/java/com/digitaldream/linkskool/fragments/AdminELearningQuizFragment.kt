@@ -511,7 +511,7 @@ class AdminELearningQuizFragment :
         parentFragmentManager.commit {
             replace(
                 R.id.learning_container,
-                AdminELearningTestSummaryFragment.newInstance(jsonData ?: "", userResponses)
+                AdminELearningQuizSummaryFragment.newInstance(jsonData ?: "", userResponses)
             )
         }
     }

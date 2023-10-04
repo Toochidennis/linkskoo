@@ -4,5 +4,6 @@ data class AttachmentModel(
     var name: String,
     var oldName: String,
     val type: String,
-    var uri: Any?
+    var uri: Any?,
+    val isNewFile: Boolean = false
 )

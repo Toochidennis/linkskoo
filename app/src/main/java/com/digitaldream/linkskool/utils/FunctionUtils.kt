@@ -466,7 +466,6 @@ object FunctionUtils {
             method,
             mUrl,
             { response: String ->
-                //Log.d("response", response)
                 Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
                 progressFlower.dismiss()

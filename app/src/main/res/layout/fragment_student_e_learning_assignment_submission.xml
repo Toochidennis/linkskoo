@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:text="Your work"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_20" />
 
         <TextView
             android:id="@+id/dateTxt"
@@ -66,14 +66,13 @@
                 android:padding="@dimen/dimen_16"
                 android:text="Attachments"
                 android:textColor="@color/black"
-                android:visibility="visible" />
+                android:textSize="@dimen/text_16" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/attachmentRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginEnd="@dimen/dimen_16"
                 android:nestedScrollingEnabled="false" />
 
             <View
@@ -83,14 +82,12 @@
                 android:background="@color/test_color_7" />
 
             <TextView
-                android:id="@+id/commentTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dimen_16"
                 android:text="Class comments"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_14"
-                android:visibility="gone" />
+                android:textSize="@dimen/text_14" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentRecyclerView"
@@ -110,7 +107,7 @@
                 android:textSize="@dimen/text_14" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/commentEditText"
+                android:id="@+id/commentInputText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dimen_16"

@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:paddingBottom="@dimen/dimen_16"
     android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/white">
+    android:foreground="?android:attr/selectableItemBackground">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImageView"

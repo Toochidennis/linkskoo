@@ -3,6 +3,7 @@ package com.digitaldream.linkskool.dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -15,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter3
+import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -69,6 +71,8 @@ class StudentELearningQuizDialogFragment(
         }
 
         showQuestion()
+
+        submitQuiz()
     }
 
     private fun setUpViews(view: View) {
@@ -231,6 +235,44 @@ class StudentELearningQuizDialogFragment(
             withContext(Dispatchers.Main) {
                 "00:00".let { countDownTxt.text = it }
             }
+        }
+    }
+
+    private fun calculateScore(): Int {
+        return userResponses.count { (questionId, userAnswer) ->
+            val section = quizItems.find {
+                it.questionItem?.let { questionItem ->
+                    when (questionItem) {
+                        is QuestionItem.MultiChoice -> questionItem.question.questionId
+                        is QuestionItem.ShortAnswer -> questionItem.question.questionId
+                    }
+                } == questionId
+            }
+
+            val correctAnswer = section?.questionItem?.let { questionItem ->
+                when (questionItem) {
+                    is QuestionItem.MultiChoice -> questionItem.question.correctAnswer
+                    is QuestionItem.ShortAnswer -> questionItem.question.answerText
+                }
+            }
+
+            userAnswer.isNotBlank() && userAnswer.equals(correctAnswer, true)
+        }
+    }
+
+
+    private fun submitQuiz() {
+        submitBtn.setOnClickListener {
+            StudentELearningQuizCompletionDialog(requireContext()) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }.apply {
+                isCancelable = false
+                show()
+            }.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
         }
     }
 

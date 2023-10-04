@@ -30,27 +30,52 @@
                 android:scaleType="center"
                 android:src="@drawable/ic_document24" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@color/test_color_2"
-                android:orientation="horizontal"
-                android:padding="@dimen/dimen_10">
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_above="@id/progressBar"
+                android:background="@color/test_color_2">
 
                 <TextView
                     android:id="@+id/fileNameTxt"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toStartOf="@id/deleteBtn"
                     android:drawablePadding="5dp"
                     android:ellipsize="marquee"
                     android:lines="2"
+                    android:padding="@dimen/dimen_10"
                     android:maxLines="2"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_12"
                     app:drawableTint="@color/color1" />
 
-            </LinearLayout>
+                <ImageButton
+                    android:id="@+id/deleteBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ripple_effect12"
+                    android:contentDescription="@string/exit_btn"
+                    android:padding="@dimen/dimen_10"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/white" />
+
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:layout_alignParentBottom="true"
+                android:progressTint="@color/test_color_1"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
