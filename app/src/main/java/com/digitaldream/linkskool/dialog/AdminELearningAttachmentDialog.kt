@@ -296,7 +296,6 @@ class AdminELearningAttachmentDialog(
         } else {
             Toast.makeText(requireContext(), "package name is null", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun recordVideo() {

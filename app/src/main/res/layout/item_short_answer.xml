@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:backgroundTint="@color/test_color_1"
         app:cardCornerRadius="@dimen/dimen_24"
-        app:contentPadding="8dp">
+        app:contentPadding="@dimen/dimen_10">
 
         <ImageView
             android:layout_width="wrap_content"
