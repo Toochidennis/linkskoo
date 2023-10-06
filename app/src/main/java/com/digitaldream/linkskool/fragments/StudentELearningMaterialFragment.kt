@@ -123,7 +123,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
         }
 
         val sharedPreferences = requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
-        userName = sharedPreferences.getString("_name", "")
+        userName = sharedPreferences.getString("user", "")
         userId = sharedPreferences.getString("user_id", "")
     }
 

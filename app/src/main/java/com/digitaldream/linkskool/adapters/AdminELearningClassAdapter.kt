@@ -3,6 +3,8 @@ package com.digitaldream.linkskool.adapters
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -129,14 +131,18 @@ class AdminELearningClassAdapter(
     }
 
     inner class AssignmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageView: ImageView = itemView.findViewById(R.id.imageType)
         private val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
 
         fun bind(assignment: ContentModel) {
             descriptionTxt.text = assignment.title
+
             val date = formatDate2(assignment.date, "custom")
             "Posted $date".let { dateTxt.text = it }
+
+            setImageResource(imageView = imageView, assignment)
 
             menuButtonAction("assignment", optionBtn, assignment, itemView, adapterPosition)
 
@@ -149,18 +155,16 @@ class AdminELearningClassAdapter(
     }
 
     inner class MaterialViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val materialImage: ImageView = itemView.findViewById(R.id.imageType)
+        private val imageView: ImageView = itemView.findViewById(R.id.imageType)
         private val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
 
         fun bind(material: ContentModel) {
-            materialImage.setImageDrawable(
-                ContextCompat
-                    .getDrawable(itemView.context, R.drawable.ic_material)
-            )
+            setImageResource(imageView = imageView, material)
 
             descriptionTxt.text = material.title
+
             val date = formatDate2(material.date, "custom")
             "Posted $date".let { dateTxt.text = it }
 
@@ -173,18 +177,16 @@ class AdminELearningClassAdapter(
     }
 
     inner class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val materialImage: ImageView = itemView.findViewById(R.id.imageType)
+        private val imageView: ImageView = itemView.findViewById(R.id.imageType)
         private val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val optionBtn: ImageView = itemView.findViewById(R.id.moreBtn)
 
         fun bind(question: ContentModel) {
-            materialImage.setImageDrawable(
-                ContextCompat
-                    .getDrawable(itemView.context, R.drawable.ic_question)
-            )
+            setImageResource(imageView = imageView, question)
 
             descriptionTxt.text = question.title
+
             val date = formatDate2(question.date, "custom")
             "Posted $date".let { dateTxt.text = it }
 
@@ -194,6 +196,18 @@ class AdminELearningClassAdapter(
                 viewOrEditContentDetails(itemView, question, "question_details")
             }
         }
+    }
+
+    private fun setImageResource(imageView: ImageView, contentModel: ContentModel) {
+        imageView.setImageResource(
+            when (contentModel.viewType) {
+                "material" -> R.drawable.ic_material
+                "question" -> R.drawable.ic_question
+                else -> R.drawable.baseline_assignment_24
+            }
+        )
+
+        imageView.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
     }
 
     private fun menuButtonAction(
@@ -215,7 +229,7 @@ class AdminELearningClassAdapter(
                     }
 
                     R.id.deleteSection -> {
-                        warningDialog(itemView.context, contentModel = topicModel)
+                        warningDialog(itemView.context, contentModel = topicModel, position)
                         true
                     }
 
@@ -296,7 +310,7 @@ class AdminELearningClassAdapter(
     }
 
 
-    private fun warningDialog(context: Context, contentModel: ContentModel) {
+    private fun warningDialog(context: Context, contentModel: ContentModel, position: Int) {
         val title = "Delete ${contentModel.viewType}?"
 
         val message = when (contentModel.viewType) {
@@ -315,6 +329,8 @@ class AdminELearningClassAdapter(
             }
             setPositiveButton("Delete") { _, _ ->
                 deleteContent(context, url)
+                itemList.removeAt(position)
+                notifyItemRemoved(position)
             }
 
             show()

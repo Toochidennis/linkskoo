@@ -1,18 +1,34 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter
 import com.digitaldream.linkskool.adapters.StudentELearningCourseWorkAdapter
+import com.digitaldream.linkskool.models.CommentDataModel
+import com.digitaldream.linkskool.models.CommentModel
 import com.digitaldream.linkskool.models.ContentModel
+import com.digitaldream.linkskool.utils.FunctionUtils
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import org.json.JSONArray
 
 
@@ -25,9 +41,13 @@ class StudentELearningStreamFragment : Fragment() {
     private lateinit var emptyTxt: TextView
 
     private lateinit var streamAdapter: GenericAdapter<ContentModel>
+    private lateinit var commentAdapter: AdminELearningCommentAdapter
     private var contentList = mutableListOf<ContentModel>()
+    private var commentList = mutableListOf<CommentDataModel>()
 
     private var jsonData: String? = null
+    private var userName: String? = null
+    private var userId: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +82,22 @@ class StudentELearningStreamFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpViews(view)
+
+        loadStreams()
     }
 
     private fun setUpViews(view: View) {
+        view.apply {
+            streamRecyclerView = findViewById(R.id.streamRecyclerView)
+            emptyTxt = findViewById(R.id.emptyTxt)
+        }
 
+        val sharedPreferences = requireActivity().getSharedPreferences(
+            "loginDetail",
+            MODE_PRIVATE
+        )
+        userName = sharedPreferences.getString("user", "")
+        userId = sharedPreferences.getString("user_id", "")
     }
 
 
@@ -156,6 +188,8 @@ class StudentELearningStreamFragment : Fragment() {
     }
 
     private fun setUpRecyclerView() {
+        setUpStreamAdapter()
+
         streamRecyclerView.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(requireContext())
@@ -167,13 +201,115 @@ class StudentELearningStreamFragment : Fragment() {
         streamAdapter = GenericAdapter(
             contentList,
             R.layout.item_stream_layout,
-            bindItem = {itemView, model, position ->
+            bindItem = { itemView, model, _ ->
+                val imageView: ImageView = itemView.findViewById(R.id.imageView)
+                val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
+                val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
+                val commentRecyclerView: RecyclerView =
+                    itemView.findViewById(R.id.commentRecyclerView)
+                val commentEditText: EditText = itemView.findViewById(R.id.commentEditText)
+                val sendBtn: ImageButton = itemView.findViewById(R.id.sendBtn)
 
+                setImageResource(imageView, model)
 
+                editTextWatcher(commentEditText, sendBtn)
+
+                updateComment(sendBtn, commentEditText, commentRecyclerView)
+
+                val description = "${model.description} ${model.title}"
+                descriptionTxt.text = description
+
+                val formattedDate = formatDate2(model.date, "custom")
+                dateTxt.text = formattedDate
             }
-        ){
+        ) {
 
         }
+    }
+
+    private fun setImageResource(imageView: ImageView, contentModel: ContentModel) {
+        imageView.setImageResource(
+            when (contentModel.viewType) {
+                "material" -> R.drawable.ic_material
+                "question" -> R.drawable.ic_question
+                else -> R.drawable.baseline_assignment_24
+            }
+        )
+
+        imageView.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+    }
+
+    private fun showSendBtn(imageButton: ImageButton) {
+        imageButton.isVisible = true
+    }
+
+    private fun hideSendBtn(imageButton: ImageButton) {
+        imageButton.isVisible = false
+    }
+
+    private fun editTextWatcher(editText: EditText, imageButton: ImageButton) {
+        hideSendBtn(imageButton)
+
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString().isNotBlank()) {
+                    showSendBtn(imageButton)
+                } else {
+                    hideSendBtn(imageButton)
+                }
+            }
+        })
+    }
+
+    private fun setUpCommentRecyclerView(recyclerView: RecyclerView) {
+        commentAdapter = AdminELearningCommentAdapter(commentList)
+
+        recyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
+        }
+
+    }
+
+    private fun sendComment(commentEditText: EditText) {
+        val message = commentEditText.text.toString().trim()
+        val date = formatDate2(getDate())
+
+        val commentDataModel = CommentDataModel(
+            "id", userId ?: "",
+            userName ?: "", message, date
+        )
+
+        commentList.add(commentDataModel)
+
+        hideKeyboard(commentEditText)
+
+        commentAdapter.notifyDataSetChanged()
+    }
+
+    private fun updateComment(
+        imageButton: ImageButton,
+        editText: EditText,
+        recyclerView: RecyclerView
+    ) {
+        setUpCommentRecyclerView(recyclerView)
+
+        imageButton.setOnClickListener {
+            sendComment(editText)
+        }
+    }
+
+    private fun hideKeyboard(editText: EditText) {
+        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
+        editText.clearFocus()
+        editText.setText("")
     }
 
 }

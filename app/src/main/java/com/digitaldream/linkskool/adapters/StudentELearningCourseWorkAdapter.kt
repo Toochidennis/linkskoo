@@ -1,13 +1,14 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
@@ -93,10 +94,13 @@ class StudentELearningCourseWorkAdapter(
     }
 
     inner class AssignmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageView:ImageView = itemView.findViewById(R.id.imageType)
         private val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
 
         fun bind(assignment: ContentModel) {
+            setImageResource(imageView =imageView, assignment)
+
             descriptionTxt.text = assignment.title
             val date = formatDate2(assignment.date, "custom")
             "Posted $date".let { dateTxt.text = it }
@@ -107,14 +111,12 @@ class StudentELearningCourseWorkAdapter(
     }
 
     inner class MaterialViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val materialImage: ImageView = itemView.findViewById(R.id.imageType)
+        private val imageView: ImageView = itemView.findViewById(R.id.imageType)
         private val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
 
         fun bind(material: ContentModel) {
-            materialImage.setImageDrawable(
-                ContextCompat.getDrawable(itemView.context, R.drawable.ic_material)
-            )
+            setImageResource(imageView =imageView, material)
 
             descriptionTxt.text = material.title
             val date = formatDate2(material.date, "custom")
@@ -125,14 +127,12 @@ class StudentELearningCourseWorkAdapter(
     }
 
     inner class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val materialImage: ImageView = itemView.findViewById(R.id.imageType)
+        private val imageView: ImageView = itemView.findViewById(R.id.imageType)
         private val descriptionTxt: TextView = itemView.findViewById(R.id.descriptionTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
 
         fun bind(question: ContentModel) {
-            materialImage.setImageDrawable(
-                ContextCompat.getDrawable(itemView.context, R.drawable.ic_question)
-            )
+            setImageResource(imageView =imageView, question)
 
             descriptionTxt.text = question.title
             val date = formatDate2(question.date, "custom")
@@ -140,6 +140,18 @@ class StudentELearningCourseWorkAdapter(
 
             itemViewAction(itemView, question, "question")
         }
+    }
+
+    private fun setImageResource(imageView: ImageView, contentModel: ContentModel) {
+        imageView.setImageResource(
+            when (contentModel.viewType) {
+                "material" -> R.drawable.ic_material
+                "question" -> R.drawable.ic_question
+                else -> R.drawable.baseline_assignment_24
+            }
+        )
+
+        imageView.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
     }
 
 
