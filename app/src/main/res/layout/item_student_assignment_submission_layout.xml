@@ -49,6 +49,7 @@
                     android:lines="2"
                     android:padding="@dimen/dimen_10"
                     android:maxLines="2"
+                    android:layout_alignWithParentIfMissing="true"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_12"
                     app:drawableTint="@color/color1" />

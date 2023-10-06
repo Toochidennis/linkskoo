@@ -176,6 +176,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         editor.putBoolean("loginStatus", false);
         editor.putString("user", "");
         editor.putString("school_name", "");
+        editor.putString("attachment","");
         editor.apply();
         try {
             TableUtils.clearTable(databaseHelper.getConnectionSource(),

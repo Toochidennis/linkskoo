@@ -319,7 +319,7 @@ class AdminELearningMultiChoiceAdapter(
                     val isBase64 = FunctionUtils.isBased64(uri)
 
                     if (isBase64) {
-                        val bitmap = FunctionUtils.decodeBase64(uri)
+                        val bitmap = FunctionUtils.decodeBase64ToBitmap(uri)
                         if (bitmap != null) {
                             launchImagePreviewDialog(bitmap, uriName)
                         }

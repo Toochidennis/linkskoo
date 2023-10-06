@@ -121,7 +121,6 @@ class StudentELearningCourseWorkAdapter(
             "Posted $date".let { dateTxt.text = it }
 
             itemViewAction(itemView, material, "material")
-
         }
     }
 

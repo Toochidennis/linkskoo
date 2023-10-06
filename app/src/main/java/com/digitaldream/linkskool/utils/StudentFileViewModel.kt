@@ -2,9 +2,10 @@ package com.digitaldream.linkskool.utils
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.pdf.PdfRenderer
-import android.net.Uri
 import android.os.ParcelFileDescriptor
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,8 +21,6 @@ import kotlinx.coroutines.withContext
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor
 import org.apache.poi.xwpf.usermodel.XWPFDocument
-import java.io.BufferedInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -31,59 +30,55 @@ class StudentFileViewModel(application: Application) : AndroidViewModel(applicat
     val processedFile: LiveData<Pair<File, Bitmap>> = _processedFile
 
     fun processFile(attachmentModel: AttachmentModel, targetPath: String) {
-        val savedFile = saveToFile(attachmentModel.uri!!, targetPath)
+        val savedFile = saveToFile(attachmentModel.uri as ByteArray, targetPath)
 
-        viewModelScope.launch {
-            val bitmap = withContext(Dispatchers.IO) {
-                processFileBitmap(attachmentModel, savedFile.absolutePath)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            val bitmap = processFileBitmap(attachmentModel, savedFile.absolutePath)
 
-            if (bitmap != null) {
-                _processedFile.postValue(Pair(savedFile, bitmap))
+            withContext(Dispatchers.Main) {
+                if (bitmap != null) {
+                    _processedFile.postValue(Pair(savedFile, bitmap))
+                } else {
+                    Toast.makeText(
+                        getApplication(), "${attachmentModel.name} not found",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
 
-    private fun saveToFile(uri: Any, filePath: String): File {
-        val data = convertUriToByteArray(uri)
+
+    private fun saveToFile(data: ByteArray, filePath: String): File {
         val file = File(filePath)
         val outputStream = FileOutputStream(file)
-        outputStream.write(data as ByteArray)
+        outputStream.write(data)
         outputStream.close()
         return file
     }
 
-    private fun convertUriToByteArray(uri: Any): Any? {
-        val inputStream = when (uri) {
-            is File -> FileInputStream(uri)
-            else -> getApplication<Application>().contentResolver.openInputStream(uri as Uri)
-        }
-
-        return inputStream.use { input ->
-            try {
-                val outputStream = ByteArrayOutputStream()
-                val bufferedInput = BufferedInputStream(input)
-                val buffer = ByteArray(8192)
-                var bytesRead: Int
-                while (bufferedInput.read(buffer).also { bytesRead = it } != -1) {
-                    outputStream.write(buffer, 0, bytesRead)
-                }
-
-                outputStream.toByteArray()
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
 
     private fun processFileBitmap(attachmentModel: AttachmentModel, filePath: String): Bitmap? {
         return when (attachmentModel.type) {
             "word" -> generateWordThumbnail(attachmentModel, filePath)
             "excel" -> generateExcelThumbnail(attachmentModel, filePath)
             "pdf" -> generatePdfThumbnail(filePath)
-            else -> null
+            else -> generateImageThumbnail(attachmentModel.uri as ByteArray)
+        }
+    }
+
+    private fun generateImageThumbnail(byteArray: ByteArray): Bitmap? {
+        return try {
+            Bitmap.createBitmap(
+                BitmapFactory.decodeByteArray(
+                    byteArray,
+                    0,
+                    byteArray.size
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 

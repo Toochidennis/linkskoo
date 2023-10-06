@@ -226,7 +226,7 @@ class AdminELearningAttachmentDialog(
                     recordVideoBtn.isVisible = false
 
                     uploadFile.setOnClickListener {
-                        filePickerLauncher.launch("application/*")
+                        filePickerLauncher.launch("*/*")
                     }
                 }
 

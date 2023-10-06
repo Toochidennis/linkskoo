@@ -77,7 +77,6 @@
 
                 </androidx.cardview.widget.CardView>
 
-
                 <RelativeLayout
                     android:id="@+id/notification_layout"
                     android:layout_width="match_parent"
@@ -90,7 +89,7 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/description_layout"
+                        android:id="@+id/descriptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -172,7 +171,7 @@
                         android:id="@+id/separator"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/description_layout"
+                        android:layout_below="@id/descriptionLayout"
                         android:background="@drawable/line_separator"
                         android:orientation="horizontal" />
 
@@ -195,9 +194,7 @@
 
                 </RelativeLayout>
 
-
             </RelativeLayout>
-
 
         </androidx.core.widget.NestedScrollView>
 

@@ -84,4 +84,22 @@
 
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:id="@+id/emptyTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="82dp"
+        android:visibility="gone"
+        android:text="@string/no_data"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_14" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/streamRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_10"
+        android:nestedScrollingEnabled="false" />
+
 </LinearLayout>

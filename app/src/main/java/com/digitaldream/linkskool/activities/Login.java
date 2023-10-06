@@ -703,7 +703,9 @@ public class Login extends AppCompatActivity {
                                     "schoolProfile");
                             JSONArray jsonArray20 = jsonObject20.getJSONArray(
                                     "rows");
+
                             Log.i("assessment", jsonObject20.toString());
+
                             JSONArray columnArr10 = jsonObject20.getJSONArray(
                                     "columns");
                             JSONArray schlProfileObject =
@@ -759,7 +761,6 @@ public class Login extends AppCompatActivity {
 
                             JSONObject jsonObject10 = jsonObject.getJSONObject(
                                     "profile");
-
 
                             String user = jsonObject10.getString("name");
                             String schoolName = jsonObject10.getString(
@@ -1153,13 +1154,12 @@ public class Login extends AppCompatActivity {
 
                         Object object = jsonObject.get("result");
                         if (object instanceof JSONObject) {
-                            JSONObject jsonObject2 = jsonObject.getJSONObject(
-                                    "result");
+                            JSONObject jsonObject2 = jsonObject.getJSONObject("result");
                             Iterator<String> keys = jsonObject2.keys();
+
                             while (keys.hasNext()) {
                                 String key = keys.next();
-                                if (jsonObject2.get(
-                                        key) instanceof JSONObject) {
+                                if (jsonObject2.get(key) instanceof JSONObject) {
                                     // do something with jsonObject here
                                     JSONObject object1 = jsonObject2.getJSONObject(
                                             key);

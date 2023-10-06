@@ -1,7 +1,10 @@
 package com.digitaldream.linkskool.adapters
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.net.Uri
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -19,8 +23,8 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.dialog.AdminELearningFilePreviewDialogFragment
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.utils.StudentFileViewModel
-import com.squareup.picasso.Picasso
-import timber.log.Timber
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 
 class StudentELearningAssignmentSubmissionAdapter(
@@ -30,7 +34,7 @@ class StudentELearningAssignmentSubmissionAdapter(
     private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<StudentELearningAssignmentSubmissionAdapter.FileViewHolder>() {
 
-    private val picasso = Picasso.get()
+    private val filePathList = hashMapOf<Int, String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -60,43 +64,25 @@ class StudentELearningAssignmentSubmissionAdapter(
 
             progressBar.isVisible = attachmentModel.isNewFile
 
-            var fileSavedPath = ""
-
-            when (attachmentModel.type) {
-                "image" -> {
-                    loadImage(attachmentModel, fileImageView)
-                    progressBar.isVisible = false
-                }
-
-                else -> {
-                    fileSavedPath = createTempDir(itemView, attachmentModel)
-                    studentFileViewModel.processFile(attachmentModel, fileSavedPath)
-                }
-            }
+            val fileSavedPath = createTempDir(itemView, attachmentModel)
+            studentFileViewModel.processFile(attachmentModel, fileSavedPath)
 
             studentFileViewModel.processedFile.observe(lifecycleOwner) { (file, bitmap) ->
                 if (file.absolutePath == fileSavedPath) {
-                    attachmentModel.uri = file.absolutePath
-                    fileImageView.scaleType = ImageView.ScaleType.CENTER_CROP
                     fileImageView.setImageBitmap(bitmap)
+                    filePathList[adapterPosition] = file.absolutePath
+                    fileImageView.scaleType = ImageView.ScaleType.CENTER_CROP
                     progressBar.isVisible = false
+                    attachmentModel.isNewFile = false
                 }
             }
 
-
             itemView.setOnClickListener {
-                viewFiles(itemView, attachmentModel)
+                viewFiles(itemView, attachmentModel, adapterPosition)
             }
-        }
-    }
 
-    private fun loadImage(attachmentModel: AttachmentModel, imageView: ImageView) {
-        when (attachmentModel.uri) {
-            is File -> picasso.load(attachmentModel.uri as File).into(imageView)
-            is Uri -> picasso.load(attachmentModel.uri as Uri).into(imageView)
+            deleteAttachment(deleteBtn, adapterPosition)
         }
-
-        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
     }
 
     private fun setCompoundDrawable(textView: TextView, type: String) {
@@ -120,21 +106,19 @@ class StudentELearningAssignmentSubmissionAdapter(
         return File(tempDir, pathName).absolutePath
     }
 
-
-    private fun viewFiles(itemView: View, attachmentModel: AttachmentModel) {
+    private fun viewFiles(itemView: View, attachmentModel: AttachmentModel, filePosition: Int) {
         try {
-            when (attachmentModel.type) {
-                "pdf", "word", "excel" -> {
-                    val uri = getFileUri(itemView, attachmentModel.uri.toString())
-                    if (uri != null) {
-                        openFileWithIntent(itemView, uri, attachmentModel.type)
-                    }
+            val filePath = filePathList[filePosition]
+            val uri = filePath?.let { getFileUri(itemView, it) }
+
+            if (uri != null) {
+                when (attachmentModel.type) {
+                    "image" -> previewImage(attachmentModel, uri)
+                    else -> openFileWithIntent(itemView, uri, attachmentModel.type)
                 }
-
-                else -> previewImage(attachmentModel)
+            } else {
+                Toast.makeText(itemView.context, "Can't open file", Toast.LENGTH_SHORT).show()
             }
-
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -160,39 +144,49 @@ class StudentELearningAssignmentSubmissionAdapter(
         val mimeType = when (fileType) {
             "pdf" -> "application/pdf"
             "word" -> "application/msword"
-            "excel" -> "application/vnd.ms-excel"
-            else -> null
+            else -> "application/vnd.ms-excel"
         }
 
-        if (mimeType != null)
-            intent.setDataAndType(uri, mimeType)
+        intent.setDataAndType(uri, mimeType)
         itemView.context.startActivity(intent)
     }
 
-    private fun previewImage(attachmentModel: AttachmentModel) {
+    private fun previewImage(attachmentModel: AttachmentModel, uri: Uri) {
         AdminELearningFilePreviewDialogFragment(
-            attachmentModel.uri,
+            uri,
             attachmentModel.name
         ).show(fragmentManager, "view file")
-
     }
 
-    /*  private fun deleteAttachment(deleteButton: ImageView, position: Int) {
-          deleteButton.setOnClickListener {
-              if (mFrom == "edit") {
-                  val deletedAttachmentModel = mFileList[position]
-                  deletedAttachmentModel.name = ""
-                  mDeletedFileList.add(deletedAttachmentModel)
-              }
+    private fun deleteAttachment(deleteButton: ImageButton, position: Int) {
+        deleteButton.setOnClickListener {
+            itemList.removeAt(position)
+            updateFile(it.context)
+            notifyItemRemoved(position)
+        }
+    }
 
-              mFileList.removeAt(position)
-              if (mFileList.isEmpty()) {
-                  mAttachmentTxt.isVisible = true
-                  mAddAttachmentBtn.isVisible = false
-                  mAttachmentBtn.isClickable = true
-              }
 
-          }
-      }*/
+    private fun updateFile(context: Context) {
+        if (itemList.isEmpty()) {
+            return
+        }
 
+        val fileArray = JSONArray()
+
+        itemList.forEach { file ->
+            JSONObject().apply {
+                put("name", file.name)
+                put("type", file.type)
+
+                val encodedFile = Base64.encodeToString(file.uri as ByteArray, Base64.DEFAULT)
+                put("uri", encodedFile)
+            }.let {
+                fileArray.put(it)
+            }
+        }
+
+        context.getSharedPreferences("loginDetail", MODE_PRIVATE)
+            .edit().putString("attachment", fileArray.toString()).apply()
+    }
 }

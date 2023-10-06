@@ -3,11 +3,8 @@ package com.digitaldream.linkskool.dialog
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -21,10 +18,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.ShortAnswerModel
-import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64ToBitmap
 import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
-import java.io.ByteArrayInputStream
 import java.io.File
 
 class AdminELearningShortAnswerDialogFragment(
@@ -156,7 +152,7 @@ class AdminELearningShortAnswerDialogFragment(
                     val isBase64 = isBased64(uri)
 
                     if (isBase64) {
-                        val bitmap = decodeBase64(uri)
+                        val bitmap = decodeBase64ToBitmap(uri)
                         if (bitmap != null) {
                             launchImagePreviewDialog(bitmap, uriName)
                         }

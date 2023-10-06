@@ -1,7 +1,9 @@
 package com.digitaldream.linkskool.fragments
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +38,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class StudentELearningFragment : Fragment() {
 
@@ -42,12 +46,14 @@ class StudentELearningFragment : Fragment() {
     private lateinit var upcomingQuizViewPager: ViewPager2
     private lateinit var recentActivityRecyclerView: RecyclerView
     private lateinit var upcomingQuizTabLayout: TabLayout
+    private lateinit var emptyCourseTxt: TextView
 
     private lateinit var courseAdapter: GenericAdapter<CourseOutlineTable>
     private lateinit var upcomingQuizAdapter: StudentELearningUpcomingQuizAdapter
     private lateinit var recentActivityAdapter: GenericAdapter<RecentActivityModel>
 
     private lateinit var databaseHelper: DatabaseHelper
+    private lateinit var sharedPreferences: SharedPreferences
     private var autoSlidingJob: Job? = null
     private val delayMillis = 3000L
 
@@ -83,6 +89,7 @@ class StudentELearningFragment : Fragment() {
             upcomingQuizTabLayout = findViewById(R.id.quizTabLayout)
             recentActivityRecyclerView = findViewById(R.id.recentActivityRecyclerView)
             courseRecyclerView = view.findViewById(R.id.courseRecyclerView)
+            emptyCourseTxt = view.findViewById(R.id.emptyCourseTxt)
 
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
             val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
@@ -96,8 +103,8 @@ class StudentELearningFragment : Fragment() {
             toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         }
 
-        val sharedPreferences = requireActivity().getSharedPreferences(
-            "loginDetail", Context.MODE_PRIVATE
+        sharedPreferences = requireActivity().getSharedPreferences(
+            "loginDetail", MODE_PRIVATE
         )
 
         levelId = sharedPreferences.getString("level", "")
@@ -115,7 +122,13 @@ class StudentELearningFragment : Fragment() {
             mQueryBuilder.groupBy("courseId").where().eq("levelId", levelId)
             outlineTableList = mQueryBuilder.query()
 
-            setUpCourseAdapter()
+            if (outlineTableList.isEmpty()) {
+                emptyCourseTxt.isVisible = true
+            } else {
+                setUpCourseAdapter()
+                emptyCourseTxt.isVisible = false
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -150,10 +163,13 @@ class StudentELearningFragment : Fragment() {
 
             }
         ) { position ->
+            sharedPreferences.edit().apply {
+                putString("course_name", outlineTableList[position].courseName)
+                putString("courseId", outlineTableList[position].courseId)
+            }.apply()
+
             startActivity(
                 Intent(requireActivity(), StudentELearningCourseOutlineActivity::class.java)
-                    .putExtra("courseName", outlineTableList[position].courseName)
-                    .putExtra("courseId", outlineTableList[position].courseId)
             )
         }
 

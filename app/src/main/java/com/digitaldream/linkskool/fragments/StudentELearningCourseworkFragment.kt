@@ -3,19 +3,14 @@ package com.digitaldream.linkskool.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.volley.Request
-import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.StudentELearningCourseWorkAdapter
 import com.digitaldream.linkskool.models.ContentModel
-import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
-import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONArray
 
 
@@ -32,16 +27,14 @@ class StudentELearningCourseworkFragment :
     private lateinit var classWorkAdapter: StudentELearningCourseWorkAdapter
     private var contentList = mutableListOf<ContentModel>()
 
-    private var levelId: String? = null
-    private var courseId: String? = null
-    private var term: String? = null
+    private var jsonData: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            levelId = it.getString(ARG_PARAM1)
-            term = it.getString(ARG_PARAM2)
+            jsonData = it.getString(ARG_PARAM1)
+            //term = it.getString(ARG_PARAM2)
         }
     }
 
@@ -49,10 +42,10 @@ class StudentELearningCourseworkFragment :
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(data: String, param2: String = "") =
             StudentELearningCourseworkFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM1, data)
                     putString(ARG_PARAM2, param2)
                 }
             }
@@ -63,7 +56,7 @@ class StudentELearningCourseworkFragment :
 
         setUpViews(view)
 
-        loadClassWork()
+        loadCourseWork()
     }
 
     private fun setUpViews(view: View) {
@@ -72,41 +65,19 @@ class StudentELearningCourseworkFragment :
             swipeRefreshLayout = findViewById(R.id.swipeRefresh)
             emptyTxt = findViewById(R.id.emptyTxt)
         }
-
-        val sharedPreferences = requireActivity().getSharedPreferences(
-            "loginDetail", AppCompatActivity.MODE_PRIVATE
-        )
-        levelId = sharedPreferences.getString("level", "")
-        term = sharedPreferences.getString("term", "")
-        courseId = sharedPreferences.getString("courseId", "")
     }
 
-    private fun loadClassWork() {
-        val url = "${getString(R.string.base_url)}/getOutline.php?" +
-                "course=$courseId&&level=$levelId&&term=$term"
-
-        sendRequestToServer(
-            Request.Method.GET,
-            url,
-            requireContext(),
-            null,
-            object : VolleyCallback {
-                override fun onResponse(response: String) {
-                    if (response != "[]") {
-                        parseResponse(response)
-                        emptyTxt.isVisible = false
-                    } else {
-                        emptyTxt.isVisible = true
-                    }
-                }
-
-                override fun onError(error: VolleyError) {
-                    emptyTxt.isVisible = true
-                    emptyTxt.text = requireActivity().getString(R.string.no_internet)
-                }
+    private fun loadCourseWork() {
+        if (jsonData?.isNotBlank() == true) {
+            if (jsonData != "[]") {
+                parseResponse(jsonData!!)
+                emptyTxt.isVisible = false
+            } else {
+                emptyTxt.isVisible = true
             }
-        )
+        }
     }
+
 
     private fun parseResponse(response: String) {
         try {

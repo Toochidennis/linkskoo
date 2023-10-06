@@ -40,17 +40,13 @@ class AdminELearningFilePreviewDialogFragment(
             val toolbar: Toolbar = findViewById(R.id.toolbar)
             imageView = findViewById(R.id.imageView)
 
-            (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-            val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
-
-            actionBar?.apply {
+            toolbar.apply {
                 title = fileName
-                setDisplayHomeAsUpEnabled(true)
-                setHomeButtonEnabled(true)
-            }
+                setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+                setNavigationOnClickListener {
 
-            toolbar.setNavigationOnClickListener {
-                dismiss()
+                    dismiss()
+                }
             }
         }
     }

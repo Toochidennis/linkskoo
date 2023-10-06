@@ -27,7 +27,6 @@ import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.Base64
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -74,7 +73,6 @@ import java.io.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.zip.GZIPOutputStream
 
 object FunctionUtils {
     //var counter = 0
@@ -914,7 +912,7 @@ object FunctionUtils {
     }
 
     @JvmStatic
-    fun decodeBase64(encodedString: String): Bitmap? {
+    fun decodeBase64ToBitmap(encodedString: String): Bitmap? {
         return try {
             val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
             Bitmap.createBitmap(

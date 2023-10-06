@@ -23,7 +23,7 @@ import com.digitaldream.linkskool.dialog.AdminELearningAttachmentDialog
 import com.digitaldream.linkskool.dialog.AdminELearningFilePreviewDialogFragment
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
-import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64
+import com.digitaldream.linkskool.utils.FunctionUtils.decodeBase64ToBitmap
 import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
 import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import java.io.File
@@ -198,7 +198,7 @@ class AdminELearningMultiChoiceDialogFragment(
                     val isBase64 = isBased64(uri)
 
                     if (isBase64) {
-                        val bitmap = decodeBase64(uri)
+                        val bitmap = decodeBase64ToBitmap(uri)
                         if (bitmap != null) {
                             launchImagePreviewDialog(bitmap, uriName)
                         }

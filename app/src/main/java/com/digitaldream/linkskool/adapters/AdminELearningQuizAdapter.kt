@@ -1,7 +1,6 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
@@ -338,7 +337,7 @@ class AdminELearningQuizAdapter(
                         val isBase64 = FunctionUtils.isBased64(imageUri)
 
                         if (isBase64) {
-                            val bitmap = FunctionUtils.decodeBase64(imageUri)
+                            val bitmap = FunctionUtils.decodeBase64ToBitmap(imageUri)
                             imageView.isVisible = bitmap != null
                             imageView.setImageBitmap(bitmap)
                         } else {
