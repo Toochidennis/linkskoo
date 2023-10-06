@@ -168,9 +168,6 @@ class StudentELearningAssignmentSubmissionAdapter(
 
 
     private fun updateFile(context: Context) {
-        if (itemList.isEmpty()) {
-            return
-        }
 
         val fileArray = JSONArray()
 

@@ -120,6 +120,7 @@ class StudentELearningQuizDialogFragment(
         if (quizItems.size == 1) {
             disableNextButton()
             disablePreviousButton()
+            enableSubmitBtn()
         } else if (quizViewPager.currentItem == 0) {
             enableNextButton()
             disablePreviousButton()

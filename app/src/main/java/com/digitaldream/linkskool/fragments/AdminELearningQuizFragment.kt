@@ -142,6 +142,7 @@ class AdminELearningQuizFragment :
         if (quizItems.size == 1) {
             disableNextButton()
             disablePreviousButton()
+            enableSubmitBtn()
         } else if (questionViewPager.currentItem == 0) {
             enableNextButton()
             disablePreviousButton()
