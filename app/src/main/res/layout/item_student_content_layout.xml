@@ -17,7 +17,7 @@
         android:layout_marginTop="5dp"
         android:backgroundTint="@color/test_color_1"
         app:cardCornerRadius="@dimen/dimen_24"
-        app:contentPadding="@dimen/dimen_10">
+        app:contentPadding="@dimen/dimen_8">
 
         <ImageView
             android:id="@+id/imageType"
