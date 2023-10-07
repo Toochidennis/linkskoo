@@ -112,7 +112,7 @@ public class StaffFormClassFragment extends Fragment {
                 Context.MODE_PRIVATE);
         String staffId = sharedPreferences.getString("user_id", "");
 
-        String url = Login.urlBase + "/allStaffStudent.php?staff_id=" + staffId;
+        String url = requireActivity().getString(R.string.base_url) + "/allStaffStudent.php?staff_id=" + staffId;
         HashMap<String, String> hashMap = new HashMap<>();
 
         FunctionUtils.sendRequestToServer(Request.Method.GET, url, requireContext(), hashMap,
@@ -223,7 +223,7 @@ public class StaffFormClassFragment extends Fragment {
                         mErrorMessage.setVisibility(View.VISIBLE);
                         mErrorMessage.setText(getString(R.string.can_not_retrieve));
                     }
-                });
+                }, true);
     }
 
     private void setRecyclerViewItems() {

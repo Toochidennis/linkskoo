@@ -186,7 +186,7 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(Login.this, error+ "Something went wrong, " +
                                 "Please try again", Toast.LENGTH_SHORT).show();
                     }
-                });
+                }, true);
 
     }
 

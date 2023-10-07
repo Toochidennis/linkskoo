@@ -239,7 +239,11 @@ class AdminELearningMaterialDetailsFragment :
         val message = commentEditText.text.toString().trim()
         val date = formatDate2(getDate())
 
-        val commentDataModel = CommentDataModel("id", "id", "Toochi Dennis", message, date)
+        val commentDataModel = CommentDataModel(
+            "", "","",  "",
+             "", message, date
+        )
+
         commentList.add(commentDataModel)
 
         commentTitleTxt.isVisible = commentList.isNotEmpty()

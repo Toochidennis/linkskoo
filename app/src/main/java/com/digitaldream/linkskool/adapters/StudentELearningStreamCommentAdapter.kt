@@ -9,43 +9,40 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.CommentDataModel
+import de.hdodenhof.circleimageview.CircleImageView
 
-class AdminELearningCommentAdapter(
-    val itemList: MutableList<CommentDataModel>
-) : RecyclerView.Adapter<AdminELearningCommentAdapter.CommentViewHolder>() {
+class StudentELearningStreamCommentAdapter(
+    private val itemList: MutableList<CommentDataModel>
+) : RecyclerView.Adapter<StudentELearningStreamCommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_comment_layout,
-            parent, false
-        )
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_student_stream_comment_layout, parent, false)
 
         return CommentViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val itemModel = itemList[position]
-
         holder.bind(itemModel)
     }
 
     override fun getItemCount() = itemList.size
 
+
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //  private val profileImage: CircleImageView = itemView.findViewById(R.id.profileImageView)
+        private val imageView: CircleImageView = itemView.findViewById(R.id.imageView)
         private val authorNameTxt: TextView = itemView.findViewById(R.id.authorNameTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val commentTxt: TextView = itemView.findViewById(R.id.commentTxt)
-
-        fun bind(sCommentDataModel: CommentDataModel) {
-            authorNameTxt.text = sCommentDataModel.authorName
-            dateTxt.text = sCommentDataModel.date
-            commentTxt.text = sCommentDataModel.comment
+        fun bind(dataModel: CommentDataModel) {
+            authorNameTxt.text = dataModel.authorName
+            dateTxt.text = dataModel.date
+            commentTxt.text = dataModel.comment
 
             setUpPopMenu(itemView, adapterPosition)
         }
     }
-
 
     private fun setUpPopMenu(itemView: View, position: Int) {
         itemView.setOnClickListener {
@@ -61,7 +58,6 @@ class AdminELearningCommentAdapter(
 
                         R.id.deleteSection -> {
                             itemList.removeAt(position)
-
                             notifyItemRemoved(position)
                             true
                         }

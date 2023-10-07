@@ -146,7 +146,10 @@ class AdminELearningQuestionViewFragment :
         val date = formatDate2(getDate())
 
         if (message.isNotBlank()) {
-            val commentDataModel = CommentDataModel("id", "id", "Toochi Dennis", message, date)
+            val commentDataModel = CommentDataModel(
+                "", "", "", "",
+                "", message, date
+            )
             commentList.add(commentDataModel)
 
             commentInput.isVisible = false
@@ -167,13 +170,12 @@ class AdminELearningQuestionViewFragment :
                 sendComment()
 
                 return@setOnEditorActionListener true
-            }else if (actionId == EditorInfo.IME_ACTION_NONE){
+            } else if (actionId == EditorInfo.IME_ACTION_NONE) {
                 commentInput.isVisible = false
                 return@setOnEditorActionListener true
             }
             false
         }
-
     }
 
     private fun hideKeyboard(editText: EditText) {
@@ -205,7 +207,7 @@ class AdminELearningQuestionViewFragment :
         }
 
         if (duration?.isNotBlank() == true) {
-            val durationString = String.format(Locale.getDefault(),"%s minutes", duration)
+            val durationString = String.format(Locale.getDefault(), "%s minutes", duration)
             durationTxt.text = durationString
         }
 

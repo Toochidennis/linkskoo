@@ -212,7 +212,11 @@ class AdminELearningAssignmentInstructionsFragment :
         val date = formatDate2(FunctionUtils.getDate())
 
         if (message.isNotBlank()) {
-            val commentDataModel = CommentDataModel("id", "id", "Toochi Dennis", message, date)
+            val commentDataModel = CommentDataModel(
+                "", "", "", "",
+                "", message, date
+            )
+
             commentList.add(commentDataModel)
 
             commentInput.isVisible = false

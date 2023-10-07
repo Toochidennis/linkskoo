@@ -70,7 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/separator"
         android:layout_marginStart="@dimen/dimen_16"
-        android:layout_marginTop="@dimen/dimen_16"
         android:nestedScrollingEnabled="false" />
 
     <EditText
@@ -95,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/commentRecyclerView"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/dimen_6"
         android:background="@drawable/ripple_effect11"
         android:contentDescription="@string/submit"
         android:padding="@dimen/dimen_10"

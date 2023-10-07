@@ -9,6 +9,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -443,22 +444,26 @@ object FunctionUtils {
         url: String,
         context: Context,
         stringHashMap: HashMap<String, String>?,
-        volleyCallback: VolleyCallback
+        volleyCallback: VolleyCallback,
+        isShowProgressBar: Boolean = true
     ) {
-        val sharedPreferences =
-            context.getSharedPreferences("loginDetail", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("loginDetail", MODE_PRIVATE)
         val db = sharedPreferences.getString("db", "")
-        val progressFlower = ACProgressFlower.Builder(context)
-            .direction(ACProgressConstant.DIRECT_CLOCKWISE)
-            .textMarginTop(10)
-            .fadeColor(ContextCompat.getColor((context as AppCompatActivity), R.color.color_5))
-            .build()
+
+        val progressFlower = ACProgressFlower.Builder(context).apply {
+            direction(ACProgressConstant.DIRECT_CLOCKWISE)
+            textMarginTop(10)
+            fadeColor(ContextCompat.getColor((context as AppCompatActivity), R.color.color_5))
+        }.build()
+
         progressFlower.setCancelable(false)
         progressFlower.setCanceledOnTouchOutside(false)
-        progressFlower.show()
 
-        val mUrl =
-            if (stringHashMap.isNullOrEmpty()) "$url&&_db=$db" else url
+        if (isShowProgressBar) {
+            progressFlower.show()
+        }
+
+        val mUrl = if (stringHashMap.isNullOrEmpty()) "$url&&_db=$db" else url
 
         val stringRequest = object : StringRequest(
             method,
@@ -466,12 +471,20 @@ object FunctionUtils {
             { response: String ->
                 Timber.tag("response").d(response)
                 volleyCallback.onResponse(response)
-                progressFlower.dismiss()
+
+                if (isShowProgressBar) {
+                    progressFlower.dismiss()
+                }
+
 
             }, { error: VolleyError ->
                 volleyCallback.onError(error)
                 Timber.tag("error").e(error)
-                progressFlower.dismiss()
+
+                if (isShowProgressBar) {
+                    progressFlower.dismiss()
+                }
+
             }) {
 
             override fun getParams(): MutableMap<String, String> {
@@ -481,19 +494,13 @@ object FunctionUtils {
                     for ((key, value) in stringHashMap) {
                         stringMap[key] = value
                     }
-                    stringMap["_db"] = db!!
+                    stringMap["_db"] = db ?: ""
                 }
 
                 return stringMap
             }
 
         }
-
-//        stringRequest.retryPolicy = DefaultRetryPolicy(
-//            4000,
-//            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-//        )
 
         Volley.newRequestQueue(context).add(stringRequest)
     }
@@ -821,6 +828,19 @@ object FunctionUtils {
             }
         }
     }
+
+    @JvmStatic
+    fun hideKeyboard(editText: EditText, context: Context) {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+
+        editText.apply {
+            inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+            clearFocus()
+            setText("")
+        }
+    }
+
 
     @JvmStatic
     fun compareJsonObjects(jsonObject1: JSONObject, jsonObject2: JSONObject): Boolean {

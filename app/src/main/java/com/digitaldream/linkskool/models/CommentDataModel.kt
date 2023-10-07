@@ -1,9 +1,11 @@
 package com.digitaldream.linkskool.models
 
 data class CommentDataModel(
-    val commentId:String,
-    val authorId:String,
-    val authorName:String,
-    val commentText:String,
-    val date:String
+    val id: String,
+    val authorId: String,
+    val contentId: String,
+    val contentTitle: String,
+    val authorName: String,
+    val comment: String,
+    val date: String = ""
 )

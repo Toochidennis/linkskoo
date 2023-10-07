@@ -190,7 +190,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
 
     public void getFeed(String levelId) {
 
-        String url = Login.urlBase + "/getFeed.php";
+        String url = requireActivity().getString(R.string.base_url) + "/getFeed.php";
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("id", levelId);
 
@@ -207,7 +207,7 @@ public class StudentDashboard extends Fragment implements QAAdapter.OnQuestionCl
                     public void onError(@NonNull VolleyError error) {
 
                     }
-                });
+                }, true);
     }
 
     private void buildJSON(String response) {

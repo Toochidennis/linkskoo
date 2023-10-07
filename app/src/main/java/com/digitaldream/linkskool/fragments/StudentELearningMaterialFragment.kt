@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
+import com.digitaldream.linkskool.activities.CourseAttendance.getDate
 import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
@@ -229,12 +230,13 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
 
     private fun sendComment() {
         val message = commentEditText.text.toString().trim()
-        val date = FunctionUtils.formatDate2(FunctionUtils.getDate())
+        val date = FunctionUtils.formatDate2(getDate())
 
         val commentDataModel = CommentDataModel(
-            "id", userId ?: "",
+            "", userId?:"","",  "",
             userName ?: "", message, date
         )
+
         commentList.add(commentDataModel)
 
         commentTitleTxt.isVisible = commentList.isNotEmpty()
