@@ -240,7 +240,7 @@ class AdminELearningMaterialDetailsFragment :
         val date = formatDate2(getDate())
 
         val commentDataModel = CommentDataModel(
-            "", "","",  "",
+            "", "","",
              "", message, date
         )
 

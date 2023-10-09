@@ -147,7 +147,7 @@ class AdminELearningQuestionViewFragment :
 
         if (message.isNotBlank()) {
             val commentDataModel = CommentDataModel(
-                "", "", "", "",
+                "", "", "",
                 "", message, date
             )
             commentList.add(commentDataModel)

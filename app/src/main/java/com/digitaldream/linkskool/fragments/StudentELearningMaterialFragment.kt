@@ -233,7 +233,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
         val date = FunctionUtils.formatDate2(getDate())
 
         val commentDataModel = CommentDataModel(
-            "", userId?:"","",  "",
+            "", userId?:"","",
             userName ?: "", message, date
         )
 

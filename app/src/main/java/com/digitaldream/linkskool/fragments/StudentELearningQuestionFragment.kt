@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.digitaldream.linkskool.R
@@ -18,6 +19,7 @@ import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.SectionModel
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -37,6 +39,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
     private lateinit var durationTxt: TextView
     private lateinit var descriptionTxt: TextView
     private lateinit var startDateTxt: TextView
+    private lateinit var warningTxt: TextView
     private lateinit var startBtn: Button
 
     private var questionList = mutableListOf<SectionModel>()
@@ -89,6 +92,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
             durationTxt = findViewById(R.id.durationTxt)
             descriptionTxt = findViewById(R.id.descriptionTxt)
             startDateTxt = findViewById(R.id.startDateTxt)
+            warningTxt = findViewById(R.id.warningTxt)
             startBtn = findViewById(R.id.startBtn)
 
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
@@ -361,67 +365,73 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
 
     private fun setTextOnDateFields() {
         try {
-            val serverDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val currentCalendar = Calendar.getInstance()
-            val startCalendar = Calendar.getInstance()
-            val endCalendar = Calendar.getInstance()
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-           // disableStartBtn()
-            enableStartBtn()
+            disableStartBtn()
 
-            if (startDate?.isNotBlank() == true && endDate?.isNotBlank() == true) {
-                val startDateFromServer = serverDateFormat.parse(startDate!!)
-                val endDateFromServer = serverDateFormat.parse(endDate!!)
+            val startDateFromServer = formatter.parse(startDate!!)
+            val endDateFromServer = formatter.parse(endDate!!)
+            val currentDate = formatter.parse(getCurrentDateString())
 
-                var dateString = ""
+            var startDateText = ""
+            var endDateText = "Due ${formatDate2(endDate!!, "date time")}"
 
-                if (endDateFromServer != null && startDateFromServer != null) {
-                    startCalendar.time = endDateFromServer
-                    endCalendar.time = startDateFromServer
-
-                    var end = "Due ${formatDate2(endDate!!, "date time")}"
-
-                    if (startCalendar == currentCalendar || startCalendar.after(currentCalendar)) {
-                        if (endCalendar.after(currentCalendar)) {
-                            dateString = "Quiz will last for $duration minutes"
-                        } else if (endCalendar.before(currentCalendar)) {
-                            dateString = "You can no longer take this quiz"
-                            //  endDateTxt.setTextColor(Color.RED)
-                        } else if (endCalendar == currentCalendar) {
-                            end = "Due Today"
-                            dateString = "Quiz will last for $duration minutes"
-                        }
-
-                        startDateTxt.text = dateString
-                        endDateTxt.text = end
-
-                       /* if (endCalendar.after(currentCalendar) || endCalendar == currentCalendar) {
-                            enableStartBtn()
-                        } else {
-                            disableStartBtn()
-                        }*/
-
-                    } else {
-                        dateString =
-                            if (endCalendar.before(currentCalendar)) "You can no longer take this quiz"
-                            else "Quiz will be available from ${
-                                formatDate2(startDate!!, "date time")
-                            } to ${formatDate2(endDate!!, "date time")}"
-
-                        startDateTxt.text = dateString
-                        endDateTxt.text = end
-
-//                        if (endCalendar.before(currentCalendar))
-//                            endDateTxt.setTextColor(Color.RED)
-
-                     //   disableStartBtn()
+            if (endDateFromServer != null && startDateFromServer != null && currentDate != null) {
+                if (currentDate > startDateFromServer || currentDate == startDateFromServer) {
+                    if (endDateFromServer > currentDate) {
+                        startDateText = "Quiz will last for $duration minutes"
+                    } else if (endDateFromServer < currentDate) {
+                        startDateText = "You can no longer take this quiz"
+                        warningTxt.isVisible = false
+                    } else if (endDateFromServer == currentDate) {
+                        endDateText = "Due Today"
+                        startDateText = "Quiz will last for $duration minutes"
                     }
+
+                    if (endDateFromServer >= currentDate) {
+                        enableStartBtn()
+                    } else {
+                        disableStartBtn()
+                    }
+
+                    updateStartDateUI(startDateText)
+                    updateEndDateUI(endDateText)
+                } else {
+                    startDateText =
+                        if (endDateFromServer < currentDate)
+                            "You can no longer take this quiz"
+                        else "Quiz will be available from ${
+                            formatDate2(startDate!!, "date time")
+                        } to ${formatDate2(endDate!!, "date time")}"
+
+
+                    updateStartDateUI(startDateText)
+                    updateEndDateUI(endDateText)
+                    warningTxt.isVisible = false
+
+                    disableStartBtn()
                 }
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun getCurrentDateString(): String {
+        val calendar = Calendar.getInstance()
+        val hour = calendar[Calendar.HOUR_OF_DAY]
+        val minutes = calendar[Calendar.MINUTE]
+        val seconds = calendar[Calendar.SECOND]
+        return "${getDate()} $hour:$minutes:$seconds"
+    }
+
+    private fun updateStartDateUI(text: String) {
+        startDateTxt.text = text
+    }
+
+    private fun updateEndDateUI(text: String) {
+        endDateTxt.text = text
     }
 
     private fun disableStartBtn() {
@@ -437,6 +447,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
 
         startBtn.apply {
             isEnabled = true
+            setBackgroundResource(R.drawable.ripple_effect8)
             startAnimation(animation)
 
             setOnClickListener {

@@ -213,7 +213,7 @@ class AdminELearningAssignmentInstructionsFragment :
 
         if (message.isNotBlank()) {
             val commentDataModel = CommentDataModel(
-                "", "", "", "",
+                "", "", "",
                 "", message, date
             )
 

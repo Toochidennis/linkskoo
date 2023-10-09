@@ -1,6 +1,7 @@
 package com.digitaldream.linkskool.adapters
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -23,11 +24,12 @@ import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.StudentELearningActivity
 import com.digitaldream.linkskool.models.CommentDataModel
 import com.digitaldream.linkskool.models.ContentModel
-import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.digitaldream.linkskool.utils.FunctionUtils.hideKeyboard
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
+import timber.log.Timber
 
 class StudentELearningStreamAdapter(
     private val itemList: MutableList<ContentModel>
@@ -35,6 +37,8 @@ class StudentELearningStreamAdapter(
 
     private var userName: String? = null
     private var userId: String? = null
+    private var year: String? = null
+    private var courseName: String? = null
 
     private val commentStorage = mutableMapOf<String, MutableList<CommentDataModel>>()
     private lateinit var commentAdapter: StudentELearningStreamCommentAdapter
@@ -112,15 +116,21 @@ class StudentELearningStreamAdapter(
                 launchActivity(it.context, contentModel.viewType, response)
             }
         }
-
     }
 
-    private fun sendRequest(context: Context, url: String, onResponse: (String) -> Unit) {
+    private fun sendRequest(
+        context: Context,
+        url: String,
+        method: Int = Request.Method.GET,
+        isShowProgressBar: Boolean = true,
+        data: HashMap<String, String>? = null,
+        onResponse: (String) -> Unit
+    ) {
         sendRequestToServer(
-            Request.Method.GET,
+            method,
             url,
             context,
-            null,
+            data,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
                     onResponse(response)
@@ -132,7 +142,7 @@ class StudentELearningStreamAdapter(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
+            }, isShowProgressBar
         )
     }
 
@@ -177,11 +187,21 @@ class StudentELearningStreamAdapter(
     }
 
     private fun prepareComment(commentEditText: EditText, contentModel: ContentModel) {
+        val sharedPreferences =
+            commentEditText.context.getSharedPreferences("loginDetail", MODE_PRIVATE)
+        with(sharedPreferences) {
+            userId = getString("user_id", "")
+            userName = getString("user", "")
+            year = getString("school_year", "")
+            courseName = getString("course_name", "")
+        }
+
         val message = commentEditText.text.toString().trim()
+        val date = formatDate2(getDate(), "custom")
 
         val commentDataModel = CommentDataModel(
-            "", userId ?: "", "", "",
-            userName ?: "", message
+            "", userId ?: "", "",
+            userName ?: "", message, date
         )
 
         val newCommentList =
@@ -211,12 +231,38 @@ class StudentELearningStreamAdapter(
         imageButton.setOnClickListener {
             prepareComment(editText, contentModel)
             setUpCommentRecyclerView(recyclerView, contentModel)
+
+            postComment(it.context, contentModel)
         }
     }
 
     private fun prepareCommentJson(contentModel: ContentModel): HashMap<String, String> {
-        return HashMap<String, String>().apply {
+        val commentList = commentStorage[contentModel.id]
 
+        return HashMap<String, String>().apply {
+            put("content_id", contentModel.id)
+            put("author_id", userId ?: "")
+            put("author_name", userName ?: "")
+
+            commentList?.forEach { commentData ->
+                put("comment", commentData.comment)
+            }
+
+            put("title", contentModel.title)
+            put("level", contentModel.levelId)
+            put("course", contentModel.courseId)
+            put("course_name", courseName ?: "")
+            put("term", contentModel.term)
+            put("year", year ?: "")
+        }
+    }
+
+    private fun postComment(context: Context, contentModel: ContentModel) {
+        val commentHashMap = prepareCommentJson(contentModel)
+        Timber.tag("comment").d("$commentHashMap")
+        val url = "${context.getString(R.string.base_url)}/addHomeComment.php"
+
+        sendRequest(context, url, Request.Method.POST, false, commentHashMap) {
 
         }
 
