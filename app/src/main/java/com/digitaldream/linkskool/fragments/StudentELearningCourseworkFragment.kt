@@ -142,7 +142,7 @@ class StudentELearningCourseworkFragment :
                                 contentList.add(content)
                             }
 
-                            else -> {
+                            "Quiz" -> {
                                 val content = ContentModel(
                                     id, title,
                                     description,
@@ -155,6 +155,8 @@ class StudentELearningCourseworkFragment :
 
                                 contentList.add(content)
                             }
+
+                            else -> null
                         }
                     }
                 }

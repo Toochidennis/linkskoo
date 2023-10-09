@@ -61,19 +61,22 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnLayout"
-        android:layout_below="@id/appBar">
+        android:layout_below="@id/appBar"
+        android:contentDescription="@string/nested_scrollview"
+        android:fillViewport="true">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/questionViewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/view_pager" />
 
-    </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:id="@+id/btnLayout"

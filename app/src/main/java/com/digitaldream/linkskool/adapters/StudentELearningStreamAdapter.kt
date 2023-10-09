@@ -233,6 +233,8 @@ class StudentELearningStreamAdapter(
             setUpCommentRecyclerView(recyclerView, contentModel)
 
             postComment(it.context, contentModel)
+
+            getComment(it.context, contentModel)
         }
     }
 
@@ -248,7 +250,7 @@ class StudentELearningStreamAdapter(
                 put("comment", commentData.comment)
             }
 
-            put("title", contentModel.title)
+            put("content_title", contentModel.title)
             put("level", contentModel.levelId)
             put("course", contentModel.courseId)
             put("course_name", courseName ?: "")
@@ -260,11 +262,20 @@ class StudentELearningStreamAdapter(
     private fun postComment(context: Context, contentModel: ContentModel) {
         val commentHashMap = prepareCommentJson(contentModel)
         Timber.tag("comment").d("$commentHashMap")
-        val url = "${context.getString(R.string.base_url)}/addHomeComment.php"
+        val url = "${context.getString(R.string.base_url)}/addContentComment.php"
 
         sendRequest(context, url, Request.Method.POST, false, commentHashMap) {
 
         }
-
     }
+
+    private fun getComment(context: Context, contentModel: ContentModel) {
+        val url = "${context.getString(R.string.base_url)}/getContentComment" +
+                ".php?content_id=${contentModel.id}"
+
+        sendRequest(context, url, Request.Method.GET, false) {
+
+        }
+    }
+
 }

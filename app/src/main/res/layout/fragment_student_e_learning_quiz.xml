@@ -47,17 +47,11 @@
         android:contentDescription="@string/nested_scrollview"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/quizViewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/quizViewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/view_pager" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/view_pager" />
 
     </androidx.core.widget.NestedScrollView>
 
