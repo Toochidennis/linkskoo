@@ -27,7 +27,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.Locale
 
 class StudentELearningQuizDialogFragment(
@@ -184,7 +183,6 @@ class StudentELearningQuizDialogFragment(
                 false
             )
             adapter = progressAdapter
-            // smoothScrollToPosition(quizViewPager.currentItem)
         }
     }
 
@@ -207,7 +205,6 @@ class StudentELearningQuizDialogFragment(
             }
         }
 
-        Timber.tag("position").d("$currentPosition")
         return currentPosition
     }
 
