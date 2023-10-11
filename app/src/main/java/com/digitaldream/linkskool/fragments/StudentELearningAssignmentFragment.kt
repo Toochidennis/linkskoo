@@ -1,7 +1,7 @@
 package com.digitaldream.linkskool.fragments
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,6 @@ import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.dialog.StudentELearningAssignmentSubmissionDialogFragment
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.utils.FileViewModel
-import com.digitaldream.linkskool.utils.FunctionUtils
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import org.json.JSONArray
 import org.json.JSONObject
@@ -113,7 +113,6 @@ class StudentELearningAssignmentFragment : Fragment() {
             toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
 
         }
-
     }
 
     private fun parseJsonObject() {
@@ -121,11 +120,18 @@ class StudentELearningAssignmentFragment : Fragment() {
             if (jsonData?.isNotBlank() == true) {
                 jsonData?.let { json ->
                     JSONObject(json).let {
+                        val contentId = it.getString("id")
                         title = it.getString("title")
                         grade = it.getString("objective")
                         description = it.getString("description")
                         dueDate = formatDate2(it.getString("end_date"), "date time")
                         parseFilesArray(JSONArray(it.getString("picref")))
+
+                        requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
+                            .edit()
+                            .putString("content_id", contentId)
+                            .putString("content_title", title)
+                            .apply()
                     }
                 }
 
