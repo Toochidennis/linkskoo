@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.CommentDataModel
+import com.digitaldream.linkskool.utils.FunctionUtils
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 
 class AdminELearningCommentAdapter(
     val itemList: MutableList<CommentDataModel>
@@ -39,7 +41,8 @@ class AdminELearningCommentAdapter(
 
         fun bind(sCommentDataModel: CommentDataModel) {
             authorNameTxt.text = sCommentDataModel.authorName
-            dateTxt.text = sCommentDataModel.date
+            val formattedDate = formatDate2(sCommentDataModel.date, "custom")
+            dateTxt.text = formattedDate
             commentTxt.text = sCommentDataModel.comment
 
             setUpPopMenu(itemView, adapterPosition)
