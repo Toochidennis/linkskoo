@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.CommentDataModel
+import com.digitaldream.linkskool.utils.FunctionUtils
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import de.hdodenhof.circleimageview.CircleImageView
 
 class StudentELearningStreamCommentAdapter(
@@ -35,9 +37,11 @@ class StudentELearningStreamCommentAdapter(
         private val authorNameTxt: TextView = itemView.findViewById(R.id.authorNameTxt)
         private val dateTxt: TextView = itemView.findViewById(R.id.dateTxt)
         private val commentTxt: TextView = itemView.findViewById(R.id.commentTxt)
+
         fun bind(dataModel: CommentDataModel) {
             authorNameTxt.text = dataModel.authorName
-            dateTxt.text = dataModel.date
+            val formattedDate = formatDate2(dataModel.date, "custom")
+            dateTxt.text = formattedDate
             commentTxt.text = dataModel.comment
 
             setUpPopMenu(itemView, adapterPosition)

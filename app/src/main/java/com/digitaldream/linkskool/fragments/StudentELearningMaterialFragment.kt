@@ -6,7 +6,6 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -16,10 +15,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.activities.CourseAttendance.getDate
 import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
@@ -27,7 +29,14 @@ import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.CommentDataModel
 import com.digitaldream.linkskool.utils.FileViewModel
-import com.digitaldream.linkskool.utils.FunctionUtils
+import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -53,12 +62,19 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
     private var fileList = mutableListOf<AttachmentModel>()
 
     private lateinit var fileViewModel: FileViewModel
+    private var coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private var jsonData: String? = null
     private var title: String? = null
+    private var contentId: String? = null
     private var description: String? = null
     private var userName: String? = null
     private var userId: String? = null
+    private var year: String? = null
+    private var term: String? = null
+    private var courseId: String? = null
+    private var levelId: String? = null
+    private var courseName: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,13 +105,9 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
 
         setUpViews(view)
 
-        onWatchEditText()
-
-        setUpCommentRecyclerView()
+        loadComment()
 
         parseFileJsonObject()
-
-        updateComment()
     }
 
     private fun setUpViews(view: View) {
@@ -124,16 +136,34 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
         }
 
         val sharedPreferences = requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
-        userName = sharedPreferences.getString("user", "")
-        userId = sharedPreferences.getString("user_id", "")
+
+        with(sharedPreferences) {
+            userId = getString("user_id", "")
+            userName = getString("user", "")
+            year = getString("school_year", "")
+            courseName = getString("course_name", "")
+            levelId = getString("level", "")
+            courseId = getString("courseId", "")
+        }
+    }
+
+
+    private fun loadComment() {
+        setUpCommentRecyclerView()
+        sendComment()
+        onWatchEditText()
+
+        startPeriodicRefresh()
     }
 
     private fun parseFileJsonObject() {
         try {
             if (jsonData?.isNotBlank() == true) {
                 JSONObject(jsonData!!).let {
+                    contentId = it.getString("id")
                     title = it.getString("title")
                     description = it.getString("description")
+                    term = it.getString("term")
                     parseFilesArray(JSONArray(it.getString("picref")))
                 }
 
@@ -173,20 +203,6 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
         return text.replace("../assets/elearning/practice/", "").ifEmpty { "" }
     }
 
-    private fun setUpCommentRecyclerView() {
-        commentAdapter = AdminELearningCommentAdapter(commentList)
-
-        commentTitleTxt.isVisible = commentList.isNotEmpty()
-        commentGuide.isVisible = commentList.isNotEmpty()
-
-        commentRecyclerView.apply {
-            hasFixedSize()
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = commentAdapter
-        }
-
-    }
-
     private fun setUpFilesRecyclerView() {
         filesAdapter = AdminELearningFilesAdapter(parentFragmentManager, fileList, fileViewModel)
 
@@ -197,6 +213,80 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
         }
 
     }
+
+    private fun getContentComment() {
+        commentList.clear()
+
+        val url =
+            "${requireActivity().getString(R.string.base_url)}/getContentComment.php?" +
+                    "content_id=$contentId&level=$levelId&course=$courseId&term=$term"
+
+        sendRequestToServer(
+            Request.Method.GET, url, requireContext(), null,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    if (response != "[]") {
+                        parseCommentResponse(response)
+                        updateViewVisibility()
+                    }
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            }, false
+        )
+    }
+
+    private fun parseCommentResponse(response: String) {
+        try {
+            with(JSONArray(response)) {
+                for (i in 0 until length()) {
+                    getJSONObject(i).let {
+                        val commentId = it.getString("id")
+                        val contentId = it.getString("content_id")
+                        val comment = it.getString("body")
+                        val userId = it.getString("author_id")
+                        val userName = it.getString("author_name")
+                        val date = it.getString("upload_date")
+
+                        val commentModel =
+                            CommentDataModel(
+                                commentId, userId,
+                                contentId, userName,
+                                comment, date
+                            )
+
+                        commentList.add(commentModel)
+                    }
+                }
+            }
+
+            commentList.sortBy { it.date }
+
+            commentAdapter.notifyDataSetChanged()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun updateViewVisibility() {
+        commentTitleTxt.isVisible = commentList.isNotEmpty()
+        commentGuide.isVisible = commentList.isNotEmpty()
+    }
+
+    private fun setUpCommentRecyclerView() {
+        commentAdapter = AdminELearningCommentAdapter(commentList)
+
+        commentRecyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
+        }
+
+    }
+
 
     private fun onWatchEditText() {
         sendMessageBtn.isEnabled = false
@@ -220,39 +310,45 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
                     sendMessageBtn.setColorFilter(
                         ContextCompat.getColor(
                             requireContext(), R.color.test_color_7
-                        ),
-                        PorterDuff.Mode.SRC_IN
+                        ), PorterDuff.Mode.SRC_IN
                     )
                 }
             }
         })
     }
 
-    private fun sendComment() {
-        val message = commentEditText.text.toString().trim()
-        val date = FunctionUtils.formatDate2(getDate())
+    private fun prepareComment() {
+        val comment = commentEditText.text.toString().trim()
 
-        val commentDataModel = CommentDataModel(
-            "", userId?:"","",
-            userName ?: "", message, date
-        )
+        val commentDataModel =
+            CommentDataModel(
+                "",
+                userId ?: "",
+                contentId ?: "",
+                userName ?: "",
+                comment,
+                getDate()
+            )
+
+        val newCommentList = mutableListOf<CommentDataModel>().apply {
+            add(commentDataModel)
+        }
 
         commentList.add(commentDataModel)
 
-        commentTitleTxt.isVisible = commentList.isNotEmpty()
-        commentGuide.isVisible = commentList.isNotEmpty()
+        updateViewVisibility()
 
         hideKeyboard(commentEditText)
 
         commentAdapter.notifyDataSetChanged()
 
+        postComment(newCommentList)
     }
 
-    private fun updateComment() {
+    private fun sendComment() {
         sendMessageBtn.setOnClickListener {
-            sendComment()
+            prepareComment()
         }
-
     }
 
     private fun hideKeyboard(editText: EditText) {
@@ -263,4 +359,57 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
         editText.setText("")
     }
 
+    private fun prepareCommentJson(newCommentList: MutableList<CommentDataModel>) =
+        HashMap<String, String>().apply {
+            put("content_id", contentId ?: "")
+            put("author_id", userId ?: "")
+            put("author_name", userName ?: "")
+
+            newCommentList.forEach { commentData ->
+                put("comment", commentData.comment)
+            }
+
+            put("content_title", title ?: "")
+            put("level", levelId ?: "")
+            put("course", courseId ?: "")
+            put("course_name", courseName ?: "")
+            put("term", term ?: "")
+            put("year", year ?: "")
+        }
+
+
+    private fun postComment(newCommentList: MutableList<CommentDataModel>) {
+        val commentHashMap = prepareCommentJson(newCommentList)
+        val url = "${requireActivity().getString(R.string.base_url)}/addContentComment.php"
+
+        sendRequestToServer(
+            Request.Method.POST, url, requireContext(), commentHashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            }, false
+        )
+    }
+
+    private fun startPeriodicRefresh() {
+        val delayMillis = 60000L // 1 minute
+        coroutineScope.launch {
+            while (true) {
+                getContentComment()
+
+                delay(delayMillis)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
+    }
 }
+
