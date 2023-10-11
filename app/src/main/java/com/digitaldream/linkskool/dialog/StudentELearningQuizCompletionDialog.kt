@@ -24,6 +24,8 @@ class StudentELearningQuizCompletionDialog(
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
+        setCancelable(false)
+
         setContentView(R.layout.dialog_e_learning_quiz_completion)
 
         val exitBtn: Button = findViewById(R.id.exitBtn)
