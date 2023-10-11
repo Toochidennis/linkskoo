@@ -44,7 +44,7 @@
 
 
         <activity
-            android:name="com.digitaldream.linkskool.activities.StudentELearningActivity"
+            android:name="com.digitaldream.toyibatskool.activities.StudentELearningActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -53,17 +53,7 @@
         </activity>
 
         <activity
-            android:name="com.digitaldream.linkskool.activities.StudentELearningCourseOutlineActivity"
-            android:exported="false"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-
-
-        <activity
-            android:name="com.digitaldream.linkskool.activities.AdminELearningActivity"
+            android:name="com.digitaldream.toyibatskool.activities.StudentELearningCourseOutlineActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -73,7 +63,17 @@
 
 
         <activity
-            android:name="com.digitaldream.linkskool.activities.ReceiptStudentBudgetActivity"
+            android:name="com.digitaldream.toyibatskool.activities.AdminELearningActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+
+        <activity
+            android:name="com.digitaldream.toyibatskool.activities.ReceiptStudentBudgetActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -82,7 +82,7 @@
         </activity>
 
         <activity
-            android:name="com.digitaldream.linkskool.activities.PaystackPaymentActivity"
+            android:name="com.digitaldream.toyibatskool.activities.PaystackPaymentActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -91,7 +91,7 @@
         </activity>
 
         <activity
-            android:name="com.digitaldream.linkskool.activities.TermlyFeeSetupActivity"
+            android:name="com.digitaldream.toyibatskool.activities.TermlyFeeSetupActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -99,31 +99,31 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.digitaldream.linkskool.activities.PaymentActivity"
+            android:name="com.digitaldream.toyibatskool.activities.PaymentActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name="com.digitaldream.linkskool.activities.BooksActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.StaffCourseAttendance" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.BooksActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.StaffCourseAttendance" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.AttendanceDetails"
+            android:name="com.digitaldream.toyibatskool.activities.AttendanceDetails"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name="com.digitaldream.linkskool.activities.CourseAttendance"
+            android:name="com.digitaldream.toyibatskool.activities.CourseAttendance"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name="com.digitaldream.linkskool.activities.AdminClassAttendance"
+            android:name="com.digitaldream.toyibatskool.activities.AdminClassAttendance"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
@@ -131,117 +131,117 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.digitaldream.linkskool.activities.AttendanceActivity"
+            android:name="com.digitaldream.toyibatskool.activities.AttendanceActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name="com.digitaldream.linkskool.activities.StudentRegistrationDetails" />
-        <activity android:name="com.digitaldream.linkskool.activities.CourseRegistrationDetails" />
-        <activity android:name="com.digitaldream.linkskool.activities.RegYearList" />
-        <activity android:name="com.digitaldream.linkskool.activities.Courses" />
-        <activity android:name="com.digitaldream.linkskool.activities.CourseRegistration" />
-        <activity android:name="com.digitaldream.linkskool.activities.NewsView" />
-        <activity android:name="com.digitaldream.linkskool.activities.AddNews" />
-        <activity android:name="com.digitaldream.linkskool.activities.Flashcard" />
-        <activity android:name="com.digitaldream.linkskool.activities.AnswerView" />
-        <activity android:name="com.digitaldream.linkskool.activities.QuestionView" />
-        <activity android:name="com.digitaldream.linkskool.activities.ResponseDetails" />
-        <activity android:name="com.digitaldream.linkskool.activities.ViewResponses" />
-        <activity android:name="com.digitaldream.linkskool.activities.FlashView" />
-        <activity android:name="com.digitaldream.linkskool.activities.ExamActivity2" />
-        <activity android:name="com.digitaldream.linkskool.activities.WifiActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.AdminElearningCourses" />
-        <activity android:name="com.digitaldream.linkskool.activities.CreateVideoLink" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.StudentRegistrationDetails" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.CourseRegistrationDetails" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.RegYearList" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.Courses" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.CourseRegistration" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.NewsView" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AddNews" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.Flashcard" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AnswerView" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.QuestionView" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ResponseDetails" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ViewResponses" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.FlashView" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ExamActivity2" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.WifiActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AdminElearningCourses" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.CreateVideoLink" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.VideoContent"
+            android:name="com.digitaldream.toyibatskool.activities.VideoContent"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="VideoContent" />
-        <activity android:name="com.digitaldream.linkskool.activities.RenderAssessment" />
-        <activity android:name="com.digitaldream.linkskool.activities.ReferSchool" />
-        <activity android:name="com.digitaldream.linkskool.activities.VideoCourses" />
-        <activity android:name="com.digitaldream.linkskool.activities.Assessment" />
-        <activity android:name="com.digitaldream.linkskool.activities.ContactUs" />
-        <activity android:name="com.digitaldream.linkskool.activities.TestUpload" />
-        <activity android:name="com.digitaldream.linkskool.activities.ContentDownload" />
-        <activity android:name="com.digitaldream.linkskool.activities.ContentUpload" />
-        <activity android:name="com.digitaldream.linkskool.activities.CourseOutlines" />
-        <activity android:name="com.digitaldream.linkskool.activities.ElearningCourses" />
-        <activity android:name="com.digitaldream.linkskool.activities.ELearning" />
-        <activity android:name="com.digitaldream.linkskool.activities.CoursesAssigned" />
-        <activity android:name="com.digitaldream.linkskool.activities.FormClass" />
-        <activity android:name="com.digitaldream.linkskool.activities.ExamActivity" />
-        <activity android:name="com.digitaldream.linkskool.utils.VideoUtils" />
-        <activity android:name="com.digitaldream.linkskool.activities.StaffCourses" />
-        <activity android:name="com.digitaldream.linkskool.activities.StaffUtils" />
-        <activity android:name="com.digitaldream.linkskool.activities.AddCourse" />
-        <activity android:name="com.digitaldream.linkskool.activities.AllTeachers" />
-        <activity android:name="com.digitaldream.linkskool.activities.AddLevel" />
-        <activity android:name="com.digitaldream.linkskool.activities.GeneralSettings" />
-        <activity android:name="com.digitaldream.linkskool.activities.AssessmentSetting" />
-        <activity android:name="com.digitaldream.linkskool.activities.AddClass" />
-        <activity android:name="com.digitaldream.linkskool.activities.GradeSettings" />
-        <activity android:name="com.digitaldream.linkskool.activities.LevelSettings" />
-        <activity android:name="com.digitaldream.linkskool.activities.CourseSettings" />
-        <activity android:name="com.digitaldream.linkskool.activities.Settings" />
-        <activity android:name="com.digitaldream.linkskool.activities.ClassListUtil" />
-        <activity android:name="com.digitaldream.linkskool.activities.ViewClassResultWebview" />
-        <activity android:name="com.digitaldream.linkskool.activities.AdminResultDashboardActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.SubjectResultUtil" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.RenderAssessment" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ReferSchool" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.VideoCourses" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.Assessment" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ContactUs" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.TestUpload" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ContentDownload" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ContentUpload" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.CourseOutlines" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ElearningCourses" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ELearning" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.CoursesAssigned" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.FormClass" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ExamActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.utils.VideoUtils" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.StaffCourses" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.StaffUtils" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AddCourse" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AllTeachers" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AddLevel" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.GeneralSettings" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AssessmentSetting" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AddClass" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.GradeSettings" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.LevelSettings" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.CourseSettings" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.Settings" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ClassListUtil" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ViewClassResultWebview" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AdminResultDashboardActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.SubjectResultUtil" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.YoutubePlayerActivity"
+            android:name="com.digitaldream.toyibatskool.activities.YoutubePlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="YoutubePlayerActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.StudentDashboardActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.AddResult" />
-        <activity android:name="com.digitaldream.linkskool.activities.StaffDashboardActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.ViewStudentResultActivity" />
-        <activity android:name="com.digitaldream.linkskool.activities.TeacherProfileEdit" />
-        <activity android:name="com.digitaldream.linkskool.activities.AddTeacher" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.StudentDashboardActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AddResult" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.StaffDashboardActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.ViewStudentResultActivity" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.TeacherProfileEdit" />
+        <activity android:name="com.digitaldream.toyibatskool.activities.AddTeacher" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.SudentDetailsEdit"
+            android:name="com.digitaldream.toyibatskool.activities.SudentDetailsEdit"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.AddStudent"
+            android:name="com.digitaldream.toyibatskool.activities.AddStudent"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.digitaldream.linkskool.activities.CourseResultActivity"
+            android:name="com.digitaldream.toyibatskool.activities.CourseResultActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.NewsPage"
+            android:name="com.digitaldream.toyibatskool.activities.NewsPage"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.TeacherProfile"
+            android:name="com.digitaldream.toyibatskool.activities.TeacherProfile"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.TeacherContacts"
+            android:name="com.digitaldream.toyibatskool.activities.TeacherContacts"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.StudentProfile"
+            android:name="com.digitaldream.toyibatskool.activities.StudentProfile"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.StudentContacts"
+            android:name="com.digitaldream.toyibatskool.activities.StudentContacts"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.StaffEnterResult"
+            android:name="com.digitaldream.toyibatskool.activities.StaffEnterResult"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.ViewResult"
+            android:name="com.digitaldream.toyibatskool.activities.ViewResult"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.Contacts"
+            android:name="com.digitaldream.toyibatskool.activities.Contacts"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.Dashboard"
+            android:name="com.digitaldream.toyibatskool.activities.Dashboard"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.Login"
+            android:name="com.digitaldream.toyibatskool.activities.Login"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.digitaldream.linkskool.activities.MainActivity"
+            android:name="com.digitaldream.toyibatskool.activities.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
