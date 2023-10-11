@@ -29,10 +29,17 @@ import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.digitaldream.linkskool.utils.FunctionUtils.hideKeyboard
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.json.JSONArray
 
 class StudentELearningStreamAdapter(
-    private val itemList: MutableList<ContentModel>
+    private val context: Context,
+    private val itemList: MutableList<ContentModel>,
+    private val commentItemMap: HashMap<String, MutableList<CommentDataModel>>
 ) : RecyclerView.Adapter<StudentELearningStreamAdapter.ContentViewModel>() {
 
     private var userName: String? = null
@@ -40,8 +47,15 @@ class StudentELearningStreamAdapter(
     private var year: String? = null
     private var courseName: String? = null
 
-    private val commentStorage = mutableMapOf<String, MutableList<CommentDataModel>>()
+    private var newCommentItemMap = hashMapOf<String, MutableList<CommentDataModel>>()
     private lateinit var commentAdapter: StudentELearningStreamCommentAdapter
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private val sharedPreferences = context.getSharedPreferences("loginDetail", MODE_PRIVATE)
+
+    init {
+        startPeriodicRefresh(context)
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContentViewModel {
         val view = LayoutInflater.from(parent.context)
@@ -53,6 +67,7 @@ class StudentELearningStreamAdapter(
     override fun onBindViewHolder(holder: ContentViewModel, position: Int) {
         val itemModel = itemList[position]
         holder.bind(itemModel)
+
     }
 
     override fun getItemCount() = itemList.size
@@ -81,6 +96,8 @@ class StudentELearningStreamAdapter(
         }
 
         private fun loadComment(contentModel: ContentModel) {
+            loadInitialContentComment(commentRecyclerView, contentModel)
+
             editTextWatcher(commentEditText, sendBtn)
             sendComment(contentModel, sendBtn, commentEditText, commentRecyclerView)
         }
@@ -112,14 +129,13 @@ class StudentELearningStreamAdapter(
                 "${it.context.getString(R.string.base_url)}/getContent.php?" +
                         "id=${contentModel.id}&type=${contentModel.type}"
 
-            sendRequest(it.context, url) { response ->
-                launchActivity(it.context, contentModel.viewType, response)
+            sendRequest(url) { response ->
+                launchActivity(contentModel.viewType, response)
             }
         }
     }
 
     private fun sendRequest(
-        context: Context,
         url: String,
         method: Int = Request.Method.GET,
         isShowProgressBar: Boolean = true,
@@ -146,7 +162,8 @@ class StudentELearningStreamAdapter(
         )
     }
 
-    private fun launchActivity(context: Context, from: String, response: String) {
+
+    private fun launchActivity(from: String, response: String) {
         context.startActivity(
             Intent(context, StudentELearningActivity::class.java)
                 .putExtra("from", from)
@@ -172,23 +189,7 @@ class StudentELearningStreamAdapter(
         })
     }
 
-    private fun setUpCommentRecyclerView(recyclerView: RecyclerView, contentModel: ContentModel) {
-        val commentList = commentStorage[contentModel.id]
-
-        if (commentList != null) {
-            commentAdapter = StudentELearningStreamCommentAdapter(commentList)
-
-            recyclerView.apply {
-                hasFixedSize()
-                layoutManager = LinearLayoutManager(recyclerView.context)
-                adapter = commentAdapter
-            }
-        }
-    }
-
     private fun prepareComment(commentEditText: EditText, contentModel: ContentModel) {
-        val sharedPreferences =
-            commentEditText.context.getSharedPreferences("loginDetail", MODE_PRIVATE)
         with(sharedPreferences) {
             userId = getString("user_id", "")
             userName = getString("user", "")
@@ -197,29 +198,39 @@ class StudentELearningStreamAdapter(
         }
 
         val message = commentEditText.text.toString().trim()
-        val date = formatDate2(getDate(), "custom")
 
         val commentDataModel = CommentDataModel(
-            "", userId ?: "", "",
-            userName ?: "", message, date
+            "", userId ?: "", contentModel.id,
+            userName ?: "", message, getDate()
         )
 
-        val newCommentList =
-            mutableListOf<CommentDataModel>().apply {
-                add(commentDataModel)
-            }
-
-        val contentId = contentModel.id
-
-        val previousCommentList = commentStorage[contentId]
-
-        if (previousCommentList == null) {
-            commentStorage[contentId] = newCommentList
-        } else {
-            previousCommentList.addAll(newCommentList)
-        }
+        updateCommentData(commentDataModel, contentModel.id, newCommentItemMap)
+        updateCommentData(commentDataModel, contentModel.id, commentItemMap)
 
         hideKeyboard(commentEditText, commentEditText.context)
+    }
+
+    private fun setUpCommentRecyclerView(
+        recyclerView: RecyclerView,
+        contentModel: ContentModel,
+        commentData: MutableList<CommentDataModel>? = null
+    ) {
+        if (commentData == null) {
+            val commentList = returnCommentList(contentModel.id)
+            if (commentList != null) {
+                commentList.sortBy { it.date }
+                commentAdapter = StudentELearningStreamCommentAdapter(commentList)
+            }
+        } else {
+            commentData.sortBy { it.date }
+            commentAdapter = StudentELearningStreamCommentAdapter(commentData)
+        }
+
+        recyclerView.apply {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(recyclerView.context)
+            adapter = commentAdapter
+        }
     }
 
     private fun sendComment(
@@ -232,14 +243,12 @@ class StudentELearningStreamAdapter(
             prepareComment(editText, contentModel)
             setUpCommentRecyclerView(recyclerView, contentModel)
 
-            postComment(it.context, contentModel)
-
-            getComment(it.context, contentModel)
+            postComment(contentModel)
         }
     }
 
     private fun prepareCommentJson(contentModel: ContentModel): HashMap<String, String> {
-        val commentList = commentStorage[contentModel.id]
+        val commentList = newCommentItemMap[contentModel.id]
 
         return HashMap<String, String>().apply {
             put("content_id", contentModel.id)
@@ -259,23 +268,102 @@ class StudentELearningStreamAdapter(
         }
     }
 
-    private fun postComment(context: Context, contentModel: ContentModel) {
+    private fun postComment(contentModel: ContentModel) {
         val commentHashMap = prepareCommentJson(contentModel)
-        Timber.tag("comment").d("$commentHashMap")
         val url = "${context.getString(R.string.base_url)}/addContentComment.php"
 
-        sendRequest(context, url, Request.Method.POST, false, commentHashMap) {
+        sendRequest(url, Request.Method.POST, false, commentHashMap) {}
+    }
 
+    private fun loadInitialContentComment(recyclerView: RecyclerView, contentModel: ContentModel) {
+        val commentList = commentItemMap[contentModel.id]
+
+        if (commentList != null) {
+            commentList.sortBy { it.date }
+            setUpCommentRecyclerView(recyclerView, contentModel, commentList)
         }
     }
 
-    private fun getComment(context: Context, contentModel: ContentModel) {
-        val url = "${context.getString(R.string.base_url)}/getContentComment" +
-                ".php?content_id=${contentModel.id}"
+    private fun updateCommentData(
+        comment: CommentDataModel,
+        contentId: String,
+        map: HashMap<String, MutableList<CommentDataModel>>
+    ) {
+        val newCommentList =
+            mutableListOf<CommentDataModel>().apply {
+                add(comment)
+            }
 
-        sendRequest(context, url, Request.Method.GET, false) {
+        val previousCommentList = map[contentId]
 
+        if (previousCommentList == null) {
+            map[contentId] = newCommentList
+        } else {
+            previousCommentList.addAll(newCommentList)
         }
+    }
+
+    private fun returnCommentList(commentId: String) = commentItemMap[commentId]
+
+    private fun getContentComment(context: Context) {
+        val contentModel = itemList[0]
+        val url =
+            "${context.getString(R.string.base_url)}/getContentComment" +
+                    ".php?level=${contentModel.levelId}" +
+                    "&course=${contentModel.courseId}&term=${contentModel.term}"
+
+        sendRequest(url, Request.Method.GET, false) { response ->
+            parseCommentResponse(response)
+        }
+    }
+
+    private fun parseCommentResponse(response: String) {
+        try {
+            commentItemMap.clear()
+
+            with(JSONArray(response)) {
+                for (i in 0 until length()) {
+                    getJSONObject(i).let {
+                        val commentId = it.getString("id")
+                        val contentId = it.getString("content_id")
+                        val comment = it.getString("body")
+                        val userId = it.getString("author_id")
+                        val userName = it.getString("author_name")
+                        val date = it.getString("upload_date")
+
+                        val commentModel =
+                            CommentDataModel(
+                                commentId, userId,
+                                contentId, userName,
+                                comment, date
+                            )
+
+                        updateCommentData(commentModel, contentId, commentItemMap)
+                    }
+                }
+            }
+
+            notifyDataSetChanged()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun startPeriodicRefresh(context: Context) {
+        val delayMillis = 60000L // 1 minute
+        coroutineScope.launch {
+            while (true) {
+                getContentComment(context)
+
+                delay(delayMillis)
+            }
+        }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        coroutineScope.cancel()
     }
 
 }
