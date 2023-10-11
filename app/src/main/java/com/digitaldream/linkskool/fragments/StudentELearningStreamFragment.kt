@@ -1,22 +1,10 @@
 package com.digitaldream.linkskool.fragments
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,18 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.activities.StudentELearningActivity
-import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
-import com.digitaldream.linkskool.adapters.GenericAdapter
 import com.digitaldream.linkskool.adapters.StudentELearningStreamAdapter
-import com.digitaldream.linkskool.adapters.StudentELearningStreamCommentAdapter
 import com.digitaldream.linkskool.models.CommentDataModel
 import com.digitaldream.linkskool.models.ContentModel
 import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import org.json.JSONArray
-import timber.log.Timber
 
 
 private const val ARG_PARAM1 = "param1"
@@ -48,6 +31,7 @@ class StudentELearningStreamFragment : Fragment() {
 
     private lateinit var streamAdapter: StudentELearningStreamAdapter
     private var contentList = mutableListOf<ContentModel>()
+    private var commentMap = hashMapOf<String, MutableList<CommentDataModel>>()
 
     private var jsonData: String? = null
     private var param2: String? = null
@@ -93,28 +77,12 @@ class StudentELearningStreamFragment : Fragment() {
             streamRecyclerView = findViewById(R.id.streamRecyclerView)
             emptyTxt = findViewById(R.id.emptyTxt)
         }
-        /*        val sharedPreferences = requireActivity().getSharedPreferences(
-                    "loginDetail",
-                    MODE_PRIVATE
-                )
-
-                userName = sharedPreferences.getString("user", "")
-                userId = sharedPreferences.getString("user_id", "")*/
-
     }
 
 
     private fun loadStreams() {
-        if (jsonData?.isNotBlank() == true) {
-            if (jsonData != "[]") {
-                parseResponse(jsonData!!)
-                emptyTxt.isVisible = false
-            } else {
-                emptyTxt.isVisible = true
-            }
-        }
+        getContentComment()
     }
-
 
     private fun parseResponse(response: String) {
         try {
@@ -127,8 +95,6 @@ class StudentELearningStreamFragment : Fragment() {
                         val title = it.getString("title")
                         val courseId = it.getString("course_id")
                         val levelId = it.getString("level")
-                        val authorId = it.getString("author_id")
-                        val authorName = it.getString("author_name")
                         val term = it.getString("term")
                         val date = it.getString("upload_date")
                         val type = it.getString("type")
@@ -138,25 +104,24 @@ class StudentELearningStreamFragment : Fragment() {
                             "Assignment" -> {
                                 val content = ContentModel(
                                     id, title,
-                                    "New assignment:",
+                                    "Assignment:",
                                     courseId,
                                     levelId,
-                                    authorId, authorName, date, term, type,
+                                    "", "", date, term, type,
                                     "assignment",
                                     category
                                 )
 
                                 contentList.add(content)
-
                             }
 
                             "Material" -> {
                                 val content = ContentModel(
                                     id, title,
-                                    "New material:",
+                                    "Material:",
                                     courseId,
                                     levelId,
-                                    authorId, authorName, date, term, type,
+                                    "", "", date, term, type,
                                     "material",
                                     category
                                 )
@@ -167,9 +132,9 @@ class StudentELearningStreamFragment : Fragment() {
                             "Quiz" -> {
                                 val content = ContentModel(
                                     id, title,
-                                    "New question:",
+                                    "Question:",
                                     courseId, levelId,
-                                    authorId, authorName,
+                                    "", "",
                                     date, term, type,
                                     "question",
                                     category
@@ -184,15 +149,105 @@ class StudentELearningStreamFragment : Fragment() {
                 }
             }
 
-            setUpRecyclerView()
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun setUpRecyclerView() {
-        streamAdapter = StudentELearningStreamAdapter(contentList)
+    private fun getContentComment() {
+        try {
+            parseResponse(jsonData!!)
+            val contentModel = contentList[0]
+
+            val url = "${requireActivity().getString(R.string.base_url)}/getContentComment.php?" +
+                    "level=${contentModel.levelId}" +
+                    "&course=${contentModel.courseId}&term=${contentModel.term}"
+
+            sendRequestToServer(Request.Method.GET, url, requireContext(), null, object
+                : VolleyCallback {
+                override fun onResponse(response: String) {
+                    if (jsonData?.isNotBlank() == true) {
+                        if (response != "[]") {
+                            parseCommentResponse(response)
+                            emptyTxt.isVisible = false
+                        } else {
+                            emptyTxt.isVisible = true
+                        }
+                    }
+                }
+
+                override fun onError(error: VolleyError) {
+                    emptyTxt.isVisible = true
+                }
+            }, false)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyTxt.isVisible = true
+        }
+    }
+
+    private fun parseCommentResponse(response: String) {
+        with(JSONArray(response)) {
+            for (i in 0 until length()) {
+                getJSONObject(i).let {
+                    val commentId = it.getString("id")
+                    val contentId = it.getString("content_id")
+                    val comment = it.getString("body")
+                    val userId = it.getString("author_id")
+                    val userName = it.getString("author_name")
+                    val date = it.getString("upload_date")
+
+                    val formattedDate = formatDate2(date, "custom")
+
+                    val commentModel =
+                        CommentDataModel(
+                            commentId, userId,
+                            contentId, userName,
+                            comment, formattedDate
+                        )
+
+                    updateCommentMap(commentModel)
+                }
+            }
+        }
+
+        filterContent()
+    }
+
+    private fun updateCommentMap(comment: CommentDataModel) {
+        val newCommentList =
+            mutableListOf<CommentDataModel>().apply {
+                add(comment)
+            }
+
+        val previousCommentList = commentMap[comment.contentId]
+
+        if (previousCommentList == null) {
+            commentMap[comment.contentId] = newCommentList
+        } else {
+            previousCommentList.addAll(newCommentList)
+        }
+
+    }
+
+    private fun filterContent() {
+        val iterator = contentList.iterator()
+
+        while (iterator.hasNext()) {
+            val content = iterator.next()
+            val comment = commentMap[content.id]
+
+            if (comment == null) {
+                iterator.remove()
+            }
+        }
+
+        setUpContentRecyclerView()
+    }
+
+    private fun setUpContentRecyclerView() {
+        streamAdapter = StudentELearningStreamAdapter(requireContext(),contentList, commentMap)
 
         streamRecyclerView.apply {
             hasFixedSize()
