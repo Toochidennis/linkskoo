@@ -15,8 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
-import com.digitaldream.linkskool.adapters.GenericAdapter3
+import com.digitaldream.linkskool.adapters.GenericAdapter2
 import com.digitaldream.linkskool.models.QuestionItem
+import com.digitaldream.linkskool.models.QuizProgressModel
 import com.digitaldream.linkskool.models.SectionModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -26,6 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Locale
 
 class StudentELearningQuizDialogFragment(
@@ -44,12 +46,15 @@ class StudentELearningQuizDialogFragment(
 
     private lateinit var countDownJob: Job
     private lateinit var quizAdapter: AdminELearningQuizAdapter
-    private lateinit var progressAdapter: GenericAdapter3<Int>
+    private lateinit var progressAdapter: GenericAdapter2<QuizProgressModel>
     private var userResponses = mutableMapOf<String, String>()
+
+    private var progressList = mutableListOf<QuizProgressModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
+
         isCancelable = false
     }
 
@@ -139,27 +144,33 @@ class StudentELearningQuizDialogFragment(
     }
 
     private fun setUpProgressAdapter() {
-        val totalQuestions = totalQuestionCount()
-        progressAdapter = GenericAdapter3(
-            totalQuestions,
+        for (i in 1..totalQuestionCount()) {
+            progressList.add(QuizProgressModel("$i"))
+        }
+
+        progressAdapter = GenericAdapter2(
+            progressList,
             R.layout.item_quiz_progress_layout,
-            bindItem = { itemView, position ->
+            bindItem = { itemView, model, position ->
                 val progressLayout: LinearLayout = itemView.findViewById(R.id.progressLayout)
                 val progressTxt: TextView = itemView.findViewById(R.id.progressTxt)
 
-                val circlePosition = position + 1
-                progressTxt.text = (circlePosition).toString()
+                progressTxt.text = model.questionPosition
 
-                val currentQuestionPosition = questionPosition(position)
-
-                if (quizViewPager.currentItem == currentQuestionPosition) {
+                if (model.isAnswered) {
                     progressLayout.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.circle5)
+                } else {
+                    progressLayout.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.circle7)
                 }
+
+                itemView.setOnClickListener {
+                    scrollToPosition(position)
+                }
+
             }
-        ) { position ->
-            scrollToPosition(position)
-        }
+        )
 
         setUpProgressRecyclerView()
     }
@@ -172,9 +183,8 @@ class StudentELearningQuizDialogFragment(
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
-
             adapter = progressAdapter
-            smoothScrollToPosition(quizViewPager.currentItem)
+            // smoothScrollToPosition(quizViewPager.currentItem)
         }
     }
 
@@ -197,6 +207,7 @@ class StudentELearningQuizDialogFragment(
             }
         }
 
+        Timber.tag("position").d("$currentPosition")
         return currentPosition
     }
 
@@ -267,7 +278,6 @@ class StudentELearningQuizDialogFragment(
             StudentELearningQuizCompletionDialog(requireContext()) {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }.apply {
-                isCancelable = false
                 show()
             }.window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -317,13 +327,22 @@ class StudentELearningQuizDialogFragment(
             }
         }
 
+        updateAnsweredQuestion()
+
         progressAdapter.notifyDataSetChanged()
     }
 
     override fun setTypedAnswer(questionId: String, typedAnswer: String) {
         userResponses[questionId] = typedAnswer
 
+        updateAnsweredQuestion()
+
         progressAdapter.notifyDataSetChanged()
+    }
+
+    private fun updateAnsweredQuestion(){
+        val currentQuestionPosition = questionPosition(quizViewPager.currentItem)
+        progressList[currentQuestionPosition].isAnswered = true
     }
 
     override fun onDestroy() {
