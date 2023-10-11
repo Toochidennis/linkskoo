@@ -3,32 +3,46 @@ package com.digitaldream.linkskool.dialog
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningCommentAdapter
 import com.digitaldream.linkskool.adapters.StudentELearningAssignmentSubmissionAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.CommentDataModel
-import com.digitaldream.linkskool.utils.FunctionUtils
+import com.digitaldream.linkskool.utils.FunctionUtils.getDate
 import com.digitaldream.linkskool.utils.FunctionUtils.isBased64
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.FunctionUtils.showSoftInput
 import com.digitaldream.linkskool.utils.StudentFileViewModel
+import com.digitaldream.linkskool.utils.VolleyCallback
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -37,15 +51,19 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 
+
 class StudentELearningAssignmentSubmissionDialogFragment :
     DialogFragment(R.layout.fragment_student_e_learning_assignment_submission) {
 
+    // Declared UI elements
     private lateinit var backBtn: ImageButton
     private lateinit var dateTxt: TextView
     private lateinit var attachmentRecyclerView: RecyclerView
     private lateinit var commentRecyclerView: RecyclerView
     private lateinit var addCommentTxt: TextView
     private lateinit var commentInput: TextInputLayout
+    private lateinit var editTextLayout: RelativeLayout
+    private lateinit var sendBtn: ImageButton
     private lateinit var addWorkBtn: Button
     private lateinit var handInBtn: Button
 
@@ -54,11 +72,22 @@ class StudentELearningAssignmentSubmissionDialogFragment :
 
     private val fileList = mutableListOf<AttachmentModel>()
     private lateinit var fileAdapter: StudentELearningAssignmentSubmissionAdapter
+
     private lateinit var studentFileViewModel: StudentFileViewModel
     private lateinit var sharedPreferences: SharedPreferences
+    private var coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    private var savedJson: String? = null
-
+    // Variables to save data
+    private var savedAttachmentJson: String? = null
+    private var contentId: String? = null
+    private var contentTitle: String? = null
+    private var levelId: String? = null
+    private var courseId: String? = null
+    private var year: String? = null
+    private var term: String? = null
+    private var userId: String? = null
+    private var userName: String? = null
+    private var courseName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,14 +97,15 @@ class StudentELearningAssignmentSubmissionDialogFragment :
             ViewModelProvider(requireActivity())[StudentFileViewModel::class.java]
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpViews(view)
 
-        commentAction()
+        loadContentComment()
 
-        attachmentAction()
+        loadAttachment()
     }
 
     private fun setUpViews(view: View) {
@@ -86,21 +116,97 @@ class StudentELearningAssignmentSubmissionDialogFragment :
             commentRecyclerView = findViewById(R.id.commentRecyclerView)
             addCommentTxt = findViewById(R.id.addCommentTxt)
             commentInput = findViewById(R.id.commentInputText)
+            editTextLayout = findViewById(R.id.editTextLayout)
+            sendBtn = findViewById(R.id.sendBtn)
             addWorkBtn = findViewById(R.id.addWorkBtn)
             handInBtn = findViewById(R.id.handInBtn)
         }
 
         sharedPreferences = requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
-        savedJson = sharedPreferences.getString("attachment", "")
+
+        try {
+            with(sharedPreferences) {
+                savedAttachmentJson = getString("attachment", "")
+                levelId = getString("level", "")
+                courseId = getString("courseId", "")
+                contentId = getString("content_id", "")
+                userName = getString("user", "")
+                userId = getString("user_id", "")
+                term = getString("term", "")
+                year = getString("school_year", "")
+                courseName = getString("course_name", "")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 
-    private fun commentAction() {
+
+    private fun loadContentComment() {
         setUpCommentRecyclerView()
-
         commentClick()
-
-        addComment()
+        sendComment()
+        onWatchEditText()
+        startPeriodicRefresh()
     }
+
+    private fun getContentComment() {
+        commentList.clear()
+
+        val url =
+            "${requireActivity().getString(R.string.base_url)}/getContentComment.php?" +
+                    "content_id=$contentId&level=$levelId&course=$courseId&term=$term"
+
+        sendRequestToServer(
+            Request.Method.GET, url, requireContext(), null,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+                    if (response != "[]") {
+                        parseCommentResponse(response)
+                    }
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            }, false
+        )
+    }
+
+    private fun parseCommentResponse(response: String) {
+        try {
+            with(JSONArray(response)) {
+                for (i in 0 until length()) {
+                    getJSONObject(i).let {
+                        val commentId = it.getString("id")
+                        val contentId = it.getString("content_id")
+                        val comment = it.getString("body")
+                        val userId = it.getString("author_id")
+                        val userName = it.getString("author_name")
+                        val date = it.getString("upload_date")
+
+                        val commentModel =
+                            CommentDataModel(
+                                commentId, userId,
+                                contentId, userName,
+                                comment, date
+                            )
+
+                        commentList.add(commentModel)
+                    }
+                }
+            }
+
+            commentList.sortBy { it.date }
+
+            commentAdapter.notifyDataSetChanged()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 
     private fun setUpCommentRecyclerView() {
         commentAdapter = AdminELearningCommentAdapter(commentList)
@@ -115,53 +221,96 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     private fun commentClick() {
         addCommentTxt.setOnClickListener {
             it.isVisible = false
-            commentInput.isVisible = true
+            editTextLayout.isVisible = true
 
-            commentInput.editText?.let { edit ->
-                FunctionUtils.showSoftInput(
-                    requireContext(),
-                    edit
-                )
+            commentInput.editText?.let { editText ->
+                showSoftInput(requireContext(), editText)
             }
         }
+    }
 
+    private fun prepareComment() {
+        val comment = commentInput.editText?.text.toString().trim()
+
+        val commentDataModel =
+            CommentDataModel(
+                "",
+                userId ?: "",
+                contentId ?: "",
+                userName ?: "",
+                comment,
+                getDate()
+            )
+
+        val newCommentList = mutableListOf<CommentDataModel>().apply {
+            add(commentDataModel)
+        }
+
+        commentList.add(commentDataModel)
+
+        editTextLayout.isVisible = false
+        addCommentTxt.isVisible = true
+
+        commentInput.editText?.let { hideKeyboard(it) }
+
+        postComment(newCommentList)
+
+        commentAdapter.notifyDataSetChanged()
     }
 
     private fun sendComment() {
-        val message = commentInput.editText?.text.toString().trim()
-
-        if (message.isNotBlank()) {
-            val commentDataModel = CommentDataModel(
-                "", "","",  "",
-                "", message
-            )
-
-            commentList.add(commentDataModel)
-
-            commentInput.isVisible = false
-            addCommentTxt.isVisible = true
-
-            commentInput.editText?.let { hideKeyboard(it) }
-
-            commentAdapter.notifyDataSetChanged()
-        } else {
-            commentInput.error = "Please provide a comment"
+        sendBtn.setOnClickListener {
+            prepareComment()
         }
     }
 
-    private fun addComment() {
-        commentInput.editText?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEND) {
-                sendComment()
+    private fun prepareCommentJson(newCommentList: MutableList<CommentDataModel>) =
+        HashMap<String, String>().apply {
+            put("content_id", contentId ?: "")
+            put("author_id", userId ?: "")
+            put("author_name", userName ?: "")
 
-                return@setOnEditorActionListener true
-            } else if (actionId == EditorInfo.IME_ACTION_NONE) {
-                commentInput.isVisible = false
-                return@setOnEditorActionListener true
+            newCommentList.forEach { commentData ->
+                put("comment", commentData.comment)
             }
-            false
+
+            put("content_title", contentTitle ?: "")
+            put("level", levelId ?: "")
+            put("course", courseId ?: "")
+            put("course_name", courseName ?: "")
+            put("term", term ?: "")
+            put("year", year ?: "")
+        }
+
+    private fun postComment(newCommentList: MutableList<CommentDataModel>) {
+        val commentHashMap = prepareCommentJson(newCommentList)
+        val url = "${requireActivity().getString(R.string.base_url)}/addContentComment.php"
+
+        sendRequestToServer(
+            Request.Method.POST, url, requireContext(), commentHashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            }, false
+        )
+    }
+
+    private fun startPeriodicRefresh() {
+        val delayMillis = 60000L // 1 minute
+        coroutineScope.launch {
+            while (true) {
+                getContentComment()
+
+                delay(delayMillis)
+            }
         }
     }
+
 
     private fun hideKeyboard(editText: EditText) {
         val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
@@ -171,9 +320,37 @@ class StudentELearningAssignmentSubmissionDialogFragment :
         editText.setText("")
     }
 
-    private fun attachmentAction() {
-        setUpFileRecyclerView()
+    private fun onWatchEditText() {
+        sendBtn.isEnabled = false
 
+        commentInput.editText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                sendBtn.isEnabled = s.toString().isNotBlank()
+
+                if (sendBtn.isEnabled) {
+                    sendBtn.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(), R.color.black
+                        ),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                } else {
+                    sendBtn.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(), R.color.test_color_7
+                        ), PorterDuff.Mode.SRC_IN
+                    )
+                }
+            }
+        })
+    }
+
+    private fun loadAttachment() {
+        setUpFileRecyclerView()
         fileAttachment()
     }
 
@@ -264,8 +441,8 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     }
 
     private fun readSavedFile() {
-        if (savedJson?.isNotBlank() == true)
-            with(JSONArray(savedJson)) {
+        if (savedAttachmentJson?.isNotBlank() == true)
+            with(JSONArray(savedAttachmentJson)) {
                 for (i in 0 until length()) {
                     getJSONObject(i).let {
                         val name = it.getString("name")
@@ -282,6 +459,11 @@ class StudentELearningAssignmentSubmissionDialogFragment :
                     }
                 }
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
     }
 
 }
