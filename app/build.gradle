@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.digitaldream.linkskool"
         minSdkVersion 21
-        targetSdk 33
+        targetSdk 34
         versionCode 36
         versionName "27.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
