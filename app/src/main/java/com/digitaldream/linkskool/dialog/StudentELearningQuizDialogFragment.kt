@@ -1,5 +1,6 @@
 package com.digitaldream.linkskool.dialog
 
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -13,12 +14,16 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.adapters.AdminELearningQuizAdapter
 import com.digitaldream.linkskool.adapters.GenericAdapter2
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.QuizProgressModel
 import com.digitaldream.linkskool.models.SectionModel
+import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
+import com.digitaldream.linkskool.utils.VolleyCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +32,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import timber.log.Timber
 import java.util.Locale
 
@@ -49,7 +56,7 @@ import java.util.Locale
  *    such as quiz duration and a list of quiz items.
  *
  *    ```kotlin
- *    val quizDialogFragment = StudentELearningQuizDialogFragment(duration, quizItems)
+ *    val quizDialogFragment = StudentELearningQuizDialogFragment(quizId, duration, quizItems)
  *    ```
  *
  * 3. Show the Dialog:
@@ -78,7 +85,7 @@ import java.util.Locale
  * ### Quiz Initialization
  *
  * ```kotlin
- * val quizDialogFragment = StudentELearningQuizDialogFragment(duration, quizItems)
+ * val quizDialogFragment = StudentELearningQuizDialogFragment(quizId, duration, quizItems)
  * ```
  *
  * ### Display Quiz Dialog
@@ -93,7 +100,8 @@ import java.util.Locale
  *
  * #### Constructors
  *
- * - `StudentELearningQuizDialogFragment(duration: String, quizItems: MutableList<SectionModel>)`
+ * - `StudentELearningQuizDialogFragment(quizId:String, duration: String, quizItems:
+ * MutableList<SectionModel>)`
  *   Creates a new instance of the quiz dialog.
  *
  * #### Public Methods
@@ -110,6 +118,7 @@ import java.util.Locale
 private const val MAX_VISIBLE_QUESTIONS = 5
 
 class StudentELearningQuizDialogFragment(
+    private val quizId: String,
     private val duration: String,
     private val quizItems: MutableList<SectionModel>
 ) : DialogFragment(R.layout.fragment_student_e_learning_quiz),
@@ -126,9 +135,16 @@ class StudentELearningQuizDialogFragment(
     private lateinit var countDownJob: Job
     private lateinit var quizAdapter: AdminELearningQuizAdapter
     private lateinit var progressAdapter: GenericAdapter2<QuizProgressModel>
-    private var userResponses = mutableMapOf<String, String>()
 
+    private var userResponses = mutableMapOf<String, String>()
     private var progressList = mutableListOf<QuizProgressModel>()
+
+    private var userName: String? = null
+    private var userId: String? = null
+    private var levelId: String? = null
+    private var courseId: String? = null
+    private var classId: String? = null
+    private var courseName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,7 +172,7 @@ class StudentELearningQuizDialogFragment(
 
         showQuestion()
 
-        submitQuiz()
+        showQuizCompletionDialog()
     }
 
     private fun setUpViews(view: View) {
@@ -167,6 +183,17 @@ class StudentELearningQuizDialogFragment(
             progressRecyclerView = findViewById(R.id.progressRecyclerView)
             previousBtn = findViewById(R.id.prevBtn)
             nextBtn = findViewById(R.id.nextBtn)
+        }
+
+        val sharedPreferences = requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
+
+        with(sharedPreferences) {
+            userId = getString("user_id", "")
+            userName = getString("user", "")
+            levelId = getString("level", "")
+            courseId = getString("courseId", "")
+            courseName = getString("course_name", "")
+            classId = getString("classId", "")
         }
     }
 
@@ -350,7 +377,7 @@ class StudentELearningQuizDialogFragment(
                 remainingTimeMillis -= countDownIntervalMillis
             }
 
-            submitQuiz()
+            showQuizCompletionDialog()
 
             withContext(Dispatchers.Main) {
                 "00:00".let { countDownTxt.text = it }
@@ -380,18 +407,87 @@ class StudentELearningQuizDialogFragment(
         }
     }
 
+    private fun prepareUserResponse() = JSONArray().apply {
+        quizItems.forEach { section ->
+            val questionItem = section.questionItem
 
-    private fun submitQuiz() {
+            JSONObject().apply {
+                if (questionItem is QuestionItem.MultiChoice) {
+                    val question = questionItem.question
+                    val userAnswer = userResponses[question.questionId]
+
+                    if (userAnswer != null) {
+                        put("id", question.questionId)
+                        put("question", question.questionText)
+                        put("correct", question.correctAnswer)
+                        put("answer", userAnswer)
+                        put("type", "multiple_choice")
+                    }
+
+
+                } else if (questionItem is QuestionItem.ShortAnswer) {
+                    val question = questionItem.question
+                    val userAnswer = userResponses[question.questionId]
+
+                    put("id", question.questionId)
+                    put("question", question.questionText)
+                    put("correct", question.answerText)
+                    put("answer", userAnswer)
+                    put("type", "short_answer")
+                }
+            }.let {
+                put(it)
+            }
+        }
+    }
+
+
+    private fun prepareQuizJson() = HashMap<String, String>().apply {
+        val userResponse = prepareUserResponse()
+        val userScore = calculateScore()
+
+        put("exam_id", quizId)
+        put("data", userResponse.toString())
+        put("score", userScore.toString())
+        put("course", courseId ?: "")
+        put("course_name", courseName ?: "")
+        put("user_id", userId ?: "")
+        put("user_name", userName ?: "")
+        put("level", levelId ?: "")
+        put("classId", classId ?: "")
+        put("type", "0")
+    }
+
+    private fun postQuizResponse() {
+        val quizData = prepareQuizJson()
+        val url = "${requireActivity().getString(R.string.base_url)}/addResponse.php"
+
+        Timber.tag("response").d("$quizData")
+
+        sendRequestToServer(Request.Method.POST, url, requireContext(), quizData, object
+            : VolleyCallback {
+            override fun onResponse(response: String) {
+                StudentELearningQuizCompletionDialog(requireContext()) {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }.apply {
+                    show()
+                }.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            override fun onError(error: VolleyError) {
+
+            }
+        })
+
+    }
+
+
+    private fun showQuizCompletionDialog() {
         submitBtn.setOnClickListener {
-            StudentELearningQuizCompletionDialog(requireContext()) {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
-            }.apply {
-                show()
-            }.window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-
+         postQuizResponse()
         }
     }
 
