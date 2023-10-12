@@ -1,3 +1,3 @@
 package com.digitaldream.linkskool.models
 
-data class QuizProgressModel(val questionPosition: String, var isAnswered: Boolean = false)
+data class QuizProgressModel(var questionPosition: String, var isAnswered: Boolean = false)
