@@ -369,8 +369,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
         try {
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-           // disableStartBtn()
-            enableStartBtn()
+            disableStartBtn()
 
             val startDateFromServer = formatter.parse(startDate!!)
             val endDateFromServer = formatter.parse(endDate!!)
@@ -391,12 +390,12 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                         startDateText = "Quiz will last for $duration minutes"
                     }
 
-                   /* if (endDateFromServer >= currentDate) {
+                    if (endDateFromServer >= currentDate) {
                         enableStartBtn()
                     } else {
                         disableStartBtn()
                     }
-*/
+
                     updateStartDateUI(startDateText)
                     updateEndDateUI(endDateText)
                 } else {
@@ -412,7 +411,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                     updateEndDateUI(endDateText)
                     warningTxt.isVisible = false
 
-                   // disableStartBtn()
+                    disableStartBtn()
                 }
             }
 
@@ -457,7 +456,11 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                 parentFragmentManager.commit {
                     replace(
                         R.id.learningContainer,
-                        StudentELearningQuizDialogFragment(quizId?:"",duration ?: "", questionList)
+                        StudentELearningQuizDialogFragment(
+                            quizId ?: "",
+                            duration ?: "",
+                            questionList
+                        )
                     )
                 }
             }
