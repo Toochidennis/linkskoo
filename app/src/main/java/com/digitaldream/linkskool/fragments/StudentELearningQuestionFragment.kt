@@ -51,6 +51,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
     private var duration: String? = null
     private var description: String? = null
     private var questionCount: String? = null
+    private var quizId: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -351,6 +352,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
     // Parse the settings JSON object
     private fun parseSettingsJson(settings: JSONObject) {
         with(settings) {
+            quizId = getString("id")
             title = getString("title")
             description = getString("description")
             duration = getString("objective")
@@ -367,7 +369,8 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
         try {
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-            disableStartBtn()
+           // disableStartBtn()
+            enableStartBtn()
 
             val startDateFromServer = formatter.parse(startDate!!)
             val endDateFromServer = formatter.parse(endDate!!)
@@ -388,12 +391,12 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                         startDateText = "Quiz will last for $duration minutes"
                     }
 
-                    if (endDateFromServer >= currentDate) {
+                   /* if (endDateFromServer >= currentDate) {
                         enableStartBtn()
                     } else {
                         disableStartBtn()
                     }
-
+*/
                     updateStartDateUI(startDateText)
                     updateEndDateUI(endDateText)
                 } else {
@@ -409,7 +412,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                     updateEndDateUI(endDateText)
                     warningTxt.isVisible = false
 
-                    disableStartBtn()
+                   // disableStartBtn()
                 }
             }
 
@@ -454,7 +457,7 @@ class StudentELearningQuestionFragment : Fragment(R.layout.fragment_student_e_le
                 parentFragmentManager.commit {
                     replace(
                         R.id.learningContainer,
-                        StudentELearningQuizDialogFragment(duration ?: "", questionList)
+                        StudentELearningQuizDialogFragment(quizId?:"",duration ?: "", questionList)
                     )
                 }
             }
