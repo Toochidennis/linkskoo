@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
-import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -144,6 +144,7 @@ class StudentELearningQuizDialogFragment(
     private var levelId: String? = null
     private var courseId: String? = null
     private var classId: String? = null
+    private var className: String? = null
     private var courseName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,6 +195,7 @@ class StudentELearningQuizDialogFragment(
             courseId = getString("courseId", "")
             courseName = getString("course_name", "")
             classId = getString("classId", "")
+            className = getString("student_class","")
         }
     }
 
@@ -210,7 +212,6 @@ class StudentELearningQuizDialogFragment(
                 updateProgressRecyclerView()
             }
         })
-
     }
 
 
@@ -342,7 +343,6 @@ class StudentELearningQuizDialogFragment(
             }
         }
 
-
         return currentPosition
     }
 
@@ -424,7 +424,6 @@ class StudentELearningQuizDialogFragment(
                         put("type", "multiple_choice")
                     }
 
-
                 } else if (questionItem is QuestionItem.ShortAnswer) {
                     val question = questionItem.question
                     val userAnswer = userResponses[question.questionId]
@@ -455,14 +454,13 @@ class StudentELearningQuizDialogFragment(
         put("user_name", userName ?: "")
         put("level", levelId ?: "")
         put("classId", classId ?: "")
+        put("class_name",className?:"")
         put("type", "0")
     }
 
     private fun postQuizResponse() {
         val quizData = prepareQuizJson()
         val url = "${requireActivity().getString(R.string.base_url)}/addResponse.php"
-
-        Timber.tag("response").d("$quizData")
 
         sendRequestToServer(Request.Method.POST, url, requireContext(), quizData, object
             : VolleyCallback {
@@ -478,16 +476,18 @@ class StudentELearningQuizDialogFragment(
             }
 
             override fun onError(error: VolleyError) {
-
+                Toast.makeText(
+                    requireContext(), requireActivity().getString(R.string.no_internet),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
-
     }
 
 
     private fun showQuizCompletionDialog() {
         submitBtn.setOnClickListener {
-         postQuizResponse()
+            postQuizResponse()
         }
     }
 
