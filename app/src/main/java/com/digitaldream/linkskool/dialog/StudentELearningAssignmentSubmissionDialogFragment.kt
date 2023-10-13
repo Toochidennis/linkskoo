@@ -83,6 +83,8 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     private var contentTitle: String? = null
     private var levelId: String? = null
     private var courseId: String? = null
+    private var classId: String? = null
+    private var className: String? = null
     private var year: String? = null
     private var term: String? = null
     private var userId: String? = null
@@ -106,6 +108,10 @@ class StudentELearningAssignmentSubmissionDialogFragment :
         loadContentComment()
 
         loadAttachment()
+
+        handInBtn.setOnClickListener {
+            postAssignment()
+        }
     }
 
     private fun setUpViews(view: View) {
@@ -129,6 +135,8 @@ class StudentELearningAssignmentSubmissionDialogFragment :
                 savedAttachmentJson = getString("attachment", "")
                 levelId = getString("level", "")
                 courseId = getString("courseId", "")
+                classId = getString("classId", "")
+                className = getString("student_class", "")
                 contentId = getString("content_id", "")
                 userName = getString("user", "")
                 userId = getString("user_id", "")
@@ -139,9 +147,7 @@ class StudentELearningAssignmentSubmissionDialogFragment :
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
-
 
     private fun loadContentComment() {
         setUpCommentRecyclerView()
@@ -206,7 +212,6 @@ class StudentELearningAssignmentSubmissionDialogFragment :
             e.printStackTrace()
         }
     }
-
 
     private fun setUpCommentRecyclerView() {
         commentAdapter = AdminELearningCommentAdapter(commentList)
@@ -311,7 +316,6 @@ class StudentELearningAssignmentSubmissionDialogFragment :
         }
     }
 
-
     private fun hideKeyboard(editText: EditText) {
         val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
                 as InputMethodManager
@@ -351,10 +355,14 @@ class StudentELearningAssignmentSubmissionDialogFragment :
 
     private fun loadAttachment() {
         setUpFileRecyclerView()
-        fileAttachment()
+        uploadAttachment()
     }
 
-    private fun fileAttachment() {
+    private fun getAttachmentFromServer() {
+
+    }
+
+    private fun uploadAttachment() {
         addWorkBtn.setOnClickListener {
             AdminELearningAttachmentDialog("student") { type: String, name: String, uri: Any? ->
 
@@ -459,6 +467,59 @@ class StudentELearningAssignmentSubmissionDialogFragment :
                     }
                 }
             }
+    }
+
+    private fun prepareAttachmentJson() = JSONArray().apply {
+        fileList.forEach { attachment ->
+            JSONObject().apply {
+                put("file_name", attachment.name)
+                put("type", attachment.type)
+                put("file", encodeFileToBase64(attachment.uri))
+            }.let {
+                put(it)
+            }
+        }
+    }
+
+    private fun encodeFileToBase64(fileByte: Any?): Any? {
+        return try {
+            Base64.encode(fileByte as ByteArray, Base64.DEFAULT)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun prepareAssignment() = HashMap<String, String>().apply {
+        val assignmentData = prepareAttachmentJson()
+        put("exam_id", contentId ?: "")
+        put("data", assignmentData.toString())
+        put("course", courseId ?: "")
+        put("course_name", courseName ?: "")
+        put("user_id", userId ?: "")
+        put("user_name", userName ?: "")
+        put("level", levelId ?: "")
+        put("classId", classId ?: "")
+        put("class_name", className ?: "")
+        put("type", "0")
+    }
+
+
+    private fun postAssignment() {
+        val hashMap = prepareAssignment()
+        val url = "${requireActivity().getString(R.string.base_url)}/submitAssignment.php"
+
+        Timber.tag("response").d("$hashMap")
+
+        sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
+            object : VolleyCallback {
+                override fun onResponse(response: String) {
+
+                }
+
+                override fun onError(error: VolleyError) {
+
+                }
+            })
     }
 
     override fun onDestroy() {
