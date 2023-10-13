@@ -168,7 +168,6 @@ class StudentELearningAssignmentSubmissionAdapter(
 
 
     private fun updateFile(context: Context) {
-
         val fileArray = JSONArray()
 
         itemList.forEach { file ->
