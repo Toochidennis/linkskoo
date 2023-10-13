@@ -10,13 +10,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.android.volley.Request
+import com.android.volley.toolbox.Volley
+import com.digitaldream.linkskool.R
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.itextpdf.text.Document
 import com.itextpdf.text.Paragraph
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor
@@ -26,13 +31,33 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 class StudentFileViewModel(application: Application) : AndroidViewModel(application) {
+    private val fileDownloadQueue = Volley.newRequestQueue(application)
     private val _processedFile = MutableLiveData<Pair<File, Bitmap>>()
     val processedFile: LiveData<Pair<File, Bitmap>> = _processedFile
 
-    fun processFile(attachmentModel: AttachmentModel, targetPath: String) {
-        val savedFile = saveToFile(attachmentModel.uri as ByteArray, targetPath)
 
+    fun downloadAndProcessFile(attachmentModel: AttachmentModel, targetPath: String) {
+        viewModelScope.launch {
+            val fileUrl =
+                "${getApplication<Application>().getString(R.string.base_url)}/${attachmentModel.uri}"
+
+            val downloadedFile = downloadFile(fileUrl, targetPath)
+            val bitmap = processFileBitmap(attachmentModel, downloadedFile.absolutePath)
+
+            withContext(Dispatchers.IO) {
+                if (bitmap != null) {
+                    _processedFile.postValue(Pair(downloadedFile, bitmap))
+                }
+
+            }
+
+        }
+
+    }
+
+    fun processFile(attachmentModel: AttachmentModel, targetPath: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            val savedFile = saveToFile(attachmentModel.uri as ByteArray, targetPath)
             val bitmap = processFileBitmap(attachmentModel, savedFile.absolutePath)
 
             withContext(Dispatchers.Main) {
@@ -48,6 +73,34 @@ class StudentFileViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun downloadFile(fileURL: String, targetPath: String): File {
+        return suspendCancellableCoroutine { continuation ->
+            try {
+                val fileDownloadRequest = FileDownloadRequest(
+                    Request.Method.GET,
+                    fileURL,
+                    targetPath,
+                    { downloadFile ->
+                        continuation.resume(downloadFile) {
+                            downloadFile.delete()
+                        }
+                    }
+                ) { error ->
+                    error.printStackTrace()
+                }
+
+                fileDownloadQueue.add(fileDownloadRequest)
+
+                continuation.invokeOnCancellation {
+                    fileDownloadRequest.cancel()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     private fun saveToFile(data: ByteArray, filePath: String): File {
         val file = File(filePath)
