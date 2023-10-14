@@ -38,6 +38,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/dateTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_16"
@@ -51,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/userNameTxt"
                 android:layout_marginStart="@dimen/dimen_16"
-
                 android:layout_toEndOf="@id/profileImageView"
                 android:text="Comment on catering assignment"
                 android:textColor="@color/black"
