@@ -90,6 +90,7 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     private var userId: String? = null
     private var userName: String? = null
     private var courseName: String? = null
+    private var contentType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +144,7 @@ class StudentELearningAssignmentSubmissionDialogFragment :
                 term = getString("term", "")
                 year = getString("school_year", "")
                 courseName = getString("course_name", "")
+                contentType = getString("content_type","")
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -285,6 +287,7 @@ class StudentELearningAssignmentSubmissionDialogFragment :
             put("course_name", courseName ?: "")
             put("term", term ?: "")
             put("year", year ?: "")
+            put("content_type",contentType?:"")
         }
 
     private fun postComment(newCommentList: MutableList<CommentDataModel>) {
@@ -356,10 +359,6 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     private fun loadAttachment() {
         setUpFileRecyclerView()
         uploadAttachment()
-    }
-
-    private fun getAttachmentFromServer() {
-
     }
 
     private fun uploadAttachment() {
@@ -507,8 +506,6 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     private fun postAssignment() {
         val hashMap = prepareAssignment()
         val url = "${requireActivity().getString(R.string.base_url)}/submitAssignment.php"
-
-        Timber.tag("response").d("$hashMap")
 
         sendRequestToServer(Request.Method.POST, url, requireContext(), hashMap,
             object : VolleyCallback {

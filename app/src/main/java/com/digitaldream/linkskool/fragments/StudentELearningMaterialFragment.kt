@@ -75,6 +75,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
     private var courseId: String? = null
     private var levelId: String? = null
     private var courseName: String? = null
+    private var type: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,6 +165,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
                     title = it.getString("title")
                     description = it.getString("description")
                     term = it.getString("term")
+                    type = it.getString("type")
                     parseFilesArray(JSONArray(it.getString("picref")))
                 }
 
@@ -375,6 +377,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
             put("course_name", courseName ?: "")
             put("term", term ?: "")
             put("year", year ?: "")
+            put("content_type", type ?: "")
         }
 
 
