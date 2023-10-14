@@ -120,7 +120,6 @@ class StudentELearningAssignmentFragment : Fragment() {
             if (jsonData?.isNotBlank() == true) {
                 jsonData?.let { json ->
                     JSONObject(json).let {
-                        val contentId = it.getString("id")
                         title = it.getString("title")
                         grade = it.getString("objective")
                         description = it.getString("description")
@@ -129,8 +128,9 @@ class StudentELearningAssignmentFragment : Fragment() {
 
                         requireActivity().getSharedPreferences("loginDetail", MODE_PRIVATE)
                             .edit()
-                            .putString("content_id", contentId)
+                            .putString("content_id", it.getString("id"))
                             .putString("content_title", title)
+                            .putString("content_type", it.getString("type"))
                             .apply()
                     }
                 }
