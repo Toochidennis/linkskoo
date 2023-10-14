@@ -195,7 +195,7 @@ class StudentELearningQuizDialogFragment(
             courseId = getString("courseId", "")
             courseName = getString("course_name", "")
             classId = getString("classId", "")
-            className = getString("student_class","")
+            className = getString("student_class", "")
         }
     }
 
@@ -454,7 +454,7 @@ class StudentELearningQuizDialogFragment(
         put("user_name", userName ?: "")
         put("level", levelId ?: "")
         put("classId", classId ?: "")
-        put("class_name",className?:"")
+        put("class_name", className ?: "")
         put("type", "0")
     }
 
