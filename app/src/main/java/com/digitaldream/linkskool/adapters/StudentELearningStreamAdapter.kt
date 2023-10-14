@@ -31,9 +31,11 @@ import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 class StudentELearningStreamAdapter(
@@ -49,7 +51,7 @@ class StudentELearningStreamAdapter(
 
     private var newCommentItemMap = hashMapOf<String, MutableList<CommentDataModel>>()
     private lateinit var commentAdapter: StudentELearningStreamCommentAdapter
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var refreshJob: Job? = null
     private val sharedPreferences = context.getSharedPreferences("loginDetail", MODE_PRIVATE)
 
     init {
@@ -265,6 +267,7 @@ class StudentELearningStreamAdapter(
             put("course_name", courseName ?: "")
             put("term", contentModel.term)
             put("year", year ?: "")
+            put("content_type", contentModel.type)
         }
     }
 
@@ -352,9 +355,12 @@ class StudentELearningStreamAdapter(
 
     private fun startPeriodicRefresh(context: Context) {
         val delayMillis = 60000L // 1 minute
-        coroutineScope.launch {
+        refreshJob = CoroutineScope(Dispatchers.Default).launch {
             while (true) {
-                getContentComment(context)
+
+                withContext(Dispatchers.Main) {
+                    getContentComment(context)
+                }
 
                 delay(delayMillis)
             }
@@ -363,7 +369,8 @@ class StudentELearningStreamAdapter(
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        coroutineScope.cancel()
+        refreshJob?.cancel()
+        refreshJob = null
     }
 
 }
