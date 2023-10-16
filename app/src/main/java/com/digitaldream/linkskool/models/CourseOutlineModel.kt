@@ -6,6 +6,6 @@ data class CourseOutlineModel(
     val description: String,
     val courseId: String,
     val levelId: String,
-    val courseName: String,
-    val term:String
+    val teacherName:String,
+    val term: String
 )

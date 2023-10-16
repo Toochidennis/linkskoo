@@ -29,13 +29,12 @@ import timber.log.Timber
 import java.util.Locale
 
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-private const val ARG_PARAM3 = "param3"
-
-
-class AdminELearningCreateClassDialogFragment :
-    DialogFragment(R.layout.dialog_fragment_admin_e_learning_create_class) {
+class AdminELearningCreateClassDialogFragment(
+    private val levelId: String,
+    private val courseName: String,
+    private val courseId: String,
+    private val onCreated: (String) -> Unit
+) : DialogFragment(R.layout.dialog_fragment_admin_e_learning_create_class) {
 
     private lateinit var mBackBtn: ImageButton
     private lateinit var mCreateBtn: Button
@@ -54,10 +53,7 @@ class AdminELearningCreateClassDialogFragment :
 
     private lateinit var mDatabaseHelper: DatabaseHelper
 
-    private var levelId: String? = null
     private var tagState: String? = null
-    private var courseId: String? = null
-    private var courseName: String? = null
     private var year: String? = null
     private var term: String? = null
     private var userId: String? = null
@@ -67,24 +63,7 @@ class AdminELearningCreateClassDialogFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
-        arguments?.let {
-            levelId = it.getString(ARG_PARAM1)
-            courseName = it.getString(ARG_PARAM2)
-            courseId = it.getString(ARG_PARAM3)
-        }
-    }
 
-    companion object {
-
-        @JvmStatic
-        fun newInstance(levelId: String, courseName: String, courseId: String) =
-            AdminELearningCreateClassDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, levelId)
-                    putString(ARG_PARAM2, courseName)
-                    putString(ARG_PARAM3, courseId)
-                }
-            }
     }
 
 
@@ -106,22 +85,6 @@ class AdminELearningCreateClassDialogFragment :
         createOutline()
 
         dismissDialog()
-
-
-        sendRequestToServer(Request.Method.GET,
-            "${requireContext().getString(R.string.base_url)}/getOutlineList" +
-                    ".php?course=$courseId&level=$levelId&term=$term",
-            requireContext(), null,
-            object : VolleyCallback {
-                override fun onResponse(response: String) {
-
-                }
-
-                override fun onError(error: VolleyError) {
-
-                }
-            })
-
     }
 
 
@@ -309,7 +272,8 @@ class AdminELearningCreateClassDialogFragment :
             data,
             object : VolleyCallback {
                 override fun onResponse(response: String) {
-
+                    onCreated("created")
+                    dismiss()
                 }
 
                 override fun onError(error: VolleyError) {

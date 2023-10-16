@@ -82,61 +82,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_18" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height=".5dp"
-                android:layout_marginTop="@dimen/dimen_16"
-                android:background="@color/test_color_7" />
-
-            <TextView
-                android:id="@+id/commentTitleTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_16"
-                android:text="Class comment"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_14"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/commentRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginEnd="@dimen/dimen_16" />
-
-            <TextView
-                android:id="@+id/addCommentTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_16"
-                android:text="Add class comment"
-                android:textColor="@color/test_color_1"
-                android:textSize="@dimen/text_14" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/commentEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_16"
-                android:hint="Class comment"
-                android:visibility="gone"
-                app:hintAnimationEnabled="true"
-                app:hintTextColor="@color/test_color_1">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/edit_text_bg5"
-                    android:imeOptions="actionSend"
-                    android:inputType="textCapSentences"
-                    android:paddingStart="@dimen/dimen_16"
-                    android:paddingEnd="@dimen/dimen_16"
-                    android:scrollbars="vertical"
-                    android:textSize="@dimen/text_14" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
