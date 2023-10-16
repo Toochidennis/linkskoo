@@ -67,10 +67,10 @@ class StudentELearningAssignmentSubmissionDialogFragment :
     private lateinit var addWorkBtn: Button
     private lateinit var handInBtn: Button
 
-    private lateinit var commentAdapter: AdminELearningCommentAdapter
     private val commentList = mutableListOf<CommentDataModel>()
-
     private val fileList = mutableListOf<AttachmentModel>()
+
+    private lateinit var commentAdapter: AdminELearningCommentAdapter
     private lateinit var fileAdapter: StudentELearningAssignmentSubmissionAdapter
 
     private lateinit var studentFileViewModel: StudentFileViewModel

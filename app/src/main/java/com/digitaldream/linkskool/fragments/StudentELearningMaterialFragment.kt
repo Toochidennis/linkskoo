@@ -29,7 +29,6 @@ import com.digitaldream.linkskool.adapters.AdminELearningFilesAdapter
 import com.digitaldream.linkskool.models.AttachmentModel
 import com.digitaldream.linkskool.models.CommentDataModel
 import com.digitaldream.linkskool.utils.FileViewModel
-import com.digitaldream.linkskool.utils.FunctionUtils.formatDate2
 import com.digitaldream.linkskool.utils.FunctionUtils.sendRequestToServer
 import com.digitaldream.linkskool.utils.VolleyCallback
 import kotlinx.coroutines.CoroutineScope
@@ -54,7 +53,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
     private lateinit var commentGuide: View
     private lateinit var commentTitleTxt: TextView
     private lateinit var commentEditText: EditText
-    private lateinit var sendMessageBtn: ImageButton
+    private lateinit var sendCommentBtn: ImageButton
 
     private lateinit var commentAdapter: AdminELearningCommentAdapter
     private lateinit var filesAdapter: AdminELearningFilesAdapter
@@ -122,7 +121,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
             commentGuide = findViewById(R.id.commentGuide)
             commentTitleTxt = findViewById(R.id.commentTitleTxt)
             commentEditText = findViewById(R.id.commentEditText)
-            sendMessageBtn = findViewById(R.id.sendMessageBtn)
+            sendCommentBtn = findViewById(R.id.sendMessageBtn)
 
             (requireContext() as AppCompatActivity).setSupportActionBar(toolbar)
             val actionBar = (requireContext() as AppCompatActivity).supportActionBar
@@ -291,7 +290,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
 
 
     private fun onWatchEditText() {
-        sendMessageBtn.isEnabled = false
+        sendCommentBtn.isEnabled = false
 
         commentEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -299,17 +298,17 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                sendMessageBtn.isEnabled = s.toString().isNotBlank()
+                sendCommentBtn.isEnabled = s.toString().isNotBlank()
 
-                if (sendMessageBtn.isEnabled) {
-                    sendMessageBtn.setColorFilter(
+                if (sendCommentBtn.isEnabled) {
+                    sendCommentBtn.setColorFilter(
                         ContextCompat.getColor(
                             requireContext(), R.color.black
                         ),
                         PorterDuff.Mode.SRC_IN
                     )
                 } else {
-                    sendMessageBtn.setColorFilter(
+                    sendCommentBtn.setColorFilter(
                         ContextCompat.getColor(
                             requireContext(), R.color.test_color_7
                         ), PorterDuff.Mode.SRC_IN
@@ -348,7 +347,7 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
     }
 
     private fun sendComment() {
-        sendMessageBtn.setOnClickListener {
+        sendCommentBtn.setOnClickListener {
             prepareComment()
         }
     }
@@ -379,7 +378,6 @@ class StudentELearningMaterialFragment : Fragment(R.layout.fragment_student_e_le
             put("year", year ?: "")
             put("content_type", type ?: "")
         }
-
 
     private fun postComment(newCommentList: MutableList<CommentDataModel>) {
         val commentHashMap = prepareCommentJson(newCommentList)
