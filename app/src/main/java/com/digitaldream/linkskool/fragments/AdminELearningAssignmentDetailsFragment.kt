@@ -127,7 +127,7 @@ class AdminELearningAssignmentDetailsFragment :
             displayOptions = ActionBar.DISPLAY_SHOW_TITLE
             setHomeButtonEnabled(true)
             setDisplayHomeAsUpEnabled(true)
-            title = ""
+            title = "Assignment"
             customView = null
         }
 
@@ -165,8 +165,6 @@ class AdminELearningAssignmentDetailsFragment :
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.refresh -> {
-
-
                         true
                     }
 

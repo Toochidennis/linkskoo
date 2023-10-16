@@ -130,7 +130,7 @@ class AdminELearningQuestionDetailsFragment :
             displayOptions = ActionBar.DISPLAY_SHOW_TITLE
             setHomeButtonEnabled(true)
             setDisplayHomeAsUpEnabled(true)
-            title = ""
+            title = "Question"
             customView = null
         }
 
