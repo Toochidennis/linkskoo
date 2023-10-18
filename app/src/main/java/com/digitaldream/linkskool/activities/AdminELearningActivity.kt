@@ -130,6 +130,15 @@ class AdminELearningActivity : AppCompatActivity(R.layout.activity_admin_e_learn
                 }
             }
 
+            "assignment_student_work"->{
+                supportFragmentManager.commit {
+                    replace(
+                        R.id.learning_container,
+                        AdminELearningAssignmentStudentWorkDetailsFragment.newInstance(json)
+                    )
+                }
+            }
+
         }
     }
 }
