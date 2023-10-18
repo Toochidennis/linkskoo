@@ -36,7 +36,6 @@ class AdminELearningFilesAdapter(
 
     private val picasso = Picasso.get()
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
@@ -52,7 +51,6 @@ class AdminELearningFilesAdapter(
 
             else -> throw IllegalArgumentException("Unknown viewType $viewType")
         }
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -134,7 +132,6 @@ class AdminELearningFilesAdapter(
             itemView.setOnClickListener {
                 viewFiles(itemView, attachmentModel)
             }
-
         }
     }
 

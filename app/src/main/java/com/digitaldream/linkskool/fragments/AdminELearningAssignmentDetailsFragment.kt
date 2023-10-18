@@ -108,7 +108,10 @@ class AdminELearningAssignmentDetailsFragment :
                 ), "Instructions"
             )
 
-            addFragment(AdminELearningAssignmentStudentWorkFragment(), "Student work")
+            addFragment(
+                AdminELearningAssignmentStudentWorkFragment
+                    .newInstance(jsonData ?: ""), "Student work"
+            )
         }.let {
             viewPager.apply {
                 adapter = it

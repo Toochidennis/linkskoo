@@ -36,7 +36,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
     LayoutInflater inflater ;
     OnAnswerClickListener onAnswerClickListener;
 
-    public AnswerAdapter(Context context, List<AnswerModel> list,OnAnswerClickListener onAnswerClickListener) {
+    public AnswerAdapter(Context context, List<AnswerModel> list, OnAnswerClickListener onAnswerClickListener) {
         this.context = context;
         this.list = list;
         inflater = LayoutInflater.from(context);
