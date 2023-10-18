@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dimen_16"
+    android:layout_margin="@dimen/dimen_10"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="@dimen/dimen_10"
     app:contentPadding="@dimen/dimen_16">
@@ -55,24 +55,6 @@
             android:layout_marginTop="@dimen/dimen_16"
             android:textColor="@color/black"
             android:textSize="@dimen/text_16" />
-
-        <ImageView
-            android:id="@+id/userImageView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="@dimen/dimen_32"
-            android:visibility="gone"
-            android:contentDescription="@string/file_icon"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/correctImageView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="@dimen/dimen_16"
-            android:contentDescription="@string/file_icon"
-            android:scaleType="centerCrop"
-            android:visibility="gone"/>
 
     </LinearLayout>
 
