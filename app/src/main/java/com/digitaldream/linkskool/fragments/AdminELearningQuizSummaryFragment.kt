@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.digitaldream.linkskool.R
-import com.digitaldream.linkskool.adapters.AdminELearningTestSummaryAdapter
+import com.digitaldream.linkskool.adapters.AdminELearningQuizSummaryAdapter
 import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.MultipleChoiceOption
 import com.digitaldream.linkskool.models.QuestionItem
@@ -19,6 +19,7 @@ import com.digitaldream.linkskool.models.ShortAnswerModel
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
+import java.util.Locale
 
 
 private const val ARG_PARAM1 = "param1"
@@ -29,10 +30,9 @@ class AdminELearningQuizSummaryFragment :
     Fragment(R.layout.fragment_admin_e_learning_quiz_summary) {
 
     private lateinit var scoreTxt: TextView
-    private lateinit var totalQuestionTxt: TextView
     private lateinit var summaryRecyclerView: RecyclerView
 
-    private lateinit var summaryAdapter: AdminELearningTestSummaryAdapter
+    private lateinit var summaryAdapter: AdminELearningQuizSummaryAdapter
 
     private lateinit var sectionItems: MutableList<SectionModel>
     private lateinit var userResponses: MutableMap<String, String>
@@ -79,25 +79,20 @@ class AdminELearningQuizSummaryFragment :
 
         initialiseDataset()
 
-        val score = calculateScore().toString()
-        scoreTxt.text = score
-
-        val count = totalQuestionCount().toString()
-        totalQuestionTxt.text = count
+        setScore()
     }
 
     private fun setUpViews(view: View) {
         view.apply {
             val toolbar: Toolbar = findViewById(R.id.toolbar)
             scoreTxt = findViewById(R.id.scoreTxt)
-            totalQuestionTxt = findViewById(R.id.totalQuestionTxt)
             summaryRecyclerView = findViewById(R.id.summaryRecyclerview)
 
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
             val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
             actionBar?.apply {
-                title = "Test summary"
+                title = "Quiz summary"
                 setHomeButtonEnabled(true)
                 setDisplayHomeAsUpEnabled(true)
             }
@@ -126,9 +121,16 @@ class AdminELearningQuizSummaryFragment :
         }
     }
 
+    private fun setScore() {
+        val percentage = (getScore().toDouble() / totalQuestionCount().toDouble()) * 100
+        val roundedPercentage  = String.format(Locale.getDefault(), "%.2f",percentage)
+        val score = "$roundedPercentage%"
+        scoreTxt.text = score
+    }
+
 
     private fun setUpAdapterAndRecyclerView(questionItems: MutableList<QuestionItem?>) {
-        summaryAdapter = AdminELearningTestSummaryAdapter(questionItems, userResponses)
+        summaryAdapter = AdminELearningQuizSummaryAdapter(questionItems, userResponses)
 
         summaryRecyclerView.apply {
             hasFixedSize()
@@ -137,7 +139,7 @@ class AdminELearningQuizSummaryFragment :
         }
     }
 
-    private fun calculateScore(): Int {
+    private fun getScore(): Int {
         return userResponses.count { (questionId, userAnswer) ->
             val section = sectionItems.find {
                 it.questionItem?.let { questionItem ->
@@ -172,7 +174,6 @@ class AdminELearningQuizSummaryFragment :
 
                 questionData.run {
                     if (has("questions")) {
-
                         val questionsArray = getJSONArray("questions")
 
                         for (i in 0 until questionsArray.length()) {

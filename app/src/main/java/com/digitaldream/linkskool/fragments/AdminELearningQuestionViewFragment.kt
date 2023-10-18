@@ -118,7 +118,7 @@ class AdminELearningQuestionViewFragment :
         }
 
         if (dueDate?.isNotBlank() == true) {
-            val date = formatDate2(dueDate!!, "custom1")
+            val date = formatDate2(dueDate!!, "date time")
             dueDateTxt.text = date
         }
     }

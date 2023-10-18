@@ -17,10 +17,9 @@ import com.digitaldream.linkskool.models.MultiChoiceQuestion
 import com.digitaldream.linkskool.models.QuestionItem
 import com.digitaldream.linkskool.models.ShortAnswerModel
 import com.squareup.picasso.Picasso
-import timber.log.Timber
 import java.util.Locale
 
-class AdminELearningTestSummaryAdapter(
+class AdminELearningQuizSummaryAdapter(
     private val itemList: MutableList<QuestionItem?>,
     private val userResponses: MutableMap<String, String>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -45,14 +44,14 @@ class AdminELearningTestSummaryAdapter(
         return when (viewType) {
             VIEW_TYPE_MULTI_CHOICE_OPTION -> {
                 val view =
-                    inflater.inflate(R.layout.item_multi_choice_test_summary_layout, parent, false)
+                    inflater.inflate(R.layout.item_multi_choice_quiz_summary_layout, parent, false)
 
                 MultiChoiceSummaryViewHolder(view)
             }
 
             VIEW_TYPE_SHORT_ANSWER -> {
                 val view = inflater.inflate(
-                    R.layout.item_short_answer_test_summary_layout, parent,
+                    R.layout.item_short_answer_quiz_summary_layout, parent,
                     false
                 )
 
@@ -102,49 +101,52 @@ class AdminELearningTestSummaryAdapter(
             ("Question ${adapterPosition + 1}").let { questionCountTxt.text = it }
             questionTxt.text = multiChoiceQuestion.questionText
             loadImage(itemView.context, multiChoiceQuestion.attachmentUri, questionImageView)
-
-            val label = labelList[multiChoiceQuestion.checkedPosition]
-            val correctAnswer =
-                String.format(
-                    Locale.getDefault(), "Correct answer: %s. %s", label,
-                    multiChoiceQuestion.correctAnswer
-                )
-
-            correctAnswerTxt.text = correctAnswer
-
             userResponse(multiChoiceQuestion)
+            correctAnswer(multiChoiceQuestion)
+        }
 
+        private fun correctAnswer(multiChoiceQuestion: MultiChoiceQuestion) {
+            val label = labelList[multiChoiceQuestion.checkedPosition]
+            multiChoiceQuestion.options?.forEach { option ->
+                if (option.optionText == multiChoiceQuestion.correctAnswer) {
+                    val correctAnswer =
+                        String.format(
+                            Locale.getDefault(), "%s. %s", label,
+                            multiChoiceQuestion.correctAnswer
+                        )
+
+                    correctAnswerTxt.text = correctAnswer
+                    correctAnswerTxt.isVisible = true
+                } else if (multiChoiceQuestion.correctAnswer == option.attachmentName) {
+                    loadImage(itemView.context, option.attachmentUri, correctImageView)
+                    correctAnswerTxt.isVisible = false
+                }
+            }
         }
 
         private fun userResponse(multiChoiceQuestion: MultiChoiceQuestion) {
             val questionId = multiChoiceQuestion.questionId
-            var optionOrder = 0
-
             val userResponse = userResponses[questionId]
 
             if (userResponse != null) {
-                multiChoiceQuestion.options?.forEach { multipleChoiceOption ->
-                    if (multipleChoiceOption.optionText.ifEmpty {
-                            multipleChoiceOption.attachmentName
-                        }.equals(userResponse, ignoreCase = true)) {
+                multiChoiceQuestion.options?.forEach { choiceOption ->
+                    if (choiceOption.optionText == userResponse) {
+                        val optionOrder = (choiceOption.optionOrder).toInt()
+                        val label = labelList[optionOrder]
+                        val userAnswer =
+                            String.format(
+                                Locale.getDefault(), "%s. %s", label, userResponse
+                            )
 
-                        optionOrder = (multipleChoiceOption.optionOrder).toInt()
+                        userAnswerTxt.text = userAnswer
+                        userAnswerTxt.isVisible = true
+                    } else if (choiceOption.attachmentName == userResponse) {
+                        loadImage(itemView.context, choiceOption.attachmentUri, userImageView)
+                        userAnswerTxt.isVisible = false
                     }
                 }
-
-                val label = labelList[optionOrder]
-                val userAnswer =
-                    String.format(
-                        Locale.getDefault(), "Your answer: %s. %s", label,
-                        userResponse
-                    )
-
-                userAnswerTxt.text = userAnswer
-
             }
-
         }
-
     }
 
     inner class ShortAnswerSummaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -231,7 +233,6 @@ class AdminELearningTestSummaryAdapter(
             e.printStackTrace()
             false
         }
-
     }
 
 }
