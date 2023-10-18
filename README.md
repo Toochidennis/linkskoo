@@ -1,2 +1,2 @@
-# linkskool
+# linkskoo
 School Management application 
