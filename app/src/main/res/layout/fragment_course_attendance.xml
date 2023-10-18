@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.CourseAttendanceFragment">
+    tools:context=".fragments.CourseAttendanceFragment">
 
     <RelativeLayout
         android:id="@+id/un_empty_state"

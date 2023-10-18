@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.RegYearList">
+    tools:context=".activities.RegYearList">
 
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar"/>
@@ -53,7 +53,7 @@
                 android:text=""
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="30dp"/>

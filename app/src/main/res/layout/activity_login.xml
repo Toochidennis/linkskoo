@@ -1,30 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/bg_drawable"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    tools:context=".Activities.Login">
+    tools:context=".activities.Login">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tab_color"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"
-            android:fitsSystemWindows="true" />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -36,97 +20,97 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="0dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="150dp"
+                android:layout_marginBottom="50dp"
                 android:contentDescription="@string/todo"
-                android:scaleType="centerCrop"
-                android:src="@drawable/winschool" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/logo_asset" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_wrapper"
+                android:id="@+id/username_layout"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:textColorHint="@color/gray">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:autofillHints="username"
+                android:hint="Username/Registration no"
+                android:textColorHint="@color/gray"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/gray">
 
-                <EditText
-                    android:id="@+id/username"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_height="48dp"
                     android:background="@drawable/borderline"
                     android:drawableStart="@drawable/ic_person"
                     android:drawablePadding="5dp"
-                    android:hint="Username or Registration. No"
+                    android:drawableTint="@color/test_color_1"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="10dp"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_wrapper"
+                android:id="@+id/password_layout"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:hint="Password"
                 android:textColorHint="@color/gray"
-                app:passwordToggleEnabled="true">
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/gray"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/test_color_1">
 
-                <EditText
-                    android:id="@+id/password"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_height="48dp"
                     android:background="@drawable/borderline"
                     android:drawableStart="@drawable/password"
                     android:drawablePadding="5dp"
-                    android:hint="Password or PIN"
+                    android:drawableTint="@color/test_color_1"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:padding="10dp"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/pin_wrapper"
+                android:id="@+id/code_layout"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="@dimen/dimen_16"
+                android:layout_marginEnd="15dp"
+                android:hint="School Code"
                 android:textColorHint="@color/gray"
-                android:visibility="gone"
-                app:passwordToggleEnabled="true">
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/gray"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/test_color_1">
 
-                <EditText
-
-                    android:id="@+id/pin"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_height="48dp"
                     android:background="@drawable/borderline"
-                    android:drawableStart="@drawable/password"
+                    android:drawableStart="@drawable/ic_reference_number"
                     android:drawablePadding="5dp"
-                    android:hint="School code"
-                    android:inputType="numberPassword"
+                    android:drawableTint="@color/test_color_1"
+                    android:inputType="textPassword"
                     android:maxLines="1"
                     android:padding="10dp"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,15 +118,17 @@
                 android:id="@+id/login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/tab_color"
-                android:fontFamily="@font/roboto"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/ripple_effect9"
+                android:fontFamily="@font/montserrat"
                 android:text="Login"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_16" />
+
         </LinearLayout>
-    </ScrollView>
 
+    </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</RelativeLayout>

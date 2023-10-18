@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_color"
-    tools:context=".Activities.Flashcard">
+    tools:context=".activities.Flashcard">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -45,7 +45,7 @@
         android:layout_marginLeft="20dp"/>
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/debt_fee_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -75,7 +75,7 @@
                 android:text="No. of Cards"
                 android:textSize="15sp"
                 android:textColor="@android:color/black"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 />
             <TextView
                 android:id="@+id/count"
@@ -113,14 +113,14 @@
                 android:text="Date Uploaded"
                 android:textSize="15sp"
                 android:textColor="@android:color/black"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 />
             <TextView
-                android:id="@+id/date"
+                android:id="@+id/date_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:drawableLeft="@drawable/ic_time"
+                android:drawableLeft="@drawable/ic_timer"
                 android:drawablePadding="15dp"
                 android:textSize="16sp"
                 android:gravity="center"

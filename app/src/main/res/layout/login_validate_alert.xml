@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="All fields are required"
-        android:fontFamily="@font/la_to"
+        android:fontFamily="@font/lato"
         android:textSize="16sp"
         android:textColor="@android:color/black"
         android:layout_gravity="center"

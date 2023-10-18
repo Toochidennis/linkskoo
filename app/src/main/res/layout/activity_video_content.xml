@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.VideoContent">
+    tools:context=".activities.VideoContent">
     <Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:fontFamily="@font/la_to"
+            android:fontFamily="@font/lato"
             android:text="Topic"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -81,7 +81,7 @@
                     android:fontFamily="@font/roboto"
                     />
                 <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/date_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="21 may, 2019"
@@ -212,7 +212,7 @@
                 android:layout_margin="10dp"
                 />
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/progress_bar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

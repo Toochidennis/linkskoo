@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.StudentRegistrationDetails">
+    tools:context=".activities.StudentRegistrationDetails">
     <include layout="@layout/toolbar"/>
     <androidx.core.widget.NestedScrollView
         android:layout_below="@id/toolbar"
@@ -29,7 +29,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/debt_fee_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="JS1 A"
@@ -47,7 +47,7 @@
                 android:text=""
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 />
@@ -58,7 +58,7 @@
                 android:text=""
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
-                android:fontFamily="@font/la_to"
+                android:fontFamily="@font/lato"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 />

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".YoutubePlayerActivity">
+    tools:context=".activities.YoutubePlayerActivity">
     <Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"

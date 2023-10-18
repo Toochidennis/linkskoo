@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:fontFamily="@font/la_to"
+            android:fontFamily="@font/lato"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:padding="10dp"
@@ -59,7 +59,7 @@
         android:layout_below="@id/user"
         />
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/date_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="23th May,2009"

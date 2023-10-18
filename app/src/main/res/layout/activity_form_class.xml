@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.FormClass">
+    tools:context=".activities.FormClass">
 
     <include layout="@layout/toolbar" />
 
@@ -21,7 +21,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/tab_color"
+                android:background="@drawable/background_gradient_color"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circle_initials"
-                    android:fontFamily="@font/la_to"
+                    android:fontFamily="@font/lato"
                     android:padding="10dp"
                     android:text="A"
                     android:textAlignment="center"

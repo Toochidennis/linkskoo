@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".Activities.AttendanceActivity">
+    tools:context=".activities.AttendanceActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tab_color"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:background="@drawable/background_gradient_color"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include
             android:id="@+id/tool_bar"
@@ -41,6 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
+            app:tabIndicatorColor="@color/test_color_2"
+            android:layout_marginTop="15dp"
             app:tabInlineLabel="true"
             app:tabMode="fixed"
             app:tabTextAppearance="@style/TabStyle" />
@@ -52,6 +54,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appBar" />
-
 
 </RelativeLayout>

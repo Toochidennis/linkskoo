@@ -136,7 +136,7 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_multichoice"
+            android:src="@drawable/ic_multi_choice"
             app:tint="@color/gray" />
 
         <TextView

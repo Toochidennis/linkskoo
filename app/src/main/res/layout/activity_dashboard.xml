@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Activities.Dashboard">
-
+    tools:openDrawer="start"
+    tools:context=".activities.Dashboard">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/fragment_container"
+            android:id="@+id/payment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -45,7 +45,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/navigation_menu"/>
-
-
+        app:menu="@menu/navigation_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

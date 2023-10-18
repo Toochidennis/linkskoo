@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.StaffDashboardFragment">
+    tools:context=".fragments.StaffDashboardFragment">
 
     <include
         android:id="@+id/toolbar"
@@ -25,14 +25,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@color/tab_color"
+                android:background="@drawable/background_gradient_color"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="25dp"
-                    android:fontFamily="@font/la_to"
+                    android:fontFamily="@font/lato"
                     android:textSize="25sp"
                     android:text="Welcome,"
                     android:textColor="@android:color/white" />

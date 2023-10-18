@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.StaffELearningFragment">
+    tools:context=".fragments.StaffELearningFragment">
 
     <include layout="@layout/toolbar" />
 
@@ -20,7 +20,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:background="@color/tab_color"
+                android:background="@drawable/background_gradient_color"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
